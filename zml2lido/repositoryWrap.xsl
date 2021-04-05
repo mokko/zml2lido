@@ -8,21 +8,82 @@
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*" />
 
+	<!-- 
+	1.1 repositorySet
+	A wrapper containing identification and designation of the institution of custody
+	and, possibly, indication of the exact location of the object. Repeated
+	if there are several designations known, or if former repositories should be
+	listed. 
+	-->
+
 	<xsl:template name="repositoryWrap">
         <lido:repositoryWrap>
-        	<xsl:apply-templates select="z:repeatableGroup[@name='ObjObjectTitleGrp']/z:repeatableGroupItem"/>
+        	<lido:repositorySet lido:type="current">
+	        	<xsl:apply-templates select="z:moduleReference[@name='ObjOwnerRef']"/>
+	        	<xsl:apply-templates select="z:repeatableGroup[@name='ObjObjectNumberGrp']/z:repeatableGroupItem"/>
+		        <!-- Berlin repository location -->
+				<lido:repositoryLocation lido:politicalEntity="inhabited place">
+		          <lido:placeID lido:type="URI" lido:source="http://vocab.getty.edu/tgn/">http://vocab.getty.edu/tgn/7003712</lido:placeID>
+		          <lido:placeID lido:type="URI" lido:source="http://sws.geonames.org/">http://sws.geonames.org/2950159</lido:placeID>
+		          <lido:namePlaceSet>
+		             <lido:appellationValue>Berlin</lido:appellationValue>
+		          </lido:namePlaceSet>
+		          <lido:partOfPlace lido:politicalEntity="State">
+		             <lido:placeID lido:type="URI" lido:source="http://vocab.getty.edu/tgn/">http://vocab.getty.edu/tgn/7003670</lido:placeID>
+		             <lido:placeID lido:type="URI" lido:source="http://sws.geonames.org/">http://sws.geonames.org/2950157</lido:placeID>
+		             <lido:namePlaceSet>
+		                <lido:appellationValue>Berlin</lido:appellationValue>
+		             </lido:namePlaceSet>
+		             <lido:partOfPlace lido:politicalEntity="nation">
+		                <lido:placeID lido:type="URI" lido:source="http://vocab.getty.edu/tgn/">http://vocab.getty.edu/tgn/7000084</lido:placeID>
+		                <lido:placeID lido:type="URI" lido:source="http://sws.geonames.org/">http://sws.geonames.org/2921044</lido:placeID>
+		                <lido:namePlaceSet>
+		                   <lido:appellationValue>Deutschland</lido:appellationValue>
+		                </lido:namePlaceSet>
+		             </lido:partOfPlace>
+		          </lido:partOfPlace>
+		          </lido:repositoryLocation>
+	          </lido:repositorySet>
 		</lido:repositoryWrap>
     </xsl:template>
 
-	<xsl:template match="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem/z:repeatableGroup[@name='ObjObjectTitleGrp']/z:repeatableGroupItem">
-		<xsl:message>GH</xsl:message>
-		<lido:titleSet>
-			<xsl:attribute name="type">
-				<xsl:value-of select="z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/@name"/>
-			</xsl:attribute>
-			<lido:appellationValue sort="1">
-				<xsl:value-of select="z:dataField[@name = 'TitleTxt']"/>
-			</lido:appellationValue>
-		</lido:titleSet>
+	<xsl:template match="z:repeatableGroup[@name='ObjObjectNumberGrp']/z:repeatableGroupItem">
+		<lido:workID>
+			<xsl:value-of select="z:dataField[@name='InventarNrSTxt']/z:value"/>
+		</lido:workID>
 	</xsl:template>
+
+	<xsl:template match="z:moduleReference[@name='ObjOwnerRef']">
+		<lido:repositoryName>	
+	        <xsl:choose>
+	        	<!-- The following values culd be taken from PK module, but at what cost... -->
+	            <xsl:when test=". eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
+	                <lido:legalBodyID lido:type="URI" lido:source="ISIL (ISO 15511)">http://www.museen-in-deutschland.de/singleview.php?muges=019118</lido:legalBodyID>
+	                <lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">DE-MUS-019118</lido:legalBodyID>
+	                <xsl:call-template name="legalBodyName"/>
+	                <lido:legalBodyWeblink>http://www.smb.museum/em</lido:legalBodyWeblink>
+	            </xsl:when>
+	            <!-- verwaltendeInstiution AKu untested -->
+	            <xsl:when test=". eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
+	                <lido:legalBodyID lido:type="URI" lido:source="ISIL (ISO 15511)">http://www.museen-in-deutschland.de/singleview.php?muges=019014</lido:legalBodyID>
+	                <lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">DE-MUS-019014</lido:legalBodyID>
+	                <xsl:call-template name="legalBodyName"/>
+	                <lido:legalBodyWeblink>http://www.smb.museum/aku</lido:legalBodyWeblink>
+	            </xsl:when>
+	            <xsl:otherwise>
+	                <xsl:message terminate="yes">
+	                    <xsl:text>Error: Unknown Institution</xsl:text>
+	                </xsl:message>
+	            </xsl:otherwise>
+	        </xsl:choose>
+        </lido:repositoryName>
+	</xsl:template>
+
+	<xsl:template name="legalBodyName">
+        <lido:legalBodyName>
+            <lido:appellationValue>
+                <xsl:value-of select="." />
+            </lido:appellationValue>
+        </lido:legalBodyName>
+    </xsl:template>
 </xsl:stylesheet>
