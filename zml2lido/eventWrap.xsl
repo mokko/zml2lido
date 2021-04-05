@@ -6,7 +6,7 @@
     exclude-result-prefixes="z"
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
-    <!-- xsl:import href="event-Herstellung.xsl" /-->
+    <xsl:import href="event-Herstellung.xsl"/>
     <xsl:import href="event-Erwerb.xsl" />
     <!-- xsl:import href="event-Sammeln.xsl" /-->
 
@@ -14,12 +14,12 @@
     <xsl:strip-space elements="*" />
 
     <!-- 
-        apparently some records with a Sammler dont have the Sammeln-event. ? 
-        Why because i wrote eq Sammler instead of =. Let that be a lesson!
+        apparently some records with a Sammler dont have the Sammeln-event. 
+        Why? Because i wrote eq Sammler instead of =. Let that be a lesson!
     -->
     <xsl:template name="eventWrap">
         <lido:eventWrap>
-            <!-- xsl:call-template name="Herstellung"/ -->
+            <xsl:call-template name="Herstellung"/>
             <xsl:call-template name="Erwerb"/>
             <!-- xsl:if test="z:personenKörperschaften[@funktion = 'Sammler']">
                 <xsl:call-template name="Sammeln"/>

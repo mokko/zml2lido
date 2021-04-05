@@ -84,7 +84,6 @@
 
 	<!-- eventMethod -->
 	<xsl:template match="z:repeatableGroup[@name = 'ObjAcquisitionMethodGrp']/z:repeatableGroupItem">
-    	<xsl:message>GH</xsl:message>
 		<lido:eventMethod>
 		     <lido:term xml:lang="de">
 		     	<xsl:value-of select="z:vocabularyReference[@name ='MethodVoc']/z:vocabularyReferenceItem/@name"/>

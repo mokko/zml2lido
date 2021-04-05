@@ -52,7 +52,7 @@
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Durchmesser'">
-				<xsl:value-of select="../../z:dataField[@name='DiameterNum']/z:value"/>
+				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Durchmesser x Tiefe'">
 				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>

@@ -7,12 +7,13 @@
 	<xsl:import href="zml2lido/classificationWrap.xsl" />
 	<xsl:import href="zml2lido/objectIdentificationWrap.xsl" />
 	<xsl:import href="zml2lido/eventWrap.xsl" />
+	<xsl:import href="zml2lido/objectRelationWrap.xsl" />
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
 	<xsl:strip-space elements="*" />
 
 	<xsl:template match="/">
-		<lido:lidoWrap>
+		<lido:lidoWrap 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 			<xsl:apply-templates select="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem" />
 		</lido:lidoWrap>
 	</xsl:template>
@@ -51,8 +52,6 @@
 			<xsl:call-template name="classificationWrap" />
 		</lido:objectClassificationWrap>
 	</xsl:template>
-
-	<xsl:template name="objectRelationWrap" />
 
 	<xsl:template name="rightsWorkWrap" />
 	<xsl:template name="recordWrap" />
