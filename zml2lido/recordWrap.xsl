@@ -11,18 +11,20 @@
 
 	<xsl:template name="recordWrap">
 		<lido:recordWrap>
+			<xsl:variable name="vi" select="z:moduleReference[@name='ObjOwnerRef']"/>
 			<lido:recordID lido:type="local" lido:source="SMB/Obj.ID">
 				<xsl:choose>
-					<xsl:when test="verwaltendeInstitution eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
+					<xsl:when test="$vi eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
 						<xsl:text>DE-MUS-019118/</xsl:text>
 					</xsl:when>
 					<!-- verwaltendeInstiution AKu untested -->
-					<xsl:when test="verwaltendeInstitution eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
+					<xsl:when test="$vi eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
 						<xsl:text>DE-MUS-019014/</xsl:text>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:message>
-							<xsl:text>Error: Unknown institution in recordWrap</xsl:text>
+						<xsl:message terminate="yes">
+							<xsl:text>Error: Unknown institution in recordWrap: </xsl:text>
+							<xsl:value-of select="$vi"/>
 						</xsl:message>
 					</xsl:otherwise>
 				</xsl:choose>
