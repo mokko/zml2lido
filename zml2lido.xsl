@@ -8,6 +8,9 @@
 	<xsl:import href="zml2lido/objectIdentificationWrap.xsl" />
 	<xsl:import href="zml2lido/eventWrap.xsl" />
 	<xsl:import href="zml2lido/objectRelationWrap.xsl" />
+	<xsl:import href="zml2lido/rightsWorkWrap.xsl" />
+	<xsl:import href="zml2lido/recordWrap.xsl" />
+	<xsl:import href="zml2lido/resourceWrap.xsl" />
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
 	<xsl:strip-space elements="*" />
@@ -52,10 +55,6 @@
 			<xsl:call-template name="classificationWrap" />
 		</lido:objectClassificationWrap>
 	</xsl:template>
-
-	<xsl:template name="rightsWorkWrap" />
-	<xsl:template name="recordWrap" />
-	<xsl:template name="resourceWrap" />
 
 	<!-- dryer LIDO -->
 	<xsl:template name="conceptTerm">
