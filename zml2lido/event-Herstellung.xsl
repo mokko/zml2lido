@@ -277,10 +277,13 @@
 		    <xsl:when test=". = 'Gebiet'
 		    	or . = 'Hafen (Port)'
 		    	or . = 'Land/Region'
+				or . = 'Kloster'
 				or . = 'Kolonie/&quot;Schutzgebiet&quot;'
 				or . = 'Kultur/Ort'
 		    	or . = 'Region'
 				or . = 'Region oder Ort'
+				or . = 'Stadt/Umgebung'
+				or . = 'Tempel'
 			    ">
 			    <xsl:value-of select="."/>
 		    </xsl:when>
@@ -289,8 +292,8 @@
 
 			<!-- Die with message unknown type -->
 		    <xsl:otherwise>
-		    	<xsl:message terminate="yes">
-		    		<xsl:text>Unknown geoPol type: </xsl:text>
+		    	<xsl:message terminate="no">
+		    		<xsl:text>!!!!!!!!!!!!!!!!!!!Unknown geoPol type: </xsl:text>
 					<xsl:value-of select="."/>
 		    	</xsl:message>
 		    </xsl:otherwise>

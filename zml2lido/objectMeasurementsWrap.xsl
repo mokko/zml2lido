@@ -44,6 +44,27 @@
 
 	<xsl:template match="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue">
 		<xsl:choose>
+		
+			<xsl:when test=". = 'Allgemein'">
+				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='Unknown2Num']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Bemalte Bildfläche'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Bildmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Blattmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Breite'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
@@ -55,6 +76,7 @@
 			</xsl:when>
 			<xsl:when test=". = 'Durchmesser x Tiefe'">
 				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
+				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Fläche'">
