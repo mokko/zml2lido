@@ -292,8 +292,8 @@
 
 			<!-- Die with message unknown type -->
 		    <xsl:otherwise>
-		    	<xsl:message terminate="no">
-		    		<xsl:text>!!!!!!!!!!!!!!!!!!!Unknown geoPol type: </xsl:text>
+		    	<xsl:message terminate="yes">
+		    		<xsl:text>Unknown geoPol type: </xsl:text>
 					<xsl:value-of select="."/>
 		    	</xsl:message>
 		    </xsl:otherwise>
