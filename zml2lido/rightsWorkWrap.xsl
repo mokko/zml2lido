@@ -57,6 +57,13 @@
                     </lido:legalBodyName>
                     <lido:legalBodyWeblink>http://www.smb.museum/aku</lido:legalBodyWeblink>
                 </xsl:when>
+	            <xsl:when test="$vi =  'Museum für Islamische Kunst, Staatliche Museen zu Berlin'">
+					<!-- kann keine ISIL für das ISL finden -->
+                    <lido:legalBodyName>
+                        <lido:appellationValue>Museum für Islamische Kunst, Staatliche Museen zu Berlin</lido:appellationValue>
+                    </lido:legalBodyName>
+                    <lido:legalBodyWeblink>http://www.smb.museum/isl</lido:legalBodyWeblink>
+	            </xsl:when>
                 <xsl:when test="not(string($vi))">
                 	<xsl:message>do nothing and for once that's ok</xsl:message>
                 </xsl:when>

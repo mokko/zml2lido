@@ -21,10 +21,12 @@
 					<xsl:when test="$vi eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
 						<xsl:text>DE-MUS-019014/</xsl:text>
 					</xsl:when>
+					<!-- kann keine ISIL für ISL finden -->
+					<xsl:when test="$vi eq 'Museum für Islamische Kunst, Staatliche Museen zu Berlin'"/>
 					<xsl:otherwise>
 						<xsl:message terminate="yes">
-							<xsl:text>Error: Unknown institution in recordWrap: </xsl:text>
 							<xsl:value-of select="$vi"/>
+							<xsl:text>Error: Unknown institution in recordWrap: </xsl:text>
 						</xsl:message>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -41,16 +43,20 @@
 			</lido:recordType>
 			<lido:recordSource lido:type="Institution">
 				<xsl:choose>
-					<xsl:when test="verwaltendeInstitution eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
+					<xsl:when test="$vi eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
 						<lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">DE-MUS-019118</lido:legalBodyID>
 					</xsl:when>
 					<!-- verwaltendeInstiution AKu untested -->
-					<xsl:when test="verwaltendeInstitution eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
+					<xsl:when test="$vi eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
 						<lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">DE-MUS-019014</lido:legalBodyID>
 					</xsl:when>
+					<xsl:when test="$vi eq 'Museum für Islamische Kunst, Staatliche Museen zu Berlin'">
+						<!-- kann keine ISIL für ISL finden https://isil.museum/index.php?t=suche-->
+					</xsl:when>
 					<xsl:otherwise>
-						<xsl:message>
-							<xsl:text>Error: Unknown institution in recordWrap</xsl:text>
+						<xsl:message terminate="yes">
+							<xsl:value-of select="$vi"/>
+							<xsl:text>Error: Unknown institution in recordWrap (101)</xsl:text>
 						</xsl:message>
 					</xsl:otherwise>
 				</xsl:choose>

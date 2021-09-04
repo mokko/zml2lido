@@ -70,8 +70,14 @@
 	                <xsl:call-template name="legalBodyName"/>
 	                <lido:legalBodyWeblink>http://www.smb.museum/aku</lido:legalBodyWeblink>
 	            </xsl:when>
+	            <xsl:when test=". eq 'Museum für Islamische Kunst, Staatliche Museen zu Berlin'">
+					<!-- kann keine ISIL für das ISL finden -->
+	                <xsl:call-template name="legalBodyName"/>
+	                <lido:legalBodyWeblink>http://www.smb.museum/isl</lido:legalBodyWeblink>
+	            </xsl:when>
 	            <xsl:otherwise>
 	                <xsl:message terminate="yes">
+						<xsl:value-of select="."/>
 	                    <xsl:text>Error: Unknown Institution</xsl:text>
 	                </xsl:message>
 	            </xsl:otherwise>

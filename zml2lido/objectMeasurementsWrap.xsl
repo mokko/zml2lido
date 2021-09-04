@@ -44,12 +44,11 @@
 
 	<xsl:template match="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue">
 		<xsl:choose>
-			<xsl:when test=". = 'Objektmaß'">
-				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
-				<xsl:text> x </xsl:text>
+			<xsl:when test=". = 'Breite'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Dicke'">
+				<xsl:value-of select="../../../z:dataField[@name='ThicknessNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Durchmesser'">
 				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
@@ -57,6 +56,9 @@
 			<xsl:when test=". = 'Durchmesser x Tiefe'">
 				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
 				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Fläche'">
+				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Gewicht'">
 				<xsl:value-of select="../../../z:dataField[@name='WeightNum']/z:value"/>
@@ -84,6 +86,11 @@
 			<xsl:when test=". = 'Länge'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Länge x Breite'">
+				<xsl:value-of select="../../../z:dataField[@name='LengthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Länge x Breite x Höhe'">
 				<xsl:value-of select="../../../z:dataField[@name='LengthNum']/z:value"/>
 				<xsl:text> x </xsl:text>
@@ -103,6 +110,38 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Objektmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Sehnenlänge'">
+				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Tiefe'">
+				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Umfang'">
+				<xsl:value-of select="../../../z:dataField[@name='CircumferenceNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Verpackungsmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Volumen'">
+				<xsl:value-of select="../../../z:dataField[@name='VolumeNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Wandstärke' or  . = 'Wandungsstärke'">
+				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
+			</xsl:when>
+			<!-- DONT OUTPUT ANYTHING, BUT DONT DIE EITHER-->
+			<xsl:when test=". = 'Leer'"/>
+			
 			<xsl:otherwise>
 				<xsl:message terminate="yes">
 					<xsl:text>Unbekannter Maßtyp: </xsl:text>

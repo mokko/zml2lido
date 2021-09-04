@@ -228,6 +228,7 @@
 		        or . = 'Bach/Zufluss'
 		        or . = 'Berg'
 		        or . = 'Bucht'
+		        or . = 'Bucht (Bay)'
 		        or . = 'Fluss'
 		        or . = 'Fluss, Bucht und Dorf'
 		        or . = 'Fluss/Gebiet'
@@ -240,12 +241,14 @@
 		        or . = 'Insel/Region'
 		        or . = 'Inselgruppe'
 		        or . = 'Kap'
+		        or . = 'Kap (Cap/Point)'
 		        or . = 'Kontinent'
 		        or . = 'Kontintentteil'
 		        or . = 'Küste'
 		        or . = 'Landschaft'
 		        or . = 'Meerenge'
 		        or . = 'Nebenfluss'
+		        or . = 'See'
 		        or . = 'See/Gebiet'
 		        or . = 'Tal'">
 		        <xsl:attribute name="lido:geographicalEntity">
@@ -253,25 +256,38 @@
 		        </xsl:attribute>
 		    </xsl:when>
 		    <!-- politicalEntities -->
-		    <xsl:when test=". = 'Dorf'
+		    <xsl:when test=". = 'Bezirk'
+		        or . = 'Bezirk oder Stadt'
+				or . = 'Dorf'
 		    	or . = 'Großregion'
+		    	or . = 'Königreich'
 		    	or . = 'Land'
 				or . = 'Ort'
 				or . = 'Ort/Gebiet'
+				or . = 'Provinz'
+				or . = 'Sultanat'
 		    	or . = 'Stadt'
+		    	or . = 'Station'
 			    ">
 	            <xsl:attribute name="lido:politicalEntity">
 	                <xsl:value-of select="."/>
 	            </xsl:attribute>
 		    </xsl:when>
-			<!-- undecided -->
+			<!-- undecided: output geoname, but without type -->
 		    <xsl:when test=". = 'Gebiet'
-		    	or . = 'Region'
+		    	or . = 'Hafen (Port)'
 		    	or . = 'Land/Region'
+				or . = 'Kolonie/&quot;Schutzgebiet&quot;'
+				or . = 'Kultur/Ort'
+		    	or . = 'Region'
+				or . = 'Region oder Ort'
 			    ">
 			    <xsl:value-of select="."/>
 		    </xsl:when>
-			<!-- Die with message on unknow types -->
+			<!-- dont output geoname at all -->
+			<xsl:when test=". = 'Bevölkerungsgruppe'"/>
+
+			<!-- Die with message unknown type -->
 		    <xsl:otherwise>
 		    	<xsl:message terminate="yes">
 		    		<xsl:text>Unknown geoPol type: </xsl:text>
