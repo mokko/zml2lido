@@ -58,6 +58,10 @@ class LidoTool:
 
         orig = os.getcwd()
         os.chdir(self.dir)
+        hdir = Path("html")
+        if not hdir.exists():
+            hdir.mkdir()
+        os.chdir(str(hdir))    
         #if Path("o.xml").exists():
         self.saxon(input=input, xsl=lido2htmlXsl, output="o.xml")
         os.chdir(orig)
