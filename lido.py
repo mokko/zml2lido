@@ -54,16 +54,16 @@ class LidoTool:
             shutil.copyfile(pic, out)
 
     def lido2html (self,*, input):
-        """Always runs even if output already exists"""
+        """Runs if html dir doesn't exist yet"""
 
         orig = os.getcwd()
         os.chdir(self.dir)
         hdir = Path("html")
+        #if not any(os.scandir(str(hdir))):        
         if not hdir.exists():
             hdir.mkdir()
-        os.chdir(str(hdir))    
-        #if Path("o.xml").exists():
-        self.saxon(input=input, xsl=lido2htmlXsl, output="o.xml")
+            os.chdir(str(hdir)) 
+            self.saxon(input=input, xsl=lido2htmlXsl, output="o.xml")
         os.chdir(orig)
 
     def pix (self, *, input, output):
