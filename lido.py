@@ -14,7 +14,13 @@
     # writes images to dir C:\m3\zml2lido\sdata\3Wege
 
     TODO: Check whether we only get freigegebene multimedia from MpApi.
-        
+
+    We do a sloppy update, i.e. if attachments have been deleted in RIA, they will
+    remain in the lido sphere. So it wouldn't hurt to check smbfreigabe on asset level again
+    during conversion to lido although we only downloaded smbfreigegebene assets in the 
+    first place.
+
+   
 """
 from pathlib import Path
 import shutil
@@ -26,8 +32,9 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 #import shutil
 saxLib = "C:\m3\SaxonHE10-5J\saxon-he-10.5.jar"
-zml2lidoXsl = "C:\m3\zml2lido\zml2lido.xsl"
-lido2htmlXsl = "C:\m3\zml2lido\lido2html.xsl"
+zml2lidoXSL = "C:\m3\zml2lido\zml2lido.xsl"
+lido2htmlXSL = "C:\m3\zml2lido\lido2html.xsl"
+lidoXSD = "C:\m3\zml2lido\xsd\lido-v1.0.xsd"
 
 class LidoTool: 
     def __init__(self, *, input, output):
@@ -45,16 +52,17 @@ class LidoTool:
             self.dir.mkdir()
 
         lido_fn = self.zml2lido(input=input, output=output)
+        self.validate(input=lido_fn)
         self.pix(input=input, output=output) # transform attachments
         self.lido2html(input=lido_fn)
     
-    def copy (self, pic,out):
+    def copy (self, *, pic, out):
         if not Path(out).exists:
             print (f"*copying {pic} -> {out}")
             shutil.copyfile(pic, out)
 
     def lido2html (self,*, input):
-        """Runs if html dir doesn't exist yet"""
+        """Only runs if html dir doesn't exist."""
 
         orig = os.getcwd()
         os.chdir(self.dir)
@@ -63,7 +71,7 @@ class LidoTool:
         if not hdir.exists():
             hdir.mkdir()
             os.chdir(str(hdir)) 
-            self.saxon(input=input, xsl=lido2htmlXsl, output="o.xml")
+            self.saxon(input=input, xsl=lido2htmlXSL, output="o.xml")
         os.chdir(orig)
 
     def pix (self, *, input, output):
@@ -106,9 +114,18 @@ class LidoTool:
                     out = im.resize(new_size, Image.LANCZOS)
                     out.save(out_fn)
                 else:
-                    self.copy(pic,out_fn)
+                    self.copy(pic=pic,out=out_fn)
         else:
-            self.copy(pic,out_fn)
+            self.copy(pic=pic,out=out_fn)
+
+    def validate (self,*, input):
+        print(f"***Looking for xsd at {lidoXSD} to validate {input}")
+        schema_doc = etree.parse(lidoXSD)
+        schema = etree.XMLSchema(schema_doc)
+        doc = etree.parse(input)
+        schema.assert_(doc)
+        print("***VALIDATES OK")
+
 
     def zml2lido(self,*, input, output):
         Input = Path(input)
@@ -116,7 +133,7 @@ class LidoTool:
         #print (f"lido file:{lido_fn}")
  
         if not lido_fn.exists():
-            self.saxon(input=input, xsl=zml2lidoXsl, output=lido_fn)
+            self.saxon(input=input, xsl=zml2lidoXSL, output=lido_fn)
         return lido_fn
     
 if __name__ == "__main__":
