@@ -29,10 +29,6 @@
                 	z:vocabularyReference/z:vocabularyReferenceItem/@name ='Sprachgruppe' 
                 	]"/>
 
-				<!-- eventMaterialsTech -->
-                <xsl:apply-templates select="z:repeatableGroup[
-                	@name = 'ObjMaterialTechniqueGrp']/z:repeatableGroupItem"/>
-
                 <!-- eventDate 
 
                 SPEC allows repeated displayDates only for language variants; 
@@ -40,23 +36,33 @@
                 
                 BUT: AKu says it often has multiple dates representing multiple
                 estimates.
+				
+				We can just take the one with the lowest sort order
 	            -->
 
-                <xsl:apply-templates select="z:repeatableGroup[@name = 'ObjDateGrp']/z:repeatableGroupItem"/>
-
-				<!-- eventPlace 
-				    <xsl:apply-templates mode="eventPlace" select="geogrBezug[
-                    not (@bezeichnung eq 'Kultur' 
-                    or @bezeichnung eq 'Ethnie'
-                    or @bezeichnung eq 'Sprachgruppe')]"/>
-				-->
-				<xsl:apply-templates mode="eventPlace" select="z:repeatableGroup[
-                	@name = 'ObjGeograficGrp']/z:repeatableGroupItem[
+				<lido:eventDate>
+					<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjDateGrp']/z:repeatableGroupItem[1]">
+						<xsl:sort select="z:dataField/@name='SortLnu'" data-type="number" order="ascending"/>
+					</xsl:apply-templates>
+				</lido:eventDate>
+				
+				<!-- 
+				eventPlace 
+				/z:repeatableGroupItem[
                 	z:vocabularyReference/@name = 'GeopolVoc' and not(
                 	z:vocabularyReference/z:vocabularyReferenceItem/@name ='Ethnie' or
                 	z:vocabularyReference/z:vocabularyReferenceItem/@name ='Kultur' or
                 	z:vocabularyReference/z:vocabularyReferenceItem/@name ='Sprachgruppe') 
-                	]"/>
+                	]
+				-->
+				<xsl:apply-templates mode="eventPlace" select="z:repeatableGroup[@name = 'ObjGeograficGrp']"/>
+
+				<!-- eventMaterialsTech -->
+				<lido:eventMaterialsTech>
+					<xsl:apply-templates select="z:repeatableGroup[
+						@name = 'ObjMaterialTechniqueGrp']/z:repeatableGroupItem"/>
+				</lido:eventMaterialsTech>
+
             </lido:event>
         </lido:eventSet>
     </xsl:template>
@@ -117,7 +123,6 @@
         
 	<!-- eventDate -->
 	<xsl:template match="z:repeatableGroup[@name = 'ObjDateGrp']/z:repeatableGroupItem">
-		 <lido:eventDate>
             <lido:displayDate>
                 <xsl:value-of select="z:dataField[@name = 'DateTxt']/z:value"/>
             </lido:displayDate>
@@ -135,87 +140,49 @@
                     </xsl:if>
                 </lido:date>
             </xsl:if>
-        </lido:eventDate>
 	</xsl:template>
 
 	<!-- eventMaterialsTech -->
 	<xsl:template match="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']/z:repeatableGroupItem">
-		<lido:eventMaterialsTech>
-			<xsl:choose> 
-				<xsl:when test=".[z:vocabularyReference/@name = 'TypeVoc' and /z:vocabularyReferenceItem/@name = 'Ausgabe']">
-				    <lido:displayMaterialsTech xml:lang="de" lido:encodinganalog="materialTechnik[@art=Ausgabe]">
-				            <xsl:value-of select="z:dataField[@name = 'ExportClb']"/>
-				    </lido:displayMaterialsTech>
-				    <!-- translations come later 
-				    <xsl:variable name="translation" select="func:en-from-dict('materialTechnik@artAusgabe',.)"/>
-				    <xsl:if test=". ne $translation">
-				        <lido:displayMaterialsTech xml:lang="en" lido:encodinganalog="materialTechnik[@art=Ausgabe]">
-				                <xsl:value-of select="$translation"/>
-				        </lido:displayMaterialsTech>
-				    </xsl:if>
-				    -->
-				</xsl:when>
-				<xsl:otherwise>
-				    <lido:materialsTech>
-				        <lido:termMaterialsTech lido:type="Material">
-				            <lido:term>
-				                <xsl:value-of select="z:vocabularyReference[@name = 'MaterialVoc']/z:vocabularyReferenceItem/@name"/>
-				            </lido:term>
-				        </lido:termMaterialsTech>
-				    </lido:materialsTech>
-				</xsl:otherwise>
-			</xsl:choose>
-        </lido:eventMaterialsTech>
+			<xsl:apply-templates select=".[z:vocabularyReference/@name = 'TypeVoc' 
+					and z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']"/>
+			<!--lido:materialsTech>
+				<xsl:apply-templates select="z:vocabularyReference[@name = 'MaterialVoc']"/>
+			</lido:materialsTech-->
     </xsl:template>	
 
-	<!-- eventPlace  -->
-	<xsl:template mode="eventPlace" match="z:repeatableGroup[
-		@name = 'ObjGeograficGrp']/z:repeatableGroupItem[
-		z:vocabularyReference/@name = 'GeopolVoc' and not(
-		z:vocabularyReference/z:vocabularyReferenceItem/@name ='Ethnie' or
-		z:vocabularyReference/z:vocabularyReferenceItem/@name ='Kultur' or
-		z:vocabularyReference/z:vocabularyReferenceItem/@name ='Sprachgruppe') 
-		]">
+	<xsl:template match=".[z:vocabularyReference/@name = 'TypeVoc' 
+		and z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']">
+		<lido:displayMaterialsTech xml:lang="de">
+				<xsl:value-of select="z:dataField[@name = 'ExportClb']"/>
+		</lido:displayMaterialsTech>
+	</xsl:template>
+
+	<xsl:template match="z:vocabularyReference[@name = 'MaterialVoc']">
+		<lido:termMaterialsTech lido:type="Material">
+			<lido:term>
+				<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
+			</lido:term>
+		</lido:termMaterialsTech>
+	</xsl:template>
+	
+
+	<!-- eventPlace
+		TODO: im Augenblick sind Kultur, Ethnie und Sprachgruppe nicht ausgeschlossen!
+		TODO: Place
+	-->
+	<xsl:template mode="eventPlace" match="z:repeatableGroup[@name = 'ObjGeograficGrp']">
  		<lido:eventPlace>
-			<!--
-                <xsl:attribute name="lido:type">
-                    <xsl:value-of select="@art"/>
-                </xsl:attribute>
-             
-                If mpx has no sort, write 100 into lido even if that doesn't 
-                make a whole lot of sense just to avoid lido validation error. 
-            -->
-            <xsl:attribute name="lido:sortorder">100</xsl:attribute>
             <lido:displayPlace xml:lang="de">
                 <xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
-                <!-- not sure why rstrip is necessary with "Mittel-Sepik " -->
-                <xsl:value-of select="translate(normalize-space(z:vocabularyReference[@name = 'PlaceVoc']), ' ', '')"/>
+				<xsl:for-each select="z:repeatableGroupItem/z:vocabularyReference[@instanceName='GenPlaceVgr']">
+					<xsl:sort select="dataField[@name='SortLnu']" data-type="number" order="ascending"/>
+					<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
+					<xsl:if test="position() != last()">
+						<xsl:text>, </xsl:text>
+					</xsl:if>
+				</xsl:for-each>
             </lido:displayPlace>
-			<!-- translations later
-            <lido:displayPlace>
-                <xsl:attribute name="xml:lang">en</xsl:attribute>
-                <xsl:attribute name="lido:encodinganalog">mpxvoc</xsl:attribute>
-                <xsl:value-of select="func:en-from-dict('geogrBezug',$nterm)"/>
-            </lido:displayPlace>
-             -->
-            <!-- place is sort of fake since no thesaurus -->
-            <lido:place>
-            	<xsl:apply-templates mode="geoPol" select="z:vocabularyReference[
-            		@name = 'GeopolVoc']/z:vocabularyReferenceItem/@name"/>
-                <lido:namePlaceSet>
-                    <lido:appellationValue xml:lang="de">
-                        <xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
-                        <xsl:value-of select="translate(normalize-space(z:vocabularyReference[@name = 'PlaceVoc']), ' ', '')"/>
-                    </lido:appellationValue>
-                    <!-- we do translations later 
-	                    <lido:appellationValue>
-	                        <xsl:attribute name="xml:lang">en</xsl:attribute>
-	                        <xsl:attribute name="lido:encodinganalog">mpxvoc</xsl:attribute>
-	                        <xsl:value-of select="func:en-from-dict('geogrBezug',$nterm)"/>
-	                    </lido:appellationValue>
-                    -->
-                </lido:namePlaceSet>
-            </lido:place>
         </lido:eventPlace>                	
 	</xsl:template>
 
@@ -258,6 +225,7 @@
 		    <!-- politicalEntities -->
 		    <xsl:when test=". = 'Bezirk'
 		        or . = 'Bezirk oder Stadt'
+				or . = 'Bundesstaat'
 				or . = 'Dorf'
 		    	or . = 'Großregion'
 		    	or . = 'Königreich'

@@ -15,9 +15,9 @@
 	</xsl:template>
 
 	<xsl:template match="/z:application/z:modules/z:module/z:moduleItem/z:vocabularyReference[@name = 'ObjCategoryVoc']">
-		<lido:objectClassificationWrap lido:type="Objekttyp">
+		<lido:objectWorkType lido:type="Objekttyp">
 			<!-- todo:sortorder; objekttyp can be only one -->
 			<xsl:call-template name="conceptTerm"/>
-		</lido:objectClassificationWrap>
+		</lido:objectWorkType>
 	</xsl:template>	
 </xsl:stylesheet>

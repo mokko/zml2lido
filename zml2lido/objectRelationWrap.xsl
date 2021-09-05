@@ -20,16 +20,14 @@
 		<lido:objectRelationWrap>
 			<!-- subjectWrap todo -->
 			<!-- relatedWorksWrap -->
-			<xsl:apply-templates select="z:composite[@name='ObjObjectCre']/z:compositeItem"/>
+			<lido:relatedWorksWrap>
+				<xsl:apply-templates select="z:composite[@name='ObjObjectCre']/z:compositeItem"/>
+			</lido:relatedWorksWrap>
 		</lido:objectRelationWrap>
     </xsl:template>
 
 	<xsl:template match="z:composite[@name='ObjObjectCre']/z:compositeItem">
-            <lido:objectRelationWrap>
-                <lido:relatedWorksWrap>
-                    <xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectARef']/z:moduleReferenceItem"/>
-                </lido:relatedWorksWrap>
-            </lido:objectRelationWrap>
+			<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectARef']/z:moduleReferenceItem"/>
 	</xsl:template>
    
     <xsl:template match="z:moduleReference[@name = 'ObjObjectARef']/z:moduleReferenceItem">

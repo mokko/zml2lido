@@ -18,7 +18,9 @@
 	-->
 
 	<xsl:template name="objectMeasurementsWrap">
+		<lido:objectMeasurementsWrap>
 			<xsl:apply-templates select="z:repeatableGroup[@name='ObjDimAllGrp']/z:repeatableGroupItem"/>
+		</lido:objectMeasurementsWrap>
     </xsl:template>
 
 	<xsl:template match="z:repeatableGroup[@name='ObjDimAllGrp']/z:repeatableGroupItem">
@@ -28,15 +30,15 @@
 			</lido:displayObjectMeasurements>
 			<lido:objectMeasurements>
 				<lido:measurementsSet>
+					<lido:measurementType>
+						<xsl:value-of select="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue"/>
+					</lido:measurementType>
 					<lido:measurementUnit>
 						<xsl:value-of select="z:vocabularyReference[@name='UnitDdiVoc']/z:vocabularyReferenceItem/@name"/>
 					</lido:measurementUnit>
 					<lido:measurementValue>
 						<xsl:apply-templates select="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue"/>
 					</lido:measurementValue>
-					<lido:measurementType>
-						<xsl:value-of select="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue"/>
-					</lido:measurementType>
 				</lido:measurementsSet>
 			</lido:objectMeasurements>
 		</lido:objectMeasurementsSet>
@@ -44,7 +46,6 @@
 
 	<xsl:template match="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue">
 		<xsl:choose>
-		
 			<xsl:when test=". = 'Allgemein'">
 				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
 				<xsl:text> x </xsl:text>

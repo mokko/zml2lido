@@ -1,6 +1,10 @@
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:lido="http://www.lido-schema.org"
-	exclude-result-prefixes="z" xmlns:z="http://www.zetcom.com/ria/ws/module"
+<xsl:stylesheet 
+	version="2.0" 
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:lido="http://www.lido-schema.org"
+	exclude-result-prefixes="z" 
+	xmlns:z="http://www.zetcom.com/ria/ws/module"
 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
 	<xsl:import href="zml2lido/objectWorkTypeWrap.xsl" />
@@ -23,7 +27,10 @@
 
 	<xsl:template match="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem">
 		<lido:lido>
-			<lido:lidoRecID><xsl:value-of select="@id" /></lido:lidoRecID>
+			<lido:lidoRecID>
+				<xsl:attribute name="lido:type">objId</xsl:attribute>
+				<xsl:value-of select="@id" />
+			</lido:lidoRecID>
 			<xsl:call-template name="category" />
 
 			<lido:descriptiveMetadata xml:lang="de">
@@ -59,8 +66,11 @@
 	<!-- dryer LIDO -->
 	<xsl:template name="conceptTerm">
 		<lido:conceptID>
-			<xsl:attribute name="source">
+			<xsl:attribute name="lido:source">
 				<xsl:value-of select="@instanceName" />
+			</xsl:attribute>
+			<xsl:attribute name="lido:type">
+				<xsl:value-of select="internalID" />
 			</xsl:attribute>
 			<xsl:value-of select="z:vocabularyReferenceItem/@id" />
 		</lido:conceptID>

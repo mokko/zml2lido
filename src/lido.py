@@ -22,31 +22,34 @@
 
    
 """
+from lxml import etree
+import logging
 from pathlib import Path
+import os
+from PIL import Image, ImageFile
 import shutil
 import subprocess
-from PIL import Image, ImageFile
-import logging
-import os
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 #import shutil
-saxLib = "C:\m3\SaxonHE10-5J\saxon-he-10.5.jar"
-zml2lidoXSL = "C:\m3\zml2lido\zml2lido.xsl"
-lido2htmlXSL = "C:\m3\zml2lido\lido2html.xsl"
-lidoXSD = "C:\m3\zml2lido\xsd\lido-v1.0.xsd"
+saxLib = r"C:\m3\SaxonHE10-5J\saxon-he-10.5.jar"
+lidoXSD = r"C:\m3\zml2lido\xsd\lido-v1.0.xsd"
+zml2lidoXSL = r"C:\m3\zml2lido\zml2lido.xsl"
+lido2htmlXSL = r"C:\m3\zml2lido\lido2html.xsl"
+
 
 class LidoTool: 
-    def __init__(self, *, input, output):
+    def __init__(self, *, input, output, force):
         logfile = Path(output).joinpath("pix.log")
         logging.basicConfig(
             filename=logfile, filemode="w", encoding="utf-8", level=logging.INFO
         )
+        self.force = force
 
-        print (f"input {input}")
+        print (f" input {input}")
         Input = Path(input)
         self.dir = Path(".").resolve().joinpath(output,Input.parent.name)
-        print (f"output dir {self.dir}")
+        print (f" output dir {self.dir}")
         if not self.dir.exists():
             print (f"Making new dir {dir}")
             self.dir.mkdir()
@@ -64,6 +67,7 @@ class LidoTool:
     def lido2html (self,*, input):
         """Only runs if html dir doesn't exist."""
 
+        print ("LIDO2HTML")
         orig = os.getcwd()
         os.chdir(self.dir)
         hdir = Path("html")
@@ -89,7 +93,7 @@ class LidoTool:
 
     def saxon (self, *, input, output, xsl):
         cmd = f"java -Xmx1200m -jar {saxLib} -s:{input} -xsl:{xsl} -o:{output}"
-        print (f"cmd {cmd}")
+        print (f" cmd {cmd}")
 
         subprocess.run(
                 cmd, check=True, stderr=subprocess.STDOUT
@@ -119,12 +123,13 @@ class LidoTool:
             self.copy(pic=pic,out=out_fn)
 
     def validate (self,*, input):
-        print(f"***Looking for xsd at {lidoXSD} to validate {input}")
+        print ("VALIDATING LIDO")
+        print(f" looking for xsd at {lidoXSD} to validate {input}")
         schema_doc = etree.parse(lidoXSD)
         schema = etree.XMLSchema(schema_doc)
-        doc = etree.parse(input)
+        doc = etree.parse(str(input))
         schema.assert_(doc)
-        print("***VALIDATES OK")
+        print(" validates ok")
 
 
     def zml2lido(self,*, input, output):
@@ -132,17 +137,22 @@ class LidoTool:
         lido_fn = self.dir.joinpath(Input.stem+".lido.xml")
         #print (f"lido file:{lido_fn}")
  
-        if not lido_fn.exists():
+        if not lido_fn.exists() or self.force is True:
+            print ("ZML2LIDO new")
             self.saxon(input=input, xsl=zml2lidoXSL, output=lido_fn)
+        else:
+            print ("ZML2LIDO exists already")
+
         return lido_fn
     
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Little LIDO toolchin")
-    parser.add_argument("-i", "--input", help="job to run", required=True)
-    parser.add_argument("-o", "--output", help="config file", default="sdata")
+    parser.add_argument("-i", "--input", help="zml input file", required=True)
+    parser.add_argument("-o", "--output", help="output directory, defaults to sdata", default="sdata")
+    parser.add_argument("-f", "--force", help="force overwrite existing lido", action='store_true')
     args = parser.parse_args()
 
-    m = LidoTool(input=args.input, output=args.output)
+    m = LidoTool(input=args.input, output=args.output, force=args.force)
 
