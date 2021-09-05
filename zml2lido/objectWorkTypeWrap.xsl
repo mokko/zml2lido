@@ -10,14 +10,15 @@
 
 	<xsl:template name="objectWorkTypeWrap">
         <lido:objectWorkTypeWrap>
-            <xsl:apply-templates select="z:vocabularyReference[@name = 'ObjCategoryVoc']"/>
+			<lido:objectWorkType lido:type="Sachbegriff">
+				<lido:conceptID lido:type="id">
+					<xsl:value-of select="z:repeatableGroup[@name='ObjTechnicalTermGrp']/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermVoc']/z:vocabularyReferenceItem/@id"/>
+				</lido:conceptID>
+				<lido:term>
+					<xsl:value-of select="z:repeatableGroup[@name='ObjTechnicalTermGrp']/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+				</lido:term>
+			</lido:objectWorkType>
         </lido:objectWorkTypeWrap>
 	</xsl:template>
 
-	<xsl:template match="/z:application/z:modules/z:module/z:moduleItem/z:vocabularyReference[@name = 'ObjCategoryVoc']">
-		<lido:objectWorkType lido:type="Objekttyp">
-			<!-- todo:sortorder; objekttyp can be only one -->
-			<xsl:call-template name="conceptTerm"/>
-		</lido:objectWorkType>
-	</xsl:template>	
 </xsl:stylesheet>

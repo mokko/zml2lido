@@ -24,7 +24,18 @@
 	<xsl:template name="classificationWrap">
         <lido:classificationWrap>
         	<!-- specific to EM; EM-Sachbegriff Thesaurus -->
-            <xsl:apply-templates select="z:repeatableGroup[@name ='ObjTechnicalTermGrp']/z:repeatableGroupItem//z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']"/>
+			<xsl:choose>
+				<xsl:when test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem[@moduleItemId = '67678']">
+					<xsl:apply-templates select="z:repeatableGroup[@name ='ObjTechnicalTermGrp']/z:repeatableGroupItem//z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<lido:classification lido:type="Sachbegriff">
+						<lido:term>
+							<xsl:value-of select="z:dataField[@name = 'ObjTechnicalTermClb']/z:value"/>
+						</lido:term>
+					</lido:classification>
+				</xsl:otherwise>
+			</xsl:choose>
         </lido:classificationWrap>
 	</xsl:template>
 
@@ -35,7 +46,7 @@
 	</xsl:template>	
 
 	<!-- remove garbage from unmapped fields -->
-	<xsl:template match="z:dataField|z:moduleReference|z:systemField|z:WvocabularyReference"/>
+	<xsl:template match="z:dataField|z:moduleReference|z:systemField|z:VocabularyReference"/>
 	
 	
 </xsl:stylesheet>
