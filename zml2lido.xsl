@@ -78,4 +78,8 @@
 			<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue" />
 		</lido:term>
 	</xsl:template>
+	
+	<!-- remove garbage from unmapped fields -->
+	<xsl:template match="z:dataField|z:moduleReference|z:systemField|z:VocabularyReference"/>
+
 </xsl:stylesheet>

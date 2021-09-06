@@ -8,17 +8,62 @@
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*" />
 
+	<!-- 
+		Todo: Man könnte bei WorkType oder bei Klassifikation OBjekttyp ne 'Allgemein' zusätzlich angeben.
+		Dann hätte man noch Musikinstrument und Fotografie.
+	-->
+
 	<xsl:template name="objectWorkTypeWrap">
-        <lido:objectWorkTypeWrap>
-			<lido:objectWorkType lido:type="Sachbegriff">
-				<lido:conceptID lido:type="id">
-					<xsl:value-of select="z:repeatableGroup[@name='ObjTechnicalTermGrp']/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermVoc']/z:vocabularyReferenceItem/@id"/>
-				</lido:conceptID>
-				<lido:term>
-					<xsl:value-of select="z:repeatableGroup[@name='ObjTechnicalTermGrp']/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-				</lido:term>
-			</lido:objectWorkType>
-        </lido:objectWorkTypeWrap>
+		<xsl:choose>
+			<xsl:when test="z:repeatableGroup[@name='ObjTechnicalTermGrp']
+						/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermVoc']">
+				<lido:objectWorkTypeWrap>
+					<xsl:apply-templates select="z:repeatableGroup[@name='ObjTechnicalTermGrp']
+						/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermVoc']"/>
+				</lido:objectWorkTypeWrap>
+			</xsl:when>
+			<xsl:when test="z:dataField[@name = 'ObjTechnicalTermClb']">
+				<lido:objectWorkTypeWrap>
+					<lido:objectWorkType lido:type="ObjTechnicalTermClb">
+						<lido:term>
+							<xsl:value-of select="z:dataField[@name = 'ObjTechnicalTermClb']/z:value"/>
+						</lido:term>
+					</lido:objectWorkType>
+				</lido:objectWorkTypeWrap>
+			</xsl:when>
+			<!-- Man könnte Objekttyp nehmen, wenn er nicht "Allgemein" ist -->
+			<xsl:when test="z:vocabularyReference[@name='ObjCategoryVoc']/z:formattedValue ne 'Allgemein'">
+				<lido:objectWorkTypeWrap>
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:term>
+							<xsl:value-of select="z:vocabularyReferenceItem[@name='ObjCategoryVoc']/z:formattedValue"/>
+						</lido:term>
+					</lido:objectWorkType>
+				</lido:objectWorkTypeWrap>
+			</xsl:when>
+			<xsl:otherwise>
+				<lido:objectWorkTypeWrap>
+					<lido:objectWorkType lido:type="fake">
+						<lido:term>kein objektWorkType</lido:term>
+					</lido:objectWorkType>
+				</lido:objectWorkTypeWrap>
+				<xsl:message terminate="no">
+					<xsl:text>FEHLER: Objekt braucht objektworktype! objId </xsl:text>
+					<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
+				</xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template match="z:repeatableGroup[@name='ObjTechnicalTermGrp']
+		/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermVoc']">
+		<lido:objectWorkType lido:type="Sachbegriff">
+			<lido:conceptID lido:type="id">
+				<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
+			</lido:conceptID>
+			<lido:term>
+				<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
+			</lido:term>
+		</lido:objectWorkType>
+	</xsl:template>
 </xsl:stylesheet>

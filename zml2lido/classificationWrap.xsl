@@ -23,30 +23,32 @@
 
 	<xsl:template name="classificationWrap">
         <lido:classificationWrap>
-        	<!-- specific to EM; EM-Sachbegriff Thesaurus -->
 			<xsl:choose>
+				<!-- specific to EM; EM-Sachbegriff Thesaurus -->
 				<xsl:when test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem[@moduleItemId = '67678']">
-					<xsl:apply-templates select="z:repeatableGroup[@name ='ObjTechnicalTermGrp']/z:repeatableGroupItem//z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']"/>
+					<xsl:apply-templates mode="classification" select="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
+						/z:repeatableGroupItem//z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<lido:classification lido:type="Sachbegriff">
-						<lido:term>
-							<xsl:value-of select="z:dataField[@name = 'ObjTechnicalTermClb']/z:value"/>
-						</lido:term>
-					</lido:classification>
+					<xsl:apply-templates mode="classification" select="z:dataField[@name = 'ObjTechnicalTermClb']/z:value"/>
 				</xsl:otherwise>
 			</xsl:choose>
         </lido:classificationWrap>
 	</xsl:template>
 
-	<xsl:template match="z:repeatableGroup[@name ='ObjTechnicalTermGrp']/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']">
+	<xsl:template mode="classification" match="z:dataField[@name = 'ObjTechnicalTermClb']/z:value">
+		<lido:classification lido:type="Sachbegriff">
+			<lido:term>
+				<xsl:value-of select="."/>
+			</lido:term>
+		</lido:classification>
+	</xsl:template>
+
+	<xsl:template mode="classification" match="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
+		/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']">
 		<lido:classification lido:type="EM Sachbegriff">
 			<xsl:call-template name="conceptTerm"/>
 		</lido:classification>
 	</xsl:template>	
 
-	<!-- remove garbage from unmapped fields -->
-	<xsl:template match="z:dataField|z:moduleReference|z:systemField|z:VocabularyReference"/>
-	
-	
 </xsl:stylesheet>
