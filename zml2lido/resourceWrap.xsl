@@ -10,7 +10,30 @@
     <xsl:strip-space elements="*" />
 
 	<xsl:template name="resourceWrap">
-        <xsl:variable name="objId" select="@objId" />
+        <xsl:variable name="objId" select="z:systemField[@name='__id']" />
+        <xsl:variable name="verknüpfteMM" select="/z:application/z:modules/z:module[@name = 'Multimedia']
+			/z:moduleItem[
+				 z:composite[@name = 'MulReferencesCre']
+					/z:compositeItem/z:moduleReference[@name = 'MulObjectRef']
+					/z:moduleReferenceItem[@moduleItemId = $objId]
+				and	z:repeatableGroup[@name = 'MulApprovalGrp']
+					/z:repeatableGroupItem/z:vocabularyReference[@instanceName='MulApprovalTypeVgr']
+					/z:vocabularyReferenceItem[@name ='SMB-digital']
+				and z:repeatableGroup[@name = 'MulApprovalGrp']
+					/z:repeatableGroupItem/z:vocabularyReference[@instanceName='MulApprovalVgr']
+					/z:vocabularyReferenceItem[@name ='Ja']
+			]"/>
+
+		<xsl:message>
+			<xsl:value-of select="$objId"/>
+			<xsl:text>:::</xsl:text>
+			<xsl:for-each select="$verknüpfteMM">
+				<xsl:value-of select="z:systemField[@name='__id']"/>
+				<xsl:text> </xsl:text>
+
+				<xsl:value-of select="z:systemField[@name='__id']"/>
+			</xsl:for-each>
+		</xsl:message>
         <xsl:variable name="mmo" select="../multimediaobjekt[
             verknüpftesObjekt eq $objId and lower-case(veröffentlichen) eq 'ja']"/>
             <lido:resourceWrap>

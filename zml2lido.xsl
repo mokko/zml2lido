@@ -1,5 +1,6 @@
 <xsl:stylesheet 
-	version="2.0" 
+	version="2.0"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:lido="http://www.lido-schema.org"
@@ -40,7 +41,7 @@
 				<xsl:call-template name="objectRelationWrap" />
 			</lido:descriptiveMetadata>
 
-			<lido:administrativeMetadata xml:lang="en">
+			<lido:administrativeMetadata xml:lang="de">
 				<xsl:call-template name="rightsWorkWrap" />
 				<xsl:call-template name="recordWrap" />
 				<xsl:call-template name="resourceWrap" />
