@@ -16,10 +16,12 @@
 				<xsl:choose>
 					<xsl:when test="$vi eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
 						<xsl:text>DE-MUS-019118/</xsl:text>
+						<xsl:value-of select="../z:moduleItem/@id"/>
 					</xsl:when>
 					<!-- verwaltendeInstiution AKu untested -->
 					<xsl:when test="$vi eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
 						<xsl:text>DE-MUS-019014/</xsl:text>
+						<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
 					</xsl:when>
 					<!-- kann keine ISIL für ISL finden -->
 					<xsl:when test="$vi eq 'Museum für Islamische Kunst, Staatliche Museen zu Berlin'"/>

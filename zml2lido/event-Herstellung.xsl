@@ -177,7 +177,7 @@
                 <xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
 				<xsl:for-each select="z:repeatableGroupItem/z:vocabularyReference[@instanceName='GenPlaceVgr']">
 					<xsl:sort select="dataField[@name='SortLnu']" data-type="number" order="ascending"/>
-					<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
+					<xsl:value-of select="replace(z:vocabularyReferenceItem/z:formattedValue, '^;(\w*)','$1')"/>
 					<xsl:if test="position() != last()">
 						<xsl:text>, </xsl:text>
 					</xsl:if>

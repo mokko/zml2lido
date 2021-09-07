@@ -40,7 +40,14 @@
 				<xsl:when test="not (z:dataField[@name = 'TitleTxt']/z:value[normalize-space(.)=''])">
 					<!-- TODO: sort for multiple titles missing -->
 					<xsl:attribute name="lido:type">
-						<xsl:value-of select="z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/@name"/>
+						<xsl:choose>
+							<xsl:when test="normalize-space(z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/@name) ne ''">
+								<xsl:value-of select="z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/@name"/>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>Titel</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:attribute>
 					<lido:appellationValue>
 						<xsl:value-of select="z:dataField[@name = 'TitleTxt']/z:value"/>

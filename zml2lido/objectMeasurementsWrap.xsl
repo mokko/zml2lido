@@ -25,9 +25,12 @@
 
 	<xsl:template match="z:repeatableGroup[@name='ObjDimAllGrp']/z:repeatableGroupItem">
 		<lido:objectMeasurementsSet>
-			<lido:displayObjectMeasurements>
-			<!-- use virtualField PreviewVrt and PreviewENVrt -->
-			</lido:displayObjectMeasurements>
+			<xsl:if test="normalize-space(z:virtualField[@name='PreviewVrt']/z:value) != ''">
+				<lido:displayObjectMeasurements>
+					<!-- use PreviewENVrt? -->
+					<xsl:value-of select="z:virtualField[@name='PreviewVrt']/z:value"/>
+				</lido:displayObjectMeasurements>
+			</xsl:if>
 			<lido:objectMeasurements>
 				<lido:measurementsSet>
 					<lido:measurementType>

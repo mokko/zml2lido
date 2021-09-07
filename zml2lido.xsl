@@ -65,6 +65,7 @@
 
 	<!-- dryer LIDO -->
 	<xsl:template name="conceptTerm">
+		<xsl:comment>conceptTerm</xsl:comment>
 		<lido:conceptID>
 			<xsl:attribute name="lido:source">
 				<xsl:value-of select="@instanceName" />
