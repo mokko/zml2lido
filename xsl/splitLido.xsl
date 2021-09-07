@@ -4,7 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     exclude-result-prefixes="lido">
 
-    <xsl:output method="html" name="html" version="1.0" encoding="UTF-8" indent="yes" />
+    <xsl:output method="xml" encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*" />
 
     <!-- ROOT -->
@@ -12,15 +12,17 @@
         <xsl:apply-templates select="/lido:lidoWrap/lido:lido"/>
     </xsl:template>
 
-	<xsl:teamplate match="/lido:lidoWrap/lido:lido">
-		<xsl:variable name="file" select="concat(normalize-space(lido:lidoRecID),'.lido.xml')"/>
+	<xsl:template match="/lido:lidoWrap/lido:lido">
+		<xsl:variable name="file" select="concat('split/',normalize-space(lido:lidoRecID),'.lido.xml')"/>
         <xsl:message>
 			<xsl:value-of select="$file"/>
 		</xsl:message>
-        <xsl:result-document href="{$file}" method="html" encoding="UTF-8">
-			<xsl:copy-of select="n:npx/n:multimediaobjekt[n:verknüpftesObjekt = $nzIds]"/>
+        <xsl:result-document href="{$file}" method="xml" encoding="UTF-8">
+			<lido:lidoWrap 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
+					<xsl:copy-of select="."/>
+			</lido:lidoWrap>
 		</xsl:result-document>
-	</xsl:teamplate>
+	</xsl:template>
 
 </xsl:stylesheet>
 
