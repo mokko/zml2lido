@@ -35,8 +35,8 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 saxLib = r"C:\m3\SaxonHE10-5J\saxon-he-10.5.jar"
 lidoXSD = r"C:\m3\zml2lido\xsd\lido-v1.0.xsd"
 zml2lidoXSL = r"C:\m3\zml2lido\zml2lido.xsl"
-lido2htmlXSL = r"C:\m3\zml2lido\lido2html.xsl"
-
+lido2htmlXSL = r"C:\m3\zml2lido\xsl\lido2html.xsl"
+splitLidoXSL = r"C:\m3\zml2lido\xsl\splitLido.xsl"
 
 class LidoTool: 
     def __init__(self, *, input, output, force):
@@ -56,10 +56,11 @@ class LidoTool:
 
         lido_fn = self.zml2lido(input=input, output=output)
         self.validate(input=lido_fn)
-        self.pix(input=input, output=output) # transform attachments
+        self.splitLido(input=lido_fn)
+        self.pix(input=input, output=output) # transforms attachments
         self.lido2html(input=lido_fn)
     
-    def copy (self, *, pic, out):
+    def _copy (self, *, pic, out):
         if not Path(out).exists:
             print (f"*copying {pic} -> {out}")
             shutil.copyfile(pic, out)
@@ -67,15 +68,17 @@ class LidoTool:
     def lido2html (self,*, input):
         """Only runs if html dir doesn't exist."""
 
-        print ("LIDO2HTML")
         orig = os.getcwd()
         os.chdir(self.dir)
         hdir = Path("html")
         #if not any(os.scandir(str(hdir))):        
         if not hdir.exists():
+            print ("LIDO2HTML making")
             hdir.mkdir()
             os.chdir(str(hdir)) 
-            self.saxon(input=input, xsl=lido2htmlXSL, output="o.xml")
+            self._saxon(input=input, xsl=lido2htmlXSL, output="o.xml")
+        else:
+            print ("LIDO2HTML exists already")
         os.chdir(orig)
 
     def pix (self, *, input, output):
@@ -85,13 +88,14 @@ class LidoTool:
             write to C:\m3\zml2lido\sdata\3Wege\*
             resize so that biggest side is 1848px
         """    
+        print ("WORKING ON PIX")
         in_dir = Path(input).parent
         #print (f"*input {in_dir}")   
         for pic_fn in Path(in_dir).rglob(f"**/pix_*/*"):
             #print (f"{pic_fn}")
-            self.resize(pic=pic_fn)
+            self._resize(pic=pic_fn)
 
-    def saxon (self, *, input, output, xsl):
+    def _saxon (self, *, input, output, xsl):
         cmd = f"java -Xmx1200m -jar {saxLib} -s:{input} -xsl:{xsl} -o:{output}"
         print (f" cmd {cmd}")
 
@@ -99,7 +103,17 @@ class LidoTool:
                 cmd, check=True, stderr=subprocess.STDOUT
             )  # overwrites output file without saying anything
 
-    def resize (self,*, pic):
+    def splitLido (self, *, input):
+        orig = os.getcwd()
+        if not self.dir.joinpath("split").exists():
+            print ("SPLITLIDO making")
+            os.chdir(self.dir)
+            self._saxon(input=input, xsl=splitLidoXSL, output="o.xml")
+            os.chdir(orig)
+        else:
+            print ("SPLITLIDO exists already")
+
+    def _resize (self,*, pic):
         out_fn = self.dir.joinpath(pic.name)
         if pic.suffix != ".mp3" and pic.suffix != ".pdf": #pil croaks over mp3
             im = Image.open(pic)
@@ -118,9 +132,9 @@ class LidoTool:
                     out = im.resize(new_size, Image.LANCZOS)
                     out.save(out_fn)
                 else:
-                    self.copy(pic=pic,out=out_fn)
+                    self._copy(pic=pic,out=out_fn)
         else:
-            self.copy(pic=pic,out=out_fn)
+            self._copy(pic=pic,out=out_fn)
 
     def validate (self,*, input):
         print ("VALIDATING LIDO")
@@ -139,7 +153,7 @@ class LidoTool:
  
         if not lido_fn.exists() or self.force is True:
             print ("ZML2LIDO new")
-            self.saxon(input=input, xsl=zml2lidoXSL, output=lido_fn)
+            self._saxon(input=input, xsl=zml2lidoXSL, output=lido_fn)
         else:
             print ("ZML2LIDO exists already")
 

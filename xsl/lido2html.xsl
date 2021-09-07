@@ -11,7 +11,7 @@
 
     <!-- ROOT -->
     <xsl:template match="/">
-                <xsl:apply-templates select="/lido:lidoWrap/lido:lido"/>
+        <xsl:apply-templates select="/lido:lidoWrap/lido:lido"/>
     </xsl:template>
 
     <!-- INTRO -->    
