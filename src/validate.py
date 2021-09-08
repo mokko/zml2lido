@@ -13,7 +13,7 @@ from pathlib import Path
 from lxml import etree
 
 # let's put local copies on directory to speed up the process
-lib = Path(__file__).joinpath("../xsd").resolve()
+lib = Path(__file__).joinpath("../../xsd").resolve()
 
 conf = {}
 conf["mpx"] = lib.joinpath("mpx20.xsd")
