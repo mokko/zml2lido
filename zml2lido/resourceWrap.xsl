@@ -22,40 +22,37 @@
 				and z:repeatableGroup[@name = 'MulApprovalGrp']
 					/z:repeatableGroupItem/z:vocabularyReference[@instanceName='MulApprovalVgr']
 					/z:vocabularyReferenceItem[@name ='Ja']
-			]"/>
+		]"/>
 
-		<xsl:message>
+		<!--xsl:message>
 			<xsl:value-of select="$objId"/>
 			<xsl:text>:::</xsl:text>
 			<xsl:for-each select="$verknüpfteMM">
 				<xsl:value-of select="z:systemField[@name='__id']"/>
 				<xsl:text> </xsl:text>
-
 				<xsl:value-of select="z:systemField[@name='__id']"/>
 			</xsl:for-each>
-		</xsl:message>
-        <xsl:variable name="mmo" select="../multimediaobjekt[
-            verknüpftesObjekt eq $objId and lower-case(veröffentlichen) eq 'ja']"/>
+		</xsl:message-->
             <lido:resourceWrap>
-                <xsl:apply-templates select="$mmo" />
+                <xsl:apply-templates mode="resourceWrap" select="$verknüpfteMM" />
             </lido:resourceWrap>
     </xsl:template>
 
-    <xsl:template match="/museumPlusExport/multimediaobjekt">
-        <xsl:variable name="objId" select="verknüpftesObjekt"/>
-        <!-- 
-            only export digital representations to LIDO, not purely analog ones 
-            Don't record MM records with veröffentlichen = nein
-            I would like to include veröffentlichen field into LIDO, but dont see where that fits
-        -->
+    <xsl:template mode="resourceWrap" match="/z:application/z:modules/z:module[@name = 'Multimedia']/z:moduleItem">
+		<!--xsl:message>resourceSet</xsl:message-->
         <lido:resourceSet>
+			<!--
+				xsl:nummer nummeriert alle verknüpfteMM durch; das geht so nicht
+				wo steht die Info, was ein Standardbild ist
+			-->
             <xsl:attribute name="lido:sortorder">
-                <xsl:choose>
-                    <xsl:when test="standardbild">1</xsl:when>
-                    <xsl:otherwise><xsl:number/></xsl:otherwise>
-                </xsl:choose>
+                <xsl:number/> <!--todo-->
             </xsl:attribute>
-            <lido:resourceID lido:type="mulId">
+            <lido:resourceID>
+				<xsl:attribute name="lido:type">mulId</xsl:attribute>
+				<xsl:value-of select="z:systemField[@name='__id']/z:value" />
+            </lido:resourceID>
+			
             <!-- according to LIDO's pdf specification resourceID can have
                  attribute encodinganalog; according to xsd it can't have 
                  it. 
@@ -67,35 +64,40 @@
                     <xsl:value-of select="erweiterung"/>
                 </xsl:attribute>
             -->
-                <xsl:value-of select="@mulId" />
-            </lido:resourceID>
             <lido:resourceRepresentation>
                 <xsl:attribute name="lido:type" xml:lang="EN">
-                    <xsl:choose>
-                        <xsl:when test="lower-case(erweiterung) eq 'jpg'">
-                            <xsl:text>Preview Representation</xsl:text>
-                        </xsl:when>
-                        <xsl:when test="lower-case(erweiterung) eq 'tif' or lower-case(erweiterung) eq 'tiff' ">
-                            <xsl:text>Provided Representation</xsl:text>
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:message>
-                                <xsl:text>Error: Unknown image type: </xsl:text>
-                                <xsl:value-of select="erweiterung"/>
-                            </xsl:message>
-                        </xsl:otherwise>
-                    </xsl:choose>
+					<xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex=".(\w*)$">
+						<xsl:matching-substring>
+							<!--xsl:message>
+								<xsl:text>EXT</xsl:text>
+								<xsl:value-of select="regex-group(1)"/>
+							</xsl:message-->
+							<xsl:choose>
+								<xsl:when test="lower-case(regex-group(1)) eq 'jpg'">
+									<xsl:text>Preview Representation</xsl:text>
+								</xsl:when>
+								<xsl:when test="lower-case(regex-group(1)) eq 'tif' or lower-case(regex-group(1)) eq 'tiff' ">
+									<xsl:text>Provided Representation</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>Preview Representation</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:matching-substring>
+					</xsl:analyze-string>
                 </xsl:attribute>
+				<xsl:variable name="id" select="normalize-space(z:systemField[@name='__id']/z:value)" />
                 <lido:linkResource> 
-                    <xsl:attribute name="lido:formatResource">
-                        <xsl:value-of select="lower-case(erweiterung)"/>
-                    </xsl:attribute>
-                    <!-- xsl:text>../../pix2/xsl:text  -->
-                    <xsl:value-of select="@mulId" />
-                    <xsl:text>.</xsl:text>
-                    <xsl:value-of select="dateiname"/>
-                    <xsl:text>.</xsl:text>
-                    <xsl:value-of select="erweiterung"/>
+					<xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex=".(\w*)$">
+						<xsl:matching-substring>
+							<xsl:attribute name="lido:formatResource">
+								<xsl:value-of select="lower-case(regex-group(1))"/>
+							</xsl:attribute>
+							<!-- xsl:text>../../pix2/xsl:text-->
+							<xsl:value-of select="concat($id,'.',regex-group(1))"/>
+							
+						</xsl:matching-substring>
+					</xsl:analyze-string>
                 </lido:linkResource>
                     <!-- lido:resourceMeasurementsSet>
                         <lido:measurementType>width</lido:measurementType>
@@ -103,30 +105,22 @@
                         <lido:measurementValue>120</lido:measurementValue>
                     </lido:resourceMeasurementsSet -->
             </lido:resourceRepresentation>
-            <xsl:if test="lower-case(erweiterung) = 'jpg' 
-                or lower-case(erweiterung) = 'tif' 
-                or lower-case(erweiterung) = 'tiff'">
-                <lido:resourceType>
-                    <!-- no voc at http://terminology.lido-schema.org 20200301 -->
-                    <lido:term xml:lang="EN">digital image</lido:term>
-                </lido:resourceType>
-                <xsl:apply-templates select="inhaltAnsicht"/>
-                <xsl:apply-templates select="anfertDat"/>
-            </xsl:if>
-            <xsl:if test="urhebFotograf">
-                <lido:rightsResource>
-                    <lido:rightsType>
-                        <lido:term xml:lang="DE">Urheber</lido:term>
-                    </lido:rightsType>
-                    <lido:rightsHolder>
-                        <lido:legalBodyName>
-                            <lido:appellationValue>
-                                <xsl:value-of select="urhebFotograf" />
-                            </lido:appellationValue>
-                        </lido:legalBodyName>
-                    </lido:rightsHolder>
-                </lido:rightsResource>
-            </xsl:if>
+			<lido:resourceType>
+				<!-- 
+					lido spec 1.0 "Example values: digital image, photograph, slide, videotape, Xray
+					photograph, negative."
+					no voc at http://terminology.lido-schema.org 20200301
+					TODO
+				-->
+				<lido:term xml:lang="DE">
+					<xsl:value-of select="z:vocabularyReference[@name='MulTypeVoc']/z:vocabularyReferenceItem/@name"/>
+					</lido:term>
+			</lido:resourceType>
+			<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
+			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
+			<!--Urheber-->
+			<xsl:apply-templates mode="Urheber" select="z:moduleReference[@name='MulPhotographerPerRef']"/>
+			
             <lido:rightsResource>
                 <lido:rightsType>
                     <lido:term>Nutzungsrechte</lido:term>
@@ -144,28 +138,49 @@
                 Currently, I am adapting credits in smb.digital.de, but not exactly. 
                 -->
                 <lido:creditLine>
-                    <xsl:if test="urhebFotograf">
+                    <xsl:if test="z:moduleReference[@name='MulPhotographerPerRef']">
                         <xsl:text>Foto: </xsl:text>
-                        <xsl:value-of select="urhebFotograf"/>
+                        <xsl:value-of select="z:moduleReference[@name='MulPhotographerPerRef']/z:moduleReferenceItem/z:formattedValue"/>
                         <xsl:text>, </xsl:text>
                     </xsl:if>
-                    <xsl:value-of select="../sammlungsobjekt[@objId eq $objId]/verwaltendeInstitution"/>
-                    <xsl:text> - Preußischer Kulturbesitz</xsl:text>
+					<!-- Das verwaltende Museum steht nicht im Multimedia-Datensatz, bestenfalls die OrgUnit-->
+                    <xsl:text>Staatliche Museen Berlin</xsl:text>
                 </lido:creditLine>
             </lido:rightsResource>
         </lido:resourceSet>
     </xsl:template>
 
-    <xsl:template match="inhaltAnsicht">
-                <lido:resourceDescription>
-                    <xsl:value-of select="."/>
-                </lido:resourceDescription>
+    <xsl:template mode="Urheber" match="z:moduleReference[@name='MulPhotographerPerRef']">
+		<!--xsl:message>
+			<xsl:text>Urheber</xsl:text>
+			<xsl:value-of select="z:moduleReferenceItem/z:formattedValue" />
+		</xsl:message-->
+		<lido:rightsResource>
+			<lido:rightsType>
+				<lido:term xml:lang="DE">Urheber</lido:term>
+			</lido:rightsType>
+			<lido:rightsHolder>
+				<lido:legalBodyName>
+					<lido:appellationValue>
+						<xsl:value-of select="z:moduleReferenceItem/z:formattedValue" />
+					</lido:appellationValue>
+				</lido:legalBodyName>
+			</lido:rightsHolder>
+		</lido:rightsResource>
+    </xsl:template>
+
+	<!--inhaltAnsicht-->
+    <xsl:template match="z:dataField[@name='MulSubjectTxt']/z:value">
+		<lido:resourceDescription>
+			<xsl:value-of select="."/>
+		</lido:resourceDescription>
 	</xsl:template>
 
     <!-- 
+		was:anfertDat
         resourceDateTaken is part of xsd, given in LIDO examples, but not 
         part in pdf specification -->
-    <xsl:template match="anfertDat">
+    <xsl:template match="z:dataField[@name='MulDateTxt']/z:value">
         <lido:resourceDateTaken>
             <lido:displayDate>
                 <xsl:value-of select="."/>

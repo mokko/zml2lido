@@ -62,7 +62,6 @@
 					<xsl:apply-templates select="z:repeatableGroup[
 						@name = 'ObjMaterialTechniqueGrp']/z:repeatableGroupItem"/>
 				</lido:eventMaterialsTech>
-
             </lido:event>
         </lido:eventSet>
     </xsl:template>

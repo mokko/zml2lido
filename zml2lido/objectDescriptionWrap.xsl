@@ -17,10 +17,9 @@
 
 	<!--only online Beschreibung -->
 	<xsl:template match="z:repeatableGroup[@name='ObjTextOnlineGrp']/z:repeatableGroupItem">
-		<xsl:message>
+		<!--xsl:message>
 			<xsl:value-of select="z:dataField[@name='TextClb']"/>
-		</xsl:message>
-
+		</xsl:message-->
 		<lido:objectDescriptionSet>
 			<lido:descriptiveNoteValue xml:lang="de">
 				<xsl:attribute name="lido:encodinganalog">
@@ -30,5 +29,4 @@
 			</lido:descriptiveNoteValue>
 		</lido:objectDescriptionSet>
 	</xsl:template>
-   
 </xsl:stylesheet>
