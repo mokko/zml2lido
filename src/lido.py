@@ -39,7 +39,7 @@ lido2htmlXSL = r"C:\m3\zml2lido\xsl\lido2html.xsl"
 splitLidoXSL = r"C:\m3\zml2lido\xsl\splitLido.xsl"
 
 class LidoTool: 
-    def __init__(self, *, input, output, force):
+    def __init__(self, *, input, output, force, validate):
         logfile = Path(output).joinpath("pix.log")
         logging.basicConfig(
             filename=logfile, filemode="w", encoding="utf-8", level=logging.INFO
@@ -55,7 +55,8 @@ class LidoTool:
             self.dir.mkdir()
 
         lido_fn = self.zml2lido(input=input, output=output)
-        self.validate(input=lido_fn)
+        if validate:
+            self.validate(input=lido_fn)
         self.splitLido(input=lido_fn)
         self.pix(input=input, output=output) # transforms attachments
         self.lido2html(input=lido_fn)
@@ -138,13 +139,16 @@ class LidoTool:
 
     def validate (self,*, input):
         print ("VALIDATING LIDO")
-        print(f" looking for xsd at {lidoXSD} to validate {input}")
+        print(f" loading schema {lidoXSD}")
         schema_doc = etree.parse(lidoXSD)
+        print (" validating...")
         schema = etree.XMLSchema(schema_doc)
         doc = etree.parse(str(input))
-        schema.assert_(doc)
-        print(" validates ok")
-
+        schema.assert_(doc) # raises error when not valid
+        if schema.validate(doc):
+            print(" validates ok")
+        else:
+            print(" does NOT validate")
 
     def zml2lido(self,*, input, output):
         Input = Path(input)
@@ -166,7 +170,8 @@ if __name__ == "__main__":
     parser.add_argument("-i", "--input", help="zml input file", required=True)
     parser.add_argument("-o", "--output", help="output directory, defaults to sdata", default="sdata")
     parser.add_argument("-f", "--force", help="force overwrite existing lido", action='store_true')
+    parser.add_argument("-v", "--validate", help="validate lido", action='store_true')
     args = parser.parse_args()
 
-    m = LidoTool(input=args.input, output=args.output, force=args.force)
+    m = LidoTool(input=args.input, output=args.output, force=args.force, validate=args.validate)
 
