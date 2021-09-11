@@ -41,7 +41,7 @@
 
     <xsl:template mode="resourceWrap" match="/z:application/z:modules/z:module[@name = 'Multimedia']/z:moduleItem">
 		<xsl:variable name="objId" select="z:composite[@name eq 'MulReferencesCre']/z:compositeItem/z:moduleReference[1]/z:moduleReferenceItem/@moduleItemId"/>
-		<xsl:variable name="verwaltendeInstiution" select="/z:application/z:modules/z:module[
+		<xsl:variable name="verwaltendeInstitution" select="/z:application/z:modules/z:module[
 			@name = 'Object']/z:moduleItem[@id eq $objId]/z:moduleReference[
 			@name='ObjOwnerRef']/z:moduleReferenceItem/z:formattedValue"/>
 		<!--xsl:message>resourceSet</xsl:message-->
@@ -156,7 +156,7 @@
                         <xsl:value-of select="z:moduleReference[@name='MulPhotographerPerRef']/z:moduleReferenceItem/z:formattedValue"/>
                         <xsl:text>, </xsl:text>
                     </xsl:if>
-					<xsl:value-of select="$verwaltendeInstiution"/>
+					<xsl:value-of select="$verwaltendeInstitution"/>
                 </lido:creditLine>
             </lido:rightsResource>
         </lido:resourceSet>
