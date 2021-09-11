@@ -20,6 +20,8 @@
     during conversion to lido although we only downloaded smbfreigegebene assets in the 
     first place.
 
+    Changes
+    9/11/21 -f force should overwrite existing data in all steps, not just in zml2lido
    
 """
 from lxml import etree
@@ -31,20 +33,16 @@ import shutil
 import subprocess
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-#import shutil
 xslDir = Path(__file__).parent.parent.joinpath("xsl")
 saxLib = r"C:\m3\SaxonHE10-5J\saxon-he-10.5.jar"
 lidoXSD = r"C:\m3\zml2lido\xsd\lido-v1.0.xsd"
+
 xsl = {
     "zml2lido": xslDir.joinpath("../zml2lido.xsl"),
     "lido2html": xslDir.joinpath("lido2html.xsl"),
     "splitLido": xslDir.joinpath("splitLido.xsl"),
     "splitSachbegriff": xslDir.joinpath("xsl\splitNoSachbegriff.xsl"),
 }
-zml2lidoXSL = xslDir.joinpath("../zml2lido.xsl")
-lido2htmlXSL = xslDir.joinpath("lido2html.xsl")
-splitLidoXSL = xslDir.joinpath("splitLido.xsl")
-splitSachbegriffXSL = xslDir.joinpath("splitNoSachbegriff.xsl")
 
 class LidoTool: 
     def __init__(self, *, input, output, force, validate):
@@ -75,58 +73,6 @@ class LidoTool:
             print (f"*copying {pic} -> {out}")
             shutil.copyfile(pic, out)
 
-    def lido2html (self,*, input):
-        """Only runs if html dir doesn't exist."""
-
-        orig = os.getcwd()
-        os.chdir(self.dir)
-        hdir = Path("html")
-        #if not any(os.scandir(str(hdir))):        
-        if not hdir.exists():
-            print ("LIDO2HTML making")
-            hdir.mkdir()
-            os.chdir(str(hdir)) 
-            self._saxon(input=input, xsl=lido2htmlXSL, output="o.xml")
-        else:
-            print ("LIDO2HTML exists already")
-        os.chdir(orig)
-
-    def splitSachbegriff(self, *, input):
-        """
-            Writes two files to output dir
-            ohneSachbegriff.xml is meant for debug purposes.
-        """
-        orig = os.getcwd()
-        os.chdir(self.dir)
-        out = "mitSachbegriff.zml.xml"
-        if not Path(out).exists():
-            self._saxon(input=input, xsl=splitSachbegriffXSL, output=out)
-        else:
-            print(f"{out} exist already, no overwrite")
-        os.chdir(orig)
-        return self.dir.joinpath(out)
-    
-
-    def pix (self, *, input, output):
-        """
-            input is c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml
-            read from C:\m3\MpApi\sdata\3Wege\pix_*
-            write to C:\m3\zml2lido\sdata\3Wege\*
-            resize so that biggest side is 1848px
-            
-            CAVEAT: it works on all pix from source dir; there are situations where
-            records may have been filtered out, eg. from splitSachbegriff and pix
-            may end up in target that are no longer included
-            
-            TODO: fix
-        """    
-        print ("WORKING ON PIX")
-        in_dir = Path(input).parent
-        #print (f"*input {in_dir}")   
-        for pic_fn in Path(in_dir).rglob(f"**/pix_*/*"):
-            #print (f"{pic_fn}")
-            self._resize(pic=pic_fn)
-
     def _saxon (self, *, input, output, xsl):
         cmd = f"java -Xmx1200m -jar {saxLib} -s:{input} -xsl:{xsl} -o:{output}"
         print (f" cmd {cmd}")
@@ -134,16 +80,6 @@ class LidoTool:
         subprocess.run(
                 cmd, check=True, stderr=subprocess.STDOUT
             )  # overwrites output file without saying anything
-
-    def splitLido (self, *, input):
-        orig = os.getcwd()
-        if not self.dir.joinpath("split").exists():
-            print ("SPLITLIDO making")
-            os.chdir(self.dir)
-            self._saxon(input=input, xsl=splitLidoXSL, output="o.xml")
-            os.chdir(orig)
-        else:
-            print ("SPLITLIDO exists already")
 
     def _resize (self,*, pic):
         out_fn = self.dir.joinpath(pic.name)
@@ -168,6 +104,71 @@ class LidoTool:
         else:
             self._copy(pic=pic,out=out_fn)
 
+    def lido2html (self,*, input):
+        """Only runs if html dir doesn't exist."""
+
+        orig = os.getcwd()
+        os.chdir(self.dir)
+        hdir = Path("html")
+        #if not any(os.scandir(str(hdir))):        
+        if not hdir.exists() or self.force is True:
+            print ("making LIDO2HTML")
+            hdir.mkdir()
+            os.chdir(str(hdir)) 
+            self._saxon(input=input, xsl=xsl["lido2html"], output="o.xml")
+        else:
+            print ("LIDO2HTML exists already")
+        os.chdir(orig)
+
+    def splitSachbegriff(self, *, input):
+        """
+            Writes two files to output dir
+            ohneSachbegriff.xml is meant for debug purposes.
+        """
+        orig = os.getcwd()
+        os.chdir(self.dir)
+        out = "mitSachbegriff.zml.xml"
+        if not Path(out).exists() or self.force is True:
+            self._saxon(input=input, xsl=xsl["splitSachbegriff"], output=out)
+        else:
+            print(f"{out} exist already, no overwrite")
+        os.chdir(orig)
+        return self.dir.joinpath(out)
+    
+    def pix (self, *, input, output):
+        """
+            input is c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml
+            read from C:\m3\MpApi\sdata\3Wege\pix_*
+            write to C:\m3\zml2lido\sdata\3Wege\*
+            resize so that biggest side is 1848px
+            
+            CAVEAT: it works on all pix from source dir; there are situations where
+            records may have been filtered out, eg. from splitSachbegriff and pix
+            may end up in target that are no longer included
+            
+            TODO: fix
+        """    
+        print ("WORKING ON PIX")
+        in_dir = Path(input).parent
+        #print (f"*input {in_dir}")   
+        for pic_fn in Path(in_dir).rglob(f"**/pix_*/*"):
+            #print (f"{pic_fn}")
+            self._resize(pic=pic_fn)
+
+    def splitLido (self, *, input):
+        """
+            Create invidiual files per lido record
+        """
+        orig = os.getcwd()
+        if not self.dir.joinpath("split").exists() or self.force is True:
+            print ("SPLITLIDO making")
+            os.chdir(self.dir)
+            self._saxon(input=input, xsl=xsl["splitLido"], output="o.xml")
+            os.chdir(orig)
+        else:
+            print ("SPLITLIDO exists already")
+            print ("SPLITLIDO exists already")
+
     def validate (self,*, input):
         print ("VALIDATING LIDO")
         print(f" loading schema {lidoXSD}")
@@ -188,7 +189,7 @@ class LidoTool:
  
         if not lido_fn.exists() or self.force is True:
             print ("ZML2LIDO new")
-            self._saxon(input=input, xsl=zml2lidoXSL, output=lido_fn)
+            self._saxon(input=input, xsl=xsl["zml2lido"], output=lido_fn)
         else:
             print ("ZML2LIDO exists already")
 
