@@ -143,6 +143,11 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Passepartoutmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Sehnenlänge'">
 				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
 			</xsl:when>
