@@ -28,27 +28,11 @@
 
 	<xsl:template match="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem">
 		<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
-		<xsl:variable name="ISIL">
-			<xsl:choose>		
-				<xsl:when test="$verwaltendeInstitution eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
-					<xsl:text>DE-MUS-019114</xsl:text>
-				</xsl:when>
-				<xsl:when test="$verwaltendeInstitution eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
-					<xsl:text>DE-MUS-019118</xsl:text>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:message terminate="yes">
-						<xsl:text>FEHLER: Unbekannte ISIL/Institution: </xsl:text>
-						<xsl:value-of select="$verwaltendeInstitution" />
-					</xsl:message>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
 		<lido:lido>
 			<lido:lidoRecID>
 				<xsl:attribute name="lido:source">ISIL (ISO 15511)/Obj.ID</xsl:attribute>
 				<xsl:attribute name="lido:type">local</xsl:attribute>
-					<xsl:value-of select="$ISIL" />
+					<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
 					<xsl:text>/</xsl:text>
 					<xsl:value-of select="@id" />
 			</lido:lidoRecID>
@@ -57,7 +41,7 @@
 				<xsl:text> Included for illustration only, using date lastModified</xsl:text>
 			</xsl:comment>
 			<lido:objectPublishedID lido:source="ISIL (ISO 15511)/Obj.ID/publishing-timeStamp" lido:type="local">
-				<xsl:value-of select="$ISIL" />
+				<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
 				<xsl:text>/</xsl:text>
 				<xsl:value-of select="@id" />
 				<xsl:text>/</xsl:text>
