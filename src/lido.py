@@ -22,7 +22,7 @@
 
     Changes
     9/11/21 -f force should overwrite existing data in all steps, not just in zml2lido
-   
+    9/11/21 implement simple filter that sorts out zml records of type object that have no sachbegriff
 """
 from lxml import etree
 import logging
@@ -113,7 +113,7 @@ class LidoTool:
         #if not any(os.scandir(str(hdir))):        
         if not hdir.exists() or self.force is True:
             print ("making LIDO2HTML")
-            hdir.mkdir()
+            hdir.mkdir(exist_ok=True)
             os.chdir(str(hdir)) 
             self._saxon(input=input, xsl=xsl["lido2html"], output="o.xml")
         else:
