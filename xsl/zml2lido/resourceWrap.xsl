@@ -3,7 +3,8 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:z="http://www.zetcom.com/ria/ws/module"
-    exclude-result-prefixes="z"
+	xmlns:func="http://func"
+    exclude-result-prefixes="z func"
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
@@ -39,6 +40,10 @@
     </xsl:template>
 
     <xsl:template mode="resourceWrap" match="/z:application/z:modules/z:module[@name = 'Multimedia']/z:moduleItem">
+		<xsl:variable name="objId" select="z:composite[@name eq 'MulReferencesCre']/z:compositeItem/z:moduleReference[1]/z:moduleReferenceItem/@moduleItemId"/>
+		<xsl:variable name="verwaltendeInstiution" select="/z:application/z:modules/z:module[
+			@name = 'Object']/z:moduleItem[@id eq $objId]/z:moduleReference[
+			@name='ObjOwnerRef']/z:moduleReferenceItem/z:formattedValue"/>
 		<!--xsl:message>resourceSet</xsl:message-->
         <lido:resourceSet>
 			<!--
@@ -49,7 +54,12 @@
                 <xsl:number/> <!--todo-->
             </xsl:attribute>
             <lido:resourceID>
+				<xsl:attribute name="lido:label">Bild</xsl:attribute>
 				<xsl:attribute name="lido:type">mulId</xsl:attribute>
+				<xsl:attribute name="lido:source">SMB/ObjID/AssetID</xsl:attribute> 
+				<xsl:text>/</xsl:text>
+				<xsl:value-of select="$objId" />
+				<xsl:text>/</xsl:text>
 				<xsl:value-of select="z:systemField[@name='__id']/z:value" />
             </lido:resourceID>
 			
@@ -95,7 +105,6 @@
 							</xsl:attribute>
 							<!-- xsl:text>../../pix2/xsl:text-->
 							<xsl:value-of select="concat($id,'.',regex-group(1))"/>
-							
 						</xsl:matching-substring>
 					</xsl:analyze-string>
                 </lido:linkResource>
@@ -112,9 +121,13 @@
 					no voc at http://terminology.lido-schema.org 20200301
 					TODO
 				-->
-				<lido:term xml:lang="DE">
-					<xsl:value-of select="z:vocabularyReference[@name='MulTypeVoc']/z:vocabularyReferenceItem/@name"/>
-					</lido:term>
+				<xsl:comment>@type='europeana:type'</xsl:comment>
+				<xsl:variable name="resType" select="z:vocabularyReference[@name='MulTypeVoc']/z:vocabularyReferenceItem/@name"/>
+				<lido:term xml:lang="EN">
+					<xsl:value-of select="func:vocmap-replace('MulTypeVgr',$resType, 'europeana:type')"/>
+				</lido:term>
+				
+			
 			</lido:resourceType>
 			<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
 			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
@@ -143,8 +156,7 @@
                         <xsl:value-of select="z:moduleReference[@name='MulPhotographerPerRef']/z:moduleReferenceItem/z:formattedValue"/>
                         <xsl:text>, </xsl:text>
                     </xsl:if>
-					<!-- Das verwaltende Museum steht nicht im Multimedia-Datensatz, bestenfalls die OrgUnit-->
-                    <xsl:text>Staatliche Museen Berlin</xsl:text>
+					<xsl:value-of select="$verwaltendeInstiution"/>
                 </lido:creditLine>
             </lido:rightsResource>
         </lido:resourceSet>

@@ -1,0 +1,47 @@
+<vocmap>
+<!--
+	I want to outsource and bundle pure vocabulary mappings, i.e. from one RIA Vocabulary 
+	to a lido vocabulary. If we're at it, we can do multiple target vocabularies.
+	
+	https://pro.europeana.eu/page/intro#ore:Proxy/edm:type
+	
+-->
+
+	<voc name="MulTypeVgr">
+		<concept>
+			<source lang="DE">3 D- Polygon</source>
+			<target lang="EN" name="lido">3D</target>
+			<target lang="EN" name="europeana:type">3D</target>
+		</concept>	
+		<concept>
+			<source lang="DE">3 D- Volumen</source>
+			<target lang="EN" name="lido">3D</target>
+			<target lang="EN" name="europeana:type">3D</target>
+		</concept>	
+		<concept>
+			<source lang="DE">Scan</source>
+			<target lang="EN" name="lido">image</target>
+			<target lang="EN" name="europeana:type">image</target>
+		</concept>	
+		<concept>
+			<source lang="DE">Dia (SPK)</source>
+			<target lang="EN" name="lido">image</target>
+			<target lang="EN" name="europeana:type">image</target>
+		</concept>	
+		<concept>
+			<source lang="EN">image</source>
+			<target lang="EN" name="europeana:type">image</target>
+			<target lang="EN" name="lido">image</target>
+		</concept>	
+		<concept>
+			<source lang="DE">Digitalisat p</source>
+			<target lang="EN" name="europeana:type">image</target>
+			<target lang="EN" name="lido">image</target>
+		</concept>
+		<concept> 
+			<source lang="DE">Digitalisat s</source>
+			<target lang="EN" name="europeana:type">image</target>
+			<target lang="EN" name="lido">image</target>
+		</concept>
+	</voc>
+</vocmap>

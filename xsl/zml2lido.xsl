@@ -3,9 +3,10 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:lido="http://www.lido-schema.org"
-	exclude-result-prefixes="z" 
 	xmlns:z="http://www.zetcom.com/ria/ws/module"
-	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
+	xmlns:func="http://func"
+	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd"
+	exclude-result-prefixes="z func">
 
 	<xsl:import href="zml2lido/objectWorkTypeWrap.xsl" />
 	<xsl:import href="zml2lido/classificationWrap.xsl" />
@@ -26,11 +27,42 @@
 	</xsl:template>
 
 	<xsl:template match="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem">
+		<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
+		<xsl:variable name="ISIL">
+			<xsl:choose>		
+				<xsl:when test="$verwaltendeInstitution eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
+					<xsl:text>DE-MUS-019114</xsl:text>
+				</xsl:when>
+				<xsl:when test="$verwaltendeInstitution eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
+					<xsl:text>DE-MUS-019118</xsl:text>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:message terminate="yes">
+						<xsl:text>FEHLER: Unbekannte ISIL/Institution: </xsl:text>
+						<xsl:value-of select="$verwaltendeInstitution" />
+					</xsl:message>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 		<lido:lido>
 			<lido:lidoRecID>
-				<xsl:attribute name="lido:type">objId</xsl:attribute>
-				<xsl:value-of select="@id" />
+				<xsl:attribute name="lido:source">ISIL (ISO 15511)/Obj.ID</xsl:attribute>
+				<xsl:attribute name="lido:type">local</xsl:attribute>
+					<xsl:value-of select="$ISIL" />
+					<xsl:text>/</xsl:text>
+					<xsl:value-of select="@id" />
 			</lido:lidoRecID>
+			<xsl:comment>
+				<xsl:text> Should be publishing date, but record is not published yet, so please overwrite upstream. </xsl:text>
+				<xsl:text> Included for illustration only, using date lastModified</xsl:text>
+			</xsl:comment>
+			<lido:objectPublishedID lido:source="ISIL (ISO 15511)/Obj.ID/publishing-timeStamp" lido:type="local">
+				<xsl:value-of select="$ISIL" />
+				<xsl:text>/</xsl:text>
+				<xsl:value-of select="@id" />
+				<xsl:text>/</xsl:text>
+				<xsl:value-of select="z:systemField[@name='__lastModified']/z:value" />
+			</lido:objectPublishedID>
 			<xsl:call-template name="category" />
 
 			<lido:descriptiveMetadata xml:lang="de">
@@ -82,5 +114,33 @@
 	
 	<!-- remove garbage from unmapped fields -->
 	<xsl:template match="z:dataField|z:moduleReference|z:systemField|z:VocabularyReference"/>
+
+	<xsl:function name="func:vocmap-replace">
+		<xsl:param name="src-voc"/>
+		<xsl:param name="src-term"/>
+		<xsl:param name="target"/>
+		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
+		<xsl:value-of select="$dict/vocmap/voc[@name eq $src-voc]/concept[source eq $src-term]/target[@name = $target]"/>
+	</xsl:function>
+
+	<xsl:function name="func:getISIL">
+		<xsl:param name="verwaltendeInstitution"/>
+		<xsl:choose>
+			<xsl:when test="$verwaltendeInstitution eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
+				<xsl:text>DE-MUS-019014</xsl:text>
+			</xsl:when>
+			<xsl:when test="$verwaltendeInstitution eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
+				<xsl:text>DE-MUS-019118</xsl:text>
+			</xsl:when>
+			<!-- kann keine ISIL für ISL finden 
+			<xsl:when test="$verwaltendeInstitution eq 'Museum für Islamische Kunst, Staatliche Museen zu Berlin'"/-->
+			<xsl:otherwise>
+				<xsl:message terminate="yes">
+					<xsl:text>FEHLER: UNBEKANNTE INSTITUTION FÜR ISIL (FUNKTION): </xsl:text>
+					<xsl:value-of select="$verwaltendeInstitution"/>
+				</xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:function>
 
 </xsl:stylesheet>

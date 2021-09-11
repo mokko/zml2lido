@@ -3,7 +3,8 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:z="http://www.zetcom.com/ria/ws/module"
-    exclude-result-prefixes="z"
+	xmlns:func="http://func"
+    exclude-result-prefixes="z func"
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
@@ -11,28 +12,11 @@
 
 	<xsl:template name="recordWrap">
 		<lido:recordWrap>
-			<xsl:variable name="vi" select="z:moduleReference[@name='ObjOwnerRef']"/>
+			<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
 			<lido:recordID lido:type="local" lido:source="SMB/Obj.ID">
-				<xsl:choose>
-					<xsl:when test="$vi eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
-						<xsl:text>DE-MUS-019118/</xsl:text>
-						<xsl:value-of select="../z:moduleItem/@id"/>
-					</xsl:when>
-					<!-- verwaltendeInstiution AKu untested -->
-					<xsl:when test="$vi eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
-						<xsl:text>DE-MUS-019014/</xsl:text>
-						<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
-					</xsl:when>
-					<!-- kann keine ISIL für ISL finden -->
-					<xsl:when test="$vi eq 'Museum für Islamische Kunst, Staatliche Museen zu Berlin'"/>
-					<xsl:otherwise>
-						<xsl:message terminate="yes">
-							<xsl:value-of select="$vi"/>
-							<xsl:text>Error: Unknown institution in recordWrap: </xsl:text>
-						</xsl:message>
-					</xsl:otherwise>
-				</xsl:choose>
-				<xsl:value-of select="@objId" />
+				<xsl:value-of select="func:getISIL($verwaltendeInstitution)"/>
+				<xsl:text>/</xsl:text>
+				<xsl:value-of select="@id"/>
 			</lido:recordID>
 			<lido:recordType>
 				<!-- 
@@ -44,27 +28,12 @@
 				<lido:term>Einzelobjekt</lido:term>
 			</lido:recordType>
 			<lido:recordSource lido:type="Institution">
-				<xsl:choose>
-					<xsl:when test="$vi eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
-						<lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">DE-MUS-019118</lido:legalBodyID>
-					</xsl:when>
-					<!-- verwaltendeInstiution AKu untested -->
-					<xsl:when test="$vi eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
-						<lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">DE-MUS-019014</lido:legalBodyID>
-					</xsl:when>
-					<xsl:when test="$vi eq 'Museum für Islamische Kunst, Staatliche Museen zu Berlin'">
-						<!-- kann keine ISIL für ISL finden https://isil.museum/index.php?t=suche-->
-					</xsl:when>
-					<xsl:otherwise>
-						<xsl:message terminate="yes">
-							<xsl:value-of select="$vi"/>
-							<xsl:text>Error: Unknown institution in recordWrap (101)</xsl:text>
-						</xsl:message>
-					</xsl:otherwise>
-				</xsl:choose>
+				<lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">
+					<xsl:value-of select="func:getISIL($verwaltendeInstitution)"/>
+				</lido:legalBodyID>
 				<lido:legalBodyName>
 					<lido:appellationValue>
-						<xsl:value-of select="verwaltendeInstitution" />
+						<xsl:value-of select="$verwaltendeInstitution" />
 					</lido:appellationValue>
 				</lido:legalBodyName>
 				<lido:legalBodyWeblink>https://www.smb.museum</lido:legalBodyWeblink>
@@ -88,10 +57,8 @@
                     </xsl:attribute>
                 </xsl:if>
 				<lido:recordInfoLink lido:formatResource="html">
-					<xsl:text>http://smb-digital.de/eMuseumPlus?service=ExternalInterface</xsl:text>
-					<xsl:text>&amp;module=collection&amp;objectId=</xsl:text>
-					<xsl:value-of select="@objId"/>
-					<xsl:text>&amp;viewType=detailView</xsl:text>
+					<xsl:text>https://recherche.smb.museum/detail/</xsl:text>
+					<xsl:value-of select="@id"/>
 				</lido:recordInfoLink>
 			</lido:recordInfoSet>
 		</lido:recordWrap>
