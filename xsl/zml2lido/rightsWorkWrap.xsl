@@ -41,39 +41,10 @@
 
     <xsl:template name="defaultRightsHolder">
         <lido:rightsHolder>
-			<xsl:variable name="vi" select="z:moduleReference[@name = 'ObjOwnerRef']"/>
-			<xsl:choose>
-                <xsl:when test="$vi = 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
-                    <lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">DE-MUS-019118</lido:legalBodyID>
-                    <lido:legalBodyName>
-                        <lido:appellationValue>Ethnologisches Museum, Staatliche Museen zu Berlin</lido:appellationValue>
-                    </lido:legalBodyName>
-                    <lido:legalBodyWeblink>http://www.smb.museum/em</lido:legalBodyWeblink>
-                </xsl:when>
-                <xsl:when test="$vi = 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
-                    <lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">DE-MUS-019014</lido:legalBodyID>
-                    <lido:legalBodyName>
-                        <lido:appellationValue>Museum für Asiatische Kunst, Staatliche Museen zu Berlin</lido:appellationValue>
-                    </lido:legalBodyName>
-                    <lido:legalBodyWeblink>http://www.smb.museum/aku</lido:legalBodyWeblink>
-                </xsl:when>
-	            <xsl:when test="$vi =  'Museum für Islamische Kunst, Staatliche Museen zu Berlin'">
-					<!-- kann keine ISIL für das ISL finden -->
-                    <lido:legalBodyName>
-                        <lido:appellationValue>Museum für Islamische Kunst, Staatliche Museen zu Berlin</lido:appellationValue>
-                    </lido:legalBodyName>
-                    <lido:legalBodyWeblink>http://www.smb.museum/isl</lido:legalBodyWeblink>
-	            </xsl:when>
-                <xsl:when test="not(string($vi))">
-                	<xsl:message>do nothing and for once that's ok</xsl:message>
-                </xsl:when>
-				<xsl:otherwise>
-                    <xsl:message terminate="yes">
-						<xsl:value-of select="$vi"/>
-						<xsl:text>Error: Unknown institution in defaultRightsHolder</xsl:text>
-					</xsl:message>
-				</xsl:otherwise>
-			</xsl:choose>
+			<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name = 'ObjOwnerRef']"/>
+			<xsl:call-template name="legalBody">
+				<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
+			</xsl:call-template>
         </lido:rightsHolder>
 	</xsl:template>
 </xsl:stylesheet>

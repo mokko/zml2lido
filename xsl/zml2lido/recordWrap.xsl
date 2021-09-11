@@ -28,15 +28,9 @@
 				<lido:term>Einzelobjekt</lido:term>
 			</lido:recordType>
 			<lido:recordSource lido:type="Institution">
-				<lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">
-					<xsl:value-of select="func:getISIL($verwaltendeInstitution)"/>
-				</lido:legalBodyID>
-				<lido:legalBodyName>
-					<lido:appellationValue>
-						<xsl:value-of select="$verwaltendeInstitution" />
-					</lido:appellationValue>
-				</lido:legalBodyName>
-				<lido:legalBodyWeblink>https://www.smb.museum</lido:legalBodyWeblink>
+				<xsl:call-template name="legalBody">
+					<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
+				</xsl:call-template>
 			</lido:recordSource>
 			<lido:recordRights>
 				<lido:rightsType>

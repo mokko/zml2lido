@@ -1,11 +1,21 @@
-<vocmap>
 <!--
 	I want to outsource and bundle pure vocabulary mappings, i.e. from one RIA Vocabulary 
 	to a lido vocabulary. If we're at it, we can do multiple target vocabularies.
 	
 	https://pro.europeana.eu/page/intro#ore:Proxy/edm:type
-	
 -->
+
+<vocmap>
+	<voc name="formatResource">
+		<concept>
+			<source lang="DE">jpg</source>
+			<target lang="EN" name="mimetype">image/jpeg</target>
+		</concept>
+		<concept>
+			<source lang="DE">jpeg</source>
+			<target lang="EN" name="mimetype">image/jpeg</target>
+		</concept>
+	</voc>
 
 	<voc name="MulTypeVgr">
 		<concept>

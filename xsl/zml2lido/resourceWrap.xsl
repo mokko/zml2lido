@@ -101,7 +101,7 @@
 					<xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex=".(\w*)$">
 						<xsl:matching-substring>
 							<xsl:attribute name="lido:formatResource">
-								<xsl:value-of select="lower-case(regex-group(1))"/>
+								<xsl:value-of select="func:vocmap-replace('formatResource', lower-case(regex-group(1)), 'mimetype')"/>
 							</xsl:attribute>
 							<!-- xsl:text>../../pix2/xsl:text-->
 							<xsl:value-of select="concat($id,'.',regex-group(1))"/>
@@ -141,7 +141,7 @@
                 <lido:rightsHolder>
                     <lido:legalBodyName>
                         <lido:appellationValue>
-                            <xsl:text>Staatliche Museen zu Berlin, Preußischer Kulturbesitz</xsl:text>
+							<xsl:value-of select="$verwaltendeInstitution"/>
                         </lido:appellationValue>
                     </lido:legalBodyName>
                 </lido:rightsHolder>
