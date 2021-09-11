@@ -38,10 +38,10 @@ saxLib = r"C:\m3\SaxonHE10-5J\saxon-he-10.5.jar"
 lidoXSD = r"C:\m3\zml2lido\xsd\lido-v1.0.xsd"
 
 xsl = {
-    "zml2lido": xslDir.joinpath("../zml2lido.xsl"),
+    "zml2lido": xslDir.joinpath("zml2lido.xsl"),
     "lido2html": xslDir.joinpath("lido2html.xsl"),
     "splitLido": xslDir.joinpath("splitLido.xsl"),
-    "splitSachbegriff": xslDir.joinpath("xsl\splitNoSachbegriff.xsl"),
+    "splitSachbegriff": xslDir.joinpath("splitNoSachbegriff.xsl"),
 }
 
 class LidoTool: 
