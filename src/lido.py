@@ -32,11 +32,19 @@ import subprocess
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 #import shutil
+xslDir = Path(__file__).parent.parent.joinpath("xsl")
 saxLib = r"C:\m3\SaxonHE10-5J\saxon-he-10.5.jar"
 lidoXSD = r"C:\m3\zml2lido\xsd\lido-v1.0.xsd"
-zml2lidoXSL = r"C:\m3\zml2lido\zml2lido.xsl"
-lido2htmlXSL = r"C:\m3\zml2lido\xsl\lido2html.xsl"
-splitLidoXSL = r"C:\m3\zml2lido\xsl\splitLido.xsl"
+xsl = {
+    "zml2lido": xslDir.joinpath("../zml2lido.xsl"),
+    "lido2html": xslDir.joinpath("lido2html.xsl"),
+    "splitLido": xslDir.joinpath("splitLido.xsl"),
+    "splitSachbegriff": xslDir.joinpath("xsl\splitNoSachbegriff.xsl"),
+}
+zml2lidoXSL = xslDir.joinpath("../zml2lido.xsl")
+lido2htmlXSL = xslDir.joinpath("lido2html.xsl")
+splitLidoXSL = xslDir.joinpath("splitLido.xsl")
+splitSachbegriffXSL = xslDir.joinpath("splitNoSachbegriff.xsl")
 
 class LidoTool: 
     def __init__(self, *, input, output, force, validate):
@@ -54,7 +62,8 @@ class LidoTool:
             print (f"Making new dir {dir}")
             self.dir.mkdir()
 
-        lido_fn = self.zml2lido(input=input, output=output)
+        ohneSachbegriffZML = self.splitSachbegriff(input=input)
+        lido_fn = self.zml2lido(input=ohneSachbegriffZML, output=output)
         if validate:
             self.validate(input=lido_fn)
         self.splitLido(input=lido_fn)
@@ -82,12 +91,34 @@ class LidoTool:
             print ("LIDO2HTML exists already")
         os.chdir(orig)
 
+    def splitSachbegriff(self, *, input):
+        """
+            Writes two files to output dir
+            ohneSachbegriff.xml is meant for debug purposes.
+        """
+        orig = os.getcwd()
+        os.chdir(self.dir)
+        out = "mitSachbegriff.zml.xml"
+        if not Path(out).exists():
+            self._saxon(input=input, xsl=splitSachbegriffXSL, output=out)
+        else:
+            print(f"{out} exist already, no overwrite")
+        os.chdir(orig)
+        return self.dir.joinpath(out)
+    
+
     def pix (self, *, input, output):
         """
             input is c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml
             read from C:\m3\MpApi\sdata\3Wege\pix_*
             write to C:\m3\zml2lido\sdata\3Wege\*
             resize so that biggest side is 1848px
+            
+            CAVEAT: it works on all pix from source dir; there are situations where
+            records may have been filtered out, eg. from splitSachbegriff and pix
+            may end up in target that are no longer included
+            
+            TODO: fix
         """    
         print ("WORKING ON PIX")
         in_dir = Path(input).parent
