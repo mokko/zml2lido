@@ -127,7 +127,7 @@ class LidoTool:
         """
         orig = os.getcwd()
         os.chdir(self.dir)
-        out = "mitSachbegriff.zml.xml"
+        out = "mitSachbegriff.xml"
         if not Path(out).exists() or self.force is True:
             self._saxon(input=input, xsl=xsl["splitSachbegriff"], output=out)
         else:

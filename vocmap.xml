@@ -15,6 +15,10 @@
 			<source lang="DE">jpeg</source>
 			<target lang="EN" name="mimetype">image/jpeg</target>
 		</concept>
+		<concept>
+			<source lang="DE">pdf</source>
+			<target lang="EN" name="mimetype">application/pdf</target>
+		</concept>
 	</voc>
 
 	<voc name="MulTypeVgr">

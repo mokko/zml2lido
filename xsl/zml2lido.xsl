@@ -104,7 +104,19 @@
 		<xsl:param name="src-term"/>
 		<xsl:param name="target"/>
 		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
-		<xsl:value-of select="$dict/vocmap/voc[@name eq $src-voc]/concept[source eq $src-term]/target[@name = $target]"/>
+		<xsl:variable name="return" select="$dict/vocmap/voc[@name eq $src-voc]/concept[source eq $src-term]/target[@name = $target]"/>
+
+		<!-- die if replacement returns empty, except if source is already empty -->
+		<xsl:if test="not($return) and $src-term">
+			<xsl:message terminate="yes">
+				ERROR: vocmap-replace returns EMPTY ON <xsl:value-of select="$src-term"/> FROM <xsl:value-of select="$src-voc"/> 
+			</xsl:message>
+		</xsl:if>
+		<!--xsl:message terminate="no">
+			VOCMAP-REPLACE <xsl:value-of select="$src-term"/>
+			<xsl:text> </xsl:text>
+		</xsl:message-->
+		<xsl:value-of select="$return"/>
 	</xsl:function>
 
 	<xsl:function name="func:getISIL">

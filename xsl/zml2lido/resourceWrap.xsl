@@ -34,9 +34,11 @@
 				<xsl:value-of select="z:systemField[@name='__id']"/>
 			</xsl:for-each>
 		</xsl:message-->
-            <lido:resourceWrap>
-                <xsl:apply-templates mode="resourceWrap" select="$verknüpfteMM" />
-            </lido:resourceWrap>
+			<xsl:if test="$verknüpfteMM">
+				<lido:resourceWrap>
+					<xsl:apply-templates mode="resourceWrap" select="$verknüpfteMM" />
+				</lido:resourceWrap>
+			</xsl:if>
     </xsl:template>
 
     <xsl:template mode="resourceWrap" match="/z:application/z:modules/z:module[@name = 'Multimedia']/z:moduleItem">
@@ -51,12 +53,14 @@
 				wo steht die Info, was ein Standardbild ist
 			-->
             <xsl:attribute name="lido:sortorder">
-                <xsl:number/> <!--todo-->
+				<xsl:value-of select="z:composite[@name='MulReferencesCre']/z:compositeItem/z:moduleReference/z:moduleReferenceItem/z:dataField[
+					@name='SortLnu']/z:value" />
             </xsl:attribute>
             <lido:resourceID>
 				<xsl:attribute name="lido:label">Bild</xsl:attribute>
 				<xsl:attribute name="lido:type">mulId</xsl:attribute>
 				<xsl:attribute name="lido:source">SMB/ObjID/AssetID</xsl:attribute> 
+				<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
 				<xsl:text>/</xsl:text>
 				<xsl:value-of select="$objId" />
 				<xsl:text>/</xsl:text>
@@ -121,13 +125,26 @@
 					no voc at http://terminology.lido-schema.org 20200301
 					TODO
 				-->
-				<xsl:comment>@type='europeana:type'</xsl:comment>
+				<xsl:comment>type="europeana:type"</xsl:comment>
 				<xsl:variable name="resType" select="z:vocabularyReference[@name='MulTypeVoc']/z:vocabularyReferenceItem/@name"/>
+				<xsl:variable name="euType" select="func:vocmap-replace('MulTypeVgr',$resType, 'europeana:type')"/>
+
+				<!-- 
+					<xsl:message>
+						resType: <xsl:value-of select="$resType"/> :: <xsl:value-of select="$euType"/>
+					</xsl:message>
+					default to image, so make sure we ALWAYS have a europeana:type
+				-->
 				<lido:term xml:lang="EN">
-					<xsl:value-of select="func:vocmap-replace('MulTypeVgr',$resType, 'europeana:type')"/>
+					<xsl:choose>
+						<xsl:when test="$euType ne ''">
+								<xsl:value-of select="$euType"/>
+						</xsl:when>
+						<xsl:otherwise>
+								<xsl:text>image</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
 				</lido:term>
-				
-			
 			</lido:resourceType>
 			<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
 			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
