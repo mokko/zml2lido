@@ -122,44 +122,12 @@
 	<!-- Man kann die ISIL in MuseumPlus unter der PK-DS der verwaltenden Institution im Register Normdaten nachgucken-->
 	<xsl:function name="func:getISIL">
 		<xsl:param name="verwaltendeInstitution"/>
-		<xsl:choose>
-			<xsl:when test="$verwaltendeInstitution eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
-				<xsl:text>DE-MUS-019014</xsl:text>
-			</xsl:when>
-			<xsl:when test="$verwaltendeInstitution eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
-				<xsl:text>DE-MUS-019118</xsl:text>
-			</xsl:when>
-			<xsl:when test="$verwaltendeInstitution eq 'Museum für Islamische Kunst, Staatliche Museen zu Berlin'">
-				<xsl:text>DE-MUS-814517</xsl:text>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:message terminate="yes">
-					<xsl:text>FEHLER: UNBEKANNTE INSTITUTION FÜR ISIL (FUNKTION): </xsl:text>
-					<xsl:value-of select="$verwaltendeInstitution"/>
-				</xsl:message>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:value-of select="func:vocmap-replace('verwaltendeInstitution', $verwaltendeInstitution, 'ISIL')" />
 	</xsl:function>
 
 	<xsl:function name="func:weblink">
 		<xsl:param name="verwaltendeInstitution"/>
-		<xsl:choose>
-			<xsl:when test="$verwaltendeInstitution eq 'Museum für Asiatische Kunst, Staatliche Museen zu Berlin'">
-				<xsl:text>https://www.smb.museum/aku</xsl:text>
-			</xsl:when>
-			<xsl:when test="$verwaltendeInstitution eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
-				<xsl:text>https://www.smb.museum/em</xsl:text>
-			</xsl:when>
-			<xsl:when test="$verwaltendeInstitution eq 'Museum für Islamische Kunst, Staatliche Museen zu Berlin'">
-				<xsl:text>https://www.smb.museum/isl</xsl:text>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:message terminate="yes">
-					<xsl:text>FEHLER: UNBEKANNTER WEBLINK</xsl:text>
-					<xsl:value-of select="$verwaltendeInstitution"/>
-				</xsl:message>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:value-of select="func:vocmap-replace('verwaltendeInstitution', $verwaltendeInstitution, 'homepage')" />
 	</xsl:function>
 
 	<xsl:template name="legalBody">
