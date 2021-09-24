@@ -10,6 +10,7 @@
 
 from lxml import etree
 import urllib.request
+from urllib import request as urlrequest
 from pathlib import Path
 
 NSMAP = {"l": "http://www.lido-schema.org"}
@@ -18,27 +19,32 @@ sizes = ["_2500x2500", "_1000x600"]  # from big to small
 
 class LinkChecker:
     def __init__(self, *, input):
-        print(args.input)
-        p = Path(args.input)
+        print(f"LinkChecker is working on {input}")
+        p = Path(input)
         ext = p.suffix
         stem = p.stem
-        out_fn = str(p.with_name(stem + "-Links")) + ext
-        tree = etree.parse(args.input)
-        linkResource = tree.xpath(
+        self.out_fn = str(p.with_name(stem + "-links")) + ext
+        print (f"   writing to {self.out_fn}")
+        self.tree = etree.parse(str(input))
+
+    def guess (self):
+        linkResource = self.tree.xpath(
             "//l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
-            namespaces=NSMAP,
-        )
+            namespaces=NSMAP)
+
         for link in linkResource:
             if not link.text.startswith("http"):
-                nl = self.guess(link=link.text)
+                nl = self._guess(link=link.text)
                 if nl is not None:
                     print(nl)
                     link.text = nl
-        print(f"Writing back to {out_fn}")
-        tree.write(out_fn, pretty_print=True)
-        return out_fn
+                else:
+                    print ("   not found")
+        print(f"Writing back to {self.out_fn}")
+        self.tree.write(self.out_fn, pretty_print=True)
+        return self.out_fn
 
-    def guess(self, *, link):
+    def _guess(self, *, link):
         """
         https://recherche.smb.museum/images/4305271_1000x600.jpg
         """
@@ -47,13 +53,17 @@ class LinkChecker:
         mulId = p.stem
         for size in sizes:
             new_link = f"https://recherche.smb.museum/images/{mulId}{size}{suffix}"
+            print (f"   checking {new_link}")
+            req = urlrequest.Request(new_link)
+            req.set_proxy("http-proxy-1.sbb.spk-berlin.de:3128", "http")
             try:
+                #urlrequest.urlopen(req)
                 urllib.request.urlopen(new_link)
             except:
                 pass
             # print (f"   NOT FOUND {new_link}")
             else:
-                # print (f"   HIT {new_link}")
+                print (f"   HIT {new_link}")
                 return new_link
 
 

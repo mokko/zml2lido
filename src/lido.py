@@ -25,13 +25,19 @@
     9/11/21 implement simple filter that sorts out zml records of type object that have no sachbegriff
 """
 from lxml import etree
-import logging
 from pathlib import Path
-import os
 from PIL import Image, ImageFile
+import logging
+import os
 import shutil
 import subprocess
+import sys
 ImageFile.LOAD_TRUNCATED_IMAGES = True
+srcDir = Path(__file__).parent
+#print (srcDir)
+sys.path.append("C:\m3\zml2lido\src")
+
+from LinkChecker import LinkChecker
 
 xslDir = Path(__file__).parent.parent.joinpath("xsl")
 saxLib = r"C:\m3\SaxonHE10-5J\saxon-he-10.5.jar"
@@ -62,11 +68,13 @@ class LidoTool:
 
         ohneSachbegriffZML = self.splitSachbegriff(input=input)
         lido_fn = self.zml2lido(input=ohneSachbegriffZML, output=output)
+        lc = LinkChecker(input=lido_fn)
+        linklido_fn = lc.guess()
         if validate:
-            self.validate(input=lido_fn)
-        self.splitLido(input=lido_fn)
+            self.validate(input=linklido_fn)
+        self.splitLido(input=linklido_fn)
         self.pix(input=input, output=output) # transforms attachments
-        self.lido2html(input=lido_fn)
+        self.lido2html(input=linklido_fn)
     
     def _copy (self, *, pic, out):
         if not Path(out).exists:
