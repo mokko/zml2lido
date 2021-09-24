@@ -107,12 +107,12 @@
 							<xsl:attribute name="lido:formatResource">
 								<xsl:value-of select="func:vocmap-replace('formatResource', lower-case(regex-group(1)), 'mimetype')"/>
 							</xsl:attribute>
+							<!-- https://recherche.smb.museum/images/525075_2500x2500.jpg
+							<xsl:value-of select="concat('https://recherche.smb.museum/images/',$id,'_2500x2500.jpg')"/>
+							-->
+							<xsl:value-of select="concat($id,'.',regex-group(1))"/>
 						</xsl:matching-substring>
 					</xsl:analyze-string>
-					<!-- xsl:text>../../pix2/xsl:text
-					<xsl:value-of select="concat($id,'.',regex-group(1))"/>
-					https://recherche.smb.museum/images/525075_2500x2500.jpg-->
-					<xsl:value-of select="concat('https://recherche.smb.museum/images/',$id,'_2500x2500.jpg')"/>
                 </lido:linkResource>
                     <!-- lido:resourceMeasurementsSet>
                         <lido:measurementType>width</lido:measurementType>

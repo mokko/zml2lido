@@ -37,15 +37,22 @@
 					<xsl:value-of select="@id" />
 			</lido:lidoRecID>
 			<xsl:comment>
-				<xsl:text> Should be publishing date, but record is not published yet, so please overwrite upstream. </xsl:text>
-				<xsl:text> Included for illustration only, using date lastModified</xsl:text>
+				<xsl:text>New publishing timestamp. Filled in only for records that published since 2021-12-14.</xsl:text>
 			</xsl:comment>
+			<xsl:variable name="pubdate" select="z:repeatableGroup[
+				@name='ObjPublicationGrp']/z:repeatableGroupItem/z:dataField[@name='ModifiedDateDat']/z:value[
+				../../z:vocabularyReference[@name='PublicationVoc']/z:vocabularyReferenceItem[@name='Ja'] 
+				and ../../z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem[@name='Daten freigegeben für SMB-digital']]"
+			/>
 			<lido:objectPublishedID lido:source="ISIL (ISO 15511)/Obj.ID/publishing-timeStamp" lido:type="local">
 				<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
 				<xsl:text>/</xsl:text>
 				<xsl:value-of select="@id" />
-				<xsl:text>/</xsl:text>
-				<xsl:value-of select="z:systemField[@name='__lastModified']/z:value" />
+				<xsl:if test="$pubdate">
+					<xsl:text>/</xsl:text>
+					<xsl:value-of select="$pubdate" />
+				</xsl:if>
+				<!-- old date: z:systemField[@name='__lastModified']/z:value--> 
 			</lido:objectPublishedID>
 			<xsl:call-template name="category" />
 
