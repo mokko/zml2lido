@@ -52,7 +52,8 @@ class LinkChecker:
         p = Path(link)
         mulId = p.stem
         suffixes = [p.suffix]
-        if p.suffix = ".pdf":
+        if p.suffix == ".pdf":
+            self.log (f"   Dont even check for pdf {p}")
             return # dont even check pdfs b/c we know that they dont work
         if p.suffix.lower() != p.suffix:
             suffixes.append(p.suffix.lower())
