@@ -88,13 +88,13 @@
 							</xsl:message-->
 							<xsl:choose>
 								<xsl:when test="lower-case(regex-group(1)) eq 'jpg'">
-									<xsl:text>Preview Representation</xsl:text>
+									<xsl:text>Preview image</xsl:text>
 								</xsl:when>
 								<xsl:when test="lower-case(regex-group(1)) eq 'tif' or lower-case(regex-group(1)) eq 'tiff' ">
-									<xsl:text>Provided Representation</xsl:text>
+									<xsl:text>Provided image</xsl:text>
 								</xsl:when>
 								<xsl:otherwise>
-									<xsl:text>Preview Representation</xsl:text>
+									<xsl:text>Preview image</xsl:text>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:matching-substring>

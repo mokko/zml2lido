@@ -37,23 +37,33 @@
 					<xsl:value-of select="@id" />
 			</lido:lidoRecID>
 			<xsl:comment>
-				<xsl:text>New publishing timestamp. Filled in only for records that published since 2021-12-14.</xsl:text>
+				<xsl:text>objectPublishedID exists only if record is published at SMB-Digital.</xsl:text>
+				<xsl:text>New publishing timestamp. Filled in only for records that are published since 2021-12-14.</xsl:text>
 			</xsl:comment>
-			<xsl:variable name="pubdate" select="z:repeatableGroup[
-				@name='ObjPublicationGrp']/z:repeatableGroupItem/z:dataField[@name='ModifiedDateDat']/z:value[
-				../../z:vocabularyReference[@name='PublicationVoc']/z:vocabularyReferenceItem[@name='Ja'] 
-				and ../../z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem[@name='Daten freigegeben für SMB-digital']]"
-			/>
-			<lido:objectPublishedID lido:source="ISIL (ISO 15511)/Obj.ID/publishing-timeStamp" lido:type="local">
-				<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
-				<xsl:text>/</xsl:text>
-				<xsl:value-of select="@id" />
-				<xsl:if test="$pubdate">
-					<xsl:text>/</xsl:text>
-					<xsl:value-of select="$pubdate" />
-				</xsl:if>
-				<!-- old date: z:systemField[@name='__lastModified']/z:value--> 
-			</lido:objectPublishedID>
+			<!--write objectPublishedID ONLY if -->
+			<xsl:choose>
+				<xsl:when test="z:repeatableGroup[@name='ObjPublicationGrp']/z:repeatableGroupItem[
+					z:vocabularyReference[@name='PublicationVoc']/z:vocabularyReferenceItem/@name = 'Ja' 
+					and z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem/@name = 'Daten freigegeben für SMB-digital']">
+					<xsl:variable name="pubdate" select="z:repeatableGroup[@name='ObjPublicationGrp']/z:repeatableGroupItem/z:dataField[@name='ModifiedDateDat']/z:value"/>
+					<lido:objectPublishedID lido:source="ISIL (ISO 15511)/Obj.ID/publishing-timeStamp" lido:type="local">
+						<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
+						<xsl:text>/</xsl:text>
+						<xsl:value-of select="@id" />
+						<xsl:if test="$pubdate">
+							<xsl:text>/</xsl:text>
+							<xsl:value-of select="$pubdate" />
+						</xsl:if>
+						<!-- old date: z:systemField[@name='__lastModified']/z:value--> 
+					</lido:objectPublishedID>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:message>
+						<xsl:text>not published at SMB-digital: </xsl:text>
+						<xsl:value-of select="@id" />
+					</xsl:message>
+				</xsl:otherwise>
+			</xsl:choose>
 			<xsl:call-template name="category" />
 
 			<lido:descriptiveMetadata xml:lang="de">

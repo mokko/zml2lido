@@ -22,7 +22,8 @@
 
     Changes
     9/11/21 -f force should overwrite existing data in all steps, not just in zml2lido
-    9/11/21 implement simple filter that sorts out zml records of type object that have no sachbegriff
+    9/11/21 implement simple filter that filters out zml records of type object that have no sachbegriff
+    9/25/21 introduce different chains: local and for SMB-Digital
 """
 from lxml import etree
 from pathlib import Path
@@ -51,66 +52,49 @@ xsl = {
 }
 
 class LidoTool: 
-    def __init__(self, *, input, output, force, validate):
-        logfile = Path(output).joinpath("pix.log")
+    def __init__(self, *, input, output, force, validation):
+        logfile = Path(output).joinpath("lidoTool.log")
         logging.basicConfig(
             filename=logfile, filemode="w", encoding="utf-8", level=logging.INFO
         )
+        self.validation = validation
         self.force = force
-
-        print (f" input {input}")
-        Input = Path(input)
-        self.dir = Path(".").resolve().joinpath(output,Input.parent.name)
-        print (f" output dir {self.dir}")
+        self.input = Path(input)
+        self.output = output
+        self.dir = Path(".").resolve().joinpath(output,self.input.parent.name)
         if not self.dir.exists():
             print (f"Making new dir {dir}")
             self.dir.mkdir()
+        print (f" output dir {self.dir}")
 
-        ohneSachbegriffZML = self.splitSachbegriff(input=input)
-        lido_fn = self.zml2lido(input=ohneSachbegriffZML, output=output)
-        lc = LinkChecker(input=lido_fn)
-        linklido_fn = lc.guess()
-        if validate:
+#
+# Jobs
+#
+
+    def localLido (self): 
+        ohneSachbegriffZML = self.splitSachbegriff(input=self.input) # drop records without Sachbegriff
+        lido_fn = self.zml2lido(input=ohneSachbegriffZML, output=self.output)
+        if self.validation:
+            self.validate(input=lido_fn)
+        self.splitLido(input=lido_fn)        # individual records as files
+        self.pix(input=self.input, output=self.output) # transforms attachments
+        self.lido2html(input=lido_fn)        # to make it easier to read lido
+
+    def smbLido (self):
+        """
+            Make Lido that relies on records being published on SMB-Digital, using their image links.
+        """
+        ohneSachbegriffZML = self.splitSachbegriff(input=self.input) # drop records without Sachbegriff
+        lido_fn = self.zml2lido(input=ohneSachbegriffZML, output=self.output)
+        linklido_fn = self.rewriteLido(input=lido_fn) # fix links and rm unpublished parts
+        if self.validation:
             self.validate(input=linklido_fn)
-        self.splitLido(input=linklido_fn)
-        self.pix(input=input, output=output) # transforms attachments
-        self.lido2html(input=linklido_fn)
-    
-    def _copy (self, *, pic, out):
-        if not Path(out).exists:
-            print (f"*copying {pic} -> {out}")
-            shutil.copyfile(pic, out)
+        self.splitLido(input=linklido_fn)        # individual records as files
+        self.lido2html(input=linklido_fn)        # to make it easier to read lido
 
-    def _saxon (self, *, input, output, xsl):
-        cmd = f"java -Xmx1200m -jar {saxLib} -s:{input} -xsl:{xsl} -o:{output}"
-        print (f" cmd {cmd}")
-
-        subprocess.run(
-                cmd, check=True, stderr=subprocess.STDOUT
-            )  # overwrites output file without saying anything
-
-    def _resize (self,*, pic):
-        out_fn = self.dir.joinpath(pic.name)
-        if pic.suffix != ".mp3" and pic.suffix != ".pdf": #pil croaks over mp3
-            im = Image.open(pic)
-            if not out_fn.exists():
-                print(f"{pic} -> {out_fn}")
-                width, height = im.size
-                if width > 1848 or height > 1848:
-                    logging.info(f"{pic} exceeds size: {width} x {height}")
-                    if width > height:
-                        factor = 1848/width
-                    else: # height > width or both equal
-                        factor = 1848/height
-                    new_size = (int(width*factor), int(height*factor))
-                    print (f"*resizing {factor} {new_size}")
-                    im = im.convert("RGB")    
-                    out = im.resize(new_size, Image.LANCZOS)
-                    out.save(out_fn)
-                else:
-                    self._copy(pic=pic,out=out_fn)
-        else:
-            self._copy(pic=pic,out=out_fn)
+#
+# Steps
+#    
 
     def lido2html (self,*, input):
         """Only runs if html dir doesn't exist."""
@@ -127,6 +111,14 @@ class LidoTool:
         else:
             print ("LIDO2HTML exists already")
         os.chdir(orig)
+
+    def rewriteLido(self, *, input):
+        lc = LinkChecker(input=input)
+        lc.rmUnpublishedRecords() # remove records that are not published on SMB-Digital
+        lc.guess()                # rewrite filenames with http-links on SMB-Digital
+        lc.rmInternalLinks()      # remove resourceSets with internal links
+        out_fn = lc.saveTree()        
+        return out_fn 
 
     def splitSachbegriff(self, *, input):
         """
@@ -202,16 +194,64 @@ class LidoTool:
             print ("ZML2LIDO exists already")
 
         return lido_fn
+
+#
+# more private
+#
+
+    def _copy (self, *, pic, out):
+        if not Path(out).exists:
+            print (f"*copying {pic} -> {out}")
+            shutil.copyfile(pic, out)
+
+    def _resize (self,*, pic):
+        out_fn = self.dir.joinpath(pic.name)
+        if pic.suffix != ".mp3" and pic.suffix != ".pdf": #pil croaks over mp3
+            im = Image.open(pic)
+            if not out_fn.exists():
+                print(f"{pic} -> {out_fn}")
+                width, height = im.size
+                if width > 1848 or height > 1848:
+                    logging.info(f"{pic} exceeds size: {width} x {height}")
+                    if width > height:
+                        factor = 1848/width
+                    else: # height > width or both equal
+                        factor = 1848/height
+                    new_size = (int(width*factor), int(height*factor))
+                    print (f"*resizing {factor} {new_size}")
+                    im = im.convert("RGB")    
+                    out = im.resize(new_size, Image.LANCZOS)
+                    out.save(out_fn)
+                else:
+                    self._copy(pic=pic,out=out_fn)
+        else:
+            self._copy(pic=pic,out=out_fn)
+
+    def _saxon (self, *, input, output, xsl):
+        cmd = f"java -Xmx1200m -jar {saxLib} -s:{input} -xsl:{xsl} -o:{output}"
+        print (f" cmd {cmd}")
+
+        subprocess.run(
+                cmd, check=True, stderr=subprocess.STDOUT
+            )  # overwrites output file without saying anything
+
     
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Little LIDO toolchin")
     parser.add_argument("-i", "--input", help="zml input file", required=True)
+    parser.add_argument("-j", "--job", help="pick job (localLido or smbLido)", required=True)
     parser.add_argument("-o", "--output", help="output directory, defaults to sdata", default="sdata")
     parser.add_argument("-f", "--force", help="force overwrite existing lido", action='store_true')
     parser.add_argument("-v", "--validate", help="validate lido", action='store_true')
     args = parser.parse_args()
 
-    m = LidoTool(input=args.input, output=args.output, force=args.force, validate=args.validate)
+    if args.force:
+        args.validate=True
+
+    print (f"JOB: {args.job}")
+
+    m = LidoTool(input=args.input, output=args.output, force=args.force, validation=args.validate)
+    getattr(m, args.job)()
 

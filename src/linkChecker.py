@@ -8,13 +8,14 @@
     lidoWrap/lido/administrativeMetadata/resourceWrap/resourceSet/resourceRepresentation/linkResource
 """
 
-from lxml import etree
+import logging
 import urllib.request
-from urllib import request as urlrequest
+from lxml import etree
 from pathlib import Path
+from urllib import request as urlrequest
 
 NSMAP = {"l": "http://www.lido-schema.org"}
-sizes = ["_2500x2500", "_1000x600"]  # from big to small
+sizes = ["_2500x2500", "_1000x600"] # from big to small
 
 
 class LinkChecker:
@@ -24,47 +25,82 @@ class LinkChecker:
         ext = p.suffix
         stem = p.stem
         self.out_fn = str(p.with_name(stem + "-links")) + ext
-        print (f"   writing to {self.out_fn}")
+        self.log (f"   writing to {self.out_fn}")
         self.tree = etree.parse(str(input))
+
+    def log (self, msg):
+        print (msg)
+        logging.info(msg)
 
     def guess (self):
         linkResource = self.tree.xpath(
-            "//l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
+            "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
             namespaces=NSMAP)
 
         for link in linkResource:
             if not link.text.startswith("http"):
                 nl = self._guess(link=link.text)
                 if nl is not None:
-                    print(nl)
                     link.text = nl
                 else:
-                    print ("   not found")
-        print(f"Writing back to {self.out_fn}")
-        self.tree.write(self.out_fn, pretty_print=True)
-        return self.out_fn
+                    self.log ("\tNOT FOUND")
 
     def _guess(self, *, link):
         """
-        https://recherche.smb.museum/images/4305271_1000x600.jpg
+            https://recherche.smb.museum/images/4305271_1000x600.jpg
         """
         p = Path(link)
-        suffix = p.suffix.lower()
         mulId = p.stem
+        suffixes = [p.suffix]
+        if p.suffix = ".pdf":
+            return # dont even check pdfs b/c we know that they dont work
+        if p.suffix.lower() != p.suffix:
+            suffixes.append(p.suffix.lower())
         for size in sizes:
-            new_link = f"https://recherche.smb.museum/images/{mulId}{size}{suffix}"
-            print (f"   checking {new_link}")
-            req = urlrequest.Request(new_link)
-            req.set_proxy("http-proxy-1.sbb.spk-berlin.de:3128", "http")
-            try:
-                #urlrequest.urlopen(req)
-                urllib.request.urlopen(new_link)
-            except:
-                pass
-            # print (f"   NOT FOUND {new_link}")
-            else:
-                print (f"   HIT {new_link}")
-                return new_link
+            for suffix in suffixes:
+                new_link = f"https://recherche.smb.museum/images/{mulId}{size}{suffix}"
+                self.log (f"   checking {new_link}")
+                req = urlrequest.Request(new_link)
+                req.set_proxy("http-proxy-1.sbb.spk-berlin.de:3128", "http")
+                try:
+                    #urlrequest.urlopen(req)
+                    urllib.request.urlopen(new_link)
+                except:
+                    pass
+                else:
+                    self.log ("\tHIT")
+                    return new_link
+
+    def rmInternalLinks (self):
+        """
+            Remove resourceSet whose linkResouce point to internal links; 
+            links are internal if they dont begin with "http", e.g.
+            1234678.jpg
+        """
+        self.log ("resourceSet: Removing sets with remaining internal links")
+        linkResource = self.tree.xpath(
+            "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
+            namespaces=NSMAP)
+        for link in linkResource:
+            if not link.text.startswith("http"):
+                resourceSet = link.getparent().getparent()
+                resourceSet.getparent().remove(resourceSet)
+
+    def rmUnpublishedRecords(self):
+        """
+            Remove lido records which are not published on SMB Digital.
+
+            Assumes that only records which have SMBFreigabe=Ja have objectPublishedID
+        """
+        self.log ("Removing records sets that are not published on SMB")
+        records = self.tree.xpath("/l:lidoWrap/l:lido[not(l:objectPublishedID)]", namespaces=NSMAP)
+        for record in records:
+            record.getparent().remove(record)
+    
+    def saveTree(self):
+        self.log(f"Writing back to {self.out_fn}")
+        self.tree.write(self.out_fn, pretty_print=True)
+        return self.out_fn
 
 
 if __name__ == "__main__":
