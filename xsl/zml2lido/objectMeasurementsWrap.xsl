@@ -97,6 +97,13 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Höhe x Breite x Stärke'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='ThicknessNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Höhe x Breite x Tiefe'">
 				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
 				<xsl:text> x </xsl:text>
@@ -142,6 +149,11 @@
 				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Passepartout'">
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Passepartoutmaß'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>

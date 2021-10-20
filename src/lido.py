@@ -21,9 +21,10 @@
     first place.
 
     Changes
+    9/25/21 introduce different chains: local and for SMB-Digital
+    9/24/21 linkchecker guesses URL for image on recherche.smb 
     9/11/21 -f force should overwrite existing data in all steps, not just in zml2lido
     9/11/21 implement simple filter that filters out zml records of type object that have no sachbegriff
-    9/25/21 introduce different chains: local and for SMB-Digital
 """
 from lxml import etree
 from pathlib import Path
@@ -59,8 +60,8 @@ class LidoTool:
         )
         self.validation = validation
         self.force = force
-        self.input = Path(input)
-        self.output = output
+        self.input = Path(input) # initial input file, e.g. 3Wege.zml.xml
+        self.output = output # this is just a dir
         self.dir = Path(".").resolve().joinpath(output,self.input.parent.name)
         if not self.dir.exists():
             print (f"Making new dir {dir}")
@@ -72,8 +73,11 @@ class LidoTool:
 #
 
     def localLido (self): 
-        ohneSachbegriffZML = self.splitSachbegriff(input=self.input) # drop records without Sachbegriff
-        lido_fn = self.zml2lido(input=ohneSachbegriffZML, output=self.output)
+        """
+            localLido downloads images
+        """
+        mitSachbegriffZML = self.splitSachbegriff(input=self.input) # drop records without Sachbegriff
+        lido_fn = self.zml2lido(input=mitSachbegriffZML, output=self.output)
         if self.validation:
             self.validate(input=lido_fn)
         self.splitLido(input=lido_fn)        # individual records as files
@@ -84,8 +88,8 @@ class LidoTool:
         """
             Make Lido that relies on records being published on SMB-Digital, using their image links.
         """
-        ohneSachbegriffZML = self.splitSachbegriff(input=self.input) # drop records without Sachbegriff
-        lido_fn = self.zml2lido(input=ohneSachbegriffZML, output=self.output)
+        mitSachbegriffZML = self.splitSachbegriff(input=self.input) # drop records without Sachbegriff
+        lido_fn = self.zml2lido(input=mitSachbegriffZML, output=self.output)
         linklido_fn = self.rewriteLido(input=lido_fn) # fix links and rm unpublished parts
         if self.validation:
             self.validate(input=linklido_fn)
@@ -114,10 +118,14 @@ class LidoTool:
 
     def rewriteLido(self, *, input):
         lc = LinkChecker(input=input)
-        lc.rmUnpublishedRecords() # remove records that are not published on SMB-Digital
-        lc.guess()                # rewrite filenames with http-links on SMB-Digital
-        lc.rmInternalLinks()      # remove resourceSets with internal links
-        out_fn = lc.saveTree()        
+        out_fn = lc.out_fn 
+        if Path(lc.out_fn).exists():
+            print (f"Rewrite exists already: {out_fn}, no overwrite")
+        else:
+            lc.rmUnpublishedRecords() # remove records that are not published on SMB-Digital
+            lc.guess()                # rewrite filenames with http-links on SMB-Digital
+            lc.rmInternalLinks()      # remove resourceSets with internal links
+            lc.saveTree()        
         return out_fn 
 
     def splitSachbegriff(self, *, input):
@@ -228,7 +236,7 @@ class LidoTool:
             self._copy(pic=pic,out=out_fn)
 
     def _saxon (self, *, input, output, xsl):
-        cmd = f"java -Xmx1200m -jar {saxLib} -s:{input} -xsl:{xsl} -o:{output}"
+        cmd = f"java -Xmx1300m -jar {saxLib} -s:{input} -xsl:{xsl} -o:{output}"
         print (f" cmd {cmd}")
 
         subprocess.run(
