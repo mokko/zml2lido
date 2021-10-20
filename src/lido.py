@@ -122,13 +122,13 @@ class LidoTool:
     def rewriteLido(self, *, input):
         lc = LinkChecker(input=input)
         out_fn = lc.out_fn 
-        if Path(lc.out_fn).exists():
-            print (f"Rewrite exists already: {out_fn}, no overwrite")
-        else:
+        if not Path(lc.out_fn).exists() or self.force == True:
             lc.rmUnpublishedRecords() # remove records that are not published on SMB-Digital
             lc.guess()                # rewrite filenames with http-links on SMB-Digital
             lc.rmInternalLinks()      # remove resourceSets with internal links
             lc.saveTree()        
+        else:
+            print (f"Rewrite exists already: {out_fn}, no overwrite")
         return out_fn 
 
     def splitSachbegriff(self, *, input):
