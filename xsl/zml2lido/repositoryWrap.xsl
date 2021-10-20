@@ -19,6 +19,11 @@
 	<xsl:template name="repositoryWrap">
         <lido:repositoryWrap>
         	<lido:repositorySet lido:type="current">
+				<lido:repositoryName>
+					<xsl:call-template name="legalBody">
+						<xsl:with-param name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
+					</xsl:call-template>
+				</lido:repositoryName>
 	        	<xsl:apply-templates select="z:moduleReference[@name='ObjOwnerRef']"/>
 	        	<xsl:apply-templates select="z:repeatableGroup[@name='ObjObjectNumberGrp']/z:repeatableGroupItem"/>
 		        <!-- Berlin repository location -->

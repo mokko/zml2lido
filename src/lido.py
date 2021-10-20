@@ -21,6 +21,9 @@
     first place.
 
     Changes
+    10/20/21 only checkLinks if output file doesn't exist yet (as usual) 
+    10/20/21 change java max memory
+    10/20/21 zml2lido: usual additions to objectMeasurements
     9/25/21 introduce different chains: local and for SMB-Digital
     9/24/21 linkchecker guesses URL for image on recherche.smb 
     9/11/21 -f force should overwrite existing data in all steps, not just in zml2lido
