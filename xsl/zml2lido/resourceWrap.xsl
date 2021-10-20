@@ -80,12 +80,13 @@
             -->
             <lido:resourceRepresentation>
                 <xsl:attribute name="lido:type" xml:lang="EN">
-					<xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex=".(\w*)$">
+					<xsl:text>Provided image</xsl:text>
+					<!--xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex=".(\w*)$">
 						<xsl:matching-substring>
-							<!--xsl:message>
+							xsl:message>
 								<xsl:text>EXT</xsl:text>
 								<xsl:value-of select="regex-group(1)"/>
-							</xsl:message-->
+							</xsl:message
 							<xsl:choose>
 								<xsl:when test="lower-case(regex-group(1)) eq 'jpg'">
 									<xsl:text>Preview image</xsl:text>
@@ -98,7 +99,7 @@
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:matching-substring>
-					</xsl:analyze-string>
+					</xsl:analyze-string-->
                 </xsl:attribute>
 				<xsl:variable name="id" select="normalize-space(z:systemField[@name='__id']/z:value)" />
                 <lido:linkResource> 
