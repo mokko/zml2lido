@@ -42,6 +42,13 @@
 				<xsl:value-of select="."/>
 			</lido:term>
 		</lido:classification>
+		<xsl:comment>
+			europeana:type refers to a resouce of the representation in the description of the object. This seems ontologically 
+			wrong. Seems to be remnant of old/first EUROPEANA data structure
+		</xsl:comment>
+		<lido:classification lido:type="europeana:type">	
+			<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
+		</lido:classification>
 	</xsl:template>
 
 	<xsl:template mode="classification" match="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
