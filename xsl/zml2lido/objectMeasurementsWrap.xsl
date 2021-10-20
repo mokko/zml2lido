@@ -49,6 +49,11 @@
 
 	<xsl:template match="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue">
 		<xsl:choose>
+			<xsl:when test=". = 'Auflagekarton'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Allgemein'">
 				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
 				<xsl:text> x </xsl:text>
@@ -156,6 +161,11 @@
 				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Passepartoutmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Rahmenmaß'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>

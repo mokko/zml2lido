@@ -53,7 +53,7 @@
     </xsl:template>
 
 	<xsl:template match="z:repeatableGroup[@name='ObjObjectNumberGrp']/z:repeatableGroupItem">
-		<lido:workID>
+		<lido:workID lido:type="Inventory number" lido:label="Ident.Nr.">
 			<xsl:value-of select="z:dataField[@name='InventarNrSTxt']/z:value"/>
 		</lido:workID>
 	</xsl:template>

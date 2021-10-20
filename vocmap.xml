@@ -9,19 +9,25 @@
 	<voc name="verwaltendeInstitution">
 		<concept>
 			<source lang="DE">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</source>
-			<target lang="EN" name="ISIL">DE-MUS-019014</target>
-			<target lang="EN" name="homepage">https://www.smb.museum/aku</target>
+			<target lang="DE" name="ISIL">DE-MUS-019014</target>
+			<target lang="DE" name="homepage">https://www.smb.museum/aku</target>
 		</concept>
 		<concept>
 			<source lang="DE">Museum für Islamische Kunst, Staatliche Museen zu Berlin</source>
-			<target lang="EN" name="ISIL">DE-MUS-814517</target>
-			<target lang="EN" name="homepage">https://www.smb.museum/isl</target>
+			<target lang="DE" name="ISIL">DE-MUS-814517</target>
+			<target lang="DE" name="homepage">https://www.smb.museum/isl</target>
 		</concept>
 		<concept>
 			<source lang="DE">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
-			<target lang="EN" name="ISIL">DE-MUS-019118</target>
-			<target lang="EN" name="homepage">https://www.smb.museum/em</target>
+			<target lang="DE" name="ISIL">DE-MUS-019118</target>
+			<target lang="DE" name="homepage">https://www.smb.museum/em</target>
 		</concept>
+		<concept>
+			<source lang="DE">Kunstbibliothek, Staatliche Museen zu Berlin</source>
+			<target lang="DE" name="ISIL">DE-MUS-015418</target>
+			<target lang="DE" name="homepage">https://www.smb.museum/kb</target>
+		</concept>
+
 	</voc>
 
 	<voc name="formatResource">
