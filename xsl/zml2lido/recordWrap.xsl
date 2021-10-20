@@ -34,8 +34,8 @@
 			</lido:recordSource>
 			<lido:recordRights>
 				<lido:rightsType>
-					<lido:conceptID lido:type="URI" lido:source="CC">http://creativecommons.org/licenses/by-nc-sa/3.0/</lido:conceptID>
-					<lido:term>Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)</lido:term>
+                    <lido:conceptID lido:source="CC" lido:type="URI">http://creativecommons.org/by-nc-sa/4.0/</lido:conceptID>
+                    <lido:term lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</lido:term>
 				</lido:rightsType>
 				<xsl:call-template name="defaultRightsHolder"/>
 			</lido:recordRights>

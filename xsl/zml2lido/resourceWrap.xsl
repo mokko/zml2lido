@@ -155,15 +155,15 @@
 			<xsl:apply-templates mode="Urheber" select="z:moduleReference[@name='MulPhotographerPerRef']"/>
 			
             <lido:rightsResource>
-                <lido:rightsType>
-                    <lido:term>Nutzungsrechte</lido:term>
-                </lido:rightsType>
-                <lido:rightsHolder>
-                    <lido:legalBodyName>
-                        <lido:appellationValue>
-							<xsl:value-of select="$verwaltendeInstitution"/>
-                        </lido:appellationValue>
-                    </lido:legalBodyName>
+				<lido:rightsType>
+					<lido:conceptID lido:source="CC"
+					                lido:type="URI">http://creativecommons.org/by-nc-sa/4.0/</lido:conceptID>
+					<lido:term lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</lido:term>
+				</lido:rightsType>                
+				<lido:rightsHolder>
+					<xsl:call-template name="legalBody">
+						<xsl:with-param name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
+					</xsl:call-template>
                 </lido:rightsHolder>
 
                 <!-- 
