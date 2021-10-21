@@ -35,6 +35,7 @@ from pathlib import Path
 from PIL import Image, ImageFile
 import logging
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -66,13 +67,17 @@ class LidoTool:
         self.force = force
         self.input = Path(input) # initial input file, e.g. 3Wege.zml.xml
         self.output = output # provided by command line, just a dir
-        self.outdir = Path(".").resolve().joinpath(output,self.input.parent.parent.name, self.input.parent.name)
+        if re.match("\d\d\d\d\d\d", self.input.parent.name) :
+            self.outdir = Path(".").resolve().joinpath(output, self.input.parent.parent.name, self.input.parent.name) 
+        else:
+            self.outdir = Path(".").resolve().joinpath(output, self.input.parent.name) 
+
         # alternatively, we could make a new dir based on the input
         # C:\m3\MpApi\sdata\3Wege\3Wege20211019.xml
         # 3Wege -> sdata\3Wege
         if not self.outdir.exists():
             print (f"Making new dir {self.outdir}")
-            self.outdir.mkdir()
+            self.outdir.mkdir(parents=False, exist_ok=False)
         print (f" outdir {self.outdir}")
 
 #
