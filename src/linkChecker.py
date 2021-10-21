@@ -22,9 +22,10 @@ class LinkChecker:
     def __init__(self, *, input):
         print(f"LinkChecker is working on {input}")
         p = Path(input)
-        ext = p.suffix
-        stem = p.stem
-        self.out_fn = str(p.with_name(stem + "-links")) + ext
+        ext = "".join(p.suffixes)
+        stem = str(p).split(".")[0]
+        self.out_fn = stem + "-links" + ext
+        self.log (f"   writing to {self.out_fn}")
         self.log (f"   writing to {self.out_fn}")
         self.tree = etree.parse(str(input))
 
@@ -78,7 +79,7 @@ class LinkChecker:
             links are internal if they dont begin with "http", e.g.
             1234678.jpg
         """
-        self.log ("resourceSet: Removing sets with remaining internal links")
+        self.log ("   resourceSet: Removing sets with remaining internal links")
         linkResource = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
             namespaces=NSMAP)
@@ -93,7 +94,7 @@ class LinkChecker:
 
             Assumes that only records which have SMBFreigabe=Ja have objectPublishedID
         """
-        self.log ("Removing records sets that are not published on SMB")
+        self.log ("   LinkChecker: Removing records sets that are not published on SMB")
         records = self.tree.xpath("/l:lidoWrap/l:lido[not(l:objectPublishedID)]", namespaces=NSMAP)
         for record in records:
             record.getparent().remove(record)

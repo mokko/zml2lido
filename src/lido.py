@@ -21,6 +21,7 @@
     first place.
 
     Changes
+    10/21/21 new output dir
     10/20/21 only checkLinks if output file doesn't exist yet (as usual) 
     10/20/21 change java max memory
     10/20/21 zml2lido: usual additions to objectMeasurements
@@ -40,7 +41,7 @@ import sys
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 srcDir = Path(__file__).parent
 #print (srcDir)
-sys.path.append("C:\m3\zml2lido\src")
+sys.path.append("C:\m3\zml2lido\src") # very dirty
 
 from LinkChecker import LinkChecker
 
@@ -64,12 +65,15 @@ class LidoTool:
         self.validation = validation
         self.force = force
         self.input = Path(input) # initial input file, e.g. 3Wege.zml.xml
-        self.output = output # this is just a dir
-        self.dir = Path(".").resolve().joinpath(output,self.input.parent.name)
-        if not self.dir.exists():
-            print (f"Making new dir {dir}")
-            self.dir.mkdir()
-        print (f" output dir {self.dir}")
+        self.output = output # provided by command line, just a dir
+        self.outdir = Path(".").resolve().joinpath(output,self.input.parent.parent.name, self.input.parent.name)
+        # alternatively, we could make a new dir based on the input
+        # C:\m3\MpApi\sdata\3Wege\3Wege20211019.xml
+        # 3Wege -> sdata\3Wege
+        if not self.outdir.exists():
+            print (f"Making new dir {self.outdir}")
+            self.outdir.mkdir()
+        print (f" outdir {self.outdir}")
 
 #
 # Jobs
@@ -80,7 +84,7 @@ class LidoTool:
             localLido downloads images
         """
         mitSachbegriffZML = self.splitSachbegriff(input=self.input) # drop records without Sachbegriff
-        lido_fn = self.zml2lido(input=mitSachbegriffZML, output=self.output)
+        lido_fn = self.zml2lido(input=mitSachbegriffZML)
         if self.validation:
             self.validate(input=lido_fn)
         self.splitLido(input=lido_fn)        # individual records as files
@@ -89,15 +93,33 @@ class LidoTool:
 
     def smbLido (self):
         """
-            Make Lido that relies on records being published on SMB-Digital, using their image links.
+            Make Lido that 
+            - image links: recherche.smb. 
+            - filter out records without sachbegriff
+            - split
+            - html
         """
         mitSachbegriffZML = self.splitSachbegriff(input=self.input) # drop records without Sachbegriff
-        lido_fn = self.zml2lido(input=mitSachbegriffZML, output=self.output)
+        lido_fn = self.zml2lido(input=mitSachbegriffZML)
         linklido_fn = self.rewriteLido(input=lido_fn) # fix links and rm unpublished parts
         if self.validation:
             self.validate(input=linklido_fn)
         self.splitLido(input=linklido_fn)        # individual records as files
         self.lido2html(input=linklido_fn)        # to make it easier to read lido
+
+    def smb (self):
+        """
+            Make Lido that 
+            - image links: recherche.smb
+            - validate if -v on command line
+            - split               
+        """
+        lido_fn = self.zml2lido(input=self.input)
+        linklido_fn = self.rewriteLido(input=lido_fn) # fix links and rm unpublished parts
+        if self.validation:
+            self.validate(input=linklido_fn)
+        self.splitLido(input=linklido_fn)        # individual records as files
+        #self.lido2html(input=linklido_fn)        # to make it easier to read lido
 
 #
 # Steps
@@ -107,7 +129,7 @@ class LidoTool:
         """Only runs if html dir doesn't exist."""
 
         orig = os.getcwd()
-        os.chdir(self.dir)
+        os.chdir(self.outdir)
         hdir = Path("html")
         #if not any(os.scandir(str(hdir))):        
         if not hdir.exists() or self.force is True:
@@ -128,7 +150,7 @@ class LidoTool:
             lc.rmInternalLinks()      # remove resourceSets with internal links
             lc.saveTree()        
         else:
-            print (f"Rewrite exists already: {out_fn}, no overwrite")
+            print (f"   rewrite exists already: {out_fn}, no overwrite")
         return out_fn 
 
     def splitSachbegriff(self, *, input):
@@ -137,7 +159,7 @@ class LidoTool:
             ohneSachbegriff.xml is meant for debug purposes.
         """
         orig = os.getcwd()
-        os.chdir(self.dir)
+        os.chdir(self.outdir)
         out = "mitSachbegriff.xml"
         if not Path(out).exists() or self.force is True:
             self._saxon(input=input, xsl=xsl["splitSachbegriff"], output=out)
@@ -171,9 +193,9 @@ class LidoTool:
             Create invidiual files per lido record
         """
         orig = os.getcwd()
-        if not self.dir.joinpath("split").exists() or self.force is True:
+        if not self.outdir.joinpath("split").exists() or self.force is True:
             print ("SPLITLIDO making")
-            os.chdir(self.dir)
+            os.chdir(self.outdir)
             self._saxon(input=input, xsl=xsl["splitLido"], output="o.xml")
             os.chdir(orig)
         else:
@@ -193,9 +215,9 @@ class LidoTool:
         else:
             print(" does NOT validate")
 
-    def zml2lido(self,*, input, output):
+    def zml2lido(self,*, input):
         Input = Path(input)
-        lido_fn = self.dir.joinpath(Input.stem+".lido.xml")
+        lido_fn = self.outdir.joinpath(Input.stem+".lido.xml")
         #print (f"lido file:{lido_fn}")
  
         if not lido_fn.exists() or self.force is True:
