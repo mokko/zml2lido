@@ -38,7 +38,7 @@
 			</lido:lidoRecID>
 			<xsl:comment>
 				<xsl:text>objectPublishedID exists only if record is published at SMB-Digital.</xsl:text>
-				<xsl:text>New publishing timestamp. Filled in only for records that are published since 2021-12-14.</xsl:text>
+				<xsl:text>Publishing timestamp is filled in only for records that have been published since 2020-12-14.</xsl:text>
 			</xsl:comment>
 			<!--write objectPublishedID ONLY if -->
 			<xsl:choose>
