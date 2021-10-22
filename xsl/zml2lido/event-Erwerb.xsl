@@ -101,7 +101,7 @@
 			<xsl:value-of select="z:vocabularyReference/z:vocabularyReferenceItem/@name"/>
 		</xsl:message>
 		-->
-		<lido:eventDescriptionSet type="WelcherTyp">
+		<lido:eventDescriptionSet> 
 			<lido:descriptiveNoteValue xml:lang="de" encodinganalog="ErwerbNotizAusgabe">
 				<xsl:value-of select="z:dataField/z:value"/>
 			</lido:descriptiveNoteValue>
