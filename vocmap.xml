@@ -82,4 +82,35 @@
 			<target lang="EN" name="lido">image</target>
 		</concept>
 	</voc>
+
+	<voc name="Sammlung">
+		<concept>
+			<source lang="DE">AKuOstasiatischeKunst</source>
+			<target lang="DE" name="DDB">Ostasiatische Kunst</target>
+		</concept>
+		<concept>
+			<source lang="DE">AKuSudSudostundZentralasien</source>
+			<target lang="DE" name="DDB">Süd-, Südost und Zentralasien</target>
+		</concept>
+		<concept>
+			<source lang="DE">EMAfrika1</source>
+			<target lang="DE" name="DDB">Afrika</target>
+		</concept>
+		<concept>
+			<source lang="DE">EMMusikethnologie</source>
+			<target lang="DE" name="DDB">Musikethnologie</target>
+		</concept>
+		<concept>
+			<source lang="DE">EMOstundNordasien</source>
+			<target lang="DE" name="DDB">Ost- und Nordasien</target>
+		</concept>
+		<concept>
+			<source lang="DE">EMSudundSudostasien</source>
+			<target lang="DE" name="DDB">Süd- und Südostasien</target>
+		</concept>
+		<concept>
+			<source lang="DE">EMSudseeAustralien</source>
+			<target lang="DE" name="DDB">Ozeanien und Australien</target>
+		</concept>
+	</voc>
 </vocmap>

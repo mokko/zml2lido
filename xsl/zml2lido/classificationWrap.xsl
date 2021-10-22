@@ -3,7 +3,8 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:z="http://www.zetcom.com/ria/ws/module"
-    exclude-result-prefixes="z"
+    exclude-result-prefixes="z func"	
+	xmlns:func="http://func"
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*" />
@@ -33,6 +34,16 @@
 					<xsl:apply-templates mode="classification" select="z:dataField[@name = 'ObjTechnicalTermClb']/z:value"/>
 				</xsl:otherwise>
 			</xsl:choose>
+			<lido:classification lido:type="europeana:type">	
+				<xsl:comment>europeana:type refers to a resouce of the representation in the description of the object. 
+				This seems ontologically wrong. Seems to be remnant of old/first EUROPEANA data structure.</xsl:comment>
+				<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
+			</lido:classification>
+			<lido:classification lido:type="Sammlung">
+				<lido:term lido:addedSearchTerm="no" xml:lang="de">
+					<xsl:value-of select="func:vocmap-replace('Sammlung', z:systemField[@name = '__orgUnit'], 'DDB')" />
+				</lido:term>
+			</lido:classification>	
         </lido:classificationWrap>
 	</xsl:template>
 
@@ -41,13 +52,6 @@
 			<lido:term>
 				<xsl:value-of select="."/>
 			</lido:term>
-		</lido:classification>
-		<xsl:comment>
-			europeana:type refers to a resouce of the representation in the description of the object. This seems ontologically 
-			wrong. Seems to be remnant of old/first EUROPEANA data structure
-		</xsl:comment>
-		<lido:classification lido:type="europeana:type">	
-			<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
 		</lido:classification>
 	</xsl:template>
 
