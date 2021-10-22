@@ -10,7 +10,12 @@
     <xsl:strip-space elements="*" />
 
     <!-- 
-        apparently some records with a Sammler dont have the Sammeln-event? 
+		DF from http://terminology-view.lido-schema.org/vocnet
+		Acquisition, as a value for the LIDO Event Type element, designates the physical and legal 
+		transfer of items to a repository, such as a museum, library, or archive, including the 
+		selection, ordering, and obtaining by purchase, gift, or exchange.
+		
+        Apparently some records with a Sammler dont have the Sammeln-event? 
         Why because i wrote eq Sammler instead of = Sammler.
         Let that be a lesson!
     -->
@@ -22,6 +27,7 @@
                 <lido:eventType>
                     <lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00001</lido:conceptID>
                     <lido:term xml:lang="de">Erwerb</lido:term>
+					<xsl:comment>beschreibt den Erwerb des Objekts durch die verwaltende Institution</xsl:comment>
                 </lido:eventType>
 
                 <!-- lido:eventActor -->
@@ -36,6 +42,11 @@
 
                 <!-- lido:eventMethod (m3: neuer Platz für Erwerbungsart nach Empfehlung FvH) -->
                 <xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionMethodGrp']/z:repeatableGroupItem"/>
+				
+				<!-- eventDescriptionSet ErwerbNotizAusgabe-->
+                <xsl:apply-templates mode="Erwerb" select="z:repeatableGroup[
+					@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
+					z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']"/>
             </lido:event>
         </lido:eventSet>
     </xsl:template>
@@ -80,6 +91,21 @@
                 </lido:latestDate>
             </lido:date>
         </lido:eventDate>
+	</xsl:template>
+
+	<xsl:template mode="Erwerb" match="z:repeatableGroup[@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']">
+		<!--  
+		<xsl:message>ErwerbNotizAusgabe
+			<xsl:value-of select="z:dataField/z:value"/>
+			<xsl:text>|</xsl:text>
+			<xsl:value-of select="z:vocabularyReference/z:vocabularyReferenceItem/@name"/>
+		</xsl:message>
+		-->
+		<lido:eventDescriptionSet type="WelcherTyp">
+			<lido:descriptiveNoteValue xml:lang="de" encodinganalog="ErwerbNotizAusgabe">
+				<xsl:value-of select="z:dataField/z:value"/>
+			</lido:descriptiveNoteValue>
+		</lido:eventDescriptionSet>
 	</xsl:template>
 
 	<!-- eventMethod -->

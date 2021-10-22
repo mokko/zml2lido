@@ -12,15 +12,18 @@
 	<xsl:template name="objectDescriptionWrap">
 		<lido:objectDescriptionWrap>
 			<xsl:apply-templates select="z:repeatableGroup[@name='ObjTextOnlineGrp']/z:repeatableGroupItem"/>
+			<!--xsl:apply-templates select="z:repeatableGroup[@name='ObjAcquisitionNotesGrp']/z:repeatableGroupItem"/-->
 		</lido:objectDescriptionWrap>
     </xsl:template>
+	<!-- [z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']-->
 
-	<!--only online Beschreibung -->
+
+	<!--only online Beschreibung, other beschreibungstexte are not approved for online use -->
 	<xsl:template match="z:repeatableGroup[@name='ObjTextOnlineGrp']/z:repeatableGroupItem">
 		<!--xsl:message>
 			<xsl:value-of select="z:dataField[@name='TextClb']"/>
 		</xsl:message-->
-		<lido:objectDescriptionSet>
+		<lido:objectDescriptionSet lido:type="Objektbeschreibung">
 			<lido:descriptiveNoteValue xml:lang="de">
 				<xsl:attribute name="lido:encodinganalog">
 					<xsl:value-of select="z:vocabularyReference/z:vocabularyReferenceItem/@name"/>
@@ -29,4 +32,15 @@
 			</lido:descriptiveNoteValue>
 		</lido:objectDescriptionSet>
 	</xsl:template>
+	
+	<!--xsl:template match="z:repeatableGroup[@name='ObjAcquisitionNotesGrp']/z:repeatableGroupItem">
+		<lido:objectDescriptionSet lido:type="Erwerbung">
+			<lido:descriptiveNoteValue xml:lang="de">
+				<xsl:attribute name="lido:encodinganalog">
+					<xsl:value-of select="z:dataField/z:value"/>
+				</xsl:attribute> 
+				<xsl:value-of select="z:dataField[@name='TextClb']"/>
+			</lido:descriptiveNoteValue>
+		</lido:objectDescriptionSet>
+	</xsl:template-->
 </xsl:stylesheet>

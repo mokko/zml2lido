@@ -125,7 +125,10 @@
 		<!-- die if replacement returns empty, except if source is already empty -->
 		<xsl:if test="normalize-space($return) = '' and normalize-space($src-term) != ''">
 			<xsl:message terminate="yes">
-				ERROR: vocmap-replace returns EMPTY ON <xsl:value-of select="$src-term"/> FROM <xsl:value-of select="$src-voc"/> 
+				<xsl:text>ERROR: vocmap-replace returns EMPTY ON </xsl:text>
+				<xsl:value-of select="$src-term"/> 
+				<xsl:text>FROM </xsl:text>
+				<xsl:value-of select="$src-voc"/> 
 			</xsl:message>
 		</xsl:if> 
 		<xsl:value-of select="$return"/>
