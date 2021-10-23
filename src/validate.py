@@ -22,7 +22,7 @@ conf["lido"] = lib.joinpath("lido-v1.0.xsd")
 
 def validate(*, input, schema):
     if schema in conf:
-        #print(f"schema: {schema}")
+        # print(f"schema: {schema}")
         print(f"***Looking for xsd at {conf[schema]} to validate {input}")
         schema_doc = etree.parse(str(conf[schema]))
     else:
@@ -39,6 +39,6 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", required=True)
-    parser.add_argument('-s', '--schema', required=True)
+    parser.add_argument("-s", "--schema", required=True)
     args = parser.parse_args()
     validate(input=args.input, schema=args.schema)
