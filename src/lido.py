@@ -53,6 +53,7 @@ lidoXSD = r"C:\m3\zml2lido\xsd\lido-v1.0.xsd"
 xsl = {
     "zml2lido": xslDir.joinpath("zml2lido.xsl"),
     "lido2html": xslDir.joinpath("lido2html.xsl"),
+    "onlyPublished": xslDir.joinpath("filterPublished.xsl"),
     "splitLido": xslDir.joinpath("splitLido.xsl"),
     "splitSachbegriff": xslDir.joinpath("splitNoSachbegriff.xsl"),
 }
@@ -106,7 +107,7 @@ class LidoTool:
         """
         mitSachbegriffZML = self.splitSachbegriff(input=self.input) # drop records without Sachbegriff
         lido_fn = self.zml2lido(input=mitSachbegriffZML)
-        linklido_fn = self.rewriteLido(input=lido_fn) # fix links and rm unpublished parts
+        linklido_fn = self.urlLido(input=lido_fn) # fix links and rm unpublished parts
         if self.validation:
             self.validate(input=linklido_fn)
         self.splitLido(input=linklido_fn)        # individual records as files
@@ -114,13 +115,15 @@ class LidoTool:
 
     def smb (self):
         """
-            Make Lido that 
+            Make Lido
+            - filter out lido records that are not published
             - image links: recherche.smb
             - validate if -v on command line
             - split               
         """
         lido_fn = self.zml2lido(input=self.input)
-        linklido_fn = self.rewriteLido(input=lido_fn) # fix links and rm unpublished parts
+        onlyPublished = self.onlyPublished(input=lido_fn)
+        linklido_fn = self.urlLido(input=onlyPublished) # fix links and rm unpublished parts
         if self.validation:
             self.validate(input=linklido_fn)
         self.splitLido(input=linklido_fn)        # individual records as files
@@ -146,7 +149,22 @@ class LidoTool:
             print ("LIDO2HTML exists already")
         os.chdir(orig)
 
-    def rewriteLido(self, *, input):
+    def onlyPublished(self, *, input):
+        """
+            filter out lido records that are not published at recherche.smb
+            expects lido as input and outputs lido as well
+        """
+        stem = str(input).split(".")[0]
+        ext = "".join(input.suffixes)
+        out = self.outdir.joinpath(stem+".onlyPub"+ext)
+
+        if not Path(out).exists() or self.force is True:
+            self._saxon(input=input, xsl=xsl["onlyPublished"], output=out)
+        else:
+            print(f"{out} exist already, no overwrite")
+        return out
+
+    def urlLido(self, *, input):
         lc = LinkChecker(input=input)
         out_fn = lc.out_fn 
         if not Path(lc.out_fn).exists() or self.force == True:
