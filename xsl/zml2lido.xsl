@@ -37,8 +37,8 @@
 					<xsl:value-of select="@id" />
 			</lido:lidoRecID>
 			<xsl:comment>
-				<xsl:text>objectPublishedID exists only if record is published at SMB-Digital.</xsl:text>
-				<xsl:text>Publishing timestamp is filled in only for records that have been published since 2020-12-14.</xsl:text>
+				<xsl:text>objectPublishedID exists only if record has been published at SMB-Digital / recherche.smb. </xsl:text>
+				<xsl:text>Publishing timestamp exists only for records that have been published since 2020-12-14.</xsl:text>
 			</xsl:comment>
 			<!--write objectPublishedID ONLY if -->
 			<xsl:choose>
@@ -104,7 +104,7 @@
 				<xsl:value-of select="@instanceName" />
 			</xsl:attribute>
 			<xsl:attribute name="lido:type">
-				<xsl:value-of select="internalID" />
+				<xsl:text>http://terminology.lido-schema.org/lido00100</xsl:text>
 			</xsl:attribute>
 			<xsl:value-of select="z:vocabularyReferenceItem/@id" />
 		</lido:conceptID>

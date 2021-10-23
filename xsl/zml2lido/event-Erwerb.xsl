@@ -102,7 +102,7 @@
 		</xsl:message>
 		-->
 		<lido:eventDescriptionSet> 
-			<lido:descriptiveNoteValue xml:lang="de" encodinganalog="ErwerbNotizAusgabe">
+			<lido:descriptiveNoteValue xml:lang="de" lido:encodinganalog="ErwerbNotizAusgabe">
 				<xsl:value-of select="z:dataField/z:value"/>
 			</lido:descriptiveNoteValue>
 		</lido:eventDescriptionSet>
