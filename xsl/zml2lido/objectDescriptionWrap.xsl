@@ -23,12 +23,48 @@
 		<!--xsl:message>
 			<xsl:value-of select="z:dataField[@name='TextClb']"/>
 		</xsl:message-->
+		<xsl:choose>
+			<xsl:when test="z:dataField[@name='TextClb'] = '[SM8HF]' or 
+				z:dataField[@name='TextClb'] = '[Benin_Königreich]'">
+				<xsl:message>
+					onlineBeschreibung enthält nur Marker
+				</xsl:message>
+			</xsl:when>
+			<xsl:when test="contains(z:dataField[@name='TextClb'], '[SM8HF]' )">
+				<xsl:message>
+					onlineBeschreibung enthält [SM8HF] am Ende
+				</xsl:message>
+				<xsl:call-template name="onlineText">
+					<xsl:with-param name="txt" select="replace(z:dataField[@name='TextClb'], '\[SM8HF\]', '')"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:when test="contains(z:dataField[@name='TextClb'], '[Benin_Königreich]' )">
+				<xsl:message>
+					onlineBeschreibung enthält [Benin_Königreich] am Ende
+				</xsl:message>
+				<xsl:call-template name="onlineText">
+					<xsl:with-param name="txt" select="replace(z:dataField[@name='TextClb'], '\[Benin_Königreich\]', '')"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:call-template name="onlineText">
+					<xsl:with-param name="txt" select="z:dataField[@name='TextClb']"/>
+				</xsl:call-template>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="onlineText">
+		<xsl:param name="txt"/>
 		<lido:objectDescriptionSet lido:type="Objektbeschreibung">
 			<lido:descriptiveNoteValue xml:lang="de">
 				<xsl:attribute name="lido:encodinganalog">
 					<xsl:value-of select="z:vocabularyReference/z:vocabularyReferenceItem/@name"/>
 				</xsl:attribute> 
-				<xsl:value-of select="z:dataField[@name='TextClb']"/>
+				<xsl:value-of select="normalize-space($txt)"/>
+				<xsl:message>
+					<xsl:value-of select="$txt"/>
+				</xsl:message>
 			</lido:descriptiveNoteValue>
 		</lido:objectDescriptionSet>
 	</xsl:template>
