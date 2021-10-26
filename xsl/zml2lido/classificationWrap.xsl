@@ -39,12 +39,27 @@
 				This seems ontologically wrong. Seems to be remnant of old/first EUROPEANA data structure.</xsl:comment>
 				<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
 			</lido:classification>
-			<lido:classification lido:type="Sammlung">
-				<lido:term lido:addedSearchTerm="no" xml:lang="de">
-					<xsl:value-of select="func:vocmap-replace('Sammlung', z:systemField[@name = '__orgUnit'], 'DDB')" />
-				</lido:term>
-			</lido:classification>	
+			<xsl:call-template name="sammlung2"/>
         </lido:classificationWrap>
+	</xsl:template>
+
+	<!-- obsolete not used anymore-->
+	<xsl:template name="sammlung">
+		<lido:classification lido:type="Sammlung">
+			<lido:term lido:addedSearchTerm="no" xml:lang="de">
+				<xsl:value-of select="func:vocmap-replace('Sammlung', z:systemField[@name = '__orgUnit'], 'DDB')" />
+			</lido:term>
+		</lido:classification>	
+	</xsl:template>
+
+	<!-- New version which uses z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue -->
+	<xsl:template name="sammlung2">
+		<lido:classification lido:type="Sammlung">
+			<lido:term lido:addedSearchTerm="no" xml:lang="de">
+				<xsl:variable name="sammlung" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue " />
+				<xsl:value-of select="replace($sammlung, '^[a-zA-Z]+-','')"/>
+			</lido:term>
+		</lido:classification>	
 	</xsl:template>
 
 	<xsl:template mode="classification" match="z:dataField[@name = 'ObjTechnicalTermClb']/z:value">
@@ -54,6 +69,8 @@
 			</lido:term>
 		</lido:classification>
 	</xsl:template>
+
+
 
 	<xsl:template mode="classification" match="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
 		/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']">
