@@ -8,7 +8,7 @@
 	Where do we write the output: C:\m3\zml2lido\sdata\<something>
 	I could bake that path in or specify it on the commandline. The latter is more explicit.
 	
-    cd C:\m3\zml2lido
+    cd C:\m3\zml2lido # needed for vocmap.xml!
     lido.py -i c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml -o sdata 
     # writes lido to file C:\m3\zml2lido\sdata\3Wege\20210904.lido.xml
     # writes images to dir C:\m3\zml2lido\sdata\3Wege
@@ -21,6 +21,7 @@
     first place.
 
     Changes
+    10/26/21 outdir simplified; it's always relative to pwd now. One  command line param less.
     10/21/21 new output dir
     10/20/21 only checkLinks if output file doesn't exist yet (as usual) 
     10/20/21 change java max memory
@@ -61,23 +62,18 @@ xsl = {
 
 
 class LidoTool:
-    def __init__(self, *, input, output, force, validation):
-        logfile = Path(output).joinpath("lidoTool.log")
-        logging.basicConfig(
-            filename=logfile, filemode="w", encoding="utf-8", level=logging.INFO
-        )
+    def __init__(self, *, input,  force, validation):
         self.validation = validation
         self.force = force
         self.input = Path(input)  # initial input file, e.g. 3Wege.zml.xml
-        self.output = output  # provided by command line, just a dir
         if re.match("\d\d\d\d\d\d", self.input.parent.name):
             self.outdir = (
-                Path(".")
+                Path("sdata")
                 .resolve()
-                .joinpath(output, self.input.parent.parent.name, self.input.parent.name)
+                .joinpath(self.input.parent.parent.name, self.input.parent.name)
             )
         else:
-            self.outdir = Path(".").resolve().joinpath(output, self.input.parent.name)
+            self.outdir = Path("sdata").resolve().joinpath(self.input.parent.name)
 
         # alternatively, we could make a new dir based on the input
         # C:\m3\MpApi\sdata\3Wege\3Wege20211019.xml
@@ -86,6 +82,10 @@ class LidoTool:
             print(f"Making new dir {self.outdir}")
             self.outdir.mkdir(parents=False, exist_ok=False)
         print(f" outdir {self.outdir}")
+        logfile = self.outdir.joinpath("lidoTool.log")
+        logging.basicConfig(
+            filename=logfile, filemode="w", encoding="utf-8", level=logging.INFO
+        )
 
     #
     # Jobs
@@ -313,9 +313,6 @@ if __name__ == "__main__":
         "-j", "--job", help="pick job (localLido or smbLido)", required=True
     )
     parser.add_argument(
-        "-o", "--output", help="output directory, defaults to sdata", default="sdata"
-    )
-    parser.add_argument(
         "-f", "--force", help="force overwrite existing lido", action="store_true"
     )
     parser.add_argument("-v", "--validate", help="validate lido", action="store_true")
@@ -327,6 +324,6 @@ if __name__ == "__main__":
     print(f"JOB: {args.job}")
 
     m = LidoTool(
-        input=args.input, output=args.output, force=args.force, validation=args.validate
+        input=args.input, force=args.force, validation=args.validate
     )
     getattr(m, args.job)()
