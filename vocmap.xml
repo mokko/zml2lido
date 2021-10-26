@@ -112,5 +112,13 @@
 			<source lang="DE">EMSudseeAustralien</source>
 			<target lang="DE" name="DDB">Ozeanien und Australien</target>
 		</concept>
+		<concept>
+			<source lang="DE">KBPlakat</source>
+			<target lang="DE" name="DDB">Grafikdesign</target>
+		</concept>
+		<concept>
+			<source lang="DE">KBModekarikatur</source>
+			<target lang="DE" name="DDB">Modebild</target>
+		</concept>
 	</voc>
 </vocmap>

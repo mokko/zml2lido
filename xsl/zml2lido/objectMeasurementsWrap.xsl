@@ -121,6 +121,12 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Kartonformat'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
+			
 			<xsl:when test=". = 'Länge'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>

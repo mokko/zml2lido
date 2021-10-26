@@ -30,18 +30,21 @@
 					<xsl:comment>beschreibt den Erwerb des Objekts durch die verwaltende Institution</xsl:comment>
                 </lido:eventType>
 
-                <!-- lido:eventActor -->
+                <!-- lido:eventActor 
                 <xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
                 	z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Erwerbung von']"/>
+				-->
 
                 <!-- todo xsl:apply-templates mode="Erwerb" select="personenKörperschaften[@funktion eq 'Veräußerer']"/-->
 
-                <!-- lido:eventDate; call only when it has a date -->
+                <!-- lido:eventDate; call only when it has a date 
                 <xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionDateGrp']/z:repeatableGroupItem[
                 	z:dataField/@name='DateFromTxt']"/>
+				-->
 
-                <!-- lido:eventMethod (m3: neuer Platz für Erwerbungsart nach Empfehlung FvH) -->
+                <!-- lido:eventMethod (m3: neuer Platz für Erwerbungsart nach Empfehlung FvH) 
                 <xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionMethodGrp']/z:repeatableGroupItem"/>
+				-->
 				
 				<!-- eventDescriptionSet ErwerbNotizAusgabe-->
                 <xsl:apply-templates mode="Erwerb" select="z:repeatableGroup[

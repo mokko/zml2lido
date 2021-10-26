@@ -127,7 +127,7 @@
 			<xsl:message terminate="yes">
 				<xsl:text>ERROR: vocmap-replace returns EMPTY ON </xsl:text>
 				<xsl:value-of select="$src-term"/> 
-				<xsl:text>FROM </xsl:text>
+				<xsl:text> FROM </xsl:text>
 				<xsl:value-of select="$src-voc"/> 
 			</xsl:message>
 		</xsl:if> 

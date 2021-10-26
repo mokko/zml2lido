@@ -20,7 +20,11 @@
     <xsl:template name="eventWrap">
         <lido:eventWrap>
             <xsl:call-template name="Herstellung"/>
-            <xsl:call-template name="Erwerb"/>
+            <xsl:if test="z:repeatableGroup[
+				@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
+				z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']">
+				<xsl:call-template name="Erwerb"/>
+			</xsl:if>
             <!-- xsl:if test="z:personenKörperschaften[@funktion = 'Sammler']">
                 <xsl:call-template name="Sammeln"/>
             </xsl:if -->
