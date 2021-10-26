@@ -25,6 +25,83 @@
     </xsl:template>
 
 	<!-- todo -->
-    <xsl:template name="inscriptionsWrap"/>
-    
+    <xsl:template name="inscriptionsWrap">
+		<xsl:apply-templates select="z:repeatableGroup[@name='ObjLabelObjectGrp']"/>
+	</xsl:template>
+	
+	<xsl:template match="z:repeatableGroup[@name='ObjLabelObjectGrp']">
+		<lido:inscriptionsWrap>
+			<xsl:apply-templates select="z:repeatableGroupItem">
+				<xsl:sort select="z:dataField[@name='SortLnu']"/>
+			</xsl:apply-templates>
+		</lido:inscriptionsWrap>
+	</xsl:template>
+
+	<xsl:template match="z:repeatableGroup[@name='ObjLabelObjectGrp']/z:repeatableGroupItem">
+		<lido:inscriptions>
+			<xsl:attribute name="lido:sortorder" select="z:dataField[@name='SortLnu']"/>
+			<xsl:if test="z:dataField[@name='LabelClb'] or z:dataField[@name='TransliterationClb'] 
+				or z:dataField[@name='TranslationClb']">
+				<!-- spec inscriptionTranscription: Repeat this element only for language variants, 
+				but I also need it for multiple transcriptions: 
+				Example 
+				1. Japanese handwriting, 
+				2. transliteration in German alphabet
+				3. tanslation in German
+				There is no lido:type for inscriptionTranscription
+				-->
+				<xsl:apply-templates select="z:dataField[@name='LabelClb']/z:value"/>
+				<xsl:apply-templates select="z:dataField[@name='TransliterationClb']/z:value"/>
+				<xsl:apply-templates select="z:dataField[@name='TranslationClb']/z:value"/>
+			</xsl:if>
+			<xsl:apply-templates select="z:dataField[@name='MethodTxt']/z:value"/>
+			<xsl:apply-templates select="z:dataField[@name='PositionTxt']/z:value"/>
+			<xsl:apply-templates select="z:dataField[@name='OrientationTxt']/z:value"/>
+			
+		</lido:inscriptions>
+	</xsl:template>
+
+	<!-- descriptions -->
+	<xsl:template match="z:dataField[@name='MethodTxt']/z:value">
+		<lido:inscriptionDescription lido:type="Method">
+			<lido:descriptiveNoteValue xml:lang="de">
+				<xsl:value-of select="."/>
+			</lido:descriptiveNoteValue>
+		</lido:inscriptionDescription>
+	</xsl:template>
+
+	<xsl:template match="z:dataField[@name='PositionTxt']/z:value">
+		<lido:inscriptionDescription lido:type="Position">
+			<lido:descriptiveNoteValue xml:lang="de">
+				<xsl:value-of select="."/>
+			</lido:descriptiveNoteValue>
+		</lido:inscriptionDescription>
+	</xsl:template>
+
+	<xsl:template match="z:dataField[@name='OrientationTxt']/z:value">
+		<lido:inscriptionDescription lido:type="Ausrichtung">
+			<lido:descriptiveNoteValue xml:lang="de">
+				<xsl:value-of select="."/>
+			</lido:descriptiveNoteValue>
+		</lido:inscriptionDescription>
+	</xsl:template>
+
+	<!-- transcriptions -->
+	<xsl:template match="z:dataField[@name='LabelClb']/z:value">
+		<lido:inscriptionTranscription xml:lang="de" lido:label="Aufschrift">
+			<xsl:value-of select="."/>
+		</lido:inscriptionTranscription>
+	</xsl:template>
+
+	<xsl:template match="z:dataField[@name='TransliterationClb']/z:value">
+		<lido:inscriptionTranscription xml:lang="de" lido:label="Transliteration">
+			<xsl:value-of select="."/>
+		</lido:inscriptionTranscription>
+	</xsl:template>
+
+	<xsl:template match="z:dataField[@name='TranslationClb']/z:value">
+		<lido:inscriptionTranscription xml:lang="de" lido:label="Überschrift">
+			<xsl:value-of select="."/>
+		</lido:inscriptionTranscription>
+	</xsl:template>
 </xsl:stylesheet>
