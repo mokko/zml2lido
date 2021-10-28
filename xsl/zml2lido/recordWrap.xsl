@@ -25,7 +25,7 @@
 					For rst this is irrelevant
 				-->
 				<lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00141</lido:conceptID>
-				<lido:term>Einzelobjekt</lido:term>
+				<lido:term xml:lang="de">Einzelobjekt</lido:term>
 			</lido:recordType>
 			<lido:recordSource lido:type="Institution">
 				<xsl:call-template name="legalBody">
@@ -35,7 +35,7 @@
 			<lido:recordRights>
 				<lido:rightsType>
                     <lido:conceptID lido:source="CC" lido:type="URI">http://creativecommons.org/by-nc-sa/4.0/</lido:conceptID>
-                    <lido:term lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</lido:term>
+                    <lido:term xml:lang="en" lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</lido:term>
 				</lido:rightsType>
 				<xsl:call-template name="defaultRightsHolder"/>
 			</lido:recordRights>

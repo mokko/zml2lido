@@ -40,12 +40,8 @@
 	<xsl:template match="z:repeatableGroup[@name='ObjKeyWordsGrp']/z:repeatableGroupItem">
 		<lido:subjectSet>
 			<xsl:call-template name="sortorderAttribute"/>
-			<xsl:comment>iconclass bzw. ObjKeyWordsGrp</xsl:comment>
-			<xsl:if test="z:dataField[@name = 'NotationTxt']">
-				<lido:displaySubject xml:lang="de">
-					<xsl:value-of select="z:dataField[@name = 'NotationTxt']"/>
-				</lido:displaySubject>
-			</xsl:if>
+			<xsl:comment>ObjKeyWordsGrp</xsl:comment>
+			<xsl:apply-templates mode="display" select="z:dataField[@name = 'NotationTxt']/z:value"/>
 			<lido:subject>
 				<lido:extentSubject>
 					<xsl:value-of select="z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
@@ -56,14 +52,24 @@
 							<xsl:value-of select="z:vocabularyReference[@instanceName = 'ObjKeyWordVgr']/z:vocabularyReferenceItem/@name"/>
 						</lido:conceptID>
 					</xsl:if>
-					<lido:term>
-						<xsl:value-of select="z:dataField[@name = 'NotationTxt']"/>
-					</lido:term>
+					<xsl:apply-templates mode="index" select="z:dataField[@name = 'NotationTxt']/z:value"/>
 				</lido:subjectConcept>
 			</lido:subject>
 		</lido:subjectSet>
     </xsl:template>
-	
+
+	<xsl:template mode="display" match="z:dataField[@name = 'NotationTxt']/z:value">
+		<lido:displaySubject>
+			<xsl:value-of select="."/>
+		</lido:displaySubject>
+	</xsl:template>
+
+	<xsl:template mode="index" match="z:dataField[@name = 'NotationTxt']/z:value">
+		<lido:term xml:lang="de">
+			<xsl:value-of select="."/>
+		</lido:term>
+	</xsl:template>
+
 
 	<!-- 
 		This is not good yet; this was made for Europeana:Fashion keywords but this source is not mentioned yet. 
