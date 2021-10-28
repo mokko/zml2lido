@@ -62,7 +62,7 @@ xsl = {
 
 
 class LidoTool:
-    def __init__(self, *, input,  force, validation):
+    def __init__(self, *, input, force, validation):
         self.validation = validation
         self.force = force
         self.input = Path(input)  # initial input file, e.g. 3Wege.zml.xml
@@ -323,7 +323,5 @@ if __name__ == "__main__":
 
     print(f"JOB: {args.job}")
 
-    m = LidoTool(
-        input=args.input, force=args.force, validation=args.validate
-    )
+    m = LidoTool(input=args.input, force=args.force, validation=args.validate)
     getattr(m, args.job)()
