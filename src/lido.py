@@ -21,6 +21,7 @@
     first place.
 
     Changes
+    10/28/21 move installation specific config to a separate file in sdata
     10/26/21 outdir simplified; it's always relative to pwd now. One  command line param less.
     10/21/21 new output dir
     10/20/21 only checkLinks if output file doesn't exist yet (as usual) 
@@ -43,16 +44,14 @@ import sys
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 srcDir = Path(__file__).parent
-# print (srcDir)
-sys.path.append("C:\m3\zml2lido\src")  # very dirty
-
-from LinkChecker import LinkChecker
 
 conf_fn = Path(__file__).parent.parent.joinpath("sdata", "lido_conf.py")
 xslDir = Path(__file__).parent.parent.joinpath("xsl")
 
 with open(conf_fn) as f:
     exec(f.read()) # saxLib, lidoXSD
+
+from LinkChecker import LinkChecker
 
 xsl = {
     "zml2lido": xslDir.joinpath("zml2lido.xsl"),
