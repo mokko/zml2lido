@@ -296,7 +296,7 @@ class LidoTool:
             self._copy(pic=pic, out=out_fn)
 
     def _saxon(self, *, input, output, xsl):
-        cmd = f"java -Xmx1300m -jar {saxLib} -s:{input} -xsl:{xsl} -o:{output}"
+        cmd = f"java -Xmx1350m -jar {saxLib} -s:{input} -xsl:{xsl} -o:{output}"
         print(f" cmd {cmd}")
 
         subprocess.run(
