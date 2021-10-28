@@ -48,9 +48,11 @@ sys.path.append("C:\m3\zml2lido\src")  # very dirty
 
 from LinkChecker import LinkChecker
 
+conf_fn = Path(__file__).parent.parent.joinpath("sdata", "lido_conf.py")
 xslDir = Path(__file__).parent.parent.joinpath("xsl")
-saxLib = r"C:\m3\SaxonHE10-5J\saxon-he-10.5.jar"
-lidoXSD = r"C:\m3\zml2lido\xsd\lido-v1.0.xsd"
+
+with open(conf_fn) as f:
+    exec(f.read())
 
 xsl = {
     "zml2lido": xslDir.joinpath("zml2lido.xsl"),

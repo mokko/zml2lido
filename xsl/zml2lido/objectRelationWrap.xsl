@@ -102,7 +102,7 @@
 				<lido:conceptID lido:type="id">
 					<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
 				</lido:conceptID>
-				<lido:term>
+				<lido:term xml:lang="de">
 					<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 				</lido:term>
 			</lido:subjectConcept>
@@ -128,7 +128,7 @@
                 </lido:displayObject>
             </lido:relatedWork>
             <lido:relatedWorkRelType>
-                <lido:term>
+                <lido:term xml:lang="de">
                     <xsl:value-of select="z:vocabularyReference[@name = 'TypeAVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
                 </lido:term>
             </lido:relatedWorkRelType>
