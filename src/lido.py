@@ -52,7 +52,7 @@ conf_fn = Path(__file__).parent.parent.joinpath("sdata", "lido_conf.py")
 xslDir = Path(__file__).parent.parent.joinpath("xsl")
 
 with open(conf_fn) as f:
-    exec(f.read())
+    exec(f.read()) # saxLib, lidoXSD
 
 xsl = {
     "zml2lido": xslDir.joinpath("zml2lido.xsl"),
