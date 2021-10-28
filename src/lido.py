@@ -32,6 +32,7 @@
     9/11/21 -f force should overwrite existing data in all steps, not just in zml2lido
     9/11/21 implement simple filter that filters out zml records of type object that have no sachbegriff
 """
+
 from lxml import etree
 from pathlib import Path
 from PIL import Image, ImageFile
@@ -44,7 +45,6 @@ import sys
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 srcDir = Path(__file__).parent
-
 conf_fn = Path(__file__).parent.parent.joinpath("sdata", "lido_conf.py")
 xslDir = Path(__file__).parent.parent.joinpath("xsl")
 
@@ -60,7 +60,6 @@ xsl = {
     "splitLido": xslDir.joinpath("splitLido.xsl"),
     "splitSachbegriff": xslDir.joinpath("splitNoSachbegriff.xsl"),
 }
-
 
 class LidoTool:
     def __init__(self, *, input, force, validation):
