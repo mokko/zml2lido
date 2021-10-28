@@ -159,4 +159,11 @@
 			<xsl:value-of select="func:weblink($verwaltendeInstitution)"/>
 		</lido:legalBodyWeblink>
 	</xsl:template>
+
+	<xsl:template name="sortorderAttribute">
+		<xsl:if test="z:dataField[@name='SortLnu'] ne ''">
+			<xsl:attribute name="lido:sortorder" select="z:dataField[@name='SortLnu']"/>
+		</xsl:if>
+	</xsl:template>
+
 </xsl:stylesheet>

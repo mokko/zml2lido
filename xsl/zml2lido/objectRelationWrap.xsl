@@ -13,18 +13,102 @@
 	objectRelationWrap(spec 1.0): Wrapper for infomation about related topics and works,
 	collections, etc.
 	
-	Why subjectWrap is here, I dont understand, but who cares.
+	I dont understand why subjectWrap is an aspect of objectRelation, but who cares.
 	-->
 
 	<xsl:template name="objectRelationWrap">
 		<lido:objectRelationWrap>
-			<!-- subjectWrap todo -->
+			<xsl:if test="z:repeatableGroup[@name='ObjIconographyGrp'] or z:repeatableGroup[@name='ObjKeyWordsGrp']">
+				<lido:subjectWrap>
+					<xsl:apply-templates select="z:repeatableGroup[@name='ObjIconographyGrp']"/>
+					<xsl:apply-templates select="z:repeatableGroup[@name='ObjKeyWordsGrp']"/>
+				</lido:subjectWrap>
+			</xsl:if>
 			<!-- relatedWorksWrap -->
-			<lido:relatedWorksWrap>
-				<xsl:apply-templates select="z:composite[@name='ObjObjectCre']/z:compositeItem"/>
-			</lido:relatedWorksWrap>
+			<xsl:apply-templates select="z:composite[@name='ObjObjectCre']"/>
 		</lido:objectRelationWrap>
     </xsl:template>
+
+	<!--RIA:ICONCLASS-->
+
+	<xsl:template match="z:repeatableGroup[@name='ObjKeyWordsGrp']">
+		<xsl:apply-templates select="z:repeatableGroupItem">
+			<xsl:sort select="z:dataField[@name='SortLnu']" data-type="number" order="ascending"/>
+		</xsl:apply-templates>
+    </xsl:template>
+	
+	<xsl:template match="z:repeatableGroup[@name='ObjKeyWordsGrp']/z:repeatableGroupItem">
+		<lido:subjectSet>
+			<xsl:call-template name="sortorderAttribute"/>
+			<xsl:comment>iconclass bzw. ObjKeyWordsGrp</xsl:comment>
+			<xsl:if test="z:dataField[@name = 'NotationTxt']">
+				<lido:displaySubject xml:lang="de">
+					<xsl:value-of select="z:dataField[@name = 'NotationTxt']"/>
+				</lido:displaySubject>
+			</xsl:if>
+			<lido:subject>
+				<lido:extentSubject>
+					<xsl:value-of select="z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+				</lido:extentSubject>
+				<lido:subjectConcept>
+					<xsl:if test="z:vocabularyReference[@instanceName = 'ObjKeyWordVgr']/z:vocabularyReferenceItem/@name">
+						<lido:conceptID lido:type="URL" lido:source="iconclass">
+							<xsl:value-of select="z:vocabularyReference[@instanceName = 'ObjKeyWordVgr']/z:vocabularyReferenceItem/@name"/>
+						</lido:conceptID>
+					</xsl:if>
+					<lido:term>
+						<xsl:value-of select="z:dataField[@name = 'NotationTxt']"/>
+					</lido:term>
+				</lido:subjectConcept>
+			</lido:subject>
+		</lido:subjectSet>
+    </xsl:template>
+	
+
+	<!-- 
+		This is not good yet; this was made for Europeana:Fashion keywords but this source is not mentioned yet. 
+		Let's not do that now. Instead, let's map other similar things and see how that changes the problem.
+	-->
+	<xsl:template match="z:repeatableGroup[@name='ObjIconographyGrp']">
+			<xsl:apply-templates select="z:repeatableGroupItem[z:vocabularyReference[@name='KeywordProjectVoc']]">
+				<xsl:sort select="z:dataField[@name='SortLnu']" data-type="number" order="ascending"/>
+			</xsl:apply-templates>
+	</xsl:template>
+
+	<!-- todo: z:repeatableGroup[@name='ObjIconographyGrp']/z:repeatableGroupItem -->
+	<xsl:template match="z:repeatableGroupItem[z:vocabularyReference[@name='KeywordProjectVoc']]">
+		<lido:subjectSet>
+			<xsl:call-template name="sortorderAttribute"/>
+			<xsl:apply-templates select="z:vocabularyReference[@name = 'KeywordProjectVoc']"/>
+		</lido:subjectSet>
+	</xsl:template>
+
+	<xsl:template match="z:vocabularyReference[@name = 'KeywordProjectVoc']">
+		<lido:displaySubject xml:lang="de">
+			<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
+		</lido:displaySubject>
+		<lido:subject>
+			<lido:subjectConcept>
+				<xsl:comment>
+					<xsl:text>conceptID is an RIA internal id</xsl:text>
+					<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
+				</xsl:comment>
+				<lido:conceptID lido:type="id">
+					<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
+				</lido:conceptID>
+				<lido:term>
+					<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
+				</lido:term>
+			</lido:subjectConcept>
+		</lido:subject>
+	</xsl:template>
+
+	<!-- composite -->
+	<xsl:template match="z:composite[@name='ObjObjectCre']">
+		<lido:relatedWorksWrap>
+			<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectARef']/z:moduleReferenceItem"/>
+		</lido:relatedWorksWrap>
+	</xsl:template>
 
 	<xsl:template match="z:composite[@name='ObjObjectCre']/z:compositeItem">
 			<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectARef']/z:moduleReferenceItem"/>
