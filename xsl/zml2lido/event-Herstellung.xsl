@@ -18,9 +18,17 @@
                     <lido:term xml:lang="de">Herstellung</lido:term>
                 </lido:eventType>
 
-				<!-- eventActor 
-					Todo: There could be a PK@Hersteller 
+				<!-- eventActor in PK/Beteiligte  and @targetModule='Person'
 				-->
+				<xsl:variable name="herstellendeRollen" select="
+					'Autor', 'Bildhauer', 'Bildhauerin', 'Darsteller', 'Dirigent', 'Filmemacher', 'Filmregisseur', 
+					'Fotograf', 'Hersteller', 'Künstler', 'Maler', 'Produzent'
+				"/>
+				<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
+					z:vocabularyReference/@name = 'RoleVoc' 
+					and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $herstellendeRollen]"/>
+
+				<!-- Ethnien und andere Kollektive aus GeoBezug-->
                 <xsl:apply-templates mode="eventActor" select="z:repeatableGroup[
                 	@name = 'ObjGeograficGrp']/z:repeatableGroupItem[
                 	z:vocabularyReference/@name = 'GeopolVoc' and 
@@ -66,6 +74,41 @@
         </lido:eventSet>
     </xsl:template>
     
+	<xsl:template match="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem">
+		<xsl:message>
+			<xsl:text>PK in Herstellung: </xsl:text>
+			<xsl:value-of select="z:formattedValue"/>
+		</xsl:message>
+ 		<lido:eventActor>
+            <lido:displayActorInRole>
+				<xsl:value-of select="z:formattedValue"/>
+            </lido:displayActorInRole>
+            <lido:actorInRole>
+                <lido:actor lido:type="welcheWerteSindHierErlaubt und aus welchem RIA Feld kommen sie?">
+					<lido:actorID>
+						<xsl:value-of select="@moduleItemId"/>
+					</lido:actorID>
+                    <lido:nameActorSet>
+                        <lido:appellationValue lido:pref="preferred">
+							<xsl:text>Friedrich Sarre!todo!</xsl:text>
+                        </lido:appellationValue>
+                    </lido:nameActorSet>
+					<lido:nationalityActor>todo nachschlagen</lido:nationalityActor>
+					<lido:vitalDatesActor>todo.Nachschlagen im PK-Ds</lido:vitalDatesActor>
+					<lido:gender>todo nachschlagen</lido:gender>
+                </lido:actor>
+                <lido:roleActor>
+					<lido:term xml:lang="de">
+						<xsl:value-of select="z:vocabularyReference[@name = 'RoleVoc']/z:vocabularyReferenceItem/z:formattedValue"/> 
+					</lido:term>
+                </lido:roleActor>
+				<lido:attributionQualifierActor>
+				<xsl:value-of select="z:vocabularyReference[@name = 'AttributionVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+				</lido:attributionQualifierActor>
+            </lido:actorInRole>
+        </lido:eventActor>
+	</xsl:template>
+					
 	<!-- 
         m3: Kultur auf Actor gemappt entsprechend Vorschlag FvH; 
         ich sehe bei unseren Daten im Moment keinen Vorteil gegenüber 
@@ -187,71 +230,29 @@
 
 	<xsl:template mode="geoPol" match="z:vocabularyReference[
             		@name = 'GeopolVoc']/z:vocabularyReferenceItem/@name">	        
+		<xsl:variable name="geographicEntities" select="
+			'Atoll', 'Bach', 'Bach/Zufluss', 'Berg', 'Bucht', 'Bucht (Bay)', 'Fluss', 'Fluss, Bucht und Dorf',
+			'Fluss/Gebiet', 'Flussmündung', 'Gebirge', 'Hafen', 'Halbinsel', 'Höhle', 'Insel', 'Insel/Region',
+			'Inselgruppe', 'Kap', 'Kap (Cap/Point)', 'Kontinent', 'Kontintentteil', 'Küste', 'Landschaft',
+			'Meerenge', 'Nebenfluss', 'See', 'See/Gebiet', 'Tal'"/>
+		<xsl:variable name="politicalEntities" select="'Bezirk', 'Bezirk oder Stadt', 'Bundesstaat', 'Dorf', 
+			'Großregion', 'Königreich', 'Land', 'Ort', 'Ort/Gebiet', 'Provinz', 'Sultanat', 'Stadt', 'Station'"/> 
+		<xsl:variable name="undecided" select="'Gebiet', 'Hafen (Port)', 'Land/Region', 'Kloster', 
+			'Kolonie/&quot;Schutzgebiet&quot;', 'Kultur/Ort', 'Region', 'Region oder Ort', 'Stadt/Umgebung',
+			'Tempel'"/>
 		<xsl:choose>
-		    <!-- geographicEntities -->
-		    <xsl:when test=". = 'Atoll'
-		        or . = 'Bach'
-		        or . = 'Bach/Zufluss'
-		        or . = 'Berg'
-		        or . = 'Bucht'
-		        or . = 'Bucht (Bay)'
-		        or . = 'Fluss'
-		        or . = 'Fluss, Bucht und Dorf'
-		        or . = 'Fluss/Gebiet'
-		        or . = 'Flussmündung'
-		        or . = 'Gebirge'
-		        or . = 'Hafen'
-		        or . = 'Halbinsel'
-		        or . = 'Höhle'
-		        or . = 'Insel'
-		        or . = 'Insel/Region'
-		        or . = 'Inselgruppe'
-		        or . = 'Kap'
-		        or . = 'Kap (Cap/Point)'
-		        or . = 'Kontinent'
-		        or . = 'Kontintentteil'
-		        or . = 'Küste'
-		        or . = 'Landschaft'
-		        or . = 'Meerenge'
-		        or . = 'Nebenfluss'
-		        or . = 'See'
-		        or . = 'See/Gebiet'
-		        or . = 'Tal'">
+		    <xsl:when test=". = $geographicEntities">
 		        <xsl:attribute name="lido:geographicalEntity">
 		            <xsl:value-of select="."/>
 		        </xsl:attribute>
 		    </xsl:when>
-		    <!-- politicalEntities -->
-		    <xsl:when test=". = 'Bezirk'
-		        or . = 'Bezirk oder Stadt'
-				or . = 'Bundesstaat'
-				or . = 'Dorf'
-		    	or . = 'Großregion'
-		    	or . = 'Königreich'
-		    	or . = 'Land'
-				or . = 'Ort'
-				or . = 'Ort/Gebiet'
-				or . = 'Provinz'
-				or . = 'Sultanat'
-		    	or . = 'Stadt'
-		    	or . = 'Station'
-			    ">
+		    <xsl:when test=". = $politicalEntities">
 	            <xsl:attribute name="lido:politicalEntity">
 	                <xsl:value-of select="."/>
 	            </xsl:attribute>
 		    </xsl:when>
 			<!-- undecided: output geoname, but without type -->
-		    <xsl:when test=". = 'Gebiet'
-		    	or . = 'Hafen (Port)'
-		    	or . = 'Land/Region'
-				or . = 'Kloster'
-				or . = 'Kolonie/&quot;Schutzgebiet&quot;'
-				or . = 'Kultur/Ort'
-		    	or . = 'Region'
-				or . = 'Region oder Ort'
-				or . = 'Stadt/Umgebung'
-				or . = 'Tempel'
-			    ">
+		    <xsl:when test=". = $undecided">
 			    <xsl:value-of select="."/>
 		    </xsl:when>
 			<!-- dont output geoname at all -->
