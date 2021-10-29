@@ -40,8 +40,33 @@
 				<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
 			</lido:classification>
 			<xsl:call-template name="sammlung2"/>
+			<!-- ObjObjectGroupsRef -->
+			<xsl:variable name="grpIds" select="'117396', '106400', '101396'"/>
+			<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem[@moduleItemId = $grpIds]"/>
+			<xsl:apply-templates mode="DDB" select="z:repeatableGroup[@name = 'ObjPublicationGrp']
+				/z:repeatableGroupItem[z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']"/>
+				
         </lido:classificationWrap>
 	</xsl:template>
+
+	<xsl:template match="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem">
+		<lido:classification lido:type="DDB">
+			<xsl:comment> Daten für die DDB sollen getrennt werden, je nachdem ob sie bei 3 Wege benutzt werden 
+			oder nicht. Um dies zu ermöglichen, sind Daten für 3 Wege hier als solche ausgezeichnet.</xsl:comment>
+			<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
+		</lido:classification>
+	</xsl:template>
+
+	<!-- Im Augenblick gibt es nur eine ApprovalGrp, die für 3 Wege freigegeben ist -->
+	<xsl:template mode="DDB" match="z:repeatableGroup[@name = 'ObjPublicationGrp']/z:repeatableGroupItem[
+		z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']">
+		<xsl:if test="z:vocabularyReference[@name = 'PublicationVoc']/z:vocabularyReferenceItem/z:formattedValue">
+			<lido:classification lido:type="DDB">
+				<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
+			</lido:classification>
+		</xsl:if>
+	</xsl:template>
+
 
 	<!-- obsolete not used anymore-->
 	<xsl:template name="sammlung">

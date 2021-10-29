@@ -106,7 +106,7 @@
 		-->
 		<lido:eventDescriptionSet> 
 			<lido:descriptiveNoteValue xml:lang="de" lido:encodinganalog="ErwerbNotizAusgabe">
-				<xsl:value-of select="z:dataField/z:value"/>
+				<xsl:value-of select="z:dataField[@name = 'MemoClb']/z:value"/>
 			</lido:descriptiveNoteValue>
 		</lido:eventDescriptionSet>
 	</xsl:template>
@@ -125,4 +125,3 @@
 		 </lido:eventMethod>
 	</xsl:template>
 </xsl:stylesheet>
-
