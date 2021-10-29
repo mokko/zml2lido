@@ -118,8 +118,8 @@
 						<xsl:value-of select="z:vocabularyReference[@name = 'RoleVoc']/z:vocabularyReferenceItem/z:formattedValue"/> 
 					</lido:term>
                 </lido:roleActor>
-				<lido:attributionQualifierActor>
-				<xsl:value-of select="z:vocabularyReference[@name = 'AttributionVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+				<lido:attributionQualifierActor xml:lang="de">
+					<xsl:value-of select="z:vocabularyReference[@name = 'AttributionVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 				</lido:attributionQualifierActor>
             </lido:actorInRole>
         </lido:eventActor>
