@@ -75,6 +75,8 @@
     </xsl:template>
     
 	<xsl:template match="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem">
+		<xsl:variable name="kueId" select="@moduleItemId"/>
+		<xsl:variable name="kue" select="/z:application/z:modules/z:module[@name = 'Person']/z:moduleItem[@id = $kueId]"/>
 		<xsl:message>
 			<xsl:text>PK in Herstellung: </xsl:text>
 			<xsl:value-of select="z:formattedValue"/>
@@ -86,16 +88,30 @@
             <lido:actorInRole>
                 <lido:actor lido:type="welcheWerteSindHierErlaubt und aus welchem RIA Feld kommen sie?">
 					<lido:actorID>
-						<xsl:value-of select="@moduleItemId"/>
+						<xsl:value-of select="$kueId"/>
 					</lido:actorID>
                     <lido:nameActorSet>
                         <lido:appellationValue lido:pref="preferred">
-							<xsl:text>Friedrich Sarre!todo!</xsl:text>
+							<xsl:value-of select="$kue/z:dataField[@name = 'PerNennformTxt']"/>
                         </lido:appellationValue>
                     </lido:nameActorSet>
-					<lido:nationalityActor>todo nachschlagen</lido:nationalityActor>
-					<lido:vitalDatesActor>todo.Nachschlagen im PK-Ds</lido:vitalDatesActor>
-					<lido:gender>todo nachschlagen</lido:gender>
+					<lido:nationalityActor>
+						<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerNationalityVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+					</lido:nationalityActor>
+					<lido:vitalDatesActor>
+						<lido:earliestDate>
+							<xsl:value-of select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
+							/z:repeatableGroupItem/z:dataField[@name = 'DateFromTxt']/z:value"/>
+						</lido:earliestDate>
+						<lido:latestDate>
+							<xsl:value-of select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
+							/z:repeatableGroupItem/z:dataField[@name = 'DateToTxt']/z:value"/>
+						</lido:latestDate>
+						<xsl:value-of select="$kue/z:virtualField[@name = 'PreviewVrt']/z:value"/>
+					</lido:vitalDatesActor>
+					<lido:gender xml:lang="en">
+						<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerGenderVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+					</lido:gender>
                 </lido:actor>
                 <lido:roleActor>
 					<lido:term xml:lang="de">
