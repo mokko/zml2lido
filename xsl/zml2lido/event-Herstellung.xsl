@@ -86,7 +86,9 @@
 				<xsl:value-of select="z:formattedValue"/>
             </lido:displayActorInRole>
             <lido:actorInRole>
-                <lido:actor lido:type="welcheWerteSindHierErlaubt und aus welchem RIA Feld kommen sie?">
+				<!-- http://xtree-public.digicult-verbund.de/vocnet/?uriVocItem=http://terminology.lido-schema.org/&startNode=lido00409&lang=en&d=n -->
+                <lido:actor>
+					<xsl:attribute name="lido:type" select="$kue/z:vocabularyReference[@name = 'PerTypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 					<lido:actorID>
 						<xsl:value-of select="$kueId"/>
 					</lido:actorID>
