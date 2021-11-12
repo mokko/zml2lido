@@ -8,6 +8,11 @@
 <vocmap>
 	<voc name="verwaltendeInstitution">
 		<concept>
+			<source lang="DE">Kupferstichkabinett, Staatliche Museen zu Berlin</source>
+			<target lang="DE" name="ISIL">DE-MUS-018511</target>
+			<target lang="DE" name="homepage">https://www.smb.museum/museen-einrichtungen/kupferstichkabinett/home/</target>
+		</concept>
+		<concept>
 			<source lang="DE">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</source>
 			<target lang="DE" name="ISIL">DE-MUS-019014</target>
 			<target lang="DE" name="homepage">https://www.smb.museum/aku</target>
@@ -43,6 +48,14 @@
 			<source lang="DE">pdf</source>
 			<target lang="EN" name="mimetype">application/pdf</target>
 		</concept>
+		<concept>
+			<source lang="DE">tif</source>
+			<target lang="EN" name="mimetype">image/tiff</target>
+		</concept>
+		<concept>
+			<source lang="DE">tiff</source>
+			<target lang="EN" name="mimetype">image/tiff</target>
+		</concept>
 	</voc>
 
 	<voc name="MulTypeVgr">
@@ -57,19 +70,9 @@
 			<target lang="EN" name="europeana:type">3D</target>
 		</concept>	
 		<concept>
-			<source lang="DE">Scan</source>
-			<target lang="EN" name="lido">image</target>
-			<target lang="EN" name="europeana:type">image</target>
-		</concept>	
-		<concept>
 			<source lang="DE">Dia (SPK)</source>
 			<target lang="EN" name="lido">image</target>
 			<target lang="EN" name="europeana:type">image</target>
-		</concept>	
-		<concept>
-			<source lang="EN">image</source>
-			<target lang="EN" name="europeana:type">image</target>
-			<target lang="EN" name="lido">image</target>
 		</concept>	
 		<concept>
 			<source lang="DE">Digitalisat p</source>
@@ -81,6 +84,31 @@
 			<target lang="EN" name="europeana:type">image</target>
 			<target lang="EN" name="lido">image</target>
 		</concept>
+		<concept> 
+			<source lang="DE">eMuseum Digitalisat</source>
+			<target lang="EN" name="europeana:type">image</target>
+			<target lang="EN" name="lido">image</target>
+		</concept>
+		<concept>
+			<source lang="EN">image</source>
+			<target lang="EN" name="europeana:type">image</target>
+			<target lang="EN" name="lido">image</target>
+		</concept>	
+		<concept> 
+			<source lang="DE">Negativ</source>
+			<target lang="EN" name="europeana:type">image</target>
+			<target lang="EN" name="lido">image</target>
+		</concept>
+		<concept> 
+			<source lang="DE">Negativ (Glasplatte)</source>
+			<target lang="EN" name="europeana:type">image</target>
+			<target lang="EN" name="lido">image</target>
+		</concept>
+		<concept>
+			<source lang="DE">Scan</source>
+			<target lang="EN" name="lido">image</target>
+			<target lang="EN" name="europeana:type">image</target>
+		</concept>	
 	</voc>
 
 	<voc name="Sammlung">

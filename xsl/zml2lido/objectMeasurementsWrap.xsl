@@ -49,6 +49,13 @@
 
 	<xsl:template match="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue">
 		<xsl:choose>
+			<xsl:when test=". = 'Andere Maße'">
+				<xsl:value-of select="../../../z:dataField[@name='Unknown3Num']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='Unknown2Num']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Auflagekarton'">
 				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
 				<xsl:text> x </xsl:text>
