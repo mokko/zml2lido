@@ -23,7 +23,7 @@
 				<xsl:variable name="herstellendeRollen" select="
 					'Auftraggeber', 'Autor', 'Bildhauer', 'Bildhauerin', 'Darsteller', 'Dirigent', 'Drucker',
 					'Entwerfer', 'Filmemacher', 'Filmregisseur', 'Fotograf', 'Hersteller', 'Künstler', 'Maler', 
-					'Produzent'
+					'Produzent', 'Zeichnerin'
 				"/>
 				<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 					z:vocabularyReference/@name = 'RoleVoc' 
