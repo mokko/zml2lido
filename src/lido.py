@@ -49,7 +49,7 @@ conf_fn = Path(__file__).parent.parent.joinpath("sdata", "lido_conf.py")
 xslDir = Path(__file__).parent.parent.joinpath("xsl")
 
 with open(conf_fn) as f:
-    exec(f.read()) # saxLib, lidoXSD
+    exec(f.read())  # saxLib, lidoXSD
 
 from LinkChecker import LinkChecker
 
@@ -60,6 +60,7 @@ xsl = {
     "splitLido": xslDir.joinpath("splitLido.xsl"),
     "splitSachbegriff": xslDir.joinpath("splitNoSachbegriff.xsl"),
 }
+
 
 class LidoTool:
     def __init__(self, *, input, force, validation):

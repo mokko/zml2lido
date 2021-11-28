@@ -44,7 +44,7 @@
     <xsl:template mode="resourceWrap" match="/z:application/z:modules/z:module[@name = 'Multimedia']/z:moduleItem">
 		<xsl:variable name="objId" select="z:composite[@name eq 'MulReferencesCre']/z:compositeItem/z:moduleReference[1]/z:moduleReferenceItem/@moduleItemId"/>
 		<xsl:variable name="verwaltendeInstitution" select="/z:application/z:modules/z:module[
-			@name = 'Object']/z:moduleItem[@id eq $objId]/z:moduleReference[
+			@name = 'Object']/z:moduleItem[@id = $objId]/z:moduleReference[
 			@name='ObjOwnerRef']/z:moduleReferenceItem/z:formattedValue"/>
 		<!--xsl:message>resourceSet</xsl:message-->
         <lido:resourceSet>
@@ -53,8 +53,20 @@
 				wo steht die Info, was ein Standardbild ist
 			-->
             <xsl:attribute name="lido:sortorder">
-				<xsl:value-of select="z:composite[@name='MulReferencesCre']/z:compositeItem/z:moduleReference/z:moduleReferenceItem/z:dataField[
-					@name='SortLnu']/z:value" />
+				<xsl:variable name="sort" select="z:composite[@name='MulReferencesCre']/z:compositeItem/z:moduleReference[
+					@name= 'MulObjectRef']/z:moduleReferenceItem/z:dataField[
+					@name='SortLnu']/z:value"/>
+				<!--xsl:message> ex objId 214875
+					why I do get multiple SortLnu values sometimes; just using the first one atm
+					<xsl:text>SORT:::</xsl:text>
+					<xsl:value-of select="$sort"/>
+				</xsl:message-->
+				<xsl:choose>
+					<xsl:when test="$sort[1] ne ''">
+						<xsl:value-of select="$sort[1]"/>
+					</xsl:when>
+					<xsl:otherwise>10</xsl:otherwise>
+				</xsl:choose>
             </xsl:attribute>
             <lido:resourceID>
 				<xsl:attribute name="lido:label">Bild</xsl:attribute>

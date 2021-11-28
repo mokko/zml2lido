@@ -57,6 +57,10 @@ class LinkChecker:
         if p.suffix == ".pdf":
             self.log(f"   Dont even check for pdf {p}")
             return  # dont even check pdfs b/c we know that they dont work
+        elif p.suffix == ".mp3":
+            self.log(f"   Dont even check for mp3 {p}")
+            return  # dont even check mp3 b/c we know that they dont work
+
         if p.suffix.lower() != p.suffix:
             suffixes.append(p.suffix.lower())
         for size in sizes:

@@ -45,6 +45,10 @@
 			<target lang="EN" name="mimetype">image/jpeg</target>
 		</concept>
 		<concept>
+			<source lang="DE">mp3</source>
+			<target lang="EN" name="mimetype">audio/mpeg</target>
+		</concept>
+		<concept>
 			<source lang="DE">pdf</source>
 			<target lang="EN" name="mimetype">application/pdf</target>
 		</concept>
@@ -59,6 +63,7 @@
 	</voc>
 
 	<voc name="MulTypeVgr">
+		<!-- Analoges Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
 		<concept>
 			<source lang="DE">3 D- Polygon</source>
 			<target lang="EN" name="lido">3D</target>
@@ -70,10 +75,31 @@
 			<target lang="EN" name="europeana:type">3D</target>
 		</concept>	
 		<concept>
+			<source lang="DE">Analoges Ausgangsmaterial</source>
+			<target lang="EN" name="lido">audio</target>
+			<target lang="EN" name="europeana:type">audio</target>
+		</concept>	
+		<concept>
+			<source lang="DE">audio</source>
+			<target lang="EN" name="lido">audio</target>
+			<target lang="EN" name="europeana:type">audio</target>
+		</concept>	
+		<concept>
+			<source lang="DE">Dia</source>
+			<target lang="EN" name="europeana:type">image</target>
+		</concept>	
+		<concept>
 			<source lang="DE">Dia (SPK)</source>
 			<target lang="EN" name="lido">image</target>
 			<target lang="EN" name="europeana:type">image</target>
-		</concept>	
+		</concept>
+		<!-- Digitales Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
+		<concept>
+			<source lang="DE">Digitales Ausgangsmaterial</source>
+			<target lang="EN" name="lido">audio</target>
+			<target lang="EN" name="europeana:type">audio</target>
+		</concept>
+		
 		<concept>
 			<source lang="DE">Digitalisat p</source>
 			<target lang="EN" name="europeana:type">image</target>
@@ -103,6 +129,10 @@
 			<source lang="DE">Negativ (Glasplatte)</source>
 			<target lang="EN" name="europeana:type">image</target>
 			<target lang="EN" name="lido">image</target>
+		</concept>
+		<concept>
+			<source lang="DE">Positiv</source>
+			<target lang="EN" name="europeana:type">audio</target>
 		</concept>
 		<concept>
 			<source lang="DE">Scan</source>

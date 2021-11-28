@@ -65,6 +65,16 @@
 					]
 				-->
 				<xsl:apply-templates mode="eventPlace" select="z:repeatableGroup[@name = 'ObjGeograficGrp']"/>
+				
+				<!-- freigabe = ja -->
+				<xsl:if test="z:repeatableGroup[
+					@name = 'ObjPublicationGrp']/z:repeatableGroupItem[
+					z:vocabularyReference[@name = 'TypeVoc' and z:vocabularyReferenceItem/@id = '4460851'] and 
+					z:vocabularyReference[@name = 'PublicationVoc' and z:vocabularyReferenceItem/@id = '1810139']
+					]">
+					<!--xsl:message>BENIN OBJECT</xsl:message-->
+					<xsl:call-template name="BeninPlace"/>
+				</xsl:if>
 
 				<!-- eventMaterialsTech -->
 				<lido:eventMaterialsTech>
@@ -73,6 +83,21 @@
 				</lido:eventMaterialsTech>
 			</lido:event>
 		</lido:eventSet>
+	</xsl:template>
+	
+	<xsl:template name="BeninPlace">
+		<xsl:comment>This is an "artificial" place to identify all Benin objects for 3 Wege Projekt</xsl:comment>
+		<lido:eventPlace>
+			<lido:place lido:politicalEntity="Benin_Kingdom">
+				<lido:placeID lido:type="URI">http://vocab.getty.edu/page/tgn/8711681</lido:placeID>
+				<lido:namePlaceSet>
+					<lido:appellationValue>Benin</lido:appellationValue>
+				</lido:namePlaceSet> 
+				<lido:placeClassification>
+					<lido:term>kingdom</lido:term>
+				</lido:placeClassification>
+			</lido:place>
+		</lido:eventPlace>
 	</xsl:template>
 	
 	<xsl:template match="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem">

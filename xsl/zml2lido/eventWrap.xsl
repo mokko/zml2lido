@@ -19,7 +19,7 @@
     -->
     <xsl:template name="eventWrap">
         <lido:eventWrap>
-            <xsl:call-template name="Herstellung"/>
+            <xsl:call-template name="Herstellung"/>			
             <xsl:if test="z:repeatableGroup[
 				@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
 				z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']">

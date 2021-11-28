@@ -84,6 +84,17 @@
 			<xsl:when test=". = 'Breite'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Dauer'">
+				<xsl:value-of select="format-number(../../../z:dataField[@name='HoursLnu']/z:value, '00')"/>
+				<xsl:text>:</xsl:text>
+				<xsl:value-of select="format-number(../../../z:dataField[@name='MinutesLnu']/z:value, '00')"/>
+				<xsl:text>:</xsl:text>
+				<xsl:value-of select="format-number(../../../z:dataField[@name='SecondsLnu']/z:value, '00')"/>
+			</xsl:when>
+			<!--todo: no value; might need correction upstream in RIA -->
+			<xsl:when test=". = 'Diaformat'">
+				<xsl:value-of select="../../../z:dataField[@name='ThicknessNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Dicke'">
 				<xsl:value-of select="../../../z:dataField[@name='ThicknessNum']/z:value"/>
 			</xsl:when>
@@ -97,6 +108,16 @@
 			</xsl:when>
 			<xsl:when test=". = 'Fläche'">
 				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
+			</xsl:when>
+			<!-- Walze ist unnötig; todo: in RIA korrigieren -->
+			<xsl:when test=". = 'Geschwindigkeit'">
+				<xsl:value-of select="../../../z:dataField[@name='SpeedNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Geschwindigkeit (Band)'">
+				<xsl:value-of select="../../../z:dataField[@name='SpeedNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Geschwindigkeit (Walze)'">
+				<xsl:value-of select="../../../z:dataField[@name='SpeedNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Gewicht'">
 				<xsl:value-of select="../../../z:dataField[@name='WeightNum']/z:value"/>
@@ -186,6 +207,19 @@
 			<xsl:when test=". = 'Sehnenlänge'">
 				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
 			</xsl:when>
+			<!-- Synonym with Dauer; replace with pref in RIA-->
+			<xsl:when test=". = 'Spieldauer'">
+				<xsl:value-of select="format-number(../../../z:dataField[@name='HoursLnu']/z:value, '00')"/>
+				<xsl:text>:</xsl:text>
+				<xsl:value-of select="format-number(../../../z:dataField[@name='MinutesLnu']/z:value, '00')"/>
+				<xsl:text>:</xsl:text>
+				<xsl:value-of select="format-number(../../../z:dataField[@name='SecondsLnu']/z:value, '00')"/>
+			</xsl:when>
+			<!-- only instance of Stichmaß has no value; todo-->
+			<xsl:when test=". = 'Stichmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
+			</xsl:when>
+			
 			<xsl:when test=". = 'Tiefe'">
 				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
 			</xsl:when>
