@@ -60,6 +60,9 @@ class LinkChecker:
         elif p.suffix == ".mp3":
             self.log(f"   Dont even check for mp3 {p}")
             return  # dont even check mp3 b/c we know that they dont work
+        elif p.suffix == ".tif":
+            self.log(f"   Dont even check for tif {p}")
+            return  # dont even check tif b/c we know that they dont work
 
         if p.suffix.lower() != p.suffix:
             suffixes.append(p.suffix.lower())
