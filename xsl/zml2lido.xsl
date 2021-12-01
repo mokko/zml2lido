@@ -121,7 +121,8 @@
 		<xsl:param name="src-term"/>
 		<xsl:param name="target"/>
 		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
-		<xsl:variable name="return" select="$dict/vocmap/voc[@name eq $src-voc]/concept[source eq $src-term]/target[@name = $target]/text()"/>
+		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
+		<xsl:variable name="return" select="$dict/vocmap/voc[@name eq $src-voc]/concept[source eq $src-term]/target[@name eq $target]/text()"/>
 		<!-- die if replacement returns empty, except if source is already empty -->
 		<xsl:if test="normalize-space($return) = '' and normalize-space($src-term) != ''">
 			<xsl:message terminate="yes">
