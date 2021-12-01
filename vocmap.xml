@@ -8,175 +8,175 @@
 <vocmap>
 	<voc name="verwaltendeInstitution">
 		<concept>
-			<source lang="DE">Kupferstichkabinett, Staatliche Museen zu Berlin</source>
-			<target lang="DE" name="ISIL">DE-MUS-018511</target>
-			<target lang="DE" name="homepage">https://www.smb.museum/museen-einrichtungen/kupferstichkabinett/home/</target>
+			<source lang="de">Kupferstichkabinett, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-018511</target>
+			<target lang="de" name="homepage">https://www.smb.museum/museen-einrichtungen/kupferstichkabinett/home/</target>
 		</concept>
 		<concept>
-			<source lang="DE">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</source>
-			<target lang="DE" name="ISIL">DE-MUS-019014</target>
-			<target lang="DE" name="homepage">https://www.smb.museum/aku</target>
+			<source lang="de">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-019014</target>
+			<target lang="de" name="homepage">https://www.smb.museum/aku</target>
 		</concept>
 		<concept>
-			<source lang="DE">Museum für Islamische Kunst, Staatliche Museen zu Berlin</source>
-			<target lang="DE" name="ISIL">DE-MUS-814517</target>
-			<target lang="DE" name="homepage">https://www.smb.museum/isl</target>
+			<source lang="de">Museum für Islamische Kunst, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-814517</target>
+			<target lang="de" name="homepage">https://www.smb.museum/isl</target>
 		</concept>
 		<concept>
-			<source lang="DE">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
-			<target lang="DE" name="ISIL">DE-MUS-019118</target>
-			<target lang="DE" name="homepage">https://www.smb.museum/em</target>
+			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-019118</target>
+			<target lang="de" name="homepage">https://www.smb.museum/em</target>
 		</concept>
 		<concept>
-			<source lang="DE">Kunstbibliothek, Staatliche Museen zu Berlin</source>
-			<target lang="DE" name="ISIL">DE-MUS-018313</target>
-			<target lang="DE" name="homepage">https://www.smb.museum/kb</target>
+			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-018313</target>
+			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
 		</concept>
 
 	</voc>
 
 	<voc name="formatResource">
 		<concept>
-			<source lang="DE">jpg</source>
-			<target lang="EN" name="mimetype">image/jpeg</target>
+			<source lang="de">jpg</source>
+			<target lang="en" name="mimetype">image/jpeg</target>
 		</concept>
 		<concept>
-			<source lang="DE">jpeg</source>
-			<target lang="EN" name="mimetype">image/jpeg</target>
+			<source lang="de">jpeg</source>
+			<target lang="en" name="mimetype">image/jpeg</target>
 		</concept>
 		<concept>
-			<source lang="DE">mp3</source>
-			<target lang="EN" name="mimetype">audio/mpeg</target>
+			<source lang="de">mp3</source>
+			<target lang="en" name="mimetype">audio/mpeg</target>
 		</concept>
 		<concept>
-			<source lang="DE">pdf</source>
-			<target lang="EN" name="mimetype">application/pdf</target>
+			<source lang="de">pdf</source>
+			<target lang="en" name="mimetype">application/pdf</target>
 		</concept>
 		<concept>
-			<source lang="DE">tif</source>
-			<target lang="EN" name="mimetype">image/tiff</target>
+			<source lang="de">tif</source>
+			<target lang="en" name="mimetype">image/tiff</target>
 		</concept>
 		<concept>
-			<source lang="DE">tiff</source>
-			<target lang="EN" name="mimetype">image/tiff</target>
+			<source lang="de">tiff</source>
+			<target lang="en" name="mimetype">image/tiff</target>
 		</concept>
 	</voc>
 
 	<voc name="MulTypeVgr">
 		<!-- Analoges Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
 		<concept>
-			<source lang="DE">3 D- Polygon</source>
-			<target lang="EN" name="lido">3D</target>
-			<target lang="EN" name="europeana:type">3D</target>
+			<source lang="de">3 D- Polygon</source>
+			<target lang="en" name="lido">3D</target>
+			<target lang="en" name="europeana:type">3D</target>
 		</concept>	
 		<concept>
-			<source lang="DE">3 D- Volumen</source>
-			<target lang="EN" name="lido">3D</target>
-			<target lang="EN" name="europeana:type">3D</target>
+			<source lang="de">3 D- Volumen</source>
+			<target lang="en" name="lido">3D</target>
+			<target lang="en" name="europeana:type">3D</target>
 		</concept>	
 		<concept>
-			<source lang="DE">Analoges Ausgangsmaterial</source>
-			<target lang="EN" name="lido">audio</target>
-			<target lang="EN" name="europeana:type">audio</target>
+			<source lang="de">Analoges Ausgangsmaterial</source>
+			<target lang="en" name="lido">audio</target>
+			<target lang="en" name="europeana:type">audio</target>
 		</concept>	
 		<concept>
-			<source lang="DE">audio</source>
-			<target lang="EN" name="lido">audio</target>
-			<target lang="EN" name="europeana:type">audio</target>
+			<source lang="de">audio</source>
+			<target lang="en" name="lido">audio</target>
+			<target lang="en" name="europeana:type">audio</target>
 		</concept>	
 		<concept>
-			<source lang="DE">Dia</source>
-			<target lang="EN" name="europeana:type">image</target>
+			<source lang="de">Dia</source>
+			<target lang="en" name="europeana:type">image</target>
 		</concept>	
 		<concept>
-			<source lang="DE">Dia (SPK)</source>
-			<target lang="EN" name="lido">image</target>
-			<target lang="EN" name="europeana:type">image</target>
+			<source lang="de">Dia (SPK)</source>
+			<target lang="en" name="lido">image</target>
+			<target lang="en" name="europeana:type">image</target>
 		</concept>
 		<!-- Digitales Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
 		<concept>
-			<source lang="DE">Digitales Ausgangsmaterial</source>
-			<target lang="EN" name="lido">audio</target>
-			<target lang="EN" name="europeana:type">audio</target>
+			<source lang="de">Digitales Ausgangsmaterial</source>
+			<target lang="en" name="lido">audio</target>
+			<target lang="en" name="europeana:type">audio</target>
 		</concept>
 		
 		<concept>
-			<source lang="DE">Digitalisat p</source>
-			<target lang="EN" name="europeana:type">image</target>
-			<target lang="EN" name="lido">image</target>
+			<source lang="de">Digitalisat p</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
 		</concept>
 		<concept> 
-			<source lang="DE">Digitalisat s</source>
-			<target lang="EN" name="europeana:type">image</target>
-			<target lang="EN" name="lido">image</target>
+			<source lang="de">Digitalisat s</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
 		</concept>
 		<concept> 
-			<source lang="DE">eMuseum Digitalisat</source>
-			<target lang="EN" name="europeana:type">image</target>
-			<target lang="EN" name="lido">image</target>
+			<source lang="de">eMuseum Digitalisat</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
 		</concept>
 		<concept>
-			<source lang="EN">image</source>
-			<target lang="EN" name="europeana:type">image</target>
-			<target lang="EN" name="lido">image</target>
+			<source lang="en">image</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
 		</concept>	
 		<concept> 
-			<source lang="DE">Negativ</source>
-			<target lang="EN" name="europeana:type">image</target>
-			<target lang="EN" name="lido">image</target>
+			<source lang="de">Negativ</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
 		</concept>
 		<concept> 
-			<source lang="DE">Negativ (Glasplatte)</source>
-			<target lang="EN" name="europeana:type">image</target>
-			<target lang="EN" name="lido">image</target>
+			<source lang="de">Negativ (Glasplatte)</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
 		</concept>
 		<concept>
-			<source lang="DE">Positiv</source>
-			<target lang="EN" name="europeana:type">audio</target>
+			<source lang="de">Positiv</source>
+			<target lang="en" name="europeana:type">audio</target>
 		</concept>
 		<concept>
-			<source lang="DE">Scan</source>
-			<target lang="EN" name="lido">image</target>
-			<target lang="EN" name="europeana:type">image</target>
+			<source lang="de">Scan</source>
+			<target lang="en" name="lido">image</target>
+			<target lang="en" name="europeana:type">image</target>
 		</concept>	
 	</voc>
 
 	<voc name="Sammlung">
 		<concept>
-			<source lang="DE">AKuOstasiatischeKunst</source>
-			<target lang="DE" name="DDB">Ostasiatische Kunst</target>
+			<source lang="de">AKuOstasiatischeKunst</source>
+			<target lang="de" name="DDB">Ostasiatische Kunst</target>
 		</concept>
 		<concept>
-			<source lang="DE">AKuSudSudostundZentralasien</source>
-			<target lang="DE" name="DDB">Süd-, Südost und Zentralasien</target>
+			<source lang="de">AKuSudSudostundZentralasien</source>
+			<target lang="de" name="DDB">Süd-, Südost und Zentralasien</target>
 		</concept>
 		<concept>
-			<source lang="DE">EMAfrika1</source>
-			<target lang="DE" name="DDB">Afrika</target>
+			<source lang="de">EMAfrika1</source>
+			<target lang="de" name="DDB">Afrika</target>
 		</concept>
 		<concept>
-			<source lang="DE">EMMusikethnologie</source>
-			<target lang="DE" name="DDB">Musikethnologie</target>
+			<source lang="de">EMMusikethnologie</source>
+			<target lang="de" name="DDB">Musikethnologie</target>
 		</concept>
 		<concept>
-			<source lang="DE">EMOstundNordasien</source>
-			<target lang="DE" name="DDB">Ost- und Nordasien</target>
+			<source lang="de">EMOstundNordasien</source>
+			<target lang="de" name="DDB">Ost- und Nordasien</target>
 		</concept>
 		<concept>
-			<source lang="DE">EMSudundSudostasien</source>
-			<target lang="DE" name="DDB">Süd- und Südostasien</target>
+			<source lang="de">EMSudundSudostasien</source>
+			<target lang="de" name="DDB">Süd- und Südostasien</target>
 		</concept>
 		<concept>
-			<source lang="DE">EMSudseeAustralien</source>
-			<target lang="DE" name="DDB">Ozeanien und Australien</target>
+			<source lang="de">EMSudseeAustralien</source>
+			<target lang="de" name="DDB">Ozeanien und Australien</target>
 		</concept>
 		<concept>
-			<source lang="DE">KBPlakat</source>
-			<target lang="DE" name="DDB">Grafikdesign</target>
+			<source lang="de">KBPlakat</source>
+			<target lang="de" name="DDB">Grafikdesign</target>
 		</concept>
 		<concept>
-			<source lang="DE">KBModekarikatur</source>
-			<target lang="DE" name="DDB">Modebild</target>
+			<source lang="de">KBModekarikatur</source>
+			<target lang="de" name="DDB">Modebild</target>
 		</concept>
 	</voc>
 </vocmap>
