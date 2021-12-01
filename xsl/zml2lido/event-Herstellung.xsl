@@ -77,14 +77,11 @@
 				</xsl:if>
 
 				<!-- eventMaterialsTech -->
-				<lido:eventMaterialsTech>
-					<xsl:apply-templates select="z:repeatableGroup[
-						@name = 'ObjMaterialTechniqueGrp']/z:repeatableGroupItem"/>
-				</lido:eventMaterialsTech>
+				<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']"/>
 			</lido:event>
 		</lido:eventSet>
 	</xsl:template>
-	
+
 	<xsl:template name="BeninPlace">
 		<xsl:comment>This is an "artificial" place to identify all Benin objects for 3 Wege Projekt</xsl:comment>
 		<lido:eventPlace>
@@ -246,29 +243,21 @@
 	</xsl:template>
 
 	<!-- eventMaterialsTech -->
-	<xsl:template match="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']/z:repeatableGroupItem">
-			<xsl:apply-templates select=".[z:vocabularyReference/@name = 'TypeVoc' 
-					and z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']"/>
-			<!--lido:materialsTech>
-				<xsl:apply-templates select="z:vocabularyReference[@name = 'MaterialVoc']"/>
-			</lido:materialsTech-->
-	</xsl:template>	
+	<xsl:template match="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']">
+		<lido:eventMaterialsTech>
+			<xsl:apply-templates select="z:repeatableGroupItem[
+				z:vocabularyReference/@name = 'TypeVoc' and 
+				z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']"/>
+		</lido:eventMaterialsTech>
+	</xsl:template>
 
-	<xsl:template match=".[z:vocabularyReference/@name = 'TypeVoc' 
-		and z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']">
-		<lido:displayMaterialsTech xml:lang="de">
+	<xsl:template match="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']/z:repeatableGroupItem[
+				z:vocabularyReference/@name = 'TypeVoc' and 
+				z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']">
+		<lido:displayMaterialsTech xml:lang="de"> 
 				<xsl:value-of select="z:dataField[@name = 'ExportClb']"/>
 		</lido:displayMaterialsTech>
-	</xsl:template>
-
-	<xsl:template match="z:vocabularyReference[@name = 'MaterialVoc']">
-		<lido:termMaterialsTech lido:type="Material">
-			<lido:term>
-				<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
-			</lido:term>
-		</lido:termMaterialsTech>
-	</xsl:template>
-	
+	</xsl:template>	
 
 	<!-- eventPlace
 		TODO: im Augenblick sind Kultur, Ethnie und Sprachgruppe nicht ausgeschlossen!
