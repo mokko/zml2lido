@@ -67,7 +67,6 @@
 		</xsl:if>
 	</xsl:template>
 
-
 	<!-- obsolete not used anymore-->
 	<xsl:template name="sammlung">
 		<lido:classification lido:type="Sammlung">
@@ -94,8 +93,6 @@
 			</lido:term>
 		</lido:classification>
 	</xsl:template>
-
-
 
 	<xsl:template mode="classification" match="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
 		/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']">

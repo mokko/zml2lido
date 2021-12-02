@@ -16,7 +16,8 @@
 	<xsl:template name="objectIdentificationWrap">
         <lido:objectIdentificationWrap>
             <xsl:call-template name="titleWrap"/>
-            <xsl:call-template name="inscriptionsWrap"/>
+			<!-- 1.12.2021 Frank schreibt, dass Aufschriften etc. nicht in LIDO ausgegeben werden sollen 
+            xsl:call-template name="inscriptionsWrap"/-->
             <xsl:call-template name="repositoryWrap"/>
             <!-- lido:displayStateEditionWrap: A wrapper for the state and edition of the object / work (optional) -->
             <xsl:call-template name="objectDescriptionWrap"/>
@@ -24,11 +25,10 @@
         </lido:objectIdentificationWrap>
     </xsl:template>
 
-	<!-- todo -->
+
     <xsl:template name="inscriptionsWrap">
 		<xsl:apply-templates select="z:repeatableGroup[@name='ObjLabelObjectGrp']"/>
 	</xsl:template>
-	
 	<xsl:template match="z:repeatableGroup[@name='ObjLabelObjectGrp']">
 		<lido:inscriptionsWrap>
 			<xsl:apply-templates select="z:repeatableGroupItem">
