@@ -259,6 +259,15 @@
 		</lido:displayMaterialsTech>
 	</xsl:template>	
 
+	<!-- not used at the moment-->
+	<xsl:template match="z:vocabularyReference[@name = 'MaterialVoc']">
+		<lido:termMaterialsTech lido:type="Material">
+			<lido:term>
+				<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
+			</lido:term>
+		</lido:termMaterialsTech>
+	</xsl:template>
+
 	<!-- eventPlace
 		TODO: im Augenblick sind Kultur, Ethnie und Sprachgruppe nicht ausgeschlossen!
 		TODO: Place
