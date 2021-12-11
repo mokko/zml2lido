@@ -14,7 +14,11 @@
     -->
     <xsl:template name="Veröffentlichung">
 		<xsl:variable name="veröffentlichendeRollen" select="'Produzent'"/>
-        <xsl:if test="personenKörperschaften[@funktion = $veröffentlichendeRollen]">
+		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
+			z:vocabularyReference/@name = 'RoleVoc' 
+			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $veröffentlichendeRollen]"/>
+
+        <xsl:if test="$perInRole">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">Veröffentlichung</lido:displayEvent>
 				<lido:event>
@@ -23,9 +27,7 @@
 						<lido:term xml:lang="en">Publication</lido:term>
 						<lido:term xml:lang="de">Veröffentlichung (Ereignis)</lido:term>
 					</lido:eventType>
-					<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
-						z:vocabularyReference/@name = 'RoleVoc' 
-						and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $veröffentlichendeRollen]"/>
+					<xsl:apply-templates select="$perInRole"/>
 				</lido:event>
 			</lido:eventSet>
 		</xsl:if>

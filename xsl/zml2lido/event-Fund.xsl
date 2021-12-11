@@ -14,6 +14,10 @@
     -->
     <xsl:template name="Fund">
 		<xsl:variable name="findendeRollen" select="'Finder'"/>
+		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
+			z:vocabularyReference/@name = 'RoleVoc' 
+			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $findendeRollen]"/>
+
         <xsl:if test="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 					z:vocabularyReference/@name = 'RoleVoc' 
 					and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $findendeRollen]">
@@ -25,9 +29,7 @@
 						<lido:term xml:lang="en">Finding (Activity)</lido:term>
 						<lido:term xml:lang="de">Fund (Aktivität)</lido:term>
 					</lido:eventType>
-					<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
-						z:vocabularyReference/@name = 'RoleVoc' 
-						and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $findendeRollen]"/>
+					<xsl:apply-templates select="$perInRole"/>
 				</lido:event>
 			</lido:eventSet>
 		</xsl:if>

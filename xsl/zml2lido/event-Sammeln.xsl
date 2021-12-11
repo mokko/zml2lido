@@ -14,7 +14,11 @@
     -->
     <xsl:template name="Sammeln">
 		<xsl:variable name="sammelndeRollen" select="'Sammler', 'Sammlerin'"/>
-        <xsl:if test="personenKörperschaften[@funktion = $sammelndeRollen]">
+		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
+			z:vocabularyReference/@name = 'RoleVoc' 
+			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $sammelndeRollen]"/>
+
+        <xsl:if test="$perInRole">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">Sammeln</lido:displayEvent>
 				<lido:event>
@@ -23,9 +27,7 @@
 						<lido:term xml:lang="en">Collecting</lido:term>
 						<lido:term xml:lang="de">Sammeltätigkeit</lido:term>
 					</lido:eventType>
-					<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
-						z:vocabularyReference/@name = 'RoleVoc' 
-						and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $sammelndeRollen]"/>
+					<xsl:apply-templates select="$perInRole"/>
 				</lido:event>
 			</lido:eventSet>
 		</xsl:if>

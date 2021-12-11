@@ -14,9 +14,11 @@
     -->
     <xsl:template name="Entwurf">
 		<xsl:variable name="entwerfendeRollen" select="'Entwerfer', 'Designer'"/>
-        <xsl:if test="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
-					z:vocabularyReference/@name = 'RoleVoc' 
-					and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $entwerfendeRollen]">
+		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
+			z:vocabularyReference/@name = 'RoleVoc' 
+			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $entwerfendeRollen]"/>
+
+        <xsl:if test="$perInRole">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">Entwerfen</lido:displayEvent>
 				<lido:event>
@@ -25,9 +27,7 @@
 						<lido:term xml:lang="en">Designing</lido:term>
 						<lido:term xml:lang="de">Entwerfen</lido:term>
 					</lido:eventType>
-					<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
-						z:vocabularyReference/@name = 'RoleVoc' 
-						and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $entwerfendeRollen]"/>
+					<xsl:apply-templates select="$perInRole"/>
 				</lido:event>
 			</lido:eventSet>
 		</xsl:if>

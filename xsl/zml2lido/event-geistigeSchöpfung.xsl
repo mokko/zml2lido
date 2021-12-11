@@ -15,6 +15,7 @@
     <xsl:template name="geistigeSchöpfung">
 		<xsl:variable name="schöpfendeRollen" select="
 			'Autor',
+			'Bildhauer', 'Bildhauerin', 
 			'Filmemacher', 
 			'Filmregisseur', 
 			'Fotograf', 
@@ -23,9 +24,11 @@
 			'Maler', 'Malerin',		
 			'Zeichner', 'Zeichnerin'
 		"/>
-        <xsl:if test="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
-					z:vocabularyReference/@name = 'RoleVoc' 
-					and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $schöpfendeRollen]">
+		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
+			z:vocabularyReference/@name = 'RoleVoc' 
+			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $schöpfendeRollen]"/>
+
+        <xsl:if test="$perInRole">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">geistige Schöpfung</lido:displayEvent>
 				<lido:event>
@@ -34,9 +37,7 @@
 						<lido:term xml:lang="en">Creation</lido:term>
 						<lido:term xml:lang="de">Geistige Schöpfung</lido:term>
 					</lido:eventType>
-					<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
-						z:vocabularyReference/@name = 'RoleVoc' 
-						and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $schöpfendeRollen]"/>
+					<xsl:apply-templates select="$perInRole"/>
 				</lido:event>
 			</lido:eventSet>
 		</xsl:if>
