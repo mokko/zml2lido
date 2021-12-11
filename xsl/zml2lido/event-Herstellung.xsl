@@ -8,7 +8,6 @@
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
 	<xsl:strip-space elements="*" />
-	
 
 	<xsl:template name="Herstellung">
 		<lido:eventSet>
@@ -72,23 +71,7 @@
 			</lido:event>
 		</lido:eventSet>
 	</xsl:template>
-
-	<xsl:template name="BeninPlace">
-		<xsl:comment>This is an "artificial" place to identify all Benin objects for 3 Wege Projekt</xsl:comment>
-		<lido:eventPlace>
-			<lido:place lido:politicalEntity="Benin_Kingdom">
-				<lido:placeID lido:type="URI">http://vocab.getty.edu/page/tgn/8711681</lido:placeID>
-				<lido:namePlaceSet>
-					<lido:appellationValue>Benin</lido:appellationValue>
-				</lido:namePlaceSet> 
-				<lido:placeClassification>
-					<lido:term>kingdom</lido:term>
-				</lido:placeClassification>
-			</lido:place>
-		</lido:eventPlace>
-	</xsl:template>
-	
-					
+				
 	<!-- 
 		m3: Kultur auf Actor gemappt entsprechend Vorschlag FvH; 
 		ich sehe bei unseren Daten im Moment keinen Vorteil gegenüber 
