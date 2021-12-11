@@ -84,7 +84,7 @@ class LidoTool:
             self.outdir.mkdir(parents=False, exist_ok=False)
         print(f" outdir {self.outdir}")
         logfile = self.outdir.joinpath("lidoTool.log")
-        #let's append to the log file so we can aggregrate results from multiple runs
+        # let's append to the log file so we can aggregrate results from multiple runs
         logging.basicConfig(
             filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
         )
