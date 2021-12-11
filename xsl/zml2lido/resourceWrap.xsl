@@ -181,14 +181,19 @@
                 <!-- 
                 TODO: Not sure how FD wants the the creditline to be formated; 
                 Currently, I am adapting credits in smb.digital.de, but not exactly. 
+				Should be Staatliche Museen Berlin, Kunstbibliothek, Foto: Hans Kunz
                 -->
                 <lido:creditLine>
+					<xsl:variable name="einrichtung" select="normalize-space(substring-before($verwaltendeInstitution,','))"/>
+					<!-- can also be SIM in case of MIM -->
+					<xsl:variable name="smb" select="normalize-space(substring-after($verwaltendeInstitution,','))"/>
+					<xsl:value-of select="$smb"/>
+					<xsl:text>, </xsl:text>
+					<xsl:value-of select="$einrichtung"/>
                     <xsl:if test="z:moduleReference[@name='MulPhotographerPerRef']">
-                        <xsl:text>Foto: </xsl:text>
+                        <xsl:text>, Foto: </xsl:text>
                         <xsl:value-of select="z:moduleReference[@name='MulPhotographerPerRef']/z:moduleReferenceItem/z:formattedValue"/>
-                        <xsl:text>, </xsl:text>
                     </xsl:if>
-					<xsl:value-of select="$verwaltendeInstitution"/>
                 </lido:creditLine>
             </lido:rightsResource>
         </lido:resourceSet>
