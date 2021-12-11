@@ -45,7 +45,10 @@
 				<xsl:when test="z:repeatableGroup[@name='ObjPublicationGrp']/z:repeatableGroupItem[
 					z:vocabularyReference[@name='PublicationVoc']/z:vocabularyReferenceItem/@name = 'Ja' 
 					and z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem/@name = 'Daten freigegeben für SMB-digital']">
-					<xsl:variable name="pubdate" select="z:repeatableGroup[@name='ObjPublicationGrp']/z:repeatableGroupItem/z:dataField[@name='ModifiedDateDat']/z:value"/>
+
+					<!--sometimes identical date is repeated; not sure why, so just taking first -->
+					<xsl:variable name="pubdate" select="z:repeatableGroup[
+						@name='ObjPublicationGrp']/z:repeatableGroupItem[1]/z:dataField[@name='ModifiedDateDat']/z:value"/>
 					<lido:objectPublishedID lido:source="ISIL (ISO 15511)/Obj.ID/publishing-timeStamp" lido:type="local">
 						<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
 						<xsl:text>/</xsl:text>
