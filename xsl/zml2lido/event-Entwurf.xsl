@@ -10,22 +10,24 @@
     <xsl:strip-space elements="*" />
 
     <!-- 
-		Collecting: Sammler
+		Designer/Entwurf: Entwerfer, Designer
     -->
-    <xsl:template name="Sammeln">
-		<xsl:variable name="sammelndeRollen" select="'Sammler', 'Sammlerin'"/>
-        <xsl:if test="personenKörperschaften[@funktion = $sammelndeRollen]">
+    <xsl:template name="Entwurf">
+		<xsl:variable name="entwerfendeRollen" select="'Entwerfer', 'Designer'"/>
+        <xsl:if test="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
+					z:vocabularyReference/@name = 'RoleVoc' 
+					and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $entwerfendeRollen]">
 			<lido:eventSet>
-				<lido:displayEvent xml:lang="de">Sammeln</lido:displayEvent>
+				<lido:displayEvent xml:lang="de">Entwerfen</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>
-						<lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00010</lido:conceptID>
-						<lido:term xml:lang="en">Collecting</lido:term>
-						<lido:term xml:lang="de">Sammeltätigkeit</lido:term>
+						<lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00224</lido:conceptID>
+						<lido:term xml:lang="en">Designing</lido:term>
+						<lido:term xml:lang="de">Entwerfen</lido:term>
 					</lido:eventType>
 					<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 						z:vocabularyReference/@name = 'RoleVoc' 
-						and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $sammelndeRollen]"/>
+						and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $entwerfendeRollen]"/>
 				</lido:event>
 			</lido:eventSet>
 		</xsl:if>

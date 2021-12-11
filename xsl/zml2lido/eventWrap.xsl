@@ -6,28 +6,118 @@
     exclude-result-prefixes="z"
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
-    <xsl:import href="event-Herstellung.xsl"/>
+    <xsl:import href="event-Aufführung.xsl" />
+    <xsl:import href="event-Auftrag.xsl" />
+    <xsl:import href="event-Ausgrabung.xsl" />
+    <xsl:import href="event-Entwurf.xsl" />
     <xsl:import href="event-Erwerb.xsl" />
-    <!-- xsl:import href="event-Sammeln.xsl" /-->
+    <xsl:import href="event-Fund.xsl" />
+    <xsl:import href="event-geistigeSchöpfung.xsl" />
+    <xsl:import href="event-Herstellung.xsl"/>
+    <xsl:import href="event-Sammeln.xsl" />
+    <xsl:import href="event-Veröffentlichung.xsl" />
+    <xsl:import href="event-unknown.xsl" />
+
+	<!-- 
+		http://terminology-view.lido-schema.org/vocnet/?startNode=lido00409&lang=en&uriVocItem=http://terminology.lido-schema.org/lido00228
+		neue Events 
+			
+			Es gibt eine Rolle namens "Expedition" in MDS. Bis auf Weiteres Expedition nicht als EventType.
+			Unknown event für alle nicht zugeordnete Rollen
+	-->
+
 
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*" />
 
-    <!-- 
-        apparently some records with a Sammler dont have the Sammeln-event. 
-        Why? Because i wrote eq Sammler instead of =. Let that be a lesson!
-    -->
     <xsl:template name="eventWrap">
         <lido:eventWrap>
+            <xsl:call-template name="Aufführung"/>			
+			<xsl:call-template name="Auftrag"/>
+			<xsl:call-template name="Ausgrabung"/>
+			<xsl:call-template name="Entwurf"/>
+			<xsl:call-template name="Erwerb"/>
+			<xsl:call-template name="Fund"/>
+			<xsl:call-template name="geistigeSchöpfung"/>
             <xsl:call-template name="Herstellung"/>			
-            <xsl:if test="z:repeatableGroup[
-				@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
-				z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']">
-				<xsl:call-template name="Erwerb"/>
-			</xsl:if>
-            <!-- xsl:if test="z:personenKörperschaften[@funktion = 'Sammler']">
-                <xsl:call-template name="Sammeln"/>
-            </xsl:if -->
+            <xsl:call-template name="Sammeln"/>
+            <xsl:call-template name="Veröffentlichung"/>			
+            <!--xsl:call-template name="unknown"/ doesn't work yet-->			
         </lido:eventWrap>
     </xsl:template>
+	
+	<!-- 
+		The following template was written for Herstellung originally. Now I would like 
+		to re-use it for all events which have an eventActor ?
+	-->
+	<xsl:template match="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem">
+		<xsl:variable name="kueId" select="@moduleItemId"/>
+		<xsl:variable name="kue" select="/z:application/z:modules/z:module[@name = 'Person']/z:moduleItem[@id = $kueId]"/>
+		<xsl:variable name="gnd" select="$kue/z:repeatableGroup[@name = 'PerStandardDataGrp']/z:repeatableGroupItem/z:dataField[@name='GNDTxt']/z:value"/>
+		<xsl:variable name="ulan" select="$kue/z:repeatableGroup[@name = 'PerStandardDataGrp']/z:repeatableGroupItem/z:dataField[@name='ULANTxt']/z:value"/>
+		
+		<xsl:message>
+			<xsl:text>PK in Event: </xsl:text>
+			<xsl:value-of select="z:formattedValue"/>
+			<xsl:value-of select="$gnd"/>
+		</xsl:message>
+		<lido:eventActor>
+			<lido:displayActorInRole>
+				<xsl:value-of select="z:formattedValue"/>
+			</lido:displayActorInRole>
+			<lido:actorInRole>
+				<!-- http://xtree-public.digicult-verbund.de/vocnet/?uriVocItem=http://terminology.lido-schema.org/&startNode=lido00409&lang=en&d=n -->
+				<lido:actor>
+					<xsl:attribute name="lido:type" select="$kue/z:vocabularyReference[@name = 'PerTypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+					<lido:actorID lido:type="Local identifier" lido:source="RIA/SMB">
+						<xsl:value-of select="$kueId"/>
+					</lido:actorID>
+					<xsl:if test="$gnd">
+						<lido:actorID lido:type="URI" lido:source="GND">
+							<xsl:value-of select="$gnd"/>
+						</lido:actorID>
+					</xsl:if>
+					<xsl:if test="$ulan">
+						<lido:actorID lido:type="URI" lido:source="ULAN">
+							<xsl:value-of select="$ulan"/>
+						</lido:actorID>
+					</xsl:if>
+					<lido:nameActorSet>
+						<lido:appellationValue lido:pref="preferred">
+							<xsl:value-of select="$kue/z:dataField[@name = 'PerNennformTxt']"/>
+						</lido:appellationValue>
+					</lido:nameActorSet>
+					<lido:nationalityActor>
+						<lido:term>
+							<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerNationalityVoc']
+							/z:vocabularyReferenceItem/z:formattedValue"/>
+						</lido:term>
+					</lido:nationalityActor>
+					<lido:vitalDatesActor>
+						<lido:earliestDate>
+							<xsl:value-of select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
+							/z:repeatableGroupItem/z:dataField[@name = 'DateFromTxt']/z:value"/>
+						</lido:earliestDate>
+						<lido:latestDate>
+							<xsl:value-of select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
+							/z:repeatableGroupItem/z:dataField[@name = 'DateToTxt']/z:value"/>
+						</lido:latestDate>
+						<xsl:value-of select="$kue/z:virtualField[@name = 'PreviewVrt']/z:value"/>
+					</lido:vitalDatesActor>
+					<lido:genderActor xml:lang="en">
+						<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerGenderVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+					</lido:genderActor>
+				</lido:actor>
+				<lido:roleActor>
+					<lido:term xml:lang="de" lido:encodinganalog="RIA:Rolle">
+						<xsl:value-of select="z:vocabularyReference[@name = 'RoleVoc']/z:vocabularyReferenceItem/z:formattedValue"/> 
+					</lido:term>
+				</lido:roleActor>
+				<lido:attributionQualifierActor xml:lang="de">
+					<xsl:value-of select="z:vocabularyReference[@name = 'AttributionVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+				</lido:attributionQualifierActor>
+			</lido:actorInRole>
+		</lido:eventActor>
+	</xsl:template>
+
 </xsl:stylesheet>

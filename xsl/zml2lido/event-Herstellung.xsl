@@ -8,6 +8,7 @@
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
 	<xsl:strip-space elements="*" />
+	
 
 	<xsl:template name="Herstellung">
 		<lido:eventSet>
@@ -16,14 +17,14 @@
 				<lido:eventType>
 					<lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00007</lido:conceptID>
 					<lido:term xml:lang="de">Herstellung</lido:term>
+					<lido:term xml:lang="en">Production</lido:term>
 				</lido:eventType>
 
 				<!-- eventActor in PK/Beteiligte  and @targetModule='Person'
+				Liste der Rollen zusammen mit Frank am 9.12.21 aufgeräumt
 				-->
 				<xsl:variable name="herstellendeRollen" select="
-					'Auftraggeber', 'Autor', 'Bildhauer', 'Bildhauerin', 'Darsteller', 'Dirigent', 'Drucker',
-					'Entwerfer', 'Filmemacher', 'Filmregisseur', 'Fotograf', 'Hersteller', 'Künstler', 'Maler', 
-					'Produzent', 'Zeichnerin'
+					'Drucker','Hersteller'  
 				"/>
 				<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 					z:vocabularyReference/@name = 'RoleVoc' 
@@ -66,7 +67,7 @@
 				-->
 				<xsl:apply-templates mode="eventPlace" select="z:repeatableGroup[@name = 'ObjGeograficGrp']"/>
 				
-				<!-- freigabe = ja -->
+				<!-- exception for Benin objects: they get an extra event on the request for DDB -->
 				<xsl:if test="z:repeatableGroup[
 					@name = 'ObjPublicationGrp']/z:repeatableGroupItem[
 					z:vocabularyReference[@name = 'TypeVoc' and z:vocabularyReferenceItem/@id = '4460851'] and 
@@ -97,75 +98,6 @@
 		</lido:eventPlace>
 	</xsl:template>
 	
-	<xsl:template match="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem">
-		<xsl:variable name="kueId" select="@moduleItemId"/>
-		<xsl:variable name="kue" select="/z:application/z:modules/z:module[@name = 'Person']/z:moduleItem[@id = $kueId]"/>
-		<xsl:variable name="gnd" select="$kue/z:repeatableGroup[@name = 'PerStandardDataGrp']/z:repeatableGroupItem/z:dataField[@name='GNDTxt']/z:value"/>
-		<xsl:variable name="ulan" select="$kue/z:repeatableGroup[@name = 'PerStandardDataGrp']/z:repeatableGroupItem/z:dataField[@name='ULANTxt']/z:value"/>
-		
-		<xsl:message>
-			<xsl:text>PK in Herstellung: </xsl:text>
-			<xsl:value-of select="z:formattedValue"/>
-			<xsl:value-of select="$gnd"/>
-		</xsl:message>
-		<lido:eventActor>
-			<lido:displayActorInRole>
-				<xsl:value-of select="z:formattedValue"/>
-			</lido:displayActorInRole>
-			<lido:actorInRole>
-				<!-- http://xtree-public.digicult-verbund.de/vocnet/?uriVocItem=http://terminology.lido-schema.org/&startNode=lido00409&lang=en&d=n -->
-				<lido:actor>
-					<xsl:attribute name="lido:type" select="$kue/z:vocabularyReference[@name = 'PerTypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-					<lido:actorID lido:type="Local identifier" lido:source="RIA/SMB">
-						<xsl:value-of select="$kueId"/>
-					</lido:actorID>
-					<xsl:if test="$gnd">
-						<lido:actorID lido:type="URI" lido:source="GND">
-							<xsl:value-of select="$gnd"/>
-						</lido:actorID>
-					</xsl:if>
-					<xsl:if test="$ulan">
-						<lido:actorID lido:type="URI" lido:source="ULAN">
-							<xsl:value-of select="$ulan"/>
-						</lido:actorID>
-					</xsl:if>
-					<lido:nameActorSet>
-						<lido:appellationValue lido:pref="preferred">
-							<xsl:value-of select="$kue/z:dataField[@name = 'PerNennformTxt']"/>
-						</lido:appellationValue>
-					</lido:nameActorSet>
-					<lido:nationalityActor>
-						<lido:term>
-							<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerNationalityVoc']
-							/z:vocabularyReferenceItem/z:formattedValue"/>
-						</lido:term>
-					</lido:nationalityActor>
-					<lido:vitalDatesActor>
-						<lido:earliestDate>
-							<xsl:value-of select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
-							/z:repeatableGroupItem/z:dataField[@name = 'DateFromTxt']/z:value"/>
-						</lido:earliestDate>
-						<lido:latestDate>
-							<xsl:value-of select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
-							/z:repeatableGroupItem/z:dataField[@name = 'DateToTxt']/z:value"/>
-						</lido:latestDate>
-						<xsl:value-of select="$kue/z:virtualField[@name = 'PreviewVrt']/z:value"/>
-					</lido:vitalDatesActor>
-					<lido:genderActor xml:lang="en">
-						<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerGenderVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-					</lido:genderActor>
-				</lido:actor>
-				<lido:roleActor>
-					<lido:term xml:lang="de">
-						<xsl:value-of select="z:vocabularyReference[@name = 'RoleVoc']/z:vocabularyReferenceItem/z:formattedValue"/> 
-					</lido:term>
-				</lido:roleActor>
-				<lido:attributionQualifierActor xml:lang="de">
-					<xsl:value-of select="z:vocabularyReference[@name = 'AttributionVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-				</lido:attributionQualifierActor>
-			</lido:actorInRole>
-		</lido:eventActor>
-	</xsl:template>
 					
 	<!-- 
 		m3: Kultur auf Actor gemappt entsprechend Vorschlag FvH; 

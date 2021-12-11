@@ -10,22 +10,22 @@
     <xsl:strip-space elements="*" />
 
     <!-- 
-		Collecting: Sammler
+		Veröffenlichung: 'Produzent',
     -->
-    <xsl:template name="Sammeln">
-		<xsl:variable name="sammelndeRollen" select="'Sammler', 'Sammlerin'"/>
-        <xsl:if test="personenKörperschaften[@funktion = $sammelndeRollen]">
+    <xsl:template name="Veröffentlichung">
+		<xsl:variable name="veröffentlichendeRollen" select="'Produzent'"/>
+        <xsl:if test="personenKörperschaften[@funktion = $veröffentlichendeRollen]">
 			<lido:eventSet>
-				<lido:displayEvent xml:lang="de">Sammeln</lido:displayEvent>
+				<lido:displayEvent xml:lang="de">Veröffentlichung</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>
-						<lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00010</lido:conceptID>
-						<lido:term xml:lang="en">Collecting</lido:term>
-						<lido:term xml:lang="de">Sammeltätigkeit</lido:term>
+						<lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00228</lido:conceptID>
+						<lido:term xml:lang="en">Publication</lido:term>
+						<lido:term xml:lang="de">Veröffentlichung (Ereignis)</lido:term>
 					</lido:eventType>
 					<xsl:apply-templates select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 						z:vocabularyReference/@name = 'RoleVoc' 
-						and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $sammelndeRollen]"/>
+						and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $veröffentlichendeRollen]"/>
 				</lido:event>
 			</lido:eventSet>
 		</xsl:if>

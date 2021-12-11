@@ -10,6 +10,10 @@
     <xsl:strip-space elements="*" />
 
     <!-- 
+		Erwerb is an unusual event; it's fed only by RIA:ErwerbNotizAusgabe which may
+		contain (unstructured) information on when, who etc.
+
+		
 		DF from http://terminology-view.lido-schema.org/vocnet
 		Acquisition, as a value for the LIDO Event Type element, designates the physical and legal 
 		transfer of items to a repository, such as a museum, library, or archive, including the 
@@ -21,40 +25,56 @@
     -->
 
     <xsl:template name="Erwerb">
-        <lido:eventSet>
-            <lido:displayEvent xml:lang="de">Erwerb</lido:displayEvent>
-            <lido:event>
-                <lido:eventType>
-                    <lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00001</lido:conceptID>
-                    <lido:term xml:lang="de">Erwerb</lido:term>
-					<xsl:comment>beschreibt den Erwerb des Objekts durch die verwaltende Institution</xsl:comment>
-                </lido:eventType>
+		<xsl:if test="z:repeatableGroup[
+			@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
+			z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']">
+			<lido:eventSet>
+				<lido:displayEvent xml:lang="de">Erwerb</lido:displayEvent>
+				<lido:event>
+					<lido:eventType>
+						<lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00001</lido:conceptID>
+						<lido:term xml:lang="de">Erwerb</lido:term>
+						<xsl:comment>beschreibt den Erwerb des Objekts durch die verwaltende Institution</xsl:comment>
+					</lido:eventType>
 
-                <!-- lido:eventActor 
-                <xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
-                	z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Erwerbung von']"/>
-				-->
+					<!-- lido:eventActor 
+					<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
+						z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Erwerbung von']"/>
+					-->
 
-                <!-- todo xsl:apply-templates mode="Erwerb" select="personenKörperschaften[@funktion eq 'Veräußerer']"/-->
+					<!-- todo xsl:apply-templates mode="Erwerb" select="personenKörperschaften[@funktion eq 'Veräußerer']"/-->
 
-                <!-- lido:eventDate; call only when it has a date 
-                <xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionDateGrp']/z:repeatableGroupItem[
-                	z:dataField/@name='DateFromTxt']"/>
-				-->
+					<!-- lido:eventDate; call only when it has a date 
+					<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionDateGrp']/z:repeatableGroupItem[
+						z:dataField/@name='DateFromTxt']"/>
+					-->
 
-                <!-- lido:eventMethod (m3: neuer Platz für Erwerbungsart nach Empfehlung FvH) 
-                <xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionMethodGrp']/z:repeatableGroupItem"/>
-				-->
-				
-				<!-- eventDescriptionSet ErwerbNotizAusgabe-->
-                <xsl:apply-templates mode="Erwerb" select="z:repeatableGroup[
-					@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
-					z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']"/>
-            </lido:event>
-        </lido:eventSet>
+					<!-- lido:eventMethod (m3: neuer Platz für Erwerbungsart nach Empfehlung FvH) 
+					<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjAcquisitionMethodGrp']/z:repeatableGroupItem"/>
+					-->
+					
+					<!-- eventDescriptionSet ErwerbNotizAusgabe-->
+					<xsl:apply-templates mode="Erwerb" select="z:repeatableGroup[
+						@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
+						z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']"/>
+				</lido:event>
+			</lido:eventSet>
+        </xsl:if>
     </xsl:template>
 
-	<!-- eventActor -->
+	<xsl:template mode="Erwerb" match="z:repeatableGroup[
+		@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
+		z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe'
+	]">
+		<lido:eventDescriptionSet> 
+			<lido:descriptiveNoteValue xml:lang="de" lido:encodinganalog="ErwerbNotizAusgabe">
+				<xsl:value-of select="z:dataField[@name = 'MemoClb']/z:value"/>
+			</lido:descriptiveNoteValue>
+		</lido:eventDescriptionSet>
+	</xsl:template>
+
+
+	<!-- eventActor: we're not using these at the moment, just ErwerbNotizAusgabe -->
 	<xsl:template match="z:repeatableGroup[@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
 		z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Erwerbung von']">
 		<lido:eventActor>
@@ -79,7 +99,7 @@
         </lido:eventActor>	
 	</xsl:template>
 
-	<!-- eventDate -->
+	<!-- eventDate: not in use -->
 	<xsl:template match="z:repeatableGroup[@name = 'ObjAcquisitionDateGrp']/z:repeatableGroupItem">
  		<lido:eventDate>
             <lido:displayDate>
@@ -96,22 +116,8 @@
         </lido:eventDate>
 	</xsl:template>
 
-	<xsl:template mode="Erwerb" match="z:repeatableGroup[@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']">
-		<!--  
-		<xsl:message>ErwerbNotizAusgabe
-			<xsl:value-of select="z:dataField/z:value"/>
-			<xsl:text>|</xsl:text>
-			<xsl:value-of select="z:vocabularyReference/z:vocabularyReferenceItem/@name"/>
-		</xsl:message>
-		-->
-		<lido:eventDescriptionSet> 
-			<lido:descriptiveNoteValue xml:lang="de" lido:encodinganalog="ErwerbNotizAusgabe">
-				<xsl:value-of select="z:dataField[@name = 'MemoClb']/z:value"/>
-			</lido:descriptiveNoteValue>
-		</lido:eventDescriptionSet>
-	</xsl:template>
 
-	<!-- eventMethod -->
+	<!-- eventMethod: not in use -->
 	<xsl:template match="z:repeatableGroup[@name = 'ObjAcquisitionMethodGrp']/z:repeatableGroupItem">
 		<lido:eventMethod>
 		     <lido:term xml:lang="de">

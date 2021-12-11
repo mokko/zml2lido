@@ -16,8 +16,12 @@
 	<xsl:template name="objectIdentificationWrap">
         <lido:objectIdentificationWrap>
             <xsl:call-template name="titleWrap"/>
-			<!-- 1.12.2021 Frank schreibt, dass Aufschriften etc. nicht in LIDO ausgegeben werden sollen 
-            xsl:call-template name="inscriptionsWrap"/-->
+			<!-- 
+			8.12.2021 Frank schreibt, dass Aufschriften wieder rein sollen, dass nur ein Export diese nicht haben möchte.
+				Jetzt wird er versuchen, die Kundin zu überzeugen, dass Inschriften wieder herein kommen sollen.
+			1.12.2021 Frank schreibt, dass Aufschriften etc. nicht in LIDO ausgegeben werden sollen 
+			-->
+            <xsl:call-template name="inscriptionsWrap"/>
             <xsl:call-template name="repositoryWrap"/>
             <!-- lido:displayStateEditionWrap: A wrapper for the state and edition of the object / work (optional) -->
             <xsl:call-template name="objectDescriptionWrap"/>
