@@ -191,7 +191,7 @@
 					<xsl:text>, </xsl:text>
 					<xsl:value-of select="$einrichtung"/>
                     <xsl:if test="z:moduleReference[@name='MulPhotographerPerRef']">
-                        <xsl:text>, Foto: </xsl:text>
+                        <xsl:text> / </xsl:text>
                         <xsl:value-of select="z:moduleReference[@name='MulPhotographerPerRef']/z:moduleReferenceItem/z:formattedValue"/>
                     </xsl:if>
                 </lido:creditLine>
