@@ -67,16 +67,6 @@
 				-->
 				<xsl:apply-templates mode="eventPlace" select="z:repeatableGroup[@name = 'ObjGeograficGrp']"/>
 				
-				<!-- exception for Benin objects: they get an extra event on the request for DDB -->
-				<xsl:if test="z:repeatableGroup[
-					@name = 'ObjPublicationGrp']/z:repeatableGroupItem[
-					z:vocabularyReference[@name = 'TypeVoc' and z:vocabularyReferenceItem/@id = '4460851'] and 
-					z:vocabularyReference[@name = 'PublicationVoc' and z:vocabularyReferenceItem/@id = '1810139']
-					]">
-					<!--xsl:message>BENIN OBJECT</xsl:message-->
-					<xsl:call-template name="BeninPlace"/>
-				</xsl:if>
-
 				<!-- eventMaterialsTech -->
 				<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']"/>
 			</lido:event>
