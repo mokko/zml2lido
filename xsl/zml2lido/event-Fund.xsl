@@ -18,9 +18,7 @@
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $findendeRollen]"/>
 
-        <xsl:if test="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
-					z:vocabularyReference/@name = 'RoleVoc' 
-					and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $findendeRollen]">
+        <xsl:if test="$perInRole">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">Fund (Aktivität)</lido:displayEvent>
 				<lido:event>
