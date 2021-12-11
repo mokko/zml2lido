@@ -83,7 +83,7 @@ class LinkChecker:
 
     def rmInternalLinks(self):
         """
-        Remove resourceSet whose linkResouce point to internal links;
+        Remove resourceSet whose linkResource point to internal links;
         links are internal if they dont begin with "http", e.g.
         1234678.jpg
         """

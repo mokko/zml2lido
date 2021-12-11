@@ -35,7 +35,7 @@
 				</xsl:otherwise>
 			</xsl:choose>
 			<lido:classification lido:type="europeana:type">	
-				<xsl:comment>europeana:type refers to a resouce of the representation in the description of the object. 
+				<xsl:comment>europeana:type refers to a resource of the representation in the description of the object. 
 				This seems ontologically wrong. Seems to be remnant of old/first EUROPEANA data structure.</xsl:comment>
 				<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
 			</lido:classification>
@@ -45,7 +45,6 @@
 			<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem[@moduleItemId = $grpIds]"/>
 			<xsl:apply-templates mode="DDB" select="z:repeatableGroup[@name = 'ObjPublicationGrp']
 				/z:repeatableGroupItem[z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']"/>
-				
         </lido:classificationWrap>
 	</xsl:template>
 
@@ -100,5 +99,4 @@
 			<xsl:call-template name="conceptTerm"/>
 		</lido:classification>
 	</xsl:template>	
-
 </xsl:stylesheet>
