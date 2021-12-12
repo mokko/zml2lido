@@ -48,7 +48,7 @@
 
 	<xsl:template mode="classification" match="z:dataField[@name = 'ObjTechnicalTermClb']/z:value">
 		<lido:classification lido:type="Sachbegriff">
-			<lido:term>
+			<lido:term xml:lang="de">
 				<xsl:value-of select="."/>
 			</lido:term>
 		</lido:classification>
