@@ -58,11 +58,11 @@
 		<xsl:variable name="gnd" select="$kue/z:repeatableGroup[@name = 'PerStandardDataGrp']/z:repeatableGroupItem/z:dataField[@name='GNDTxt']/z:value"/>
 		<xsl:variable name="ulan" select="$kue/z:repeatableGroup[@name = 'PerStandardDataGrp']/z:repeatableGroupItem/z:dataField[@name='ULANTxt']/z:value"/>
 		
-		<xsl:message>
+		<!--xsl:message>
 			<xsl:text>PK in Event: </xsl:text>
 			<xsl:value-of select="z:formattedValue"/>
 			<xsl:value-of select="$gnd"/>
-		</xsl:message>
+		</xsl:message-->
 		<lido:eventActor>
 			<lido:displayActorInRole>
 				<xsl:value-of select="z:formattedValue"/>
