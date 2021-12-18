@@ -143,6 +143,24 @@ class LidoTool:
         self.splitLido(input=linklido_fn)  # individual records as files
         # self.lido2html(input=linklido_fn)        # to make it easier to read lido
 
+    def dd(self):
+        """
+        Make Lido for debug purposes
+        - filter out lido records that are not published
+        - image links: internal
+        - validate if -v on command line
+        - no split
+        """
+        lido_fn = self.zml2lido(input=self.input)
+        # onlyPublished = self.onlyPublished(input=lido_fn)
+        # linklido_fn = self.urlLido(
+        #    input=onlyPublished
+        # )  # fix links and rm unpublished parts
+        # if self.validation:
+        self.validate(input=lido_fn)
+        # self.splitLido(input=linklido_fn)  # individual records as files
+        # self.lido2html(input=linklido_fn)        # to make it easier to read lido
+
     #
     # Steps
     #
