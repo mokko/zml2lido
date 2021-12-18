@@ -43,7 +43,14 @@
 
 	<xsl:template match="z:repeatableGroup[@name='ObjLabelObjectGrp']/z:repeatableGroupItem">
 		<lido:inscriptions>
-			<xsl:attribute name="lido:sortorder" select="z:dataField[@name='SortLnu']"/>
+			<xsl:attribute name="lido:sortorder"><!--as="xs:number"-->
+				<xsl:choose>
+					<xsl:when test="z:dataField[@name='SortLnu']">
+						<xsl:value-of select="z:dataField[@name='SortLnu']"/>
+					</xsl:when>
+					<xsl:otherwise>0</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 			<xsl:if test="z:dataField[@name='LabelClb'] or z:dataField[@name='TransliterationClb'] 
 				or z:dataField[@name='TranslationClb']">
 				<!-- spec inscriptionTranscription: Repeat this element only for language variants, 

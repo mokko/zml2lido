@@ -83,7 +83,9 @@
 					<!-- eventPlace -->
 					<xsl:apply-templates mode="eventPlace" select="$herstellendeOrteN"/>
 					
-					<!-- eventMaterialsTech; at the Herstellung is the only eventType with materialTech; may change in future -->
+					<!-- eventMaterialsTech; 
+						at the moment Herstellung is the only eventType with materialTech; may change in future 
+					-->
 					<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp' 
 						and z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']"/>
 				</lido:event>
@@ -175,9 +177,11 @@
 
 	<xsl:template match="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp' 
 		and z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']">
-		<lido:displayMaterialsTech xml:lang="de"> 
+		<lido:eventMaterialsTech>
+			<lido:displayMaterialsTech xml:lang="de"> 
 				<xsl:value-of select="z:dataField[@name = 'ExportClb']"/>
-		</lido:displayMaterialsTech>
+			</lido:displayMaterialsTech>
+		</lido:eventMaterialsTech>
 	</xsl:template>	
 
 	<!-- not used at the moment-->
