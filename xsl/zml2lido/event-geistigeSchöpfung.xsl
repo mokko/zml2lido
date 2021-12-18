@@ -10,19 +10,12 @@
     <xsl:strip-space elements="*" />
 
     <!-- 
-		Creation/Geistige Schöpfung: 'Künstler des Originals', 'Künstler', 'Inventor', 'Maler'
+		Creation/Geistige Schöpfung: 
+		Update 17.12.2021 Geistige Schöpfung soll nur in Ausnahmefällen verwendet werden, 
+		von denen wir noch keinen gefunden haben.
     -->
     <xsl:template name="geistigeSchöpfung">
 		<xsl:variable name="schöpfendeRollen" select="
-			'Autor',
-			'Bildhauer', 'Bildhauerin', 
-			'Filmemacher', 
-			'Filmregisseur', 
-			'Fotograf', 
-			'Inventor', 
-			'Künstler', 'Künstlerin','Künstler des Originals',  
-			'Maler', 'Malerin',		
-			'Zeichner', 'Zeichnerin'
 		"/>
 		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 

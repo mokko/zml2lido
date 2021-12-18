@@ -13,7 +13,7 @@
     <xsl:import href="event-Entwurf.xsl" />
     <xsl:import href="event-Erwerb.xsl" />
     <xsl:import href="event-Fund.xsl" />
-    <xsl:import href="event-geistigeSchöpfung.xsl" />
+    <!--xsl:import href="event-geistigeSchöpfung.xsl" /-->
     <xsl:import href="event-Herstellung.xsl"/>
     <xsl:import href="event-Sammeln.xsl" />
     <xsl:import href="event-Veröffentlichung.xsl" />
@@ -40,7 +40,7 @@
 			<xsl:call-template name="Entwurf"/>
 			<xsl:call-template name="Erwerb"/>
 			<xsl:call-template name="Fund"/>
-			<xsl:call-template name="geistigeSchöpfung"/>
+			<!--xsl:call-template name="geistigeSchöpfung"/-->
             <xsl:call-template name="Herstellung"/>			
             <xsl:call-template name="Sammeln"/>
             <xsl:call-template name="Veröffentlichung"/>			
@@ -65,13 +65,14 @@
 		</xsl:message-->
 		<lido:eventActor>
 			<lido:displayActorInRole>
-				<xsl:value-of select="z:formattedValue"/>
+				<!-- vor event beschreibung aus RIA herausfiltern, z.B. "Herstellung: "-->
+				<xsl:value-of select="normalize-space(substring-after(z:formattedValue, ': '))"/>
 			</lido:displayActorInRole>
 			<lido:actorInRole>
 				<!-- http://xtree-public.digicult-verbund.de/vocnet/?uriVocItem=http://terminology.lido-schema.org/&startNode=lido00409&lang=en&d=n -->
 				<lido:actor>
 					<xsl:attribute name="lido:type" select="$kue/z:vocabularyReference[@name = 'PerTypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-					<lido:actorID lido:type="Local identifier" lido:source="RIA/SMB">
+					<lido:actorID lido:type="local" lido:source="RIA/SMB">
 						<xsl:value-of select="$kueId"/>
 					</lido:actorID>
 					<xsl:if test="$gnd">
@@ -95,14 +96,21 @@
 							/z:vocabularyReferenceItem/z:formattedValue"/>
 						</lido:term>
 					</lido:nationalityActor>
+
+					<!-- 
+						LIDO 1.0 appears to be missing a mechanism to provide other dates than vitalDates 
+						for an actor. Please add that in a new version of the spec.
+					-->
+					<xsl:variable name="lebensdatenN" select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
+						/z:repeatableGroupItem[
+							z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Lebensdaten'
+						]"/>
 					<lido:vitalDatesActor>
 						<lido:earliestDate>
-							<xsl:value-of select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
-							/z:repeatableGroupItem/z:dataField[@name = 'DateFromTxt']/z:value"/>
+							<xsl:value-of select="$lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value"/>
 						</lido:earliestDate>
 						<lido:latestDate>
-							<xsl:value-of select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
-							/z:repeatableGroupItem/z:dataField[@name = 'DateToTxt']/z:value"/>
+							<xsl:value-of select="$lebensdatenN/z:dataField[@name = 'DateToTxt']/z:value"/>
 						</lido:latestDate>
 						<xsl:value-of select="$kue/z:virtualField[@name = 'PreviewVrt']/z:value"/>
 					</lido:vitalDatesActor>
@@ -122,4 +130,63 @@
 		</lido:eventActor>
 	</xsl:template>
 
+
+	<!-- 
+	eventPlace
+	-->
+	<xsl:template mode="eventPlace" match="z:repeatableGroup[@name = 'ObjGeograficGrp']">
+		<lido:eventPlace>
+			<lido:displayPlace xml:lang="de">
+				<xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
+				<xsl:for-each select="z:repeatableGroupItem/z:vocabularyReference[@instanceName='GenPlaceVgr']">
+					<xsl:sort select="dataField[@name='SortLnu']" data-type="number" order="ascending"/>
+					<xsl:value-of select="replace(z:vocabularyReferenceItem/z:formattedValue, '^;(\w*)','$1')"/>
+					<xsl:if test="position() != last()">
+						<xsl:text>, </xsl:text>
+					</xsl:if>
+				</xsl:for-each>
+			</lido:displayPlace>
+		</lido:eventPlace>					
+	</xsl:template>
+
+	<!-- not used at the moment -->
+	<xsl:template mode="geoPol" match="z:vocabularyReference[
+					@name = 'GeopolVoc']/z:vocabularyReferenceItem/@name">			
+		<xsl:variable name="geographicEntities" select="
+			'Atoll', 'Bach', 'Bach/Zufluss', 'Berg', 'Bucht', 'Bucht (Bay)', 'Fluss', 'Fluss, Bucht und Dorf',
+			'Fluss/Gebiet', 'Flussmündung', 'Gebirge', 'Hafen', 'Halbinsel', 'Höhle', 'Insel', 'Insel/Region',
+			'Inselgruppe', 'Kap', 'Kap (Cap/Point)', 'Kontinent', 'Kontintentteil', 'Küste', 'Landschaft',
+			'Meerenge', 'Nebenfluss', 'See', 'See/Gebiet', 'Tal'"/>
+		<xsl:variable name="politicalEntities" select="'Bezirk', 'Bezirk oder Stadt', 'Bundesstaat', 'Dorf', 
+			'Großregion', 'Königreich', 'Land', 'Ort', 'Ort/Gebiet', 'Provinz', 'Sultanat', 'Stadt', 'Station'"/> 
+		<xsl:variable name="undecided" select="'Gebiet', 'Hafen (Port)', 'Land/Region', 'Kloster', 
+			'Kolonie/&quot;Schutzgebiet&quot;', 'Kultur/Ort', 'Region', 'Region oder Ort', 'Stadt/Umgebung',
+			'Tempel'"/>
+		<xsl:choose>
+			<xsl:when test=". = $geographicEntities">
+				<xsl:attribute name="lido:geographicalEntity">
+					<xsl:value-of select="."/>
+				</xsl:attribute>
+			</xsl:when>
+			<xsl:when test=". = $politicalEntities">
+				<xsl:attribute name="lido:politicalEntity">
+					<xsl:value-of select="."/>
+				</xsl:attribute>
+			</xsl:when>
+			<!-- undecided: output geoname, but without type -->
+			<xsl:when test=". = $undecided">
+				<xsl:value-of select="."/>
+			</xsl:when>
+			<!-- dont output geoname at all -->
+			<xsl:when test=". = 'Bevölkerungsgruppe'"/>
+
+			<!-- Die with error message -->
+			<xsl:otherwise>
+				<xsl:message terminate="yes">
+					<xsl:text>Unknown geoPol type: </xsl:text>
+					<xsl:value-of select="."/>
+				</xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>			
 </xsl:stylesheet>

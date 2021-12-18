@@ -14,19 +14,36 @@
 	collections, etc.
 	
 	I dont understand why subjectWrap is an aspect of objectRelation, but who cares.
+
+	Papa Bemba: For some reason, i cant find certain nodes.
+	I find ObjObjectBRef nodes, but not ObjObjectARef. Why?
+		z:moduleReference[@name = 'ObjObjectARef']
+	In the end, i opt to show all related records, wether A or B
 	-->
 
 	<xsl:template name="objectRelationWrap">
-		<lido:objectRelationWrap>
-			<xsl:if test="z:repeatableGroup[@name='ObjIconographyGrp'] or z:repeatableGroup[@name='ObjKeyWordsGrp']">
-				<lido:subjectWrap>
-					<xsl:apply-templates select="z:repeatableGroup[@name='ObjIconographyGrp']"/>
-					<xsl:apply-templates select="z:repeatableGroup[@name='ObjKeyWordsGrp']"/>
-				</lido:subjectWrap>
-			</xsl:if>
-			<!-- relatedWorksWrap -->
-			<xsl:apply-templates select="z:composite[@name='ObjObjectCre']"/>
-		</lido:objectRelationWrap>
+		<xsl:variable name="relatedWorks" select="z:composite[
+			@name='ObjObjectCre'
+		]/z:compositeItem/z:moduleReference"/>
+		<xsl:if test="z:repeatableGroup[@name='ObjIconographyGrp'] 
+			or z:repeatableGroup[@name='ObjKeyWordsGrp']
+			or $relatedWorks">
+			<lido:objectRelationWrap>
+				<xsl:if test="z:repeatableGroup[@name='ObjIconographyGrp'] or z:repeatableGroup[@name='ObjKeyWordsGrp']">
+					<lido:subjectWrap>
+						<xsl:apply-templates select="z:repeatableGroup[@name='ObjIconographyGrp']"/>
+						<xsl:apply-templates select="z:repeatableGroup[@name='ObjKeyWordsGrp']"/>
+					</lido:subjectWrap>
+				</xsl:if>
+				<!-- relatedWorksWrap -->
+				<xsl:if test="$relatedWorks">
+					<!--xsl:message>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</xsl:message-->
+					<lido:relatedWorksWrap>
+						<xsl:apply-templates select="z:composite[@name='ObjObjectCre']/z:compositeItem/z:moduleReference/z:moduleReferenceItem"/>
+					</lido:relatedWorksWrap>
+				</xsl:if>
+			</lido:objectRelationWrap>
+		</xsl:if>
     </xsl:template>
 
 	<!--RIA:ICONCLASS-->
@@ -110,18 +127,8 @@
 	</xsl:template>
 
 	<!-- composite -->
-	<xsl:template match="z:composite[@name='ObjObjectCre']">
-		<lido:relatedWorksWrap>
-			<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectARef']/z:moduleReferenceItem"/>
-		</lido:relatedWorksWrap>
-	</xsl:template>
-
-	<xsl:template match="z:composite[@name='ObjObjectCre']/z:compositeItem">
-			<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectARef']/z:moduleReferenceItem"/>
-	</xsl:template>
-   
-    <xsl:template match="z:moduleReference[@name = 'ObjObjectARef']/z:moduleReferenceItem">
-        <lido:relatedWorkSet>
+	<xsl:template match="z:composite[@name='ObjObjectCre']/z:compositeItem/z:moduleReference/z:moduleReferenceItem">
+		<lido:relatedWorkSet>
             <lido:relatedWork>
                 <lido:displayObject>
                     <xsl:value-of select="z:formattedValue"/>
@@ -133,5 +140,5 @@
                 </lido:term>
             </lido:relatedWorkRelType>
         </lido:relatedWorkSet>
-    </xsl:template>
-</xsl:stylesheet>
+	</xsl:template>
+ </xsl:stylesheet>

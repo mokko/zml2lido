@@ -22,6 +22,8 @@
         Apparently some records with a Sammler dont have the Sammeln-event? 
         Why because i wrote eq Sammler instead of = Sammler.
         Let that be a lesson!
+		
+		Todo: Erwerbungsort 
     -->
 
     <xsl:template name="Erwerb">

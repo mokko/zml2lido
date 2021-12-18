@@ -70,7 +70,7 @@
             </xsl:attribute>
             <lido:resourceID>
 				<xsl:attribute name="lido:label">Bild</xsl:attribute>
-				<xsl:attribute name="lido:type">mulId</xsl:attribute>
+				<xsl:attribute name="lido:type">local</xsl:attribute>
 				<xsl:attribute name="lido:source">SMB/ObjID/AssetID</xsl:attribute> 
 				<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
 				<xsl:text>/</xsl:text>
@@ -91,7 +91,7 @@
                 </xsl:attribute>
             -->
             <lido:resourceRepresentation>
-                <xsl:attribute name="lido:type" xml:lang="EN">
+                <xsl:attribute name="lido:type" xml:lang="en">
 					<xsl:text>Provided image</xsl:text>
 					<!--xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex=".(\w*)$">
 						<xsl:matching-substring>
