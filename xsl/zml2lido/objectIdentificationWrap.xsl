@@ -48,7 +48,7 @@
 					<xsl:when test="z:dataField[@name='SortLnu']">
 						<xsl:value-of select="z:dataField[@name='SortLnu']"/>
 					</xsl:when>
-					<xsl:otherwise>0</xsl:otherwise>
+					<xsl:otherwise>10</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:if test="z:dataField[@name='LabelClb'] or z:dataField[@name='TransliterationClb'] 
