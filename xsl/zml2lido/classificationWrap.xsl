@@ -118,12 +118,47 @@
 		Sammlung is Bereich without the Verwaltende Institution
 	-->
 	<xsl:template name="sammlung2">
-		<lido:classification lido:type="Sammlung">
-			<lido:term lido:addedSearchTerm="no" xml:lang="de">
-				<xsl:variable name="sammlung" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-				<xsl:value-of select="replace($sammlung, '^[a-zA-Z]+-','')"/>
-			</lido:term>
-		</lido:classification>	
+		<xsl:variable name="sammlung" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+		<xsl:variable name="sammlung2">
+			<xsl:choose>
+				<xsl:when test="$sammlung ne ''">
+					<xsl:value-of select="normalize-space(replace($sammlung, '^[a-zA-Z]+-',''))"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<!-- 
+						I dont know why ISL-Fotos has no ObjOrgGroupVoc. Let's investigate...
+						not a proper solution 
+					-->
+					<xsl:choose>
+						<!-- ISL -->
+						<xsl:when test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/@moduleItemId = '67676'">
+							<xsl:value-of select="normalize-space(replace(z:systemField[@name='__orgUnit'], '^ISL',''))"/>
+						</xsl:when>
+						<!-- KB -->
+						<xsl:when test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/@moduleItemId = '73768'">
+							<xsl:value-of select="normalize-space(replace(z:systemField[@name='__orgUnit'], '^KB',''))"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:message terminate="yes">
+								<xsl:text>UNKNOWN INSTITUTION: PLEASE TEACH ME</xsl:text>
+							</xsl:message>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable> 
+		
+		<xsl:message>
+			<xsl:text>Sammlung2: </xsl:text>
+			<xsl:value-of select="$sammlung2"/>
+		</xsl:message>
+		<xsl:if test="$sammlung2 ne ''">
+			<lido:classification lido:type="Sammlung">
+				<lido:term lido:addedSearchTerm="no" xml:lang="de">
+					<xsl:value-of select="$sammlung2"/>
+				</lido:term>
+			</lido:classification>
+		</xsl:if>	
 	</xsl:template>
 
 	<!-- 
@@ -197,6 +232,16 @@
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
 			</lido:classification>
 		</xsl:if>
+		
+		<!-- ISL. Why this extrawurst? -->
+		<xsl:if test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/@moduleItemId = '67676' "> 
+			<lido:classification>
+				<!-- art; better than art work? -->
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
+			</lido:classification>
+		</xsl:if>
+		
 		<xsl:if test="$bereich = $archäologischeBereiche">
 			<lido:classification>
 				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234110</lido:conceptID>
