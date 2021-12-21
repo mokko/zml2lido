@@ -58,10 +58,10 @@
 	<xsl:template match="z:repeatableGroup[@name='ObjTechnicalTermGrp']
 		/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermVoc']">
 		<lido:objectWorkType lido:type="Sachbegriff">
-			<lido:conceptID lido:type="id">
+			<lido:conceptID lido:source="RIA:Sachbegriff" lido:type="local">
 				<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
 			</lido:conceptID>
-			<lido:term>
+			<lido:term xml:lang="de">
 				<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 			</lido:term>
 		</lido:objectWorkType>
