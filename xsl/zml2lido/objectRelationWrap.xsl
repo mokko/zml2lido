@@ -128,11 +128,55 @@
 
 	<!-- composite -->
 	<xsl:template match="z:composite[@name='ObjObjectCre']/z:compositeItem/z:moduleReference/z:moduleReferenceItem">
+		<xsl:variable name="moduleItemId" select="@moduleItemId"/>
+		<xsl:variable name="url">
+			<xsl:text>https://recherche.smb.museum/detail/</xsl:text>
+			<xsl:value-of select="$moduleItemId"/> 
+		</xsl:variable>
 		<lido:relatedWorkSet>
             <lido:relatedWork>
                 <lido:displayObject>
                     <xsl:value-of select="z:formattedValue"/>
                 </lido:displayObject>
+				<lido:object>
+					<lido:objectWebResource>
+						<xsl:value-of select="$url"/>
+					</lido:objectWebResource>
+					<lido:objectID lido:type="local">
+						<xsl:attribute name="lido:source">
+							<xsl:choose>
+								<xsl:when test="..[@targetModule= 'Object']">
+									<xsl:text>OBJ.ID</xsl:text>
+								</xsl:when>
+								<xsl:when test="..[@targetModule= 'Person']">
+									<xsl:text>KUE.ID</xsl:text>
+								</xsl:when>
+								<xsl:when test="..[@targetModule= 'Multimedia']">
+									<xsl:text>MM.ID</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:message terminate="yes">
+										<xsl:text>ERROR: Unknown Object Type! </xsl:text>
+										<xsl:value-of select="@targetModule"/> 
+									</xsl:message>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:value-of select="$moduleItemId"/> 
+					</lido:objectID>
+					<!-- 
+					not sure about objectNote
+					
+					SPEC: A descriptive identification of the object / work that will be
+					meaningful to end-users, including some or all of the following
+					information, as necessary for clarity and if known: title, object/work
+					type, important actor, date and/or place information, potentially
+					location of the object / work.
+					-->
+					<lido:objectNote>
+					    <xsl:value-of select="z:formattedValue"/>
+					</lido:objectNote>
+				</lido:object>
             </lido:relatedWork>
             <lido:relatedWorkRelType>
                 <lido:term xml:lang="de">
