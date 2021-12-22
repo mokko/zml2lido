@@ -218,7 +218,6 @@
 			<xsl:value-of select="$new" />
 		</xsl:message>
 		<xsl:value-of select="$new" />
-
 	</xsl:function>
 
 	<xsl:template name="legalBody">
@@ -241,5 +240,4 @@
 			<xsl:attribute name="lido:sortorder" select="z:dataField[@name='SortLnu']"/>
 		</xsl:if>
 	</xsl:template>
-
 </xsl:stylesheet>

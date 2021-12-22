@@ -163,7 +163,7 @@
 			</lido:resourceType>
 			<!-- 
 				22.12.2021 
-				Frank will das Feld nicht in LIDO haben, weil da teilweise Müll drin steht.
+				Frank will das Feld nicht in LIDO haben, weil da teilweise Müll drin steht (?).
 				xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/
 			-->
 			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
