@@ -48,6 +48,11 @@
 				z:vocabularyReferenceItem/@name = $herstellendeOrtstypen
 			]]"/>
 
+		<xsl:variable name="herstellendeDatenTypen" select="
+			'Aufnahme',
+			'Herstellung'
+		"/>
+
         <xsl:if test="$herstellendeRollenN or $herstellendeKollektiveN or $herstellendeOrteN">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">Herstellung</lido:displayEvent>
@@ -72,13 +77,23 @@
 					estimates.
 					
 					We can just take the one with the lowest sort order
-					-->
 
-					<lido:eventDate>
-						<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjDateGrp']/z:repeatableGroupItem[1]">
-							<xsl:sort select="z:dataField/@name='SortLnu'" data-type="number" order="ascending"/>
-						</xsl:apply-templates>
-					</lido:eventDate>
+
+					-->
+					<xsl:for-each select="z:repeatableGroup[@name = 'ObjDateGrp']/z:repeatableGroupItem[
+						z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/@name = $herstellendeDatenTypen
+					]">
+						<xsl:variable name="dateType" select="z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/@name"/>
+						<xsl:message>
+							<xsl:text>dateType: </xsl:text>
+							<xsl:value-of select="$dateType"/>
+						</xsl:message>
+						<lido:eventDate>
+							<xsl:apply-templates select=".">
+								<xsl:sort select="z:dataField/@name='SortLnu'" data-type="number" order="ascending"/>
+							</xsl:apply-templates>
+						</lido:eventDate>
+					</xsl:for-each>
 					
 					<!-- eventPlace -->
 					<xsl:apply-templates mode="eventPlace" select="$herstellendeOrteN"/>
@@ -146,23 +161,52 @@
 		
 	<!-- eventDate -->
 	<xsl:template match="z:repeatableGroup[@name = 'ObjDateGrp']/z:repeatableGroupItem">
-			<lido:displayDate>
-				<xsl:value-of select="z:dataField[@name = 'DateTxt']/z:value"/>
-			</lido:displayDate>
-			<xsl:if test="z:dataField[@name = 'DateFromTxt'] or z:dataField[@name = 'DateToTxt']">
-				<lido:date>
-					<xsl:if test="z:dataField[@name = 'DateFromTxt']">
-						<lido:earliestDate>
-							<xsl:value-of select="z:dataField[@name = 'DateFromTxt']"/>
-						</lido:earliestDate>
-					</xsl:if>
-					<xsl:if test="z:dataField[@name = 'DateToTxt']">
-						<lido:latestDate>
-							<xsl:value-of select="z:dataField[@name = 'DateToTxt']"/>
-						</lido:latestDate>
-					</xsl:if>
-				</lido:date>
-			</xsl:if>
+		<!-- 
+			It's possible, even likely, that for a given ObjDateGrp DateTxt is empty. 
+			For the time being, let's not try to be 
+			smarter than RIA and take a virtual Vorschau field (PreviewTxt). 
+			
+			Note: We might need date in other events. In this case, this template might 
+			move to eventWrap.xsl.
+
+			Todo: Implement event-specific dates
+			<vocabularyReference name="TypeVoc" id="30361" instanceName="ObjDateTypeVgr">
+              <vocabularyReferenceItem id="4399684" name="Aufnahme">
+                <formattedValue language="en">Aufnahme</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+
+			In the RIA-interface this qualifier is called "Typ".
+			Schreibanweisung says: no type equals "Herstellung"		
+			common values:
+				Datierung engl.
+				Herstellung
+				Aufnahme
+				Epoche des Originals
+				Aufnahmejahr: seems to be a bad value, should be Aufnahme
+		-->
+		<xsl:if test="z:dataField[@name = 'PreviewTxt']/z:value eq ''">
+			<xsl:message terminate="yes">
+				<xsl:text>ERROR: displayDate empty!</xsl:text>
+			</xsl:message>
+		</xsl:if>
+		<lido:displayDate>
+			<xsl:value-of select="z:dataField[@name = 'PreviewTxt']/z:value"/>
+		</lido:displayDate>
+		<xsl:if test="z:dataField[@name = 'DateFromTxt'] or z:dataField[@name = 'DateToTxt']">
+			<lido:date>
+				<xsl:if test="z:dataField[@name = 'DateFromTxt']">
+					<lido:earliestDate>
+						<xsl:value-of select="z:dataField[@name = 'DateFromTxt']"/>
+					</lido:earliestDate>
+				</xsl:if>
+				<xsl:if test="z:dataField[@name = 'DateToTxt']">
+					<lido:latestDate>
+						<xsl:value-of select="z:dataField[@name = 'DateToTxt']"/>
+					</lido:latestDate>
+				</xsl:if>
+			</lido:date>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- eventMaterialsTech -->
