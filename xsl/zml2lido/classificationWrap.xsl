@@ -148,10 +148,10 @@
 			</xsl:choose>
 		</xsl:variable> 
 		
-		<xsl:message>
+		<!--xsl:message>
 			<xsl:text>Sammlung2: </xsl:text>
 			<xsl:value-of select="$sammlung2"/>
-		</xsl:message>
+		</xsl:message-->
 		<xsl:if test="$sammlung2 ne ''">
 			<lido:classification lido:type="Sammlung">
 				<lido:term lido:addedSearchTerm="no" xml:lang="de">
