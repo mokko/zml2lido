@@ -1,9 +1,10 @@
 <xsl:stylesheet 
-	version="2.0"
+	version="3.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:lido="http://www.lido-schema.org"
 	xmlns:z="http://www.zetcom.com/ria/ws/module"
+	xmlns:fn="http://www.w3.org/2005/xpath-functions"
 	xmlns:func="http://func"
 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd"
 	exclude-result-prefixes="z func">
@@ -147,6 +148,39 @@
 	<xsl:function name="func:weblink">
 		<xsl:param name="verwaltendeInstitution"/>
 		<xsl:value-of select="func:vocmap-replace('verwaltendeInstitution', $verwaltendeInstitution, 'homepage')" />
+	</xsl:function>
+
+	<xsl:function name="func:reformatDate">
+		<!-- 
+			take near-arbitrary input and output YYYY[-MM[-DD]]
+			according to spec 1.0 LIDO also allows time.
+		-->
+		<xsl:param name="date"/>
+		<xsl:variable name="date2" select="normalize-space($date)"/>
+		<!-- what about years before 1000? -->
+		<xsl:variable name="yyyy" select="analyze-string($date2, '(\d{4})')//fn:match/fn:group[@nr = 1]"/>
+		<xsl:variable name="mm" select="analyze-string($date2, '(\d|\d\d)\.\d+')//fn:match/fn:group[@nr = 1]"/>
+		<xsl:variable name="dd" select="analyze-string($date2, '(\d|\d\d)\.\d+\.\d+')//fn:match/fn:group[@nr = 1]"/>
+		
+		<xsl:variable name="new">
+			<xsl:value-of select="$yyyy"/>
+			<xsl:if test="$mm ne ''">
+				<xsl:text>-</xsl:text>
+				<xsl:value-of select="$mm"/>
+			</xsl:if>
+			<xsl:if test="$dd ne ''">
+			<xsl:text>-</xsl:text>
+			<xsl:value-of select="$dd"/>
+			</xsl:if>
+		</xsl:variable>
+		<xsl:message>
+			<xsl:text> date: </xsl:text>
+			<xsl:value-of select="$date" />
+			<xsl:text> :: </xsl:text>
+			<xsl:value-of select="$new" />
+		</xsl:message>
+		<xsl:value-of select="$new" />
+
 	</xsl:function>
 
 	<xsl:template name="legalBody">

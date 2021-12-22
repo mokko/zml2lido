@@ -3,7 +3,8 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:z="http://www.zetcom.com/ria/ws/module"
-	exclude-result-prefixes="z"
+	xmlns:func="http://func"
+	exclude-result-prefixes="z func"
 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
@@ -52,8 +53,10 @@
 				]
 			]"/>
 
+		<!-- Aufnahmejahr is stupid, but it will exist for some time -->
 		<xsl:variable name="herstellendeDatenTypen" select="
 			'Aufnahme',
+			'Aufnahmejahr', 
 			'Herstellung'
 		"/>
 
@@ -190,7 +193,7 @@
               </vocabularyReferenceItem>
             </vocabularyReference>
 
-			In the RIA-interface this qualifier is called "Typ".
+			In the RIA-interface this qualifier is called "Typ"; i call it "dateType".
 			Schreibanweisung says: no type equals "Herstellung"		
 			common values:
 				Datierung engl.
@@ -199,24 +202,34 @@
 				Epoche des Originals
 				Aufnahmejahr: seems to be a bad value, should be Aufnahme
 		-->
-		<xsl:if test="z:dataField[@name = 'PreviewTxt']/z:value eq ''">
-			<xsl:message terminate="yes">
-				<xsl:text>ERROR: displayDate empty!</xsl:text>
-			</xsl:message>
-		</xsl:if>
-		<lido:displayDate>
-			<xsl:value-of select="z:dataField[@name = 'PreviewTxt']/z:value"/>
+		<xsl:variable name="displayDate">
+			<xsl:choose>
+				<xsl:when test="z:dataField[@name = 'PreviewTxt']/z:value ne ''">
+					<xsl:value-of select="z:dataField[@name = 'PreviewTxt']/z:value"/>
+				</xsl:when>
+				<xsl:when test="z:virtualField[@name = 'PreviewVrt']/z:value ne ''">
+					<xsl:value-of select="z:virtualField[@name = 'PreviewVrt']/z:value"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:message terminate="yes">
+						<xsl:text>ERROR: no displayDate!</xsl:text>
+					</xsl:message>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<lido:displayDate xml:lang="de">
+			<xsl:value-of select="$displayDate"/>
 		</lido:displayDate>
 		<xsl:if test="z:dataField[@name = 'DateFromTxt'] or z:dataField[@name = 'DateToTxt']">
 			<lido:date>
 				<xsl:if test="z:dataField[@name = 'DateFromTxt']">
 					<lido:earliestDate>
-						<xsl:value-of select="z:dataField[@name = 'DateFromTxt']"/>
+						<xsl:value-of select="func:reformatDate(z:dataField[@name = 'DateFromTxt'])"/>
 					</lido:earliestDate>
 				</xsl:if>
 				<xsl:if test="z:dataField[@name = 'DateToTxt']">
 					<lido:latestDate>
-						<xsl:value-of select="z:dataField[@name = 'DateToTxt']"/>
+						<xsl:value-of select="func:reformatDate(z:dataField[@name = 'DateToTxt'])"/>
 					</lido:latestDate>
 				</xsl:if>
 			</lido:date>
@@ -224,17 +237,25 @@
 	</xsl:template>
 
 	<!-- eventMaterialsTech -->
-	<xsl:template mode="notUsedATM" match="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp' and 
-		z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']">
+	<xsl:template mode="notUsedATM" match="
+		z:repeatableGroup[
+			@name = 'ObjMaterialTechniqueGrp' 
+			and z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe'
+		]">
 		<lido:eventMaterialsTech>
-			<xsl:apply-templates select="z:repeatableGroupItem[
-				z:vocabularyReference/@name = 'TypeVoc' and 
-				z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']"/>
+			<xsl:apply-templates select="
+				z:repeatableGroupItem[
+					z:vocabularyReference/@name = 'TypeVoc' and 
+					z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe'
+				]"/>
 		</lido:eventMaterialsTech>
 	</xsl:template>
 
-	<xsl:template match="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp' 
-		and z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']">
+	<xsl:template match="
+		z:repeatableGroup[
+			@name = 'ObjMaterialTechniqueGrp' 
+			and z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe'
+		]">
 		<lido:eventMaterialsTech>
 			<lido:displayMaterialsTech xml:lang="de"> 
 				<xsl:value-of select="z:dataField[@name = 'ExportClb']"/>
