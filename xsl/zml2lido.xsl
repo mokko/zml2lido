@@ -152,10 +152,10 @@
 
 	<xsl:function name="func:reformatDate">
 		<!-- 
-			takes input in format [{\d|\d\d}\.[{\d|\d\d}\.]]\d\d\d\d 
+			takes input in format [{\d|\d\d}\.[{\d|\d\d}\.]]\d{1-4} 
 			and returns YYYY[-MM[-DD]] according to LIDO spec 1.0.
 
-			TODO: years that have less than 3 digits and more than 4.
+			TODO: now limitation is with negative years
 
 			Spec also allows time, but haven't encountered that yet.
 			
@@ -171,9 +171,15 @@
 
 		<xsl:variable name="date2" select="normalize-space($date)"/>
 		<!-- what about years before 100? -->
-		<xsl:variable name="yyyy" select="analyze-string($date2, '(\d{3}|\d{4})$')//fn:match/fn:group[@nr = 1]"/>
+		<xsl:variable name="y" select="analyze-string($date2, '(\d|\d\d|\d{3}|\d{4})$')//fn:match/fn:group[@nr = 1]"/>
 		<xsl:variable name="m" select="analyze-string($date2, '(\d|\d\d)\.\d+$')//fn:match/fn:group[@nr = 1]"/>
 		<xsl:variable name="d" select="analyze-string($date2, '^(\d|\d\d)\.\d+\.\d+')//fn:match/fn:group[@nr = 1]"/>
+
+		<xsl:variable name="yyyy">
+			<xsl:if test="$y ne ''">
+				<xsl:value-of select="format-number(number($y),'0000')"/>
+			</xsl:if>
+		</xsl:variable>
 		
 		<xsl:variable name="mm">
 			<xsl:if test="$m ne ''">
@@ -199,7 +205,7 @@
 			</xsl:if>
 		</xsl:variable>
 		<xsl:message>
-			<xsl:text> date: </xsl:text>
+			<xsl:text> reformatDate: </xsl:text>
 			<xsl:value-of select="$date" />
 			<xsl:text> :: </xsl:text>
 			<xsl:value-of select="$new" />
