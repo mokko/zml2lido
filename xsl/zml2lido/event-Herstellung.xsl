@@ -35,25 +35,42 @@
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $herstellendeRollen]"/>
 
-		<xsl:variable name="herstellendeKollektiveN" select="z:repeatableGroup[
-			@name = 'ObjGeograficGrp']/z:repeatableGroupItem/z:vocabularyReference[
-			@name = 'GeopolVoc' and 
-			z:vocabularyReferenceItem/@name = $herstellendeKollektive
+		<xsl:variable name="herstellendeKollektiveN" select="
+			z:repeatableGroup[
+				@name = 'ObjGeograficGrp']/
+			z:repeatableGroupItem/z:vocabularyReference[
+				@name = 'GeopolVoc' 
+				and z:vocabularyReferenceItem/@name = $herstellendeKollektive
 			]"/>
 
-		<xsl:variable name="herstellendeOrteN" select="z:repeatableGroup[
-			@name = 'ObjGeograficGrp' and 
-			z:repeatableGroupItem/z:vocabularyReference[
-				@name = 'TypeVoc' and 
-				z:vocabularyReferenceItem/@name = $herstellendeOrtstypen
-			]]"/>
+		<xsl:variable name="herstellendeOrteN" select="
+			z:repeatableGroup[
+				@name = 'ObjGeograficGrp' 
+				and z:repeatableGroupItem/z:vocabularyReference[
+					@name = 'TypeVoc' 
+					and z:vocabularyReferenceItem/@name = $herstellendeOrtstypen
+				]
+			]"/>
 
 		<xsl:variable name="herstellendeDatenTypen" select="
 			'Aufnahme',
 			'Herstellung'
 		"/>
 
-        <xsl:if test="$herstellendeRollenN or $herstellendeKollektiveN or $herstellendeOrteN">
+		<xsl:variable name="herstellendeDatenTypenN" select="
+			z:repeatableGroup[
+				@name = 'ObjDateGrp']/
+			z:repeatableGroupItem[
+				z:vocabularyReference[@name = 'TypeVoc']/
+				z:vocabularyReferenceItem/@name = $herstellendeDatenTypen
+				or not (z:vocabularyReference[@name = 'TypeVoc'])
+			]
+		"/>
+
+        <xsl:if test="$herstellendeRollenN 
+			or $herstellendeKollektiveN 
+			or $herstellendeOrteN 
+			or $herstellendeDatenTypenN">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">Herstellung</lido:displayEvent>
 				<lido:event>
@@ -76,22 +93,19 @@
 					BUT: AKu says it often has multiple dates representing multiple
 					estimates.
 					
-					We can just take the one with the lowest sort order
+					We can just take the one with the lowest sort order.
 
-
+					TODO: Datierung engl.
 					-->
-					<xsl:for-each select="z:repeatableGroup[@name = 'ObjDateGrp']/z:repeatableGroupItem[
-						z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/@name = $herstellendeDatenTypen
-					]">
+					<xsl:for-each select="$herstellendeDatenTypenN[1]">
+						<xsl:sort select="z:dataField/@name='SortLnu'" data-type="number" order="ascending"/>
 						<xsl:variable name="dateType" select="z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/@name"/>
-						<xsl:message>
+						<!--xsl:message>
 							<xsl:text>dateType: </xsl:text>
 							<xsl:value-of select="$dateType"/>
-						</xsl:message>
+						</xsl:message-->
 						<lido:eventDate>
-							<xsl:apply-templates select=".">
-								<xsl:sort select="z:dataField/@name='SortLnu'" data-type="number" order="ascending"/>
-							</xsl:apply-templates>
+							<xsl:apply-templates select="."/>
 						</lido:eventDate>
 					</xsl:for-each>
 					
