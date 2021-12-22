@@ -159,9 +159,21 @@
 		<xsl:variable name="date2" select="normalize-space($date)"/>
 		<!-- what about years before 1000? -->
 		<xsl:variable name="yyyy" select="analyze-string($date2, '(\d{4})')//fn:match/fn:group[@nr = 1]"/>
-		<xsl:variable name="mm" select="analyze-string($date2, '(\d|\d\d)\.\d+')//fn:match/fn:group[@nr = 1]"/>
-		<xsl:variable name="dd" select="analyze-string($date2, '(\d|\d\d)\.\d+\.\d+')//fn:match/fn:group[@nr = 1]"/>
+		<xsl:variable name="m" select="analyze-string($date2, '(\d|\d\d)\.\d+$')//fn:match/fn:group[@nr = 1]"/>
+		<xsl:variable name="d" select="analyze-string($date2, '^(\d|\d\d)\.\d+\.\d+')//fn:match/fn:group[@nr = 1]"/>
 		
+		<xsl:variable name="mm">
+			<xsl:if test="$m ne ''">
+				<xsl:value-of select="format-number(number($m),'00')"/>
+			</xsl:if>
+		</xsl:variable>
+
+		<xsl:variable name="dd">
+			<xsl:if test="$d ne ''">
+				<xsl:value-of select="format-number(number($d),'00')"/>
+			</xsl:if>
+		</xsl:variable>
+
 		<xsl:variable name="new">
 			<xsl:value-of select="$yyyy"/>
 			<xsl:if test="$mm ne ''">

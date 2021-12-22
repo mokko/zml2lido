@@ -1,9 +1,10 @@
 <xsl:stylesheet version="2.0"
+	xmlns:func="http://func"
     xmlns:lido="http://www.lido-schema.org"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:z="http://www.zetcom.com/ria/ws/module"
-    exclude-result-prefixes="z"
+    exclude-result-prefixes="z func"
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
     <xsl:import href="event-Aufführung.xsl" />
@@ -107,10 +108,10 @@
 						]"/>
 					<lido:vitalDatesActor>
 						<lido:earliestDate>
-							<xsl:value-of select="$lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value"/>
+							<xsl:value-of select="func:reformatDate($lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value)"/>
 						</lido:earliestDate>
 						<lido:latestDate>
-							<xsl:value-of select="$lebensdatenN/z:dataField[@name = 'DateToTxt']/z:value"/>
+							<xsl:value-of select="func:reformatDate($lebensdatenN/z:dataField[@name = 'DateToTxt']/z:value)"/>
 						</lido:latestDate>
 						<xsl:value-of select="$kue/z:virtualField[@name = 'PreviewVrt']/z:value"/>
 					</lido:vitalDatesActor>
@@ -189,4 +190,64 @@
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>			
+	
+	<!-- eventDate -->
+	<xsl:template match="z:repeatableGroup[@name = 'ObjDateGrp']/z:repeatableGroupItem">
+		<!-- 
+			It's possible, even likely, that for a given ObjDateGrp DateTxt is empty. 
+			For the time being, let's not try to be 
+			smarter than RIA and take a virtual Vorschau field (PreviewTxt). 
+			
+			Note: We might need date in other events. In this case, this template might 
+			move to eventWrap.xsl.
+
+			Todo: Implement event-specific dates
+			<vocabularyReference name="TypeVoc" id="30361" instanceName="ObjDateTypeVgr">
+              <vocabularyReferenceItem id="4399684" name="Aufnahme">
+                <formattedValue language="en">Aufnahme</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+
+			In the RIA-interface this qualifier is called "Typ"; i call it "dateType".
+			Schreibanweisung says: no type equals "Herstellung"		
+			common values:
+				Datierung engl.
+				Herstellung
+				Aufnahme
+				Epoche des Originals
+				Aufnahmejahr: seems to be a bad value, should be Aufnahme
+		-->
+		<xsl:variable name="displayDate">
+			<xsl:choose>
+				<xsl:when test="z:dataField[@name = 'PreviewTxt']/z:value ne ''">
+					<xsl:value-of select="z:dataField[@name = 'PreviewTxt']/z:value"/>
+				</xsl:when>
+				<xsl:when test="z:virtualField[@name = 'PreviewVrt']/z:value ne ''">
+					<xsl:value-of select="z:virtualField[@name = 'PreviewVrt']/z:value"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:message terminate="yes">
+						<xsl:text>ERROR: no displayDate!</xsl:text>
+					</xsl:message>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<lido:displayDate xml:lang="de">
+			<xsl:value-of select="$displayDate"/>
+		</lido:displayDate>
+		<xsl:if test="z:dataField[@name = 'DateFromTxt'] or z:dataField[@name = 'DateToTxt']">
+			<lido:date>
+				<xsl:if test="z:dataField[@name = 'DateFromTxt']">
+					<lido:earliestDate>
+						<xsl:value-of select="func:reformatDate(z:dataField[@name = 'DateFromTxt'])"/>
+					</lido:earliestDate>
+				</xsl:if>
+				<xsl:if test="z:dataField[@name = 'DateToTxt']">
+					<lido:latestDate>
+						<xsl:value-of select="func:reformatDate(z:dataField[@name = 'DateToTxt'])"/>
+					</lido:latestDate>
+				</xsl:if>
+			</lido:date>
+		</xsl:if>
+	</xsl:template>
 </xsl:stylesheet>
