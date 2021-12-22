@@ -3,8 +3,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:z="http://www.zetcom.com/ria/ws/module"
-	xmlns:func="http://func"
-	exclude-result-prefixes="z func"
+	exclude-result-prefixes="z"
 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />

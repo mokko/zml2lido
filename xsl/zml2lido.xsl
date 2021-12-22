@@ -152,13 +152,26 @@
 
 	<xsl:function name="func:reformatDate">
 		<!-- 
-			take near-arbitrary input and output YYYY[-MM[-DD]]
-			according to spec 1.0 LIDO also allows time.
+			takes input in format [{\d|\d\d}\.[{\d|\d\d}\.]]\d\d\d\d 
+			and returns YYYY[-MM[-DD]] according to LIDO spec 1.0.
+
+			TODO: years that have less than 3 digits and more than 4.
+
+			Spec also allows time, but haven't encountered that yet.
+			
+			Accepts only single value, no sequence which is feature not a bug
 		-->
 		<xsl:param name="date"/>
+		<!--xsl:message>
+			<xsl:value-of select="$date"/>
+			<xsl:text> [</xsl:text>
+			<xsl:value-of select="count($date)"/>
+			<xsl:text>]</xsl:text>
+		</xsl:message-->
+
 		<xsl:variable name="date2" select="normalize-space($date)"/>
-		<!-- what about years before 1000? -->
-		<xsl:variable name="yyyy" select="analyze-string($date2, '(\d{4})')//fn:match/fn:group[@nr = 1]"/>
+		<!-- what about years before 100? -->
+		<xsl:variable name="yyyy" select="analyze-string($date2, '(\d{3}|\d{4})$')//fn:match/fn:group[@nr = 1]"/>
 		<xsl:variable name="m" select="analyze-string($date2, '(\d|\d\d)\.\d+$')//fn:match/fn:group[@nr = 1]"/>
 		<xsl:variable name="d" select="analyze-string($date2, '^(\d|\d\d)\.\d+\.\d+')//fn:match/fn:group[@nr = 1]"/>
 		

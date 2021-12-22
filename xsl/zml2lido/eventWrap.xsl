@@ -101,11 +101,14 @@
 					<!-- 
 						LIDO 1.0 appears to be missing a mechanism to provide other dates than vitalDates 
 						for an actor. Please add that in a new version of the spec.
+						
+						It's possible to have multiple sets of Lebensdaten in RIA, e.g. kueId 387655
+						Let's just take the first for now.
 					-->
 					<xsl:variable name="lebensdatenN" select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
 						/z:repeatableGroupItem[
 							z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Lebensdaten'
-						]"/>
+						][1]"/>
 					<lido:vitalDatesActor>
 						<lido:earliestDate>
 							<xsl:value-of select="func:reformatDate($lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value)"/>
