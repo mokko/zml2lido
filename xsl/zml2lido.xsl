@@ -155,11 +155,18 @@
 			takes input in format [{\d|\d\d}\.[{\d|\d\d}\.]]\d{1-4} 
 			and returns YYYY[-MM[-DD]] according to LIDO spec 1.0.
 
-			TODO: now limitation is with negative years
-
-			Spec also allows time, but haven't encountered that yet.
+			TODO: now limitation is with negative years which fits the ISO 8601 quite well
 			
-			Accepts only single value, no sequence which is feature not a bug
+			Wikipedia about ISO 8601's treatment of years: "ISO 8601 prescribes, as a minimum, 
+			a four-digit year [YYYY] to avoid the year 2000 problem. It therefore represents years 
+			from 0000 to 9999, year 0000 being equal to 1 BC and all others AD. However, years 
+			before 1583 are not automatically allowed by the standard. Instead 'values in the 
+			range [0000] through [1582] shall only be used by mutual agreement of the partners in 
+			information interchange.'"
+
+			LIDO Spec also mentions  time, but haven't encountered that yet.
+			
+			Accepts only a single value, no sequence - which, emphatically, is a feature not a bug.
 		-->
 		<xsl:param name="date"/>
 		<!--xsl:message>
