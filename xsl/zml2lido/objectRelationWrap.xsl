@@ -1,9 +1,10 @@
-<xsl:stylesheet version="2.0"
+<xsl:stylesheet version="3.0"
+	xmlns:func="http://func"
     xmlns:lido="http://www.lido-schema.org"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:z="http://www.zetcom.com/ria/ws/module"
-    exclude-result-prefixes="z"
+    exclude-result-prefixes="z func"
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
@@ -13,12 +14,14 @@
 	objectRelationWrap(spec 1.0): Wrapper for infomation about related topics and works,
 	collections, etc.
 	
-	I dont understand why subjectWrap is an aspect of objectRelation, but who cares.
-
 	Papa Bemba: For some reason, i cant find certain nodes.
 	I find ObjObjectBRef nodes, but not ObjObjectARef. Why?
 		z:moduleReference[@name = 'ObjObjectARef']
 	In the end, i opt to show all related records, wether A or B
+
+	LIDO1.1: SUBJECT
+	A wrapper for information about the subject of the object/work in focus. The sub-elements identify, 
+	describe, and/or interpret what is depicted in and by an object/work, or what it is about.
 	-->
 
 	<xsl:template name="objectRelationWrap">
@@ -37,7 +40,6 @@
 				</xsl:if>
 				<!-- relatedWorksWrap -->
 				<xsl:if test="$relatedWorks">
-					<!--xsl:message>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</xsl:message-->
 					<lido:relatedWorksWrap>
 						<xsl:apply-templates select="z:composite[@name='ObjObjectCre']/z:compositeItem/z:moduleReference/z:moduleReferenceItem"/>
 					</lido:relatedWorksWrap>
@@ -107,18 +109,25 @@
 	</xsl:template>
 
 	<xsl:template match="z:vocabularyReference[@name = 'KeywordProjectVoc']">
+		<xsl:comment>
+			<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
+		</xsl:comment>
 		<lido:displaySubject xml:lang="de">
 			<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 		</lido:displaySubject>
 		<lido:subject>
+			<xsl:if test="starts-with(z:vocabularyReferenceItem/@name, 'Europeana-Fashion##')">
+				<xsl:attribute name="lido:type">AAT</xsl:attribute>
+			</xsl:if>
 			<lido:subjectConcept>
-				<xsl:comment>
-					<xsl:text>conceptID is an RIA internal id</xsl:text>
-					<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
-				</xsl:comment>
-				<lido:conceptID lido:type="id">
+				<lido:conceptID lido:type="local">
 					<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
 				</lido:conceptID>
+				<xsl:if test="starts-with(z:vocabularyReferenceItem/@name, 'Europeana-Fashion##')">
+					<lido:conceptID lido:type="URI">
+						<xsl:value-of select="func:vocmap-replace('subjects', z:vocabularyReferenceItem/z:formattedValue, 'aatUri')"/>
+					</lido:conceptID>
+				</xsl:if>
 				<lido:term xml:lang="de">
 					<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 				</lido:term>

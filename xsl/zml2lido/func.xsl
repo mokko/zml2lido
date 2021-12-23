@@ -9,7 +9,9 @@
 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd"
 	exclude-result-prefixes="z func fn">
 
-	<!-- Man kann die ISIL in MuseumPlus unter der PK-DS der verwaltenden Institution im Register Normdaten nachgucken-->
+	<!-- 
+		Man kann die ISIL in MuseumPlus unter der PK-DS der verwaltenden Institution im Register Normdaten nachgucken
+	-->
 	<xsl:function name="func:getISIL">
 		<xsl:param name="verwaltendeInstitution"/>
 		<xsl:value-of select="func:vocmap-replace('verwaltendeInstitution', $verwaltendeInstitution, 'ISIL')" />
@@ -19,7 +21,7 @@
 		<!-- 
 			takes input in format [{\d|\d\d}\.[{\d|\d\d}\.]]\d{1-4} 
 			and returns YYYY[-MM[-DD]] according to LIDO spec 1.0.
-
+	
 			TODO: now limitation is with negative years which fits the ISO 8601 quite well
 			
 			Wikipedia about ISO 8601's treatment of years: "ISO 8601 prescribes, as a minimum, 

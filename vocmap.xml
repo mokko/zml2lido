@@ -32,7 +32,223 @@
 			<target lang="de" name="ISIL">de-MUS-018313</target>
 			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
 		</concept>
+	</voc>
 
+	<voc name="subjects">
+		<!-- sort source alphabetically please -->
+		<concept>
+			<source lang="de">Anzug</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Armband</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Blau</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Bluse</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Braun</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Cape</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Cloche</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Collage</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Cowboyhut</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Damenbekleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Damenstrumpf</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Ensemble</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Entwurfszeichnung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Feder</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Frühling-Sommer</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Fuchspelz</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Fächer</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Gelb</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Grau</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Grün</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Gürtel (Accessoires)</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<!-- double space seems to be an error -->
+		<concept>
+			<source lang="de">halbhohe  Stiefel</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Halskette</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Handtasche</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Haube</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Herrenbekleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Hose</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Hut</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Jacke</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Jumpsuit</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Kinderbekleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Kleid</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Kniebundhosen</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Kopftuch</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Kostüm</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Krawatte</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Ländliche Bekleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Mantel</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Modeillustration</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Pink</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Rock</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Rot</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Schleppe</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Schwarz</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Schürzen (Schutzkleidung)</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Sonnenschirm</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Taschentuch</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Tücher</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Umhang</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Unterhosen</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Unterwäsche</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Weste</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Zeichnung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
 	</voc>
 
 	<voc name="formatResource">
