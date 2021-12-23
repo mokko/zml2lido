@@ -7,7 +7,7 @@
 	xmlns:fn="http://www.w3.org/2005/xpath-functions"
 	xmlns:func="http://func"
 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd"
-	exclude-result-prefixes="z func">
+	exclude-result-prefixes="z func fn">
 
 	<!-- Man kann die ISIL in MuseumPlus unter der PK-DS der verwaltenden Institution im Register Normdaten nachgucken-->
 	<xsl:function name="func:getISIL">
@@ -76,12 +76,12 @@
 			<xsl:value-of select="$dd"/>
 			</xsl:if>
 		</xsl:variable>
-		<xsl:message>
+		<!-- xsl:message>
 			<xsl:text> reformatDate: </xsl:text>
 			<xsl:value-of select="$date" />
 			<xsl:text> :: </xsl:text>
 			<xsl:value-of select="$new" />
-		</xsl:message>
+		</xsl:message-->
 		<xsl:value-of select="$new" />
 	</xsl:function>
 	
