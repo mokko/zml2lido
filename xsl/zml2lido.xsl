@@ -177,7 +177,7 @@
 		</xsl:message-->
 
 		<xsl:variable name="date2" select="normalize-space($date)"/>
-		<!-- what about years before 100? -->
+		<!-- what about years before 0? -->
 		<xsl:variable name="y" select="analyze-string($date2, '(\d|\d\d|\d{3}|\d{4})$')//fn:match/fn:group[@nr = 1]"/>
 		<xsl:variable name="m" select="analyze-string($date2, '(\d|\d\d)\.\d+$')//fn:match/fn:group[@nr = 1]"/>
 		<xsl:variable name="d" select="analyze-string($date2, '^(\d|\d\d)\.\d+\.\d+')//fn:match/fn:group[@nr = 1]"/>

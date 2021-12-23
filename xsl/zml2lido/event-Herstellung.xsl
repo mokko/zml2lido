@@ -66,13 +66,19 @@
 				z:vocabularyReference[@name = 'TypeVoc']/
 				z:vocabularyReferenceItem/@name = $herstellendeDatenTypen
 				or not (z:vocabularyReference[@name = 'TypeVoc'])
-			]
-		"/>
+		]"/>
+
+		<xsl:variable name="herstellendeMatTechN" select="
+			z:repeatableGroup[
+				@name = 'ObjMaterialTechniqueGrp' 
+				and z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe'
+		]"/>
 
         <xsl:if test="$herstellendeRollenN 
 			or $herstellendeKollektiveN 
 			or $herstellendeOrteN 
-			or $herstellendeDatenTypenN">
+			or $herstellendeDatenTypenN
+			or $herstellendeMatTechN">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">Herstellung</lido:displayEvent>
 				<lido:event>
@@ -117,8 +123,7 @@
 					<!-- eventMaterialsTech; 
 						at the moment Herstellung is the only eventType with materialTech; may change in future 
 					-->
-					<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp' 
-						and z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']"/>
+					<xsl:apply-templates select="$herstellendeMatTechN"/>
 				</lido:event>
 			</lido:eventSet>
 		</xsl:if>
@@ -175,6 +180,18 @@
 		</lido:eventActor>
 	</xsl:template>
 		
+	<xsl:template match="
+		z:repeatableGroup[
+			@name = 'ObjMaterialTechniqueGrp' 
+			and z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe'
+		]">
+		<lido:eventMaterialsTech>
+			<lido:displayMaterialsTech xml:lang="de"> 
+				<xsl:value-of select="z:dataField[@name = 'ExportClb']"/>
+			</lido:displayMaterialsTech>
+		</lido:eventMaterialsTech>
+	</xsl:template>	
+
 	<!-- eventMaterialsTech -->
 	<xsl:template mode="notUsedATM" match="
 		z:repeatableGroup[
@@ -189,18 +206,6 @@
 				]"/>
 		</lido:eventMaterialsTech>
 	</xsl:template>
-
-	<xsl:template match="
-		z:repeatableGroup[
-			@name = 'ObjMaterialTechniqueGrp' 
-			and z:repeatableGroupItem/z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe'
-		]">
-		<lido:eventMaterialsTech>
-			<lido:displayMaterialsTech xml:lang="de"> 
-				<xsl:value-of select="z:dataField[@name = 'ExportClb']"/>
-			</lido:displayMaterialsTech>
-		</lido:eventMaterialsTech>
-	</xsl:template>	
 
 	<!-- not used at the moment-->
 	<xsl:template match="z:vocabularyReference[@name = 'MaterialVoc']">
