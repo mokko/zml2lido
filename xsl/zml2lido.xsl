@@ -17,6 +17,7 @@
 	<xsl:import href="zml2lido/rightsWorkWrap.xsl" />
 	<xsl:import href="zml2lido/recordWrap.xsl" />
 	<xsl:import href="zml2lido/resourceWrap.xsl" />
+	<xsl:import href="zml2lido/func.xsl" />
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
 	<xsl:strip-space elements="*" />
