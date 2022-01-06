@@ -6,6 +6,7 @@ import argparse
 from zml2lido.lidoTool import LidoTool
 from zml2lido.linkChecker import LinkChecker
 
+
 def lido():
     parser = argparse.ArgumentParser(description="Little LIDO toolchin")
     parser.add_argument("-i", "--input", help="zml input file", required=True)
@@ -23,8 +24,9 @@ def lido():
 
     print(f"JOB: {args.job}")
 
-    #m = LidoTool(input=args.input, force=args.force, validation=args.validate)
-    #getattr(m, args.job)()
+    m = LidoTool(input=args.input, force=args.force, validation=args.validate)
+    getattr(m, args.job)()
+
 
 def linkChecker():
     parser = argparse.ArgumentParser(description="LIDO URLmaker")

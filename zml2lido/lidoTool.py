@@ -51,13 +51,11 @@ import sys
 from zml2lido.linkChecker import LinkChecker
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-srcDir = Path(__file__).parent
 conf_fn = Path(__file__).parent.parent.joinpath("sdata", "lido_conf.py")
-xslDir = Path(__file__).parent.parent.joinpath("xsl")
+xslDir = Path(__file__).parent.joinpath("data/xsl")
 
 with open(conf_fn) as f:
     exec(f.read())  # saxLib, lidoXSD
-
 
 xsl = {
     "zml2lido": xslDir.joinpath("zml2lido.xsl"),
@@ -87,7 +85,7 @@ class LidoTool:
         # 3Wege -> sdata\3Wege
         if not self.outdir.exists():
             print(f"Making new dir {self.outdir}")
-            self.outdir.mkdir(parents=False, exist_ok=False)
+            self.outdir.mkdir(parents=True, exist_ok=False)
         print(f" outdir {self.outdir}")
         logfile = self.outdir.joinpath("lidoTool.log")
         # let's append to the log file so we can aggregrate results from multiple runs
