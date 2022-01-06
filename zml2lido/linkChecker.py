@@ -116,13 +116,3 @@ class LinkChecker:
             self.out_fn, pretty_print=True, encoding="UTF-8", xml_declaration=True
         )
         return self.out_fn
-
-
-if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser(description="LIDO URLmaker")
-    parser.add_argument("-i", "--input", help="Path of lido input file", required=True)
-    args = parser.parse_args()
-
-    lc = LinkChecker(input=args.input)

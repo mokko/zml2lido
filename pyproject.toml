@@ -1,0 +1,25 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "zml2lido"
+authors = [{name = "Maurice Mengel", email = "mauricemengel@gmail.com"}]
+license = {file = "LICENSE"}
+classifiers = ["License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)"]
+dynamic = ["version", "description"]
+dependencies = [
+    "lxml",
+]
+[project.optional-dependencies]
+test = [
+    "pytest >=2.7.3",
+]
+
+[project.scripts]
+lido = 'zml2lido:lido'
+# validate = '?:validate' todo
+
+[project.urls]
+Home = "https://github.com/mokko/zml2lido"
+

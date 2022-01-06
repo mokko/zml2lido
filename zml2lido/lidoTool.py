@@ -1,3 +1,8 @@
+"""lido.py - A quick and dirty toolbox for turning zml files into LIDO"""
+
+__version__ = "0.0.1"
+
+
 """
 	Little script that converts input file to lido
 	We can also add image stuff and other steps from the toolchain.
@@ -21,6 +26,7 @@
     first place.
 
     Changes
+    1/6/22   transition to flit packaging
     10/28/21 move installation specific config to a separate file in sdata
     10/26/21 outdir simplified; it's always relative to pwd now. One  command line param less.
     10/21/21 new output dir
@@ -42,6 +48,7 @@ import re
 import shutil
 import subprocess
 import sys
+from zml2lido.linkChecker import LinkChecker
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 srcDir = Path(__file__).parent
@@ -51,7 +58,6 @@ xslDir = Path(__file__).parent.parent.joinpath("xsl")
 with open(conf_fn) as f:
     exec(f.read())  # saxLib, lidoXSD
 
-from LinkChecker import LinkChecker
 
 xsl = {
     "zml2lido": xslDir.joinpath("zml2lido.xsl"),
@@ -322,26 +328,3 @@ class LidoTool:
         subprocess.run(
             cmd, check=True, stderr=subprocess.STDOUT
         )  # overwrites output file without saying anything
-
-
-if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser(description="Little LIDO toolchin")
-    parser.add_argument("-i", "--input", help="zml input file", required=True)
-    parser.add_argument(
-        "-j", "--job", help="pick job (localLido or smbLido)", required=True
-    )
-    parser.add_argument(
-        "-f", "--force", help="force overwrite existing lido", action="store_true"
-    )
-    parser.add_argument("-v", "--validate", help="validate lido", action="store_true")
-    args = parser.parse_args()
-
-    if args.force:
-        args.validate = True
-
-    print(f"JOB: {args.job}")
-
-    m = LidoTool(input=args.input, force=args.force, validation=args.validate)
-    getattr(m, args.job)()

@@ -18,6 +18,7 @@ lib = Path(__file__).joinpath("../../xsd").resolve()
 conf = {}
 conf["mpx"] = lib.joinpath("mpx20.xsd")
 conf["lido"] = lib.joinpath("lido-v1.0.xsd")
+conf["zml"] = lib.joinpath("module_1_6.xsd")
 
 
 def validate(*, input, schema):
