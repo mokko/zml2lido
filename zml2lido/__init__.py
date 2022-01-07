@@ -1,12 +1,12 @@
 """lido.py - A quick and dirty toolbox for turning zml files into LIDO"""
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 import argparse
 import sys
 from zml2lido.lidoTool import LidoTool
 from zml2lido.linkChecker import LinkChecker
-import zml2lido.validate
+import zml2lido.validate2
 
 def lido():
     parser = argparse.ArgumentParser(description="Little LIDO toolchin")
@@ -45,6 +45,6 @@ def saxon():
 def validate():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", required=True)
-    parser.add_argument("-s", "--schema", required=True)
     args = parser.parse_args()
-    Validate(Input=args.input, schema=args.schema)
+    m = LidoTool() # just to run saxon
+    m.validate(input=args.input)

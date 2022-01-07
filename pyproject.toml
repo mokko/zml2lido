@@ -19,7 +19,7 @@ test = [
 [project.scripts]
 lido = 'zml2lido:lido'
 saxon = 'zml2lido:saxon'
-validate = 'zml2lido:validate' 
+lvalidate = 'zml2lido:validate' 
 
 [project.urls]
 Home = "https://github.com/mokko/zml2lido"
