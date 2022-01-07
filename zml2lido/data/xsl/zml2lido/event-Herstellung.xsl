@@ -38,8 +38,8 @@
 		<xsl:variable name="herstellendeKollektiveN" select="
 			z:repeatableGroup[
 				@name = 'ObjGeograficGrp']/
-			z:repeatableGroupItem/z:vocabularyReference[
-				@name = 'GeopolVoc' 
+			z:repeatableGroupItem[
+				z:vocabularyReference/@name = 'GeopolVoc' 
 				and z:vocabularyReferenceItem/@name = $herstellendeKollektive
 			]"/>
 
@@ -93,6 +93,13 @@
 					<!-- Ethnien und andere Kollektive aus GeoBezug-->
 					<xsl:apply-templates mode="eventActor" select="$herstellendeKollektiveN"/>
 
+					<xsl:if test="$herstellendeKollektiveN">
+						<xsl:message>
+							<xsl:text>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</xsl:text>
+							<xsl:value-of select="$herstellendeKollektiveN"/>
+						</xsl:message>
+					</xsl:if>
+
 					<!-- eventDate 
 
 					SPEC allows repeated displayDates only for language variants; 
@@ -117,7 +124,7 @@
 						</lido:eventDate>
 					</xsl:for-each>
 					
-					<!-- eventPlace -->
+					<!-- eventPlace -->	
 					<xsl:apply-templates mode="eventPlace" select="$herstellendeOrteN"/>
 					
 					<!-- eventMaterialsTech; 
@@ -150,11 +157,16 @@
 		unknown actors, use e.g.: "unknown," "unknown Chinese,"
 		"Chinese," or "unknown 15th century Chinese."
 		Repeat this element only for language variants.
+
+		z:repeatableGroup[
+			@name = 'ObjGeograficGrp']/
+		z:repeatableGroupItem/z:vocabularyReference[
+			@name = 'GeopolVoc' 
+			and z:vocabularyReferenceItem/@name = $herstellendeKollektive
+
 	-->
 	<xsl:template mode="eventActor" match="z:repeatableGroup[
-		@name = 'ObjGeograficGrp']/z:repeatableGroupItem[
-		z:vocabularyReference/@name = 'GeopolVoc'  
-	]">
+		@name = 'ObjGeograficGrp']/z:repeatableGroupItem">
 		<lido:eventActor>
 			<lido:displayActorInRole>
 				<xsl:value-of select="z:vocabularyReference[@name = 'PlaceVoc']/z:vocabularyReferenceItem/@name"/>
