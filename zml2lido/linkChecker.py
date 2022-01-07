@@ -19,15 +19,15 @@ sizes = ["_2500x2500", "_1000x600"]  # from big to small
 
 
 class LinkChecker:
-    def __init__(self, *, input):
-        print(f"LinkChecker is working on {input}")
-        p = Path(input)
+    def __init__(self, *, Input):
+        print(f"LinkChecker is working on {Input}")
+        p = Path(Input)
         ext = "".join(p.suffixes)
         stem = str(p).split(".")[0]
         self.out_fn = stem + "-links" + ext
         self.log(f"   writing to {self.out_fn}")
         self.log(f"   writing to {self.out_fn}")
-        self.tree = etree.parse(str(input))
+        self.tree = etree.parse(str(Input))
 
     def log(self, msg):
         print(msg)
