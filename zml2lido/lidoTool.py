@@ -67,7 +67,7 @@ xsl = {
 
 
 class LidoTool:
-    def __init__(self, *, force = False, validation = False, input = None):
+    def __init__(self, *, force=False, validation=False, input=None):
         self.validation = validation
         self.force = force
         if input is not None:
