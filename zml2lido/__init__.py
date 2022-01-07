@@ -10,6 +10,13 @@ from zml2lido.linkChecker import LinkChecker
 
 def lido():
     parser = argparse.ArgumentParser(description="Little LIDO toolchin")
+    parser.add_argument(
+        "-c",
+        "--chunks",
+        help="expect the input to be multiple precisely-named chunks",
+        required=False,
+        action="store_true",
+    )
     parser.add_argument("-i", "--input", help="zml input file", required=True)
     parser.add_argument(
         "-j", "--job", help="pick job (localLido or smbLido)", required=True
@@ -25,7 +32,7 @@ def lido():
 
     print(f"JOB: {args.job}")
 
-    m = LidoTool(input=args.input, force=args.force, validation=args.validate)
+    m = LidoTool(Input=args.input, force=args.force, validation=args.validate)
     getattr(m, args.job)()
 
 
