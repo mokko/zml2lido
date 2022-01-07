@@ -93,15 +93,7 @@
 					<!-- Ethnien und andere Kollektive aus GeoBezug-->
 					<xsl:apply-templates mode="eventActor" select="$herstellendeKollektiveN"/>
 
-					<xsl:if test="$herstellendeKollektiveN">
-						<xsl:message>
-							<xsl:text>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</xsl:text>
-							<xsl:value-of select="$herstellendeKollektiveN"/>
-						</xsl:message>
-					</xsl:if>
-
 					<!-- eventDate 
-
 					SPEC allows repeated displayDates only for language variants; 
 					according to spec event dates cannot be repeated. 
 					
