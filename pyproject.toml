@@ -10,7 +10,6 @@ classifiers = ["License :: OSI Approved :: GNU General Public License v3 or late
 dynamic = ["version", "description"]
 dependencies = [
     "lxml",
-	"urllib",
 ]
 [project.optional-dependencies]
 test = [
@@ -19,7 +18,8 @@ test = [
 
 [project.scripts]
 lido = 'zml2lido:lido'
-# validate = '?:validate' todo
+saxon = 'zml2lido:saxon'
+validate = 'zml2lido:validate' 
 
 [project.urls]
 Home = "https://github.com/mokko/zml2lido"

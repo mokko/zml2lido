@@ -3,9 +3,10 @@
 __version__ = "0.0.1"
 
 import argparse
+import sys
 from zml2lido.lidoTool import LidoTool
 from zml2lido.linkChecker import LinkChecker
-
+import zml2lido.validate
 
 def lido():
     parser = argparse.ArgumentParser(description="Little LIDO toolchin")
@@ -34,3 +35,16 @@ def linkChecker():
     args = parser.parse_args()
 
     lc = LinkChecker(input=args.input)
+
+
+def saxon():
+    m = LidoTool() # just to run saxon
+    m._saxon(input=sys.argv[1], xsl=sys.argv[2], output=sys.argv[3])
+    # todo debug/test
+    
+def validate():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", required=True)
+    parser.add_argument("-s", "--schema", required=True)
+    args = parser.parse_args()
+    Validate(Input=args.input, schema=args.schema)

@@ -67,31 +67,32 @@ xsl = {
 
 
 class LidoTool:
-    def __init__(self, *, input, force, validation):
+    def __init__(self, *, force = False, validation = False, input = None):
         self.validation = validation
         self.force = force
-        self.input = Path(input)  # initial input file, e.g. 3Wege.zml.xml
-        if re.match("\d\d\d\d\d\d", self.input.parent.name):
-            self.outdir = (
-                Path("sdata")
-                .resolve()
-                .joinpath(self.input.parent.parent.name, self.input.parent.name)
-            )
-        else:
-            self.outdir = Path("sdata").resolve().joinpath(self.input.parent.name)
+        if input is not None:
+            self.input = Path(input)  # initial input file, e.g. 3Wege.zml.xml
+            if re.match("\d\d\d\d\d\d", self.input.parent.name):
+                self.outdir = (
+                    Path("sdata")
+                    .resolve()
+                    .joinpath(self.input.parent.parent.name, self.input.parent.name)
+                )
+            else:
+                self.outdir = Path("sdata").resolve().joinpath(self.input.parent.name)
 
-        # alternatively, we could make a new dir based on the input
-        # C:\m3\MpApi\sdata\3Wege\3Wege20211019.xml
-        # 3Wege -> sdata\3Wege
-        if not self.outdir.exists():
-            print(f"Making new dir {self.outdir}")
-            self.outdir.mkdir(parents=True, exist_ok=False)
-        print(f" outdir {self.outdir}")
-        logfile = self.outdir.joinpath("lidoTool.log")
-        # let's append to the log file so we can aggregrate results from multiple runs
-        logging.basicConfig(
-            filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
-        )
+            # alternatively, we could make a new dir based on the input
+            # C:\m3\MpApi\sdata\3Wege\3Wege20211019.xml
+            # 3Wege -> sdata\3Wege
+            if not self.outdir.exists():
+                print(f"Making new dir {self.outdir}")
+                self.outdir.mkdir(parents=True, exist_ok=False)
+            print(f" outdir {self.outdir}")
+            logfile = self.outdir.joinpath("lidoTool.log")
+            # let's append to the log file so we can aggregrate results from multiple runs
+            logging.basicConfig(
+                filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
+            )
 
     #
     # Jobs

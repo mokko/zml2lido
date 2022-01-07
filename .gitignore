@@ -1,3 +1,4 @@
+dist/*
 sdata/*
 .project
 src/__pycache__/*

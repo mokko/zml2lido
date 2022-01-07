@@ -13,7 +13,7 @@ from pathlib import Path
 from lxml import etree
 
 # let's put local copies on directory to speed up the process
-lib = Path(__file__).joinpath("../../xsd").resolve()
+lib = Path(__file__).joinpath("../../data/xsd").resolve()
 
 conf = {}
 conf["mpx"] = lib.joinpath("mpx20.xsd")
@@ -21,7 +21,7 @@ conf["lido"] = lib.joinpath("lido-v1.0.xsd")
 conf["zml"] = lib.joinpath("module_1_6.xsd")
 
 
-def validate(*, input, schema):
+def Validate(*, Input, schema):
     if schema in conf:
         # print(f"schema: {schema}")
         print(f"***Looking for xsd at {conf[schema]} to validate {input}")
@@ -33,13 +33,3 @@ def validate(*, input, schema):
     doc = etree.parse(input)
     schema.assert_(doc)
     print("***VALIDATES OK")
-
-
-if __name__ == "__main__":
-    import argparse
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--input", required=True)
-    parser.add_argument("-s", "--schema", required=True)
-    args = parser.parse_args()
-    validate(input=args.input, schema=args.schema)

@@ -71,6 +71,11 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Bildformat (Foto)'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Bildmaß'">
 				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
 				<xsl:text> x </xsl:text>
@@ -154,7 +159,11 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
-			
+			<xsl:when test=". = 'Kartonformat (Foto)'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Länge'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
@@ -241,7 +250,6 @@
 			</xsl:when>
 			<!-- DONT OUTPUT ANYTHING, BUT DONT DIE EITHER-->
 			<xsl:when test=". = 'Leer'"/>
-			
 			<xsl:otherwise>
 				<xsl:message terminate="yes">
 					<xsl:text>Unbekannter Maßtyp: </xsl:text>
