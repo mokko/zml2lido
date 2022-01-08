@@ -28,6 +28,10 @@
 	</xsl:template>
 
 	<xsl:template match="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem">
+		<!--xsl:message>
+			<xsl:text>D Object </xsl:text>
+			<xsl:value-of select="@id"/>
+		</xsl:message-->
 		<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
 		<lido:lido>
 			<lido:lidoRecID>
@@ -63,7 +67,9 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:message>
-						<xsl:text>not published at SMB-digital: </xsl:text>
+						<xsl:text>WARNING: Item not published at SMB-digital: </xsl:text>
+						<xsl:value-of select="../@name" />
+						<xsl:text> </xsl:text>
 						<xsl:value-of select="@id" />
 					</xsl:message>
 				</xsl:otherwise>

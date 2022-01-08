@@ -88,10 +88,15 @@
 		<xsl:if test="$objekttyp = $klassifizierendeTypen">
 			<!-- only add classification from Objekttyp, if Objekttyp is not already in Sachbegriff-->
 			<xsl:if test="not($sachbegriffe = $objekttyp)">
-				<xsl:message>
-					<xsl:text>classification from Objekttyp: </xsl:text>
+				<!--xsl:message>
+					<xsl:text>INFO classification from Objekttyp: </xsl:text>
 					<xsl:value-of select="$objekttyp"/>
-				</xsl:message>
+					<xsl:text> (</xsl:text>
+					<xsl:value-of select="../@name"/>
+					<xsl:text>: </xsl:text>
+					<xsl:value-of select="@id"/>
+					<xsl:text>)</xsl:text>
+				</xsl:message-->
 				<lido:classification lido:type="RIA:Objekttyp">
 					<lido:term xml:lang="de">
 						<xsl:value-of select="$objekttyp"/>

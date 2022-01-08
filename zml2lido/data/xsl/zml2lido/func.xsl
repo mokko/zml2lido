@@ -17,6 +17,12 @@
 		<xsl:value-of select="func:vocmap-replace('verwaltendeInstitution', $verwaltendeInstitution, 'ISIL')" />
 	</xsl:function>
 
+	<xsl:function name="func:getISIL2">
+		<!-- get ISIL based on Bereich-->
+		<xsl:param name="orgUnit"/>
+		<xsl:value-of select="func:vocmap-replace('Bereich', $orgUnit, 'ISIL')" />
+	</xsl:function>
+
 	<xsl:function name="func:reformatDate">
 		<!-- 
 			takes input in format [{\d|\d\d}\.[{\d|\d\d}\.]]\d{1-4} 

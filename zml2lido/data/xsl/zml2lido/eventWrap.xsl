@@ -197,20 +197,13 @@
 	<!-- eventDate -->
 	<xsl:template match="z:repeatableGroup[@name = 'ObjDateGrp']/z:repeatableGroupItem">
 		<!-- 
+			This should get called on every entry of Wiederholfeld. If any one of them
+			is empty, it dies.
+		
 			It's possible, even likely, that for a given ObjDateGrp DateTxt is empty. 
 			For the time being, let's not try to be 
 			smarter than RIA and take a virtual Vorschau field (PreviewTxt). 
 			
-			Note: We might need date in other events. In this case, this template might 
-			move to eventWrap.xsl.
-
-			Todo: Implement event-specific dates
-			<vocabularyReference name="TypeVoc" id="30361" instanceName="ObjDateTypeVgr">
-              <vocabularyReferenceItem id="4399684" name="Aufnahme">
-                <formattedValue language="en">Aufnahme</formattedValue>
-              </vocabularyReferenceItem>
-            </vocabularyReference>
-
 			In the RIA-interface this qualifier is called "Typ"; i call it "dateType".
 			Schreibanweisung says: no type equals "Herstellung"		
 			common values:
@@ -228,25 +221,37 @@
 				<xsl:when test="z:virtualField[@name = 'PreviewVrt']/z:value ne ''">
 					<xsl:value-of select="z:virtualField[@name = 'PreviewVrt']/z:value"/>
 				</xsl:when>
+				<xsl:when test="z:dataField[@name = 'NotesClb']/z:value ne ''">
+					<xsl:value-of select="z:dataField[@name = 'NotesClb']/z:value"/>
+				</xsl:when>
+				
 				<xsl:otherwise>
-					<xsl:message terminate="yes">
-						<xsl:text>ERROR: no displayDate!</xsl:text>
-						<xsl:value-of select="../@id"/>
+					<xsl:message terminate="no">
+						<xsl:text>INFO: No displayDate </xsl:text>
+						<xsl:value-of select="../../../@name"/>
+						<xsl:text>: </xsl:text>
+						<xsl:value-of select="../../@id"/>
 					</xsl:message>
+					<!--
+					If this fails ObjDateGrp exists, but no entry in the fields above;
+					it is no error if displayDate is empty.
+					-->
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<lido:displayDate xml:lang="de">
-			<xsl:value-of select="$displayDate"/>
-		</lido:displayDate>
-		<xsl:if test="z:dataField[@name = 'DateFromTxt'] or z:dataField[@name = 'DateToTxt']">
+		<xsl:if test="$displayDate ne ''">
+			<lido:displayDate xml:lang="de">
+				<xsl:value-of select="$displayDate"/>
+			</lido:displayDate>
+		</xsl:if>
+		<xsl:if test="z:dataField[@name = 'DateFromTxt'] ne '' or z:dataField[@name = 'DateToTxt'] ne ''">
 			<lido:date>
-				<xsl:if test="z:dataField[@name = 'DateFromTxt']">
+				<xsl:if test="z:dataField[@name = 'DateFromTxt'] ne ''">
 					<lido:earliestDate>
 						<xsl:value-of select="func:reformatDate(z:dataField[@name = 'DateFromTxt'])"/>
 					</lido:earliestDate>
 				</xsl:if>
-				<xsl:if test="z:dataField[@name = 'DateToTxt']">
+				<xsl:if test="z:dataField[@name = 'DateToTxt'] ne ''">
 					<lido:latestDate>
 						<xsl:value-of select="func:reformatDate(z:dataField[@name = 'DateToTxt'])"/>
 					</lido:latestDate>

@@ -12,6 +12,7 @@
 
 	<xsl:template name="resourceWrap">
         <xsl:variable name="objId" select="z:systemField[@name='__id']" />
+		<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
         <xsl:variable name="verknüpfteMM" select="/z:application/z:modules/z:module[@name = 'Multimedia']
 			/z:moduleItem[
 				 z:composite[@name = 'MulReferencesCre']
@@ -36,17 +37,61 @@
 		</xsl:message-->
 			<xsl:if test="$verknüpfteMM">
 				<lido:resourceWrap>
-					<xsl:apply-templates mode="resourceWrap" select="$verknüpfteMM" />
+					<xsl:apply-templates mode="resourceWrap" select="$verknüpfteMM">
+						<xsl:with-param name="objId" select="$objId"/>
+						<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
+					</xsl:apply-templates>
 				</lido:resourceWrap>
 			</xsl:if>
     </xsl:template>
 
     <xsl:template mode="resourceWrap" match="/z:application/z:modules/z:module[@name = 'Multimedia']/z:moduleItem">
-		<xsl:variable name="objId" select="z:composite[@name eq 'MulReferencesCre']/z:compositeItem/z:moduleReference[1]/z:moduleReferenceItem/@moduleItemId"/>
-		<xsl:variable name="verwaltendeInstitution" select="/z:application/z:modules/z:module[
-			@name = 'Object']/z:moduleItem[@id = $objId]/z:moduleReference[
-			@name='ObjOwnerRef']/z:moduleReferenceItem/z:formattedValue"/>
-		<!--xsl:message>resourceSet</xsl:message-->
+		<xsl:param name="objId"/>
+		<xsl:param name="verwaltendeInstitution"/>
+
+		<!-- 
+			<xsl:variable name="bereich" select="z:systemField[@name = '__orgUnit']"/>
+			<xsl:variable name="verwaltendeInstitution" 
+				select="func:vocmap-replace('Bereich', $bereich, 'verwaltendeInstitution')"/>
+			OLD VERSION xsl:variable name="objId" 
+			select="z:composite[
+				@name eq 'MulReferencesCre'
+			]/z:compositeItem/z:moduleReference/z:moduleReferenceItem/@moduleItemId"/>
+	
+			there is no reason why the image __has_to_be__ attached only to one object, 
+			see mulId 5802648 for an example although that might 
+		-->
+		<xsl:if test="count($objId) > 1">
+			<xsl:message terminate="yes">
+				<xsl:text>ERROR: objId is not UNIQUE</xsl:text>
+				<xsl:text> (</xsl:text>
+				<xsl:value-of select="../@name"/>
+				<xsl:text>: </xsl:text>
+				<xsl:value-of select="@id"/>
+				<xsl:text> ) </xsl:text>
+				<xsl:value-of select="$objId"/>
+			</xsl:message>
+		</xsl:if>
+		
+		<!-- 
+			if the image is not necessarily related to a meaningful object record, we 
+			cant rely on extracting the right verwaltendeInstitution out of the object 
+			item we're using verwaltendeInstittion below to get extract the ISIL. 
+			Perhaps we should infer it another way, e.g. from the Institutionskürzel
+				ISL-Fotos -> ISIL
+			xsl:message>resourceSet</xsl:message
+		-->
+		<xsl:if test="count($verwaltendeInstitution) > 1">
+			<xsl:message terminate="yes">
+				<xsl:text>ERROR: verwaltendeInstitution is not UNIQUE</xsl:text>
+				<xsl:text> (</xsl:text>
+				<xsl:value-of select="../@name"/>
+				<xsl:text>: </xsl:text>
+				<xsl:value-of select="@id"/>
+				<xsl:text> ) </xsl:text>
+				<xsl:value-of select="$verwaltendeInstitution"/>
+			</xsl:message>
+		</xsl:if>
         <lido:resourceSet>
 			<!--
 				xsl:nummer nummeriert alle verknüpfteMM durch; das geht so nicht
@@ -115,7 +160,7 @@
                 </xsl:attribute>
 				<xsl:variable name="id" select="normalize-space(z:systemField[@name='__id']/z:value)" />
                 <lido:linkResource> 
-					<xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex=".(\w*)$">
+					<xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex="\.(\w*)$">
 						<xsl:matching-substring>
 							<xsl:attribute name="lido:formatResource">
 								<xsl:value-of select="func:vocmap-replace('formatResource', lower-case(regex-group(1)), 'mimetype')"/>

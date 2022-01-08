@@ -56,7 +56,8 @@
 		<xsl:variable name="herstellendeDatenTypen" select="
 			'Aufnahme',
 			'Aufnahmejahr', 
-			'Herstellung'
+			'Herstellung',
+			'Publik. Jahr'
 		"/>
 
 		<xsl:variable name="herstellendeDatenTypenN" select="

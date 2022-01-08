@@ -61,6 +61,13 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Außenmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Allgemein'">
 				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
 				<xsl:text> x </xsl:text>
@@ -89,6 +96,11 @@
 			<xsl:when test=". = 'Breite'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Breite x Tiefe'">
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Dauer'">
 				<xsl:value-of select="format-number(../../../z:dataField[@name='HoursLnu']/z:value, '00')"/>
 				<xsl:text>:</xsl:text>
@@ -106,6 +118,9 @@
 			<xsl:when test=". = 'Durchmesser'">
 				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Durchmesser (mit Dicke)'">
+				<xsl:value-of select="../../../z:dataField[@name='ThicknessNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Durchmesser x Tiefe'">
 				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
 				<xsl:text> x </xsl:text>
@@ -121,6 +136,9 @@
 			<xsl:when test=". = 'Geschwindigkeit (Band)'">
 				<xsl:value-of select="../../../z:dataField[@name='SpeedNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Geschwindigkeit (Schallplatte)'">
+				<xsl:value-of select="../../../z:dataField[@name='SpeedNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Geschwindigkeit (Walze)'">
 				<xsl:value-of select="../../../z:dataField[@name='SpeedNum']/z:value"/>
 			</xsl:when>
@@ -131,6 +149,11 @@
 				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Höhe x Breite'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Höhe x Breite (aufgeschlagen)'">
 				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
@@ -164,6 +187,13 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Kistenmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='LengthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Länge'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
@@ -191,12 +221,28 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
 			</xsl:when>
+			<xsl:when test=". = 'Mündung'">
+				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Negativformat (Foto)'">
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='LengthNum']/z:value"/>
+			</xsl:when>			
+			<xsl:when test=". = 'Montage'">
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='LengthNum']/z:value"/>
+			</xsl:when>
 			<xsl:when test=". = 'Objektmaß'">
 				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Öffnung'">
+				<xsl:value-of select="../../../z:dataField[@name='DiameterNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Passepartout'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
@@ -207,6 +253,16 @@
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Passepartout Standardformat'">
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+			</xsl:when>			
+			<xsl:when test=". = 'Plattengröße (Foto)'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Rahmenmaß'">
 				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
@@ -221,7 +277,14 @@
 			<xsl:when test=". = 'Sehnenlänge'">
 				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
 			</xsl:when>
-			<!-- Synonym with Dauer; replace with pref in RIA-->
+			<xsl:when test=". = 'Sockel'">
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+			</xsl:when>
+			<!-- Spieldauer is synonymous with Dauer; replace with pref in RIA-->
 			<xsl:when test=". = 'Spieldauer'">
 				<xsl:value-of select="format-number(../../../z:dataField[@name='HoursLnu']/z:value, '00')"/>
 				<xsl:text>:</xsl:text>
@@ -233,8 +296,14 @@
 			<xsl:when test=". = 'Stichmaß'">
 				<xsl:value-of select="../../../z:dataField[@name='Unknown1Num']/z:value"/>
 			</xsl:when>
-			
 			<xsl:when test=". = 'Tiefe'">
+				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
+			</xsl:when>
+			<xsl:when test=". = 'Transportmaß'">
+				<xsl:value-of select="../../../z:dataField[@name='WidthNum']/z:value"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="../../../z:dataField[@name='HeightNum']/z:value"/>
+				<xsl:text> x </xsl:text>
 				<xsl:value-of select="../../../z:dataField[@name='DepthNum']/z:value"/>
 			</xsl:when>
 			<xsl:when test=". = 'Umfang'">
@@ -257,8 +326,13 @@
 			<xsl:when test=". = 'Leer'"/>
 			<xsl:otherwise>
 				<xsl:message terminate="yes">
-					<xsl:text>Unbekannter Maßtyp: </xsl:text>
+					<xsl:text>ERROR: Unknown measurement type: </xsl:text>
 					<xsl:value-of select="."/>
+					<xsl:text> (</xsl:text>
+					<xsl:value-of select="../../../../../../@name"/>
+					<xsl:text>: </xsl:text>
+					<xsl:value-of select="../../../../../@id"/>
+					<xsl:text>)</xsl:text>
 				</xsl:message>
 			</xsl:otherwise>
 		</xsl:choose>
