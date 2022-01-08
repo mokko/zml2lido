@@ -231,6 +231,7 @@
 				<xsl:otherwise>
 					<xsl:message terminate="yes">
 						<xsl:text>ERROR: no displayDate!</xsl:text>
+						<xsl:value-of select="../@id"/>
 					</xsl:message>
 				</xsl:otherwise>
 			</xsl:choose>

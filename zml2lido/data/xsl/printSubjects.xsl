@@ -12,8 +12,8 @@
     <xsl:strip-space elements="*" />
 
 	<!-- 
-		print all distinct subject headings to STDOUT or STDERR
 		input: zml
+		print all distinct subject headings to STDOUT or STDERR
 	-->
 
 	<xsl:template match="/">

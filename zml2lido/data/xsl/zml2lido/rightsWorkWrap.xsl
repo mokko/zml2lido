@@ -23,7 +23,9 @@
     -->
 
     <xsl:template name="rightsWorkWrap">
-		<xsl:message><xsl:value-of select="z:systemField[@name ='__id']"/></xsl:message>
+		<!--
+		why is the id logged in rightsWorkWrap?
+		xsl:message><xsl:value-of select="z:systemField[@name ='__id']"/></xsl:message-->
         <lido:rightsWorkWrap>
             <lido:rightsWorkSet>
                 <xsl:call-template name="defaultRightsHolder"/>

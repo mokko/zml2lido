@@ -32,7 +32,9 @@ def lido():
 
     print(f"JOB: {args.job}")
 
-    m = LidoTool(Input=args.input, force=args.force, validation=args.validate)
+    m = LidoTool(
+        Input=args.input, force=args.force, validation=args.validate, chunks=args.chunks
+    )
     getattr(m, args.job)()
 
 
@@ -40,13 +42,12 @@ def linkChecker():
     parser = argparse.ArgumentParser(description="LIDO URLmaker")
     parser.add_argument("-i", "--input", help="Path of lido input file", required=True)
     args = parser.parse_args()
-
     lc = LinkChecker(input=args.input)
 
 
 def saxon():
     m = LidoTool()  # just to run saxon
-    m._saxon(Input=sys.argv[1], xsl=sys.argv[2], output=sys.argv[3])
+    m.saxon(Input=sys.argv[1], xsl=sys.argv[2], output=sys.argv[3])
     # todo debug/test
 
 
@@ -54,5 +55,5 @@ def validate():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", required=True)
     args = parser.parse_args()
-    m = LidoTool()  # just to run saxon
+    m = LidoTool()
     m.validate(input=args.input)

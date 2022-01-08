@@ -44,6 +44,7 @@ import shutil
 import subprocess
 import sys
 from zml2lido.linkChecker import LinkChecker
+from zml2lido.jobs import Jobs
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 conf_fn = Path(__file__).parent.parent.joinpath("sdata", "lido_conf.py")
@@ -61,7 +62,7 @@ xsl = {
 }
 
 
-class LidoTool:
+class LidoTool(Jobs):
     def __init__(self, *, force=False, validation=False, Input=None, chunks=False):
         self.validation = validation
         self.force = force
@@ -91,78 +92,6 @@ class LidoTool:
             )
 
     #
-    # Jobs
-    #
-
-    def localLido(self):
-        """
-        localLido downloads images
-        """
-        mitSachbegriffZML = self.splitSachbegriff(
-            input=self.Input
-        )  # drop records without Sachbegriff
-        lido_fn = self.zml2lido(Input=mitSachbegriffZML)
-        if self.validation:
-            self.validate(Input=lido_fn)
-        self.splitLido(input=lido_fn)  # individual records as files
-        self.pix(Input=self.Input, output=self.output)  # transforms attachments
-        self.lido2html(input=lido_fn)  # to make it easier to read lido
-
-    def smbLido(self):
-        """
-        Make Lido that
-        - image links: recherche.smb.
-        - filter out records without sachbegriff
-        - split
-        - html
-        """
-        mitSachbegriffZML = self.splitSachbegriff(
-            input=self.Input
-        )  # drop records without Sachbegriff
-        lido_fn = self.zml2lido(Input=mitSachbegriffZML)
-        linklido_fn = self.urlLido(Input=lido_fn)  # fix links and rm unpublished parts
-        if self.validation:
-            self.validate(Input=linklido_fn)
-        self.splitLido(input=linklido_fn)  # individual records as files
-        self.lido2html(input=linklido_fn)  # to make it easier to read lido
-
-    def smb(self):
-        """
-        Make Lido
-        - filter out lido records that are not published
-        - image links: recherche.smb
-        - validate if -v on command line
-        - split
-        """
-        lido_fn = self.zml2lido(Input=self.Input)
-        onlyPublished = self.onlyPublished(Input=lido_fn)
-        linklido_fn = self.urlLido(
-            Input=onlyPublished
-        )  # fix links and rm unpublished parts
-        if self.validation:
-            self.validate(Input=linklido_fn)
-        self.splitLido(Input=linklido_fn)  # individual records as files
-        # self.lido2html(Input=linklido_fn)        # to make it easier to read lido
-
-    def dd(self):
-        """
-        Make Lido for debug purposes
-        - filter out lido records that are not published
-        - image links: internal
-        - validate if -v on command line
-        - no split
-        """
-        lido_fn = self.zml2lido(Input=self.Input)
-        # onlyPublished = self.onlyPublished(Input=lido_fn)
-        # linklido_fn = self.urlLido(
-        #    Input=onlyPublished
-        # )  # fix links and rm unpublished parts
-        # if self.validation:
-        self.validate(Input=lido_fn)
-        # self.splitLido(Input=linklido_fn)  # individual records as files
-        # self.lido2html(Input=linklido_fn)        # to make it easier to read lido
-
-    #
     # Steps
     #
 
@@ -184,7 +113,7 @@ class LidoTool:
             print("making LIDO2HTML")
             hdir.mkdir(exist_ok=True)
             os.chdir(str(hdir))
-            self._saxon(Input=Input, xsl=xsl["lido2html"], output="o.xml")
+            self.saxon(Input=Input, xsl=xsl["lido2html"], output="o.xml")
         else:
             print("LIDO2HTML exists already")
         os.chdir(orig)
@@ -208,7 +137,7 @@ class LidoTool:
         out = self.outdir.joinpath(stem + ".onlyPub" + ext)
 
         if not Path(out).exists() or self.force is True:
-            self._saxon(Input=Input, xsl=xsl["onlyPublished"], output=out)
+            self.saxon(Input=Input, xsl=xsl["onlyPublished"], output=out)
         else:
             print(f"{out} exist already, no overwrite")
         return out
@@ -252,7 +181,7 @@ class LidoTool:
         os.chdir(self.outdir)
         out = "mitSachbegriff.xml"
         if not Path(out).exists() or self.force is True:
-            self._saxon(Input=Input, xsl=xsl["splitSachbegriff"], output=out)
+            self.saxon(Input=Input, xsl=xsl["splitSachbegriff"], output=out)
         else:
             print(f"{out} exist already, no overwrite")
         os.chdir(orig)
@@ -294,7 +223,7 @@ class LidoTool:
         if not self.outdir.joinpath("split").exists() or self.force is True:
             print("SPLITLIDO making")
             os.chdir(self.outdir)
-            self._saxon(Input=Input, xsl=xsl["splitLido"], output="o.xml")
+            self.saxon(Input=Input, xsl=xsl["splitLido"], output="o.xml")
             os.chdir(orig)
         else:
             print("SPLITLIDO exists already")
@@ -303,6 +232,7 @@ class LidoTool:
     def validate(self, *, Input):
         print("VALIDATING LIDO")
         if self.chunks:
+            print(" with chunks")
             for chunkFn in self.chunkName(Input=Input):
                 new_fn = self.validateSingle(Input=chunkFn)
             return new_fn
@@ -324,6 +254,7 @@ class LidoTool:
     def zml2lido(self, *, Input):
         print("ZML2LIDO")
         if self.chunks:
+            print(" with chunks")
             for chunkFn in self.chunkName(Input=self.Input):
                 new_fn = self.zml2lidoSingle(Input=chunkFn)
             return new_fn  # only the last one returns
@@ -337,9 +268,9 @@ class LidoTool:
 
         if not lido_fn.exists() or self.force is True:
             print("ZML2LIDO new")
-            self._saxon(Input=Input, xsl=xsl["zml2lido"], output=lido_fn)
+            self.saxon(Input=Input, xsl=xsl["zml2lido"], output=lido_fn)
         else:
-            print("ZML2LIDO exists already")
+            print("exists already, no overwrite")
 
         return lido_fn
 
@@ -349,9 +280,9 @@ class LidoTool:
 
     def chunkName(self, *, Input):
         print(f"chunk input: {Input}")
-        m = re.match(".*(\d+)\.xml$", Input)  # -chunk(\d+)\.xml$
+        m = re.match(".*(\d+)\.xml$", str(Input))  # -chunk(\d+)\.xml$
         no = int(m.group(1))
-        root = Input.split("-chunk")[0]
+        root = str(Input).split("-chunk")[0]
         chunkFn = Input
         while Path(chunkFn).exists():
             print(f"{chunkFn} exists")
@@ -387,7 +318,7 @@ class LidoTool:
         else:
             self._copy(pic=pic, out=out_fn)
 
-    def _saxon(self, *, Input, output, xsl):
+    def saxon(self, *, Input, output, xsl):
         cmd = f"java -Xmx1450m -jar {saxLib} -s:{Input} -xsl:{xsl} -o:{output}"
         print(f" cmd {cmd}")
 

@@ -9,10 +9,12 @@
 """
 
 import logging
+import json
 import urllib.request
 from lxml import etree
 from pathlib import Path
 from urllib import request as urlrequest
+from typing import Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
 sizes = ["_2500x2500", "_1000x600"]  # from big to small
@@ -26,14 +28,19 @@ class LinkChecker:
         stem = str(p).split(".")[0]
         self.out_fn = stem + "-links" + ext
         self.log(f"   writing to {self.out_fn}")
-        self.log(f"   writing to {self.out_fn}")
         self.tree = etree.parse(str(Input))
+        self.cache_fn = stem + ".cache.json"
+        if Path(self.cache_fn).exists():
+            self.cache = json.loads(self.cache_fn)
+        else:
+            self.cache = dict()
 
     def log(self, msg):
         print(msg)
         logging.info(msg)
 
     def guess(self):
+        # check first in my file cache
         linkResource = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
             namespaces=NSMAP,
@@ -46,11 +53,22 @@ class LinkChecker:
                     link.text = nl
                 else:
                     self.log("\tNOT FOUND")
+        with open(self.cache_fn, "w", encoding="utf-8") as f:
+            json.dump(self.cache, f, ensure_ascii=False, ident=4)
 
-    def _guess(self, *, link):
+    def _guess(self, *, link) -> Union[str, None]:
         """
+        returns a link if it exists in the WWW or none if can't be reached.
+
+        EXPECTS
+        a "link" of the format "1234567.jpg"
+
+        RETURNS
+        full link to the resource in the format
         https://recherche.smb.museum/images/4305271_1000x600.jpg
+        or None
         """
+
         p = Path(link)
         mulId = p.stem
         suffixes = [p.suffix]
@@ -63,6 +81,13 @@ class LinkChecker:
         elif p.suffix == ".tif":
             self.log(f"   Dont even check for tif {p}")
             return  # dont even check tif b/c we know that they dont work
+
+        try:
+            self.cache[mulId]
+        except:
+            pass
+        else:
+            return self.cache[mulId]
 
         if p.suffix.lower() != p.suffix:
             suffixes.append(p.suffix.lower())
@@ -79,6 +104,7 @@ class LinkChecker:
                     pass
                 else:
                     self.log("\tHIT")
+                    self.cache[mulId] = new_link
                     return new_link
 
     def rmInternalLinks(self):
