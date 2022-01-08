@@ -234,30 +234,34 @@ class LidoTool(Jobs):
         if self.chunks:
             print(" with chunks")
             for chunkFn in self.chunkName(Input=Input):
-                new_fn = self.validateSingle(Input=chunkFn)
-            return new_fn
+                self.validateSingle(Input=chunkFn)
         else:
-            return self.validateSingle(Input=Input)
+            self.validateSingle(Input=Input)
+        return Input  # validate is not writing any new files
 
     def validateSingle(self, *, Input):
-        print(f" loading schema {lidoXSD}")
-        schema_doc = etree.parse(lidoXSD)
+        if not hasattr(self,"schema"):
+            print(f" loading schema {lidoXSD}")
+            schemaDoc = etree.parse(lidoXSD) 
+            self.schema = etree.XMLSchema(schemaDoc)
+
         print(f" validating {Input}")
-        schema = etree.XMLSchema(schema_doc)
         doc = etree.parse(str(Input))
-        schema.assert_(doc)  # raises error when not valid
-        if schema.validate(doc):
-            print(" validates ok")
-        else:
-            print(" does NOT validate")
+        self.schema.assert_(doc)  # raises error when not valid
+        return Input
+        #print(" validates ok")
+        #if schema.validate(doc):
+        #    print(" validates ok")
+        #else:
+        #    print(" does NOT validate")
 
     def zml2lido(self, *, Input):
         print("ZML2LIDO")
         if self.chunks:
             print(" with chunks")
             for chunkFn in self.chunkName(Input=self.Input):
-                new_fn = self.zml2lidoSingle(Input=chunkFn)
-            return new_fn  # only the last one returns
+                lidoFn = self.zml2lidoSingle(Input=chunkFn)
+            return self.chunkNameFirst(Input=lidoFn)   
         else:
             return self.zml2lidoSingle(Input=Input)
 
@@ -271,24 +275,46 @@ class LidoTool(Jobs):
             self.saxon(Input=Input, xsl=xsl["zml2lido"], output=lido_fn)
         else:
             print("exists already, no overwrite")
-
         return lido_fn
 
     #
-    # more private
+    # more helpers
     #
 
-    def chunkName(self, *, Input):
-        print(f"chunk input: {Input}")
-        m = re.match(".*(\d+)\.xml$", str(Input))  # -chunk(\d+)\.xml$
+    def chunkNameFirst(self, *, Input):
+        """
+        returns the chunk with no. 1
+        """
+        root, no, tail = self._analyze_chunkFn(Input=Input)
+        firstFn = f"{root}-chunk1{tail}"
+        #print(f"going in {Input}")
+        print(f"firstFn {firstFn}")
+        return  firstFn
+
+    def _analyze_chunkFn(self, *, Input):
+        print (f"ENTER ANALYZE WITH {Input}")
+        partsL = str(Input).split("-chunk")
+        root = partsL[0]
+        m = re.match("(\d+)\.", partsL[1])  
         no = int(m.group(1))
-        root = str(Input).split("-chunk")[0]
+        tail = str(Input).split("-chunk"+str(no))[1]
+        print(f"_ANALYZE '{root}' '{no}' '{tail}'")
+        return root, no, tail
+
+    def chunkName(self, *, Input):
+        """ 
+        returns generator with path for existing files, counting up as long
+        files are existing. For this to work, filename has to include
+            path/to/group1234-chunk1.xml
+        """
+        print(f"chunk input: {Input}")
+        root, no, tail = self._analyze_chunkFn(Input=Input)
         chunkFn = Input
         while Path(chunkFn).exists():
-            print(f"{chunkFn} exists")
-            no += 1
-            chunkFn = f"{root}-chunk{no}.xml"
             yield chunkFn
+            #print(f"{chunkFn} exists")
+            no += 1
+            chunkFn = f"{root}-chunk{no}{tail}"
 
     def _copy(self, *, pic, out):
         if not Path(out).exists:

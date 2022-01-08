@@ -52,7 +52,7 @@
 				]
 			]"/>
 
-		<!-- Aufnahmejahr is stupid, but it will exist for some time -->
+		<!-- "Aufnahmejahr" should be "Aufnahme" etc., but it will exist for some time -->
 		<xsl:variable name="herstellendeDatenTypen" select="
 			'Aufnahme',
 			'Aufnahmejahr', 
