@@ -49,7 +49,7 @@ class LinkChecker:
         )
 
         for link in linkResourceL:
-            if link.text is not None: 
+            if link.text is not None:
                 if not link.text.startswith("http"):
                     nl = self._guess(link=link.text)
                     if nl is not None:
@@ -126,7 +126,7 @@ class LinkChecker:
             namespaces=NSMAP,
         )
         for link in linkResourceL:
-            if link.text is not None: # empty links seem to be new?
+            if link.text is not None:  # empty links seem to be new?
                 if not link.text.startswith("http"):
                     resourceSet = link.getparent().getparent()
                     resourceSet.getparent().remove(resourceSet)
