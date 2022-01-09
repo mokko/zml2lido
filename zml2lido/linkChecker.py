@@ -32,7 +32,8 @@ class LinkChecker:
         self.cacheFn = stem + ".cache.json"
         if Path(self.cacheFn).exists():
             print(f"About to load {self.cacheFn}")
-            self.cache = json.loads(self.cacheFn)
+            with open(self.cacheFn) as jsonfile:
+                self.cache = json.load(jsonfile)
         else:
             self.cache = dict()
 
@@ -42,18 +43,19 @@ class LinkChecker:
 
     def guess(self):
         # check first in my file cache
-        linkResource = self.tree.xpath(
+        linkResourceL = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
             namespaces=NSMAP,
         )
 
-        for link in linkResource:
-            if not link.text.startswith("http"):
-                nl = self._guess(link=link.text)
-                if nl is not None:
-                    link.text = nl
-                else:
-                    self.log(f"\tNOT FOUND {nl}")
+        for link in linkResourceL:
+            if link.text is not None: 
+                if not link.text.startswith("http"):
+                    nl = self._guess(link=link.text)
+                    if nl is not None:
+                        link.text = nl
+                    else:
+                        self.log(f"\tNOT FOUND {nl}")
         with open(self.cacheFn, "w", encoding="utf-8") as f:
             json.dump(self.cache, f, ensure_ascii=False, indent=4)
 
@@ -98,7 +100,7 @@ class LinkChecker:
         for size in sizes:
             for suffix in suffixes:
                 new_link = f"https://recherche.smb.museum/images/{mulId}{size}{suffix}"
-                print(".", end="")
+                # print(".", end="")
                 # self.log(f"   checking {new_link}")
                 req = urlrequest.Request(new_link)
                 req.set_proxy("http-proxy-1.sbb.spk-berlin.de:3128", "http")
@@ -119,14 +121,15 @@ class LinkChecker:
         1234678.jpg
         """
         self.log("   resourceSet: Removing sets with remaining internal links")
-        linkResource = self.tree.xpath(
+        linkResourceL = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
             namespaces=NSMAP,
         )
-        for link in linkResource:
-            if not link.text.startswith("http"):
-                resourceSet = link.getparent().getparent()
-                resourceSet.getparent().remove(resourceSet)
+        for link in linkResourceL:
+            if link.text is not None: # empty links seem to be new?
+                if not link.text.startswith("http"):
+                    resourceSet = link.getparent().getparent()
+                    resourceSet.getparent().remove(resourceSet)
 
     def rmUnpublishedRecords(self):
         """
