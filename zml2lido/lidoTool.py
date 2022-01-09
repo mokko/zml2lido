@@ -102,6 +102,7 @@ class LidoTool(Jobs):
                 new_fn = self.lido2htmlSingle(Input=chunkFn)
         else:
             self.lido2htmlSingle(Input=Input)
+        return Input  # dont act on html
 
     def lido2htmlSingle(self, *, Input):
         """Only runs if html dir doesn't exist."""
@@ -123,7 +124,7 @@ class LidoTool(Jobs):
         if self.chunks:
             for chunkFn in self.chunkName(Input=Input):
                 new_fn = self.onlyPublishedSingle(Input=chunkFn)
-            return new_fn  # return last only
+            return self.chunkNameFirst(Input=new_fn)
         else:
             return self.onlyPublishedSingle(Input=Input)
 
@@ -132,6 +133,7 @@ class LidoTool(Jobs):
         filter out lido records that are not published at recherche.smb
         expects lido as input and outputs lido as well
         """
+        Input = Path(Input)  # what a mess
         stem = str(Input).split(".")[0]
         ext = "".join(Input.suffixes)
         out = self.outdir.joinpath(stem + ".onlyPub" + ext)
@@ -147,28 +149,28 @@ class LidoTool(Jobs):
         if self.chunks:
             for chunkFn in self.chunkName(Input=Input):
                 new_fn = self.urlLidoSingle(Input=chunkFn)
-            return new_fn  # return last
+            return self.chunkNameFirst(Input=new_fn)
         else:
             return self.urlLidoSingle(Input=Input)
 
     def urlLidoSingle(self, *, Input):
         lc = LinkChecker(Input=Input)
-        out_fn = lc.out_fn
-        if not Path(lc.out_fn).exists() or self.force == True:
-            lc.rmUnpublishedRecords()  # remove records that are not published on SMB-Digital
+        outFn = lc.out_fn
+        if not Path(outFn).exists() or self.force == True:
+            lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             lc.guess()  # rewrite filenames with http-links on SMB-Digital
             lc.rmInternalLinks()  # remove resourceSets with internal links
             lc.saveTree()
         else:
-            print(f"   rewrite exists already: {out_fn}, no overwrite")
-        return out_fn
+            print(f"   rewrite exists already: {outFn}, no overwrite")
+        return outFn
 
     def splitSachbegriff(self, *, Input):
         print("SPLITSACHBEGRIFF")
         if self.chunks:
             for chunkFn in self.chunkName(Input=Input):
-                new_fn = self.splitSachbegriff(Input=chunkFn)
-            return new_fn  # only last
+                sachbegriffFn = self.splitSachbegriff(Input=chunkFn)
+            return self.chunkNameFirst(Input=sachbegriffFn)
         else:
             return self.splitSachbegriffSingle(Input=Input)
 
@@ -198,7 +200,7 @@ class LidoTool(Jobs):
         records may have been filtered out, eg. from splitSachbegriff and pix
         may end up in target that are no longer included
 
-        TODO: fix
+        TODO: fix. Let's only work on pix that are referenced in a lido file
         """
         print("WORKING ON PIX")
         in_dir = Path(Input).parent
@@ -211,9 +213,10 @@ class LidoTool(Jobs):
         print("SPLITLIDO")
         if self.chunks:
             for chunkFn in self.chunkName(Input=Input):
-                new_fn = self.splitLidoSingle(Input=chunkFn)
+                self.splitLidoSingle(Input=chunkFn)
         else:
-            return self.splitLidoSingle(Input=Input)
+            self.splitLidoSingle(Input=Input)
+        return Input  # dont act on split files
 
     def splitLidoSingle(self, *, Input):
         """
@@ -226,8 +229,7 @@ class LidoTool(Jobs):
             self.saxon(Input=Input, xsl=xsl["splitLido"], output="o.xml")
             os.chdir(orig)
         else:
-            print("SPLITLIDO exists already")
-            print("SPLITLIDO exists already")
+            print(" SPLITLIDO exists already")
 
     def validate(self, *, Input):
         print("VALIDATING LIDO")
@@ -237,23 +239,18 @@ class LidoTool(Jobs):
                 self.validateSingle(Input=chunkFn)
         else:
             self.validateSingle(Input=Input)
-        return Input  # validate is not writing any new files
+        return Input  # validate does not write new files
 
     def validateSingle(self, *, Input):
-        if not hasattr(self,"schema"):
+        if not hasattr(self, "schema"):
             print(f" loading schema {lidoXSD}")
-            schemaDoc = etree.parse(lidoXSD) 
+            schemaDoc = etree.parse(lidoXSD)
             self.schema = etree.XMLSchema(schemaDoc)
 
         print(f" validating {Input}")
         doc = etree.parse(str(Input))
         self.schema.assert_(doc)  # raises error when not valid
         return Input
-        #print(" validates ok")
-        #if schema.validate(doc):
-        #    print(" validates ok")
-        #else:
-        #    print(" does NOT validate")
 
     def zml2lido(self, *, Input):
         print("ZML2LIDO")
@@ -261,21 +258,21 @@ class LidoTool(Jobs):
             print(" with chunks")
             for chunkFn in self.chunkName(Input=self.Input):
                 lidoFn = self.zml2lidoSingle(Input=chunkFn)
-            return self.chunkNameFirst(Input=lidoFn)   
+            return self.chunkNameFirst(Input=lidoFn)
         else:
             return self.zml2lidoSingle(Input=Input)
 
     def zml2lidoSingle(self, *, Input):
-        Input = Path(Input)
-        lido_fn = self.outdir.joinpath(Input.stem + ".lido.xml")
+        inputP = Path(Input)
+        lidoFn = self.outdir.joinpath(Input.stem + ".lido.xml")
         # print (f"lido file:{lido_fn}")
 
-        if not lido_fn.exists() or self.force is True:
+        if not lidoFn.exists() or self.force is True:
             print("ZML2LIDO new")
-            self.saxon(Input=Input, xsl=xsl["zml2lido"], output=lido_fn)
+            self.saxon(Input=inputP, xsl=xsl["zml2lido"], output=lido_fn)
         else:
             print("exists already, no overwrite")
-        return lido_fn
+        return lidoFn
 
     #
     # more helpers
@@ -287,22 +284,22 @@ class LidoTool(Jobs):
         """
         root, no, tail = self._analyze_chunkFn(Input=Input)
         firstFn = f"{root}-chunk1{tail}"
-        #print(f"going in {Input}")
+        # print(f"going in {Input}")
         print(f"firstFn {firstFn}")
-        return  firstFn
+        return firstFn
 
     def _analyze_chunkFn(self, *, Input):
-        print (f"ENTER ANALYZE WITH {Input}")
+        print(f"ENTER ANALYZE WITH {Input}")
         partsL = str(Input).split("-chunk")
         root = partsL[0]
-        m = re.match("(\d+)\.", partsL[1])  
+        m = re.match("(\d+)\.", partsL[1])
         no = int(m.group(1))
-        tail = str(Input).split("-chunk"+str(no))[1]
+        tail = str(Input).split("-chunk" + str(no))[1]
         print(f"_ANALYZE '{root}' '{no}' '{tail}'")
         return root, no, tail
 
     def chunkName(self, *, Input):
-        """ 
+        """
         returns generator with path for existing files, counting up as long
         files are existing. For this to work, filename has to include
             path/to/group1234-chunk1.xml
@@ -312,7 +309,7 @@ class LidoTool(Jobs):
         chunkFn = Input
         while Path(chunkFn).exists():
             yield chunkFn
-            #print(f"{chunkFn} exists")
+            # print(f"{chunkFn} exists")
             no += 1
             chunkFn = f"{root}-chunk{no}{tail}"
 
