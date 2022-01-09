@@ -14,7 +14,7 @@ import urllib.request
 from lxml import etree
 from pathlib import Path
 from urllib import request as urlrequest
-from typing import Union
+from typing import Optional, Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
 sizes = ["_2500x2500", "_1000x600"]  # from big to small
@@ -22,12 +22,12 @@ sizes = ["_2500x2500", "_1000x600"]  # from big to small
 
 class LinkChecker:
     def __init__(self, *, Input):
-        print(f"LinkChecker is working on {Input}")
+        print(f"LinkChecker is working on {Input}")  # not exactly an error
         p = Path(Input)
         ext = "".join(p.suffixes)
         stem = str(p).split(".")[0]
         self.out_fn = stem + "-links" + ext
-        self.log(f"   writing to {self.out_fn}")
+        #self.log(f"   writing to {self.out_fn}")
         self.tree = etree.parse(str(Input))
         self.cacheFn = stem + ".cache.json"
         if Path(self.cacheFn).exists():
@@ -54,12 +54,12 @@ class LinkChecker:
                     nl = self._guess(link=link.text)
                     if nl is not None:
                         link.text = nl
-                    else:
-                        self.log(f"\tNOT FOUND {nl}")
+                    #else:
+                    #    self.log(f"\tNOT FOUND {nl}")
         with open(self.cacheFn, "w", encoding="utf-8") as f:
             json.dump(self.cache, f, ensure_ascii=False, indent=4)
 
-    def _guess(self, *, link) -> Union[str, None]:
+    def _guess(self, *, link) -> Optional[str]:
         """
         returns a link if it exists in the WWW or none if can't be reached.
 
@@ -81,7 +81,7 @@ class LinkChecker:
             self.log(f"   Dont even check for mp3 {p}")
             return  # dont even check mp3 b/c we know that they dont work
         elif p.suffix == ".tif" or p.suffix == ".tiff":
-            self.log(f"   Dont even check for tif {p}")
+            self.log(f"   Dont even check for tif/f {p}")
             return  # dont even check tif b/c we know that they dont work
 
         try:
@@ -100,18 +100,17 @@ class LinkChecker:
         for size in sizes:
             for suffix in suffixes:
                 new_link = f"https://recherche.smb.museum/images/{mulId}{size}{suffix}"
-                # print(".", end="")
-                # self.log(f"   checking {new_link}")
                 req = urlrequest.Request(new_link)
                 req.set_proxy("http-proxy-1.sbb.spk-berlin.de:3128", "http")
                 try:
                     # urlrequest.urlopen(req)
                     urllib.request.urlopen(new_link)
                 except:
-                    self.cache[mulId] = None  # link not found
+                    self.cache[mulId] = None
+                    self.log(f"INFO multimedia {mulId} not found")
                     return None
                 else:
-                    self.cache[mulId] = new_link  # only log errors
+                    self.cache[mulId] = new_link
                     return new_link
 
     def rmInternalLinks(self):
@@ -138,10 +137,10 @@ class LinkChecker:
         Assumes that only records which have SMBFreigabe=Ja have objectPublishedID
         """
         self.log("   LinkChecker: Removing records sets that are not published on SMB")
-        records = self.tree.xpath(
+        recordsL = self.tree.xpath(
             "/l:lidoWrap/l:lido[not(l:objectPublishedID)]", namespaces=NSMAP
         )
-        for record in records:
+        for record in recordsL:
             record.getparent().remove(record)
 
     def saveTree(self):

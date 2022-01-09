@@ -21,6 +21,7 @@
     first place.
 
     Changes
+    1/9/22   chunk mode (to process multiple chunks)
     1/6/22   transition to flit packaging
     10/28/21 move installation specific config to a separate file in sdata
     10/26/21 outdir simplified; it's always relative to pwd now. One  command line param less.
@@ -210,7 +211,7 @@ class LidoTool(Jobs):
             self._resize(pic=pic_fn)
 
     def splitLido(self, *, Input):
-        print("SPLITLIDO")
+        print("SPLITLIDO enter")
         if self.chunks:
             for chunkFn in self.chunkName(Input=Input):
                 self.splitLidoSingle(Input=chunkFn)
@@ -220,16 +221,18 @@ class LidoTool(Jobs):
 
     def splitLidoSingle(self, *, Input):
         """
-        Create invidiual files per lido record
+        Create individual files per lido record
         """
         orig = os.getcwd()
-        if not self.outdir.joinpath("split").exists() or self.force is True:
+        splitDir = self.outdir.joinpath("split")
+        # existance of splitDir is a very bad criterion, but cant think of a better one
+        if not splitDir.exists() or self.force is True:
             print("SPLITLIDO making")
             os.chdir(self.outdir)
             self.saxon(Input=Input, xsl=xsl["splitLido"], output="o.xml")
             os.chdir(orig)
         else:
-            print(" SPLITLIDO exists already")
+            print(f" SPLIT DIR exists already: {splitDir}")
 
     def validate(self, *, Input):
         print("VALIDATING LIDO")
@@ -292,7 +295,7 @@ class LidoTool(Jobs):
         print(f"ENTER ANALYZE WITH {Input}")
         partsL = str(Input).split("-chunk")
         root = partsL[0]
-        m = re.match("(\d+)\.", partsL[1])
+        m = re.match("(\d+)[\.-]", partsL[1])
         no = int(m.group(1))
         tail = str(Input).split("-chunk" + str(no))[1]
         print(f"_ANALYZE '{root}' '{no}' '{tail}'")
