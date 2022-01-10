@@ -27,7 +27,7 @@ class LinkChecker:
         ext = "".join(p.suffixes)
         stem = str(p).split(".")[0]
         self.out_fn = stem + "-links" + ext
-        #self.log(f"   writing to {self.out_fn}")
+        # self.log(f"   writing to {self.out_fn}")
         self.tree = etree.parse(str(Input))
         self.cacheFn = stem + ".cache.json"
         if Path(self.cacheFn).exists():
@@ -54,7 +54,7 @@ class LinkChecker:
                     nl = self._guess(link=link.text)
                     if nl is not None:
                         link.text = nl
-                    #else:
+                    # else:
                     #    self.log(f"\tNOT FOUND {nl}")
         with open(self.cacheFn, "w", encoding="utf-8") as f:
             json.dump(self.cache, f, ensure_ascii=False, indent=4)
