@@ -97,7 +97,7 @@
 		<xsl:param name="src-voc"/>
 		<xsl:param name="src-term"/>
 		<xsl:param name="target"/>
-		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
+		<xsl:variable name="dict" select="document('file:zml2lido/data/vocmap.xml')"/>
 		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
 		<xsl:variable name="return" select="$dict/vocmap/voc[@name eq $src-voc]/concept[source = $src-term]/target[@name eq $target]/text()"/>
 		<!-- die if replacement returns empty, except if source is already empty -->

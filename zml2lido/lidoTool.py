@@ -226,7 +226,7 @@ class LidoTool(Jobs):
         orig = os.getcwd()
         splitDir = self.outdir.joinpath("split")
         # existance of splitDir is a very bad criterion, but cant think of a better one
-        if not splitDir.exists() or self.force is True:
+        if splitDir.exists() or self.force is True:
             print("SPLITLIDO making")
             os.chdir(self.outdir)
             self.saxon(Input=Input, xsl=xsl["splitLido"], output="o.xml")
@@ -267,12 +267,12 @@ class LidoTool(Jobs):
 
     def zml2lidoSingle(self, *, Input):
         inputP = Path(Input)
-        lidoFn = self.outdir.joinpath(Input.stem + ".lido.xml")
+        lidoFn = self.outdir.joinpath(inputP.stem + ".lido.xml")
         # print (f"lido file:{lido_fn}")
 
         if not lidoFn.exists() or self.force is True:
             print("ZML2LIDO new")
-            self.saxon(Input=inputP, xsl=xsl["zml2lido"], output=lido_fn)
+            self.saxon(Input=inputP, xsl=xsl["zml2lido"], output=lidoFn)
         else:
             print("exists already, no overwrite")
         return lidoFn

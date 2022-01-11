@@ -342,6 +342,11 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10266</target>
 		</concept>
 		<concept>
+			<source lang="de">halbhohe  Stiefel</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300411682</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10266</target>
+		</concept>
+		<concept>
 			<source lang="de">Halskette</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300046001</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10162</target>
@@ -428,6 +433,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Pink</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300124707</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10400</target>
 		</concept>
 		<concept>
@@ -482,7 +488,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Unterwäsche</source>
-			<target name="aatUri"></target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209267</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10068</target>
 		</concept>
 		<concept>
@@ -493,6 +499,7 @@
 		<concept>
 			<source lang="de">Zeichnung</source>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10307</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
 		</concept>
 	</voc>
 
