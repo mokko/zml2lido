@@ -112,6 +112,28 @@
 		<xsl:value-of select="$return"/>
 	</xsl:function>
 
+	<!-- 
+		there might be cases where it is not an ERROR to return NONE after vocmap lookup
+		this is the same as normal vocmap-replace, only with terminate="no"
+	-->
+	<xsl:function name="func:vocmap-replace-lax">
+		<xsl:param name="src-voc"/>
+		<xsl:param name="src-term"/>
+		<xsl:param name="target"/>
+		<xsl:variable name="dict" select="document('file:zml2lido/data/vocmap.xml')"/>
+		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
+		<xsl:variable name="return" select="$dict/vocmap/voc[@name eq $src-voc]/concept[source = $src-term]/target[@name eq $target]/text()"/>
+		<xsl:if test="normalize-space($return) = '' and normalize-space($src-term) != ''">
+			<xsl:message terminate="no">
+				<xsl:text>WARNING: vocmap-replace-lax returns EMPTY ON </xsl:text>
+				<xsl:value-of select="$src-term"/> 
+				<xsl:text> FROM </xsl:text>
+				<xsl:value-of select="$src-voc"/> 
+			</xsl:message>
+		</xsl:if> 
+		<xsl:value-of select="$return"/>
+	</xsl:function>
+
 	<xsl:function name="func:weblink">
 		<xsl:param name="verwaltendeInstitution"/>
 		<xsl:value-of select="func:vocmap-replace('verwaltendeInstitution', $verwaltendeInstitution, 'homepage')" />

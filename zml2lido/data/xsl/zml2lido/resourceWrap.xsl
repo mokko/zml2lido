@@ -243,6 +243,15 @@
                         <xsl:text> / </xsl:text>
                         <xsl:value-of select="z:moduleReference[@name='MulPhotographerPerRef']/z:moduleReferenceItem/z:formattedValue"/>
                     </xsl:if>
+					<xsl:if test="z:moduleReference[@name='MulPhotocreditTxt']">
+						<xsl:message terminate="yes">
+							<xsl:text>Untested CreditLine field from Digital Assets</xsl:text>
+							<xsl:if test="z:moduleReference[@name='MulPhotocreditTxt'] ne ''">
+								<xsl:text> - </xsl:text>
+								<xsl:value-of select="z:dataField[@name='MulPhotocreditTxt']"/>
+							</xsl:if>
+						</xsl:message>
+					</xsl:if>
                 </lido:creditLine>
             </lido:rightsResource>
         </lido:resourceSet>

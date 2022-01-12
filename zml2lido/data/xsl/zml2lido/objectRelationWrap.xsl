@@ -109,6 +109,11 @@
 	</xsl:template>
 
 	<xsl:template match="z:vocabularyReference[@name = 'KeywordProjectVoc']">
+		<!-- subject is NOT repeatable, however subjectConcept is repeatable and has type --> 
+		<xsl:variable name="aat" select="func:vocmap-replace-lax(
+			'subjects', z:vocabularyReferenceItem/z:formattedValue, 'aatUri')"/>
+		<xsl:variable name="euro" select="func:vocmap-replace-lax(
+			'subjects', z:vocabularyReferenceItem/z:formattedValue, 'fashionUri')"/>
 		<xsl:comment>
 			<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
 		</xsl:comment>
@@ -116,23 +121,48 @@
 			<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 		</lido:displaySubject>
 		<lido:subject>
-			<xsl:if test="starts-with(z:vocabularyReferenceItem/@name, 'Europeana-Fashion##')">
-				<xsl:attribute name="lido:type">AAT</xsl:attribute>
-			</xsl:if>
+			<xsl:attribute name="lido:type">local</xsl:attribute>
 			<lido:subjectConcept>
 				<lido:conceptID lido:type="local">
 					<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
 				</lido:conceptID>
-				<xsl:if test="starts-with(z:vocabularyReferenceItem/@name, 'Europeana-Fashion##')">
-					<lido:conceptID lido:type="URI">
-						<xsl:value-of select="func:vocmap-replace('subjects', z:vocabularyReferenceItem/z:formattedValue, 'aatUri')"/>
-					</lido:conceptID>
-				</xsl:if>
 				<lido:term xml:lang="de">
 					<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 				</lido:term>
 			</lido:subjectConcept>
+			<xsl:if test="$aat ne ''">
+				<xsl:call-template name="subjectND">
+					<xsl:with-param name="type">aat</xsl:with-param>
+					<xsl:with-param name="uri" select="$aat"/>
+				</xsl:call-template>
+			</xsl:if>
+			<xsl:if test="$euro ne ''">
+				<xsl:call-template name="subjectND">
+					<xsl:with-param name="type">europeana</xsl:with-param>
+					<xsl:with-param name="uri" select="$euro"/>
+				</xsl:call-template>
+			</xsl:if>
 		</lido:subject>
+	</xsl:template>
+
+	<xsl:template name="subjectND"> <!-- ND: Norm data-->
+		<xsl:param name="type"/>
+		<xsl:param name="uri"/>
+		<xsl:param name="term"/> <!-- can be empty-->
+
+		<lido:subjectConcept>
+				<lido:conceptID lido:type="URI">
+					<xsl:attribute name="lido:source">
+							<xsl:value-of select="$type"/>
+					</xsl:attribute>
+					<xsl:value-of select="$uri"/>
+				</lido:conceptID>
+			<xsl:if test="$term ne ''">
+				<lido:term xml:lang="de">
+					<xsl:value-of select="$term"/>
+				</lido:term>
+			</xsl:if>
+		</lido:subjectConcept>
 	</xsl:template>
 
 	<!-- composite -->
