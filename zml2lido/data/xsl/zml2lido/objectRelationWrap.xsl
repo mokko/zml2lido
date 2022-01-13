@@ -121,27 +121,26 @@
 			<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 		</lido:displaySubject>
 		<lido:subject>
-			<xsl:attribute name="lido:type">local</xsl:attribute>
 			<lido:subjectConcept>
-				<lido:conceptID lido:type="local">
+				<lido:conceptID lido:type="local" lido:source="SMB/RIA">
 					<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
 				</lido:conceptID>
+				<xsl:if test="$aat ne ''">
+					<xsl:call-template name="subjectND">
+						<xsl:with-param name="type">aat</xsl:with-param>
+						<xsl:with-param name="uri" select="$aat"/>
+					</xsl:call-template>
+				</xsl:if>
+				<xsl:if test="$euro ne ''">
+					<xsl:call-template name="subjectND">
+						<xsl:with-param name="type">europeanafashion</xsl:with-param>
+						<xsl:with-param name="uri" select="$euro"/>
+					</xsl:call-template>
+				</xsl:if>
 				<lido:term xml:lang="de">
 					<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 				</lido:term>
 			</lido:subjectConcept>
-			<xsl:if test="$aat ne ''">
-				<xsl:call-template name="subjectND">
-					<xsl:with-param name="type">aat</xsl:with-param>
-					<xsl:with-param name="uri" select="$aat"/>
-				</xsl:call-template>
-			</xsl:if>
-			<xsl:if test="$euro ne ''">
-				<xsl:call-template name="subjectND">
-					<xsl:with-param name="type">europeana</xsl:with-param>
-					<xsl:with-param name="uri" select="$euro"/>
-				</xsl:call-template>
-			</xsl:if>
 		</lido:subject>
 	</xsl:template>
 
@@ -150,19 +149,17 @@
 		<xsl:param name="uri"/>
 		<xsl:param name="term"/> <!-- can be empty-->
 
-		<lido:subjectConcept>
-				<lido:conceptID lido:type="URI">
-					<xsl:attribute name="lido:source">
-							<xsl:value-of select="$type"/>
-					</xsl:attribute>
-					<xsl:value-of select="$uri"/>
-				</lido:conceptID>
-			<xsl:if test="$term ne ''">
-				<lido:term xml:lang="de">
-					<xsl:value-of select="$term"/>
-				</lido:term>
-			</xsl:if>
-		</lido:subjectConcept>
+		<lido:conceptID lido:type="URI">
+			<xsl:attribute name="lido:source">
+					<xsl:value-of select="$type"/>
+			</xsl:attribute>
+			<xsl:value-of select="$uri"/>
+		</lido:conceptID>
+		<xsl:if test="$term ne ''">
+			<lido:term xml:lang="de">
+				<xsl:value-of select="$term"/>
+			</lido:term>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- composite -->

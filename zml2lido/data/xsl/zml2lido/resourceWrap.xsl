@@ -233,12 +233,12 @@
 				Should be Staatliche Museen Berlin, Kunstbibliothek, Foto: Hans Kunz
                 -->
                 <lido:creditLine>
-					<xsl:variable name="einrichtung" select="normalize-space(substring-before($verwaltendeInstitution,','))"/>
+					<xsl:variable name="einrichtungKlein" select="normalize-space(substring-before($verwaltendeInstitution,','))"/>
 					<!-- can also be SIM in case of MIM -->
-					<xsl:variable name="smb" select="normalize-space(substring-after($verwaltendeInstitution,','))"/>
-					<xsl:value-of select="$smb"/>
+					<xsl:variable name="einrichtungGroß" select="normalize-space(substring-after($verwaltendeInstitution,','))"/>
+					<xsl:value-of select="$einrichtungGroß"/>
 					<xsl:text>, </xsl:text>
-					<xsl:value-of select="$einrichtung"/>
+					<xsl:value-of select="$einrichtungKlein"/>
                     <xsl:if test="z:moduleReference[@name='MulPhotographerPerRef']">
                         <xsl:text> / </xsl:text>
                         <xsl:value-of select="z:moduleReference[@name='MulPhotographerPerRef']/z:moduleReferenceItem/z:formattedValue"/>
