@@ -50,8 +50,8 @@
                         <xsl:value-of select="bearbStand"/>
                     </xsl:attribute>
                 </xsl:if>
-				<lido:recordInfoLink lido:formatResource="html">
-					<xsl:text>https://recherche.smb.museum/detail/</xsl:text>
+				<lido:recordInfoLink lido:formatResource="html">				 
+					<xsl:text>https://id.smb.museum/object/</xsl:text>
 					<xsl:value-of select="@id"/>
 				</lido:recordInfoLink>
 			</lido:recordInfoSet>
