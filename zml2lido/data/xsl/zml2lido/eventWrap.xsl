@@ -104,19 +104,30 @@
 						
 						It's possible to have multiple sets of Lebensdaten in RIA, e.g. kueId 387655
 						Let's just take the first for now.
+						
+						RIA allows entry of non-numeric freely-formated values such as 
+							<value>? - nach 1960</value>
+						but LIDO strictly requires two values (from, to)
 					-->
 					<xsl:variable name="lebensdatenN" select="$kue/z:repeatableGroup[@name = 'PerDateGrp']
 						/z:repeatableGroupItem[
 							z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Lebensdaten'
 						][1]"/>
 					<lido:vitalDatesActor>
-						<lido:earliestDate>
-							<xsl:value-of select="func:reformatDate($lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value)"/>
-						</lido:earliestDate>
-						<lido:latestDate>
-							<xsl:value-of select="func:reformatDate($lebensdatenN/z:dataField[@name = 'DateToTxt']/z:value)"/>
-						</lido:latestDate>
-						<xsl:value-of select="$kue/z:virtualField[@name = 'PreviewVrt']/z:value"/>
+						<xsl:if test="$lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value">
+							<lido:earliestDate>
+								<xsl:value-of select="func:reformatDate($lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value)"/>
+							</lido:earliestDate>
+						</xsl:if>
+						<xsl:if test="$lebensdatenN/z:dataField[@name = 'DateToTxt']/z:value">
+							<lido:latestDate>
+								<xsl:value-of select="func:reformatDate($lebensdatenN/z:dataField[@name = 'DateToTxt']/z:value)"/>
+							</lido:latestDate>
+						</xsl:if>
+						<!-- used to be 
+							z:virtualField[@name = 'PreviewVrt']/z:value
+							<xsl:value-of select="$lebensdatenN/z:dataField[@name = 'DatingNewTxt']/z:value"/>
+						-->
 					</lido:vitalDatesActor>
 					<lido:genderActor xml:lang="en">
 						<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerGenderVoc']/z:vocabularyReferenceItem/z:formattedValue"/>

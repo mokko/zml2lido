@@ -209,8 +209,9 @@
 			<!-- 
 				22.12.2021 
 				Frank will das Feld nicht in LIDO haben, weil da teilweise Müll drin steht (?).
-				xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/
+				14.2.2022 jetzt will er es wieder haben.
 			-->
+			<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
 			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
 			<!--Urheber-->
 			<xsl:apply-templates mode="Urheber" select="z:moduleReference[@name='MulPhotographerPerRef']"/>
@@ -279,6 +280,7 @@
 	<!--
 		inhaltAnsicht
 		22.12.2021 Frank meint, dass die Kurator*innen nicht erwarten, dass inhaltAnsicht ausgegeben wird.
+		14.2.2022 möchte Frank, resourceDescription doch wieder haben
 	-->
     <xsl:template match="z:dataField[@name='MulSubjectTxt']/z:value">
 		<lido:resourceDescription>

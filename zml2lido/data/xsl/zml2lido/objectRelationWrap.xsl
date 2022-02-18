@@ -22,12 +22,21 @@
 	LIDO1.1: SUBJECT
 	A wrapper for information about the subject of the object/work in focus. The sub-elements identify, 
 	describe, and/or interpret what is depicted in and by an object/work, or what it is about.
+
+	14.2.2022 Frank möchte, dass relatedWork nur auf Objekte verweist, die auch smb-freigegeben sind
+	Dafür muss ich in den jeweiligen DS des relatedWorks hineinschauen; dafür muss ich sicherstellen, dass
+	ich den auch haben. Im vorliegenden Beispiel ist der jedoch nicht Teil der heruntergeladenen Objektgruppe.
+	Das wird also eine größere Operation. Ich könnte z.B. in einem weiteren Schritt (ähnlich wie beim 
+	LinkChecker) in RIA nachgucken, ob dieser DS freigegeben ist oder nicht und das entsprechend in LIDO
+	korrigieren. TODO
+	
 	-->
 
 	<xsl:template name="objectRelationWrap">
 		<xsl:variable name="relatedWorks" select="z:composite[
 			@name='ObjObjectCre'
 		]/z:compositeItem/z:moduleReference"/>
+		
 		<xsl:if test="z:repeatableGroup[@name='ObjIconographyGrp'] 
 			or z:repeatableGroup[@name='ObjKeyWordsGrp']
 			or $relatedWorks">
