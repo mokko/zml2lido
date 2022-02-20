@@ -226,6 +226,7 @@
 		</concept>
 	</voc>
 
+
 	<voc name="subjects">
 		<!-- sort source alphabetically please -->
 		<concept>
@@ -239,6 +240,26 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10164</target>
 		</concept>
 		<concept>
+			<source lang="de">Ärmel</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+		</concept>
+		<concept>
+			<source lang="de">Bade- und Strandkleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+		</concept>
+		<concept>
+			<source lang="de">Badeanzug</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+		</concept>
+		<concept>
+			<source lang="de">Band</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+		</concept>
+		<concept>
 			<source lang="de">Blau</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300129361</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10402</target>
@@ -247,6 +268,11 @@
 			<source lang="de">Bluse</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300046133</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10018</target>
+		</concept>
+		<concept>
+			<source lang="de">Büstenhalter</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
 		</concept>
 		<concept>
 			<source lang="de">Braun</source>
@@ -362,6 +388,11 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10646</target>
 		</concept>
 		<concept>
+			<source lang="de">Herbst-Winter</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+		</concept>
+		<concept>
 			<source lang="de">Herrenbekleidung</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300379341</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10435</target>
@@ -432,9 +463,19 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10308</target>
 		</concept>
 		<concept>
+			<source lang="de">Pelz</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+		</concept>
+		<concept>
 			<source lang="de">Pink</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300124707</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10400</target>
+		</concept>
+		<concept>
+			<source lang="de">Pullover</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
 		</concept>
 		<concept>
 			<source lang="de">Rock</source>
@@ -447,14 +488,14 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10414</target>
 		</concept>
 		<concept>
-			<source lang="de">Schleppe</source>
-			<target name="aatUri">http://vocab.getty.edu/aat/300224243</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10055</target>
+			<source lang="de">Schärpe</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
 		</concept>
 		<concept>
-			<source lang="de">Schwarz</source>
-			<target name="aatUri">http://vocab.getty.edu/aat/300130920</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10401</target>
+			<source lang="de">Schmuck</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
 		</concept>
 		<concept>
 			<source lang="de">Schürzen (Schutzkleidung)</source>
@@ -462,9 +503,34 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10293</target>
 		</concept>
 		<concept>
+			<source lang="de">Schwarz</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300130920</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10401</target>
+		</concept>
+		<concept>
+			<source lang="de">Skikleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+		</concept>
+		<concept>
+			<source lang="de">Schleppe</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300224243</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10055</target>
+		</concept>
+		<concept>
 			<source lang="de">Sonnenschirm</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300046218</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10145</target>
+		</concept>
+		<concept>
+			<source lang="de">Sport- und Freizeitkleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+		</concept>
+		<concept>
+			<source lang="de">Stiefel</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
 		</concept>
 		<concept>
 			<source lang="de">Taschentuch</source>

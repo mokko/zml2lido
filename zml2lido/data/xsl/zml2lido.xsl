@@ -82,8 +82,9 @@
 				<xsl:call-template name="eventWrap" />
 				<!-- 
 					20220219 I cant guarantee that the relatedObjects are online, so we're turning them off
-					<xsl:call-template name="objectRelationWrap" />
+					if you turn it off here you also turn off subjects
 				-->
+				<xsl:call-template name="objectRelationWrap" />
 			</lido:descriptiveMetadata>
 
 			<lido:administrativeMetadata xml:lang="de">

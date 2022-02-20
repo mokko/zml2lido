@@ -155,13 +155,17 @@ class LidoTool(Jobs):
             return self.urlLidoSingle(Input=Input)
 
     def urlLidoSingle(self, *, Input):
+        """
+        Using Python rewrite (fix) generic Zetcom xml, mostly workng on
+        links (urls)
+        """
         lc = LinkChecker(Input=Input)
         outFn = lc.out_fn
         if not Path(outFn).exists() or self.force == True:
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             lc.guess()  # rewrite filenames with http-links on SMB-Digital
             lc.rmInternalLinks()  # remove resourceSets with internal links
-            #lc.fixRelatedWorks()
+            lc.fixRelatedWorks()
             lc.saveTree()
         else:
             print(f"   rewrite exists already: {outFn}, no overwrite")

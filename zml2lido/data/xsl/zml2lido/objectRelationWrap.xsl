@@ -174,8 +174,12 @@
 	<!-- composite -->
 	<xsl:template match="z:composite[@name='ObjObjectCre']/z:compositeItem/z:moduleReference/z:moduleReferenceItem">
 		<xsl:variable name="moduleItemId" select="@moduleItemId"/>
+		<!-- We're assuming here that all relations are Objects -->
+		<xsl:variable name="targetModule" select="../@targetModule"/>
 		<xsl:variable name="url">
-			<xsl:text>https://recherche.smb.museum/detail/</xsl:text>
+			<xsl:text>https://id.smb.museum/</xsl:text>
+			<xsl:value-of select="lower-case($targetModule)"/> 
+			<xsl:text>/</xsl:text>
 			<xsl:value-of select="$moduleItemId"/> 
 		</xsl:variable>
 		<lido:relatedWorkSet>
@@ -190,13 +194,13 @@
 					<lido:objectID lido:type="local">
 						<xsl:attribute name="lido:source">
 							<xsl:choose>
-								<xsl:when test="..[@targetModule= 'Object']">
+								<xsl:when test="$targetModule eq 'Object'">
 									<xsl:text>OBJ.ID</xsl:text>
 								</xsl:when>
-								<xsl:when test="..[@targetModule= 'Person']">
+								<xsl:when test="$targetModule eq 'Person'">
 									<xsl:text>KUE.ID</xsl:text>
 								</xsl:when>
-								<xsl:when test="..[@targetModule= 'Multimedia']">
+								<xsl:when test="$targetModule eq 'Multimedia'">
 									<xsl:text>MM.ID</xsl:text>
 								</xsl:when>
 								<xsl:otherwise>
