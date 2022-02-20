@@ -13,6 +13,7 @@ import json
 import urllib.request
 from lxml import etree
 from pathlib import Path
+import requests
 from urllib import request as urlrequest
 from typing import Optional, Union
 
@@ -149,3 +150,38 @@ class LinkChecker:
             self.out_fn, pretty_print=True, encoding="UTF-8", xml_declaration=True
         )
         return self.out_fn
+
+    def fixRelatedWorks(self):
+        """
+        DOESNT WORK
+        Frank doesn't dead links in relatedWorks. So we loop thru them, check 
+        if the link works and if not we remove that element
+        """
+        self.log("   relatedWorks: Removing relatedWorks that are not online")
+        relatedWorksL = self.tree.xpath(
+            """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
+            l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectWebResource""",
+            namespaces=NSMAP,
+        )
+        for link in relatedWorksL:
+            if link.text is not None:  
+                print (f"relatedWorks{link.text}")
+                if not link.text.startswith("http"):
+                    raise ValueError("relatedWorks dont have external URL")
+
+                r = requests.get(link.text)
+                print (r.status_code)
+                print (r.headers)
+                if r.status_code != 200:
+                    print (f"relatedWorks URL does NOT exist {link.text}")
+                    self.log(f"INFO relatedWork URL does NOT exist {link.text}")
+                    relatedWorksSet = link.getparent().getparent().getparent()
+                    print ("rWS{relatedWorksSet}")
+                    relatedWorksSet.getparent().remove(relatedWorksSet)
+                else: 
+                    print (f"{link.text} exists")
+
+
+
+
+

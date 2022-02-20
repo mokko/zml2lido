@@ -35,20 +35,20 @@
 				<xsl:value-of select="z:systemField[@name='__id']"/>
 			</xsl:for-each>
 		</xsl:message-->
-			<xsl:if test="$verknüpfteMM">
-				<lido:resourceWrap>
-					<xsl:apply-templates mode="resourceWrap" select="$verknüpfteMM">
-						<xsl:with-param name="objId" select="$objId"/>
-						<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
-					</xsl:apply-templates>
-				</lido:resourceWrap>
-			</xsl:if>
+		<xsl:if test="$verknüpfteMM">
+			<lido:resourceWrap>
+				<xsl:apply-templates mode="resourceWrap" select="$verknüpfteMM">
+					<xsl:with-param name="objId" select="$objId"/>
+					<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
+				</xsl:apply-templates>
+			</lido:resourceWrap>
+		</xsl:if>
     </xsl:template>
 
     <xsl:template mode="resourceWrap" match="/z:application/z:modules/z:module[@name = 'Multimedia']/z:moduleItem">
 		<xsl:param name="objId"/>
 		<xsl:param name="verwaltendeInstitution"/>
-
+		
 		<!-- 
 			<xsl:variable name="bereich" select="z:systemField[@name = '__orgUnit']"/>
 			<xsl:variable name="verwaltendeInstitution" 
@@ -92,6 +92,7 @@
 				<xsl:value-of select="$verwaltendeInstitution"/>
 			</xsl:message>
 		</xsl:if>
+		<xsl:variable name="object" select="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem[@id eq $objId]"/>
         <lido:resourceSet>
 			<!--
 				xsl:nummer nummeriert alle verknüpfteMM durch; das geht so nicht
@@ -138,25 +139,6 @@
             <lido:resourceRepresentation>
                 <xsl:attribute name="lido:type" xml:lang="en">
 					<xsl:text>Provided image</xsl:text>
-					<!--xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex=".(\w*)$">
-						<xsl:matching-substring>
-							xsl:message>
-								<xsl:text>EXT</xsl:text>
-								<xsl:value-of select="regex-group(1)"/>
-							</xsl:message
-							<xsl:choose>
-								<xsl:when test="lower-case(regex-group(1)) eq 'jpg'">
-									<xsl:text>Preview image</xsl:text>
-								</xsl:when>
-								<xsl:when test="lower-case(regex-group(1)) eq 'tif' or lower-case(regex-group(1)) eq 'tiff' ">
-									<xsl:text>Provided image</xsl:text>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:text>Preview image</xsl:text>
-								</xsl:otherwise>
-							</xsl:choose>
-						</xsl:matching-substring>
-					</xsl:analyze-string-->
                 </xsl:attribute>
 				<xsl:variable name="id" select="normalize-space(z:systemField[@name='__id']/z:value)" />
                 <lido:linkResource> 
@@ -211,7 +193,11 @@
 				Frank will das Feld nicht in LIDO haben, weil da teilweise Müll drin steht (?).
 				14.2.2022 jetzt will er es wieder haben.
 			-->
-			<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
+			<xsl:variable name="excluded" select="'182397'"/>
+			<xsl:if test="not($object/z:moduleReference[@name='ObjObjectGroupsRef']/z:moduleReferenceItem[@moduleItemId = $excluded])">
+				<xsl:message terminate="no">including Inhalt/Ansicht</xsl:message>
+				<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
+			</xsl:if>
 			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
 			<!--Urheber-->
 			<xsl:apply-templates mode="Urheber" select="z:moduleReference[@name='MulPhotographerPerRef']"/>
@@ -224,7 +210,7 @@
 				</lido:rightsType>                
 				<lido:rightsHolder>
 					<xsl:call-template name="legalBody">
-						<xsl:with-param name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
+						<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
 					</xsl:call-template>
                 </lido:rightsHolder>
 
@@ -280,7 +266,9 @@
 	<!--
 		inhaltAnsicht
 		22.12.2021 Frank meint, dass die Kurator*innen nicht erwarten, dass inhaltAnsicht ausgegeben wird.
-		14.2.2022 möchte Frank, resourceDescription doch wieder haben
+		14.2.2022 möchte Frank, resourceDescription doch wieder haben, aber nicht für bestimmte Exporte
+
+		Problem in spec: resourceDescription does not allow xml:lang
 	-->
     <xsl:template match="z:dataField[@name='MulSubjectTxt']/z:value">
 		<lido:resourceDescription>

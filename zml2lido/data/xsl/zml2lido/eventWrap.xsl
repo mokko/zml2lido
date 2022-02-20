@@ -100,7 +100,8 @@
 
 					<!-- 
 						LIDO 1.0 appears to be missing a mechanism to provide other dates than vitalDates 
-						for an actor. Please add that in a new version of the spec.
+						for an actor. Also missing is a displayDate to allow inexact textual info
+						Please add that in a new version of the spec.
 						
 						It's possible to have multiple sets of Lebensdaten in RIA, e.g. kueId 387655
 						Let's just take the first for now.
@@ -113,22 +114,26 @@
 						/z:repeatableGroupItem[
 							z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Lebensdaten'
 						][1]"/>
-					<lido:vitalDatesActor>
-						<xsl:if test="$lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value">
-							<lido:earliestDate>
-								<xsl:value-of select="func:reformatDate($lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value)"/>
-							</lido:earliestDate>
-						</xsl:if>
-						<xsl:if test="$lebensdatenN/z:dataField[@name = 'DateToTxt']/z:value">
-							<lido:latestDate>
-								<xsl:value-of select="func:reformatDate($lebensdatenN/z:dataField[@name = 'DateToTxt']/z:value)"/>
-							</lido:latestDate>
-						</xsl:if>
-						<!-- used to be 
-							z:virtualField[@name = 'PreviewVrt']/z:value
-							<xsl:value-of select="$lebensdatenN/z:dataField[@name = 'DatingNewTxt']/z:value"/>
-						-->
-					</lido:vitalDatesActor>
+					<xsl:variable name="dateFromTxt" select="$lebensdatenN/z:dataField[@name = 'DateFromTxt']/z:value"/>
+					<xsl:variable name="dateToTxt" select="$lebensdatenN/z:dataField[@name = 'DateToTxt']/z:value"/>
+					<xsl:if test="$dateFromTxt ne '' or $dateToTxt ne ''">
+						<lido:vitalDatesActor>
+							<xsl:if test="$dateFromTxt ne ''">
+								<lido:earliestDate>
+									<xsl:value-of select="func:reformatDate($dateFromTxt)"/>
+								</lido:earliestDate>
+							</xsl:if>
+							<xsl:if test="$dateToTxt ne ''">
+								<lido:latestDate>
+									<xsl:value-of select="func:reformatDate($dateToTxt)"/>
+								</lido:latestDate>
+							</xsl:if>
+							<!-- used to be 
+								z:virtualField[@name = 'PreviewVrt']/z:value
+								<xsl:value-of select="$lebensdatenN/z:dataField[@name = 'DatingNewTxt']/z:value"/>
+							-->
+						</lido:vitalDatesActor>
+					</xsl:if>
 					<lido:genderActor xml:lang="en">
 						<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerGenderVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 					</lido:genderActor>

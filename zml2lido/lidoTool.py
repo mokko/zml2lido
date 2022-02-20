@@ -161,6 +161,7 @@ class LidoTool(Jobs):
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             lc.guess()  # rewrite filenames with http-links on SMB-Digital
             lc.rmInternalLinks()  # remove resourceSets with internal links
+            #lc.fixRelatedWorks()
             lc.saveTree()
         else:
             print(f"   rewrite exists already: {outFn}, no overwrite")

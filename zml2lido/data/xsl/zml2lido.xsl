@@ -80,7 +80,10 @@
 				<xsl:call-template name="objectClassificationWrap" />
 				<xsl:call-template name="objectIdentificationWrap" />
 				<xsl:call-template name="eventWrap" />
-				<xsl:call-template name="objectRelationWrap" />
+				<!-- 
+					20220219 I cant guarantee that the relatedObjects are online, so we're turning them off
+					<xsl:call-template name="objectRelationWrap" />
+				-->
 			</lido:descriptiveMetadata>
 
 			<lido:administrativeMetadata xml:lang="de">
