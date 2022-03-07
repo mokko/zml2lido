@@ -241,23 +241,23 @@
 		</concept>
 		<concept>
 			<source lang="de">Ärmel</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300210530</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10052</target>
 		</concept>
 		<concept>
 			<source lang="de">Bade- und Strandkleidung</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300221470</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10123</target>
 		</concept>
 		<concept>
 			<source lang="de">Badeanzug</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300129420</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10624</target>
 		</concept>
 		<concept>
 			<source lang="de">Band</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300014668</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10510</target>
 		</concept>
 		<concept>
 			<source lang="de">Blau</source>
@@ -271,8 +271,8 @@
 		</concept>
 		<concept>
 			<source lang="de">Büstenhalter</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300210538</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10081</target>
 		</concept>
 		<concept>
 			<source lang="de">Braun</source>
@@ -326,8 +326,6 @@
 		</concept>
 		<concept>
 			<source lang="de">Frühling-Sommer</source>
-			<!-- only sommer -->
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300133099</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10466</target>
 		</concept>
 		<concept>
@@ -368,11 +366,6 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10266</target>
 		</concept>
 		<concept>
-			<source lang="de">halbhohe  Stiefel</source>
-			<target name="aatUri">http://vocab.getty.edu/aat/300411682</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10266</target>
-		</concept>
-		<concept>
 			<source lang="de">Halskette</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300046001</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10162</target>
@@ -389,8 +382,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Herbst-Winter</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10465</target>
 		</concept>
 		<concept>
 			<source lang="de">Herrenbekleidung</source>
@@ -464,8 +456,8 @@
 		</concept>
 		<concept>
 			<source lang="de">Pelz</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300011811</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10539</target>
 		</concept>
 		<concept>
 			<source lang="de">Pink</source>
@@ -474,8 +466,8 @@
 		</concept>
 		<concept>
 			<source lang="de">Pullover</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209897</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10026</target>
 		</concept>
 		<concept>
 			<source lang="de">Rock</source>
@@ -489,13 +481,13 @@
 		</concept>
 		<concept>
 			<source lang="de">Schärpe</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300216864</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10514</target>
 		</concept>
 		<concept>
 			<source lang="de">Schmuck</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300209286</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10152</target>
 		</concept>
 		<concept>
 			<source lang="de">Schürzen (Schutzkleidung)</source>
@@ -509,8 +501,8 @@
 		</concept>
 		<concept>
 			<source lang="de">Skikleidung</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300210460</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10129</target>
 		</concept>
 		<concept>
 			<source lang="de">Schleppe</source>
@@ -524,13 +516,13 @@
 		</concept>
 		<concept>
 			<source lang="de">Sport- und Freizeitkleidung</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300221269</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10121</target>
 		</concept>
 		<concept>
 			<source lang="de">Stiefel</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/</target>
-			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/</target>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300046057</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10261</target>
 		</concept>
 		<concept>
 			<source lang="de">Taschentuch</source>
@@ -587,6 +579,11 @@
 		</concept>
 		<concept>
 			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-019118</target>
+			<target lang="de" name="homepage">https://www.smb.museum/em</target>
+		</concept>
+		<concept>
+			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin, Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-019118</target>
 			<target lang="de" name="homepage">https://www.smb.museum/em</target>
 		</concept>

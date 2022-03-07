@@ -177,7 +177,7 @@ class LinkChecker:
             else:
                 raise ValueError("ERROR: Unknown type")
             if ID.text is not None:
-                b = sar.checkApproval(ID=ID.text, mtype="Object")
+                b = sar.checkApproval(ID=ID.text, mtype=mtype)
                 print(f"relatedWorks{ID.text} {b}")
                 if not (b):
                     relWorkSet = ID.getparent().getparent().getparent()
