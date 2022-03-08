@@ -70,7 +70,6 @@
 				or not (z:vocabularyReference[@name = 'TypeVoc'])
 		]"/>
 
-
         <xsl:if test="$herstellendeRollenN 
 			or $herstellendeKollektiveN 
 			or $herstellendeOrteN 
@@ -215,7 +214,6 @@
 		</lido:eventActor>
 	</xsl:template>
 		
-	<!-- Ausgabe -->
 	<xsl:template mode="ausgabe" match="						
 		z:repeatableGroupItem[
 			z:vocabularyReference[

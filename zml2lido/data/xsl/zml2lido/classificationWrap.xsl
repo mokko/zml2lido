@@ -31,10 +31,19 @@
 			<xsl:call-template name="sammlung2"/>
 			<xsl:call-template name="dreiWege"/>
 			<xsl:call-template name="genericAAT"/>
+			<xsl:call-template name="systematikArt"/>
         </lido:classificationWrap>
 	</xsl:template>
 
-	<!-- RIA:Sachbegriff-->
+	<xsl:template name="systematikArt">
+		<lido:classification>
+			<xsl:comment>SystematikArt</xsl:comment>
+			<lido:term xml:lang="de">
+				<xsl:value-of select="z:dataField[@name = 'ObjSystematicClb']/z:value"/>
+			</lido:term>
+		</lido:classification>
+	</xsl:template>
+
 	<xsl:template name="sachbegriff">
 		<xsl:choose>
 			<!-- specific to EM; EM-Sachbegriff Thesaurus -->
