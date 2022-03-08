@@ -155,19 +155,66 @@
 	eventPlace
 	-->
 	<xsl:template mode="eventPlace" match="z:repeatableGroup[@name = 'ObjGeograficGrp']">
+		<xsl:variable name="placesN" select="z:repeatableGroupItem[
+					z:vocabularyReference[
+						@instanceName='ObjGeopolVgr']/z:vocabularyReferenceItem[
+						@name != 'Ethnie' and 
+						@name != 'Kultur' and 
+						@name != 'Sprachgruppe'
+						]]/
+					z:vocabularyReference[@instanceName='GenPlaceVgr']"/>
+		
 		<lido:eventPlace>
 			<lido:displayPlace xml:lang="de">
 				<xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
-				<xsl:for-each select="z:repeatableGroupItem/z:vocabularyReference[@instanceName='GenPlaceVgr']">
-					<xsl:sort select="dataField[@name='SortLnu']" data-type="number" order="ascending"/>
+				<xsl:for-each select="$placesN">
+					<xsl:sort select="../z:dataField[@name='SortLnu']" data-type="number" order="ascending"/>
 					<xsl:value-of select="replace(z:vocabularyReferenceItem/z:formattedValue, '^;(\w*)','$1')"/>
 					<xsl:if test="position() != last()">
 						<xsl:text>, </xsl:text>
 					</xsl:if>
 				</xsl:for-each>
 			</lido:displayPlace>
+			<lido:place>
+				<!-- todo: exclude Ethnien and other collectives-->
+				<xsl:for-each select="$placesN">
+					<xsl:sort select="../z:dataField[@name='SortLnu']" data-type="number" order="descending"/>
+					<xsl:if test="position() = 1">
+						<xsl:call-template name="PLACE"/>
+					</xsl:if>
+					<xsl:if test="position() = 2">
+						<lido:partOfPlace>
+							<xsl:call-template name="PLACE"/>
+						</lido:partOfPlace>
+					</xsl:if>
+				</xsl:for-each>
+			</lido:place>
 		</lido:eventPlace>					
 	</xsl:template>
+
+	<xsl:template name="PLACE">
+		<lido:placeID lido:type="internal">
+			<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
+		</lido:placeID>
+		<lido:namePlaceSet>
+			<lido:appellationValue>
+				<xsl:value-of select="replace(z:vocabularyReferenceItem/z:formattedValue, '^;(\w*)','$1')"/>
+			</lido:appellationValue>
+		</lido:namePlaceSet>
+	</xsl:template>
+
+	<xsl:template name="placeClassification">
+		<lido:placeClassification lido:type="internal">
+			<lido:term>
+				<xsl:attribute name="xml:lang" select="../z:vocabularyReference[
+					@instanceName='ObjGeopolVgr']/z:vocabularyReferenceItem/z:formattedValue/@language"/>
+				<xsl:value-of select="../z:vocabularyReference[
+					@instanceName='ObjGeopolVgr']/z:vocabularyReferenceItem"/>
+			</lido:term>
+		</lido:placeClassification>
+	</xsl:template>
+
+
 
 	<!-- not used at the moment -->
 	<xsl:template mode="geoPol" match="z:vocabularyReference[

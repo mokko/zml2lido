@@ -53,9 +53,27 @@
     </xsl:template>
 
 	<xsl:template match="z:repeatableGroup[@name='ObjObjectNumberGrp']/z:repeatableGroupItem">
-		<!-- 20220211 war InventarNrSTxt; komischer Fehler bei Marie Schulz Konvolut-Nr statt IdentNr.-->
+		<!-- 
+			20220211 war InventarNrSTxt; komischer Fehler bei Marie Schulz 
+					Konvolut-Nr statt IdentNr; dann mit NumberVrt ersetzt. 
+			20220307 Jetzt beide Felder plus Fehlermeldung, wenn identNr immer noch leer.
+		-->
+		<xsl:variable name="identNr">
+			<xsl:choose>
+				<xsl:when test="z:dataField[@name='NumberVrt']/z:value ne ''">
+					<xsl:value-of select="z:dataField[@name='NumberVrt']/z:value"/>
+				</xsl:when>
+				<xsl:when test="z:dataField[@name='InventarNrSTxt']/z:value ne ''">
+					<xsl:value-of select="z:dataField[@name='InventarNrSTxt']/z:value"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:message terminate="yes">WARN: No identNr</xsl:message>
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		
 		<lido:workID lido:type="Inventory number" lido:label="Ident.Nr.">
-			<xsl:value-of select="z:dataField[@name='NumberVrt']/z:value"/>
+			<xsl:value-of select="$identNr"/>
 		</lido:workID>
 	</xsl:template>
 
