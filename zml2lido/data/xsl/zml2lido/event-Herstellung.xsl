@@ -70,18 +70,13 @@
 				or not (z:vocabularyReference[@name = 'TypeVoc'])
 		]"/>
 
-		<xsl:variable name="herstellendeMatTechN" select="
-			z:repeatableGroup[
-				@name = 'ObjMaterialTechniqueGrp'
-			]/z:repeatableGroupItem[
-				z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe'
-			]"/>
 
         <xsl:if test="$herstellendeRollenN 
 			or $herstellendeKollektiveN 
 			or $herstellendeOrteN 
 			or $herstellendeDatenTypenN
-			or $herstellendeMatTechN">
+			or z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']
+		">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">Herstellung</lido:displayEvent>
 				<lido:event>
@@ -125,28 +120,44 @@
 					<!--  
 						at the moment Herstellung is the only eventType with materialTech 
 					-->
-					<xsl:if test="
-						z:repeatableGroup[
-							@name = 'ObjMaterialTechniqueGrp'
-						]
-					">
+					<xsl:variable name="ausgabeQualis" select="'Ausgabe', 'Ausgabe (engl.)'"/>
+					<xsl:for-each select="z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']">
 						<lido:eventMaterialsTech>
-							<!-- Only Ausgabe -->
-							<xsl:apply-templates select="$herstellendeMatTechN"/>
-							<lido:materialsTech>
-								<xsl:apply-templates select="			
-									z:repeatableGroup[
-										@name = 'ObjMaterialTechniqueGrp'
-									]/z:repeatableGroupItem[
-										z:vocabularyReference/z:vocabularyReferenceItem/@name != 'Ausgabe'
+							<xsl:apply-templates mode="ausgabe" select="
+								z:repeatableGroupItem[
+									z:vocabularyReference[
+										@name='TypeVoc'
+									]/z:vocabularyReferenceItem[
+										@name = $ausgabeQualis
+									]
 								]"/>
-							</lido:materialsTech>
+
+							<xsl:variable name="notAusgabeN" select="
+								z:repeatableGroupItem[
+									z:vocabularyReference[
+										@name='TypeVoc'
+									]/z:vocabularyReferenceItem[
+										not (@name = $ausgabeQualis)
+									]
+								]
+							"/>
+							
+							<xsl:if test="$notAusgabeN">
+								<lido:materialsTech>
+									<xsl:for-each select="$notAusgabeN">
+										<xsl:apply-templates mode="nichtAusgabe" select="
+											z:vocabularyReference[@name='TypeVoc']
+										"/>
+									</xsl:for-each>
+								</lido:materialsTech>
+							</xsl:if>
 						</lido:eventMaterialsTech>
-					</xsl:if>
+					</xsl:for-each>
 				</lido:event>
 			</lido:eventSet>
 		</xsl:if>
 	</xsl:template>
+
 				
 	<!-- 
 		m3: Kultur auf Actor gemappt entsprechend Vorschlag FvH; 
@@ -204,37 +215,80 @@
 		</lido:eventActor>
 	</xsl:template>
 		
-	<!-- herstellendeMatTechN Ausgabe-->
-	<xsl:template match="
-		z:repeatableGroup[
-			@name = 'ObjMaterialTechniqueGrp' 
-		]/z:repeatableGroupItem[
-			z:vocabularyReference/z:vocabularyReferenceItem/@name = 'Ausgabe']">
-		<lido:displayMaterialsTech xml:lang="de"> 
+	<!-- Ausgabe -->
+	<xsl:template mode="ausgabe" match="						
+		z:repeatableGroupItem[
+			z:vocabularyReference[
+				@name='TypeVoc'
+			]/z:vocabularyReferenceItem
+		]">
+		<lido:displayMaterialsTech>
+			<xsl:attribute name="xml:lang">
+				<xsl:choose>
+					<xsl:when test="z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem[@name = 'Ausgabe (engl.)']">
+						<xsl:text>en</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:text>de</xsl:text>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:attribute>
 			<xsl:value-of select="z:dataField[@name = 'ExportClb']/z:value"/>
 		</lido:displayMaterialsTech>
-	</xsl:template>	
+	</xsl:template>
 
-	<xsl:template match="							
-		z:repeatableGroup[
-			@name = 'ObjMaterialTechniqueGrp'
-		]/z:repeatableGroupItem[
-			z:vocabularyReference/z:vocabularyReferenceItem/@name != 'Ausgabe'
-		]">
-		
-		<xsl:variable name="matTech" select="
-			replace(
-				z:vocabularyReference[
+	<xsl:template mode="nichtAusgabe" match="z:vocabularyReference[@name='TypeVoc']">
+		<xsl:variable name="ignore" select="'Farbe'"/>
+		<xsl:if test="z:vocabularyReferenceItem/@name != $ignore">
+			<xsl:variable name="matVoc" select="
+				../z:vocabularyReference[
 					@name = 'MaterialVoc']/
-				z:vocabularyReferenceItem/z:formattedValue, 
-				'^;+(\w*)',
-				'$1'
-			)"/>
-		
-		<lido:termMaterialsTech>
-			<lido:term xml:lang="de">
-				<xsl:value-of select="$matTech"/>
-			</lido:term>
-		</lido:termMaterialsTech>
+				z:vocabularyReferenceItem
+			"/>
+			<xsl:variable name="matTech" select="
+				replace(
+					$matVoc/z:formattedValue, 
+					'^;+(\w*)',
+					'$1'
+				)"/>
+			
+			<lido:termMaterialsTech>
+				<xsl:attribute name="lido:type">
+					<xsl:choose>
+						<xsl:when test="z:vocabularyReferenceItem[@name = 'Material']">
+							<xsl:text>http://terminology.lido-schema.org/lido00132</xsl:text>
+						</xsl:when>
+						<xsl:when test="z:vocabularyReferenceItem[@name = 'Material (engl.)']">
+							<xsl:text>http://terminology.lido-schema.org/lido00132</xsl:text>
+						</xsl:when>
+						<xsl:when test="z:vocabularyReferenceItem[@name = 'Technik']">
+							<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:message terminate="yes">
+								<xsl:text>ERROR: Unknown material type! </xsl:text>
+								<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
+							</xsl:message>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:attribute>
+				<lido:conceptID lido:type="internal">
+					<xsl:value-of select="$matVoc/@id"/>
+				</lido:conceptID>
+				<lido:term xml:lang="de">
+					<xsl:attribute name="xml:lang">
+						<xsl:choose>
+							<xsl:when test="z:vocabularyReferenceItem[@name = 'Material (engl.)']">
+								<xsl:text>en</xsl:text>
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text>de</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
+					</xsl:attribute>
+					<xsl:value-of select="$matTech"/>
+				</lido:term>
+			</lido:termMaterialsTech>
+		</xsl:if>
 	</xsl:template>
 </xsl:stylesheet>
