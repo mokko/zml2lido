@@ -283,7 +283,7 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
-					<xsl:value-of select="$matTech"/>
+					<xsl:value-of select="normalize-space($matTech)"/>
 				</lido:term>
 			</lido:termMaterialsTech>
 		</xsl:if>

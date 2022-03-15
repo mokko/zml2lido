@@ -278,14 +278,14 @@
 		-->
 		<xsl:variable name="displayDate">
 			<xsl:choose>
-				<xsl:when test="z:dataField[@name = 'PreviewTxt']/z:value ne ''">
-					<xsl:value-of select="z:dataField[@name = 'PreviewTxt']/z:value"/>
+				<xsl:when test="normalize-space(z:dataField[@name = 'PreviewTxt']/z:value) ne ''">
+					<xsl:value-of select="normalize-space(z:dataField[@name = 'PreviewTxt']/z:value)"/>
 				</xsl:when>
-				<xsl:when test="z:virtualField[@name = 'PreviewVrt']/z:value ne ''">
-					<xsl:value-of select="z:virtualField[@name = 'PreviewVrt']/z:value"/>
+				<xsl:when test="normalize-space(z:virtualField[@name = 'PreviewVrt']/z:value) ne ''">
+					<xsl:value-of select="normalize-space(z:virtualField[@name = 'PreviewVrt']/z:value)"/>
 				</xsl:when>
-				<xsl:when test="z:dataField[@name = 'NotesClb']/z:value ne ''">
-					<xsl:value-of select="z:dataField[@name = 'NotesClb']/z:value"/>
+				<xsl:when test="normalize-space(z:dataField[@name = 'NotesClb']/z:value) ne ''">
+					<xsl:value-of select="normalize-space(z:dataField[@name = 'NotesClb']/z:value)"/>
 				</xsl:when>
 				
 				<xsl:otherwise>
@@ -307,14 +307,15 @@
 				<xsl:value-of select="$displayDate"/>
 			</lido:displayDate>
 		</xsl:if>
-		<xsl:if test="z:dataField[@name = 'DateFromTxt'] ne '' or z:dataField[@name = 'DateToTxt'] ne ''">
+		<xsl:if test="normalize-space(z:dataField[@name = 'DateFromTxt']) ne '' 
+			or normalize-space(z:dataField[@name = 'DateToTxt']) ne ''">
 			<lido:date>
-				<xsl:if test="z:dataField[@name = 'DateFromTxt'] ne ''">
+				<xsl:if test="normalize-space(z:dataField[@name = 'DateFromTxt']) ne ''">
 					<lido:earliestDate>
 						<xsl:value-of select="func:reformatDate(z:dataField[@name = 'DateFromTxt'])"/>
 					</lido:earliestDate>
 				</xsl:if>
-				<xsl:if test="z:dataField[@name = 'DateToTxt'] ne ''">
+				<xsl:if test="normalize-space(z:dataField[@name = 'DateToTxt']) ne ''">
 					<lido:latestDate>
 						<xsl:value-of select="func:reformatDate(z:dataField[@name = 'DateToTxt'])"/>
 					</lido:latestDate>

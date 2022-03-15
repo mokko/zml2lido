@@ -26,7 +26,7 @@
 				<lido:objectWorkTypeWrap>
 					<lido:objectWorkType lido:type="ObjTechnicalTermClb">
 						<lido:term>
-							<xsl:value-of select="z:dataField[@name = 'ObjTechnicalTermClb']/z:value"/>
+							<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjTechnicalTermClb']/z:value)"/>
 						</lido:term>
 					</lido:objectWorkType>
 				</lido:objectWorkTypeWrap>
