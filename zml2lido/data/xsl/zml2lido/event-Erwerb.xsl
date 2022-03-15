@@ -70,7 +70,7 @@
 	]">
 		<lido:eventDescriptionSet> 
 			<lido:descriptiveNoteValue xml:lang="de" lido:encodinganalog="ErwerbNotizAusgabe">
-				<xsl:value-of select="z:dataField[@name = 'MemoClb']/z:value"/>
+				<xsl:value-of select="normalize-space(z:dataField[@name = 'MemoClb']/z:value)"/>
 			</lido:descriptiveNoteValue>
 		</lido:eventDescriptionSet>
 	</xsl:template>
@@ -105,14 +105,14 @@
 	<xsl:template match="z:repeatableGroup[@name = 'ObjAcquisitionDateGrp']/z:repeatableGroupItem">
  		<lido:eventDate>
             <lido:displayDate>
-                <xsl:value-of select="z:dataField[@name='DateFromTxt']"/>
+                <xsl:value-of select="normalize-space(z:dataField[@name='DateFromTxt'])"/>
             </lido:displayDate>
             <lido:date>
                 <lido:earliestDate>
-                    <xsl:value-of select="z:dataField[@name='DateFromTxt']"/>
+                    <xsl:value-of select="normalize-space(z:dataField[@name='DateFromTxt'])"/>
                 </lido:earliestDate>
                 <lido:latestDate>
-                    <xsl:value-of select="z:dataField[@name='DateFromTxt']"/>
+                    <xsl:value-of select="normalize-space(z:dataField[@name='DateFromTxt'])"/>
                 </lido:latestDate>
             </lido:date>
         </lido:eventDate>
@@ -123,7 +123,7 @@
 	<xsl:template match="z:repeatableGroup[@name = 'ObjAcquisitionMethodGrp']/z:repeatableGroupItem">
 		<lido:eventMethod>
 		     <lido:term xml:lang="de">
-		     	<xsl:value-of select="z:vocabularyReference[@name ='MethodVoc']/z:vocabularyReferenceItem/@name"/>
+		     	<xsl:value-of select="normalize-space(z:vocabularyReference[@name ='MethodVoc']/z:vocabularyReferenceItem/@name)"/>
 		     </lido:term>
 		     <!-- xsl:if test="$translation"> TODO
 		         <lido:term xml:lang="en">

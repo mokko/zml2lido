@@ -39,7 +39,7 @@
 		<lido:classification>
 			<xsl:comment>SystematikArt</xsl:comment>
 			<lido:term xml:lang="de">
-				<xsl:value-of select="z:dataField[@name = 'ObjSystematicClb']/z:value"/>
+				<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value)"/>
 			</lido:term>
 		</lido:classification>
 	</xsl:template>
@@ -60,7 +60,7 @@
 	<xsl:template mode="classification" match="z:dataField[@name = 'ObjTechnicalTermClb']/z:value">
 		<lido:classification lido:type="RIA:Sachbegriff">
 			<lido:term xml:lang="de">
-				<xsl:value-of select="."/>
+				<xsl:value-of select="normalize-space(.)"/>
 			</lido:term>
 		</lido:classification>
 	</xsl:template>

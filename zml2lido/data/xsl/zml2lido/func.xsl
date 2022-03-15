@@ -99,7 +99,13 @@
 		<xsl:param name="target"/>
 		<xsl:variable name="dict" select="document('file:zml2lido/data/vocmap.xml')"/>
 		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
-		<xsl:variable name="return" select="$dict/vocmap/voc[@name eq $src-voc]/concept[source = $src-term]/target[@name eq $target]/text()"/>
+		<xsl:variable name="return" select="$dict/vocmap/voc[
+				@name eq normalize-space($src-voc)
+			]/concept[
+				source = normalize-space($src-term)
+			]/target[
+				@name eq normalize-space($target)
+			]/text()"/>
 		<!-- die if replacement returns empty, except if source is already empty -->
 		<xsl:if test="normalize-space($return) = '' and normalize-space($src-term) != ''">
 			<xsl:message terminate="yes">
@@ -122,7 +128,14 @@
 		<xsl:param name="target"/>
 		<xsl:variable name="dict" select="document('file:zml2lido/data/vocmap.xml')"/>
 		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
-		<xsl:variable name="return" select="$dict/vocmap/voc[@name eq $src-voc]/concept[source = $src-term]/target[@name eq $target]/text()"/>
+		
+		<xsl:variable name="return" select="$dict/vocmap/voc[
+				@name eq normalize-space($src-voc)
+			]/concept[
+				source = normalize-space($src-term)
+			]/target[
+				@name eq normalize-space($target)
+			]/text()"/>
 		<xsl:if test="normalize-space($return) = '' and normalize-space($src-term) != ''">
 			<xsl:message terminate="no">
 				<xsl:text>WARNING: vocmap-replace-lax returns EMPTY ON </xsl:text>

@@ -8,11 +8,11 @@
 <vocmap>
 	<voc name="Bereich"> 
 		<!-- 
+			NOT USED AT THE MOMENT, BUT WORKS!
 			Bereich = __orgUnit
 			I am sure that I can have multiple targets, but I am not sure that I can have multiple sources
 			todo: check
 			
-			NOT USED AT THE MOMENT, BUT WORKS!
 		-->
 		<concept>
 			<source lang="de">AKu</source>
@@ -563,6 +563,11 @@
 
 	<voc name="verwaltendeInstitution">
 		<concept>
+			<source lang="de">Alte Nationalgalerie, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-815114</target>
+			<target lang="de" name="homepage">https://www.smb.museum/ang</target>
+		</concept>
+		<concept>
 			<source lang="de">Kupferstichkabinett, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-018511</target>
 			<target lang="de" name="homepage">https://www.smb.museum/museen-einrichtungen/kupferstichkabinett/home/</target>
@@ -578,10 +583,16 @@
 			<target lang="de" name="homepage">https://www.smb.museum/isl</target>
 		</concept>
 		<concept>
+			<source lang="de">Musikinstrumenten-Museum, Staatliches Institut für Musikforschung</source>
+			<target lang="de" name="ISIL">de-MUS-019410</target>
+			<target lang="de" name="homepage">https://www.simpk.de/museum</target>
+		</concept>
+		<concept>
 			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-019118</target>
 			<target lang="de" name="homepage">https://www.smb.museum/em</target>
 		</concept>
+		<!-- not sure why this exists; I think that is an error, "the Berlin, Berlin" error -->
 		<concept>
 			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin, Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-019118</target>

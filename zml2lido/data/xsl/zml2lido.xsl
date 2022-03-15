@@ -32,7 +32,7 @@
 			<xsl:text>D Object </xsl:text>
 			<xsl:value-of select="@id"/>
 		</xsl:message-->
-		<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
+		<xsl:variable name="verwaltendeInstitution" select="normalize-space(z:moduleReference[@name='ObjOwnerRef'])"/>
 		<lido:lido>
 			<lido:lidoRecID>
 				<xsl:attribute name="lido:source">ISIL (ISO 15511)/Obj.ID</xsl:attribute>
@@ -123,7 +123,7 @@
 			<xsl:value-of select="z:vocabularyReferenceItem/@id" />
 		</lido:conceptID>
 		<lido:term xml:lang="de">
-			<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue" />
+			<xsl:value-of select="normalize-space(z:vocabularyReferenceItem/z:formattedValue)" />
 		</lido:term>
 	</xsl:template>
 	
@@ -137,7 +137,7 @@
 		</lido:legalBodyID>
 		<lido:legalBodyName>
 			<lido:appellationValue>
-				<xsl:value-of select="$verwaltendeInstitution" />
+				<xsl:value-of select="normalize-space($verwaltendeInstitution)" />
 			</lido:appellationValue>
 		</lido:legalBodyName>
 		<lido:legalBodyWeblink>
@@ -146,8 +146,9 @@
 	</xsl:template>
 
 	<xsl:template name="sortorderAttribute">
-		<xsl:if test="z:dataField[@name='SortLnu'] ne ''">
-			<xsl:attribute name="lido:sortorder" select="z:dataField[@name='SortLnu']"/>
+		<xsl:variable name="sortno" select="normalize-space(z:dataField[@name='SortLnu']/z:value)"/>
+		<xsl:if test="$sortno ne ''">
+			<xsl:attribute name="lido:sortorder" select="$sortno"/>
 		</xsl:if>
 	</xsl:template>
 </xsl:stylesheet>

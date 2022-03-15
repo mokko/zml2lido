@@ -231,7 +231,7 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute>
-			<xsl:value-of select="z:dataField[@name = 'ExportClb']/z:value"/>
+			<xsl:value-of select="normalize-space(z:dataField[@name = 'ExportClb']/z:value)"/>
 		</lido:displayMaterialsTech>
 	</xsl:template>
 
@@ -250,22 +250,21 @@
 					'$1'
 				)"/>
 			
+			<xsl:variable name="type" select="z:vocabularyReferenceItem/@name"/>
+			
 			<lido:termMaterialsTech>
 				<xsl:attribute name="lido:type">
 					<xsl:choose>
-						<xsl:when test="z:vocabularyReferenceItem[@name = 'Material']">
+						<xsl:when test="$type eq 'Material' or $type eq 'Material (engl.)'">
 							<xsl:text>http://terminology.lido-schema.org/lido00132</xsl:text>
 						</xsl:when>
-						<xsl:when test="z:vocabularyReferenceItem[@name = 'Material (engl.)']">
-							<xsl:text>http://terminology.lido-schema.org/lido00132</xsl:text>
-						</xsl:when>
-						<xsl:when test="z:vocabularyReferenceItem[@name = 'Technik']">
+						<xsl:when test="$type eq 'Technik'">
 							<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
 						</xsl:when>
 						<xsl:otherwise>
 							<xsl:message terminate="yes">
 								<xsl:text>ERROR: Unknown material type! </xsl:text>
-								<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
+								<xsl:value-of select="normalize-space(z:vocabularyReferenceItem/@name)"/>
 							</xsl:message>
 						</xsl:otherwise>
 					</xsl:choose>
@@ -276,7 +275,7 @@
 				<lido:term xml:lang="de">
 					<xsl:attribute name="xml:lang">
 						<xsl:choose>
-							<xsl:when test="z:vocabularyReferenceItem[@name = 'Material (engl.)']">
+							<xsl:when test="$type eq 'Material (engl.)'">
 								<xsl:text>en</xsl:text>
 							</xsl:when>
 							<xsl:otherwise>

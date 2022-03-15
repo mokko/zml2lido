@@ -24,7 +24,7 @@
 							<xsl:text>Sachbegriff</xsl:text>
 						</xsl:attribute>
 						<lido:appellationValue>
-							<xsl:value-of select="z:dataField[@name = 'ObjTechnicalTermClb']"/>
+							<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjTechnicalTermClb'])"/>
 						</lido:appellationValue>
 					</lido:titleSet>
 				</xsl:otherwise>
@@ -50,7 +50,7 @@
 						</xsl:choose>
 					</xsl:attribute>
 					<lido:appellationValue>
-						<xsl:value-of select="z:dataField[@name = 'TitleTxt']/z:value"/>
+						<xsl:value-of select="normalize-space(z:dataField[@name = 'TitleTxt']/z:value)"/>
 					</lido:appellationValue>
 				</xsl:when>
 				<xsl:when test="z:dataField[@name = 'TitleTxt']/z:value[normalize-space(.)=''] 
@@ -63,7 +63,7 @@
 						<xsl:text>Sachbegriff</xsl:text>
 					</xsl:attribute>
 					<lido:appellationValue>
-						<xsl:value-of select="../../z:dataField[@name = 'ObjTechnicalTermClb']"/>
+						<xsl:value-of select="normalize-space(../../z:dataField[@name = 'ObjTechnicalTermClb'])"/>
 					</lido:appellationValue>
 				</xsl:when>
 				<xsl:otherwise>

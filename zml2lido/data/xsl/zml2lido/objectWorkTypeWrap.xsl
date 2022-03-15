@@ -62,7 +62,7 @@
 				<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
 			</lido:conceptID>
 			<lido:term xml:lang="de">
-				<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
+				<xsl:value-of select="normalize-space(z:vocabularyReferenceItem/z:formattedValue)"/>
 			</lido:term>
 		</lido:objectWorkType>
 	</xsl:template>

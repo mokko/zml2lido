@@ -73,7 +73,7 @@
 		</xsl:variable>
 		
 		<lido:workID lido:type="Inventory number" lido:label="Ident.Nr.">
-			<xsl:value-of select="$identNr"/>
+			<xsl:value-of select="normalize-space($identNr)"/>
 		</lido:workID>
 	</xsl:template>
 
