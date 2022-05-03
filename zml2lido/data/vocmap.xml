@@ -176,6 +176,11 @@
 			<target lang="en" name="europeana:type">audio</target>
 		</concept>
 		<concept>
+			<source lang="de">Repro</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept>
 			<source lang="de">Scan</source>
 			<target lang="en" name="lido">image</target>
 			<target lang="en" name="europeana:type">image</target>

@@ -261,6 +261,8 @@
 						<xsl:when test="$type eq 'Technik'">
 							<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
 						</xsl:when>
+						<!-- neu 3.5.22 Frühe Plakate Beschreibung der Technik und Präsentationsform -->
+						<xsl:when test="$type eq 'Beschreibung der Technik' or $type eq 'Präsentationsform'"/>
 						<xsl:otherwise>
 							<xsl:message terminate="yes">
 								<xsl:text>ERROR: Unknown material type! </xsl:text>

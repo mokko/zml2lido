@@ -55,22 +55,33 @@
 	<xsl:template match="z:repeatableGroup[@name='ObjObjectNumberGrp']/z:repeatableGroupItem">
 		<!-- 
 			20220211 war InventarNrSTxt; komischer Fehler bei Marie Schulz 
-					Konvolut-Nr statt IdentNr; dann mit NumberVrt ersetzt. 
+					Bei Marie Schulz steht die Konvolut-Nr statt IdentNr in InventarNrSTxt; 
+					dann mit NumberVrt ersetzt. 
 			20220307 Jetzt beide Felder plus Fehlermeldung, wenn identNr immer noch leer.
+			20220503 dataField NumberVrt does not exist anymore; now virtualField NumberVrt;
+					dataField InventarNrSTxt doesn't exist anymore either - at least in my testData.
 		-->
 		<xsl:variable name="identNr">
 			<xsl:choose>
-				<xsl:when test="z:dataField[@name='NumberVrt']/z:value ne ''">
-					<xsl:value-of select="z:dataField[@name='NumberVrt']/z:value"/>
+				<xsl:when test="z:virtualField[@name='NumberVrt']/z:value ne ''">
+					<xsl:value-of select="z:virtualField[@name='NumberVrt']/z:value"/>
 				</xsl:when>
 				<xsl:when test="z:dataField[@name='InventarNrSTxt']/z:value ne ''">
 					<xsl:value-of select="z:dataField[@name='InventarNrSTxt']/z:value"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:message terminate="yes">WARN: No identNr</xsl:message>
+					<xsl:message terminate="no">
+						<xsl:text>WARN: No identNr </xsl:text>
+						<xsl:value-of select="../../@id"/>
+					</xsl:message>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
+
+		<xsl:message>
+			<xsl:text>identNr </xsl:text>
+			<xsl:value-of select="normalize-space($identNr)"/>
+		</xsl:message>
 		
 		<lido:workID lido:type="Inventory number" lido:label="Ident.Nr.">
 			<xsl:value-of select="normalize-space($identNr)"/>
