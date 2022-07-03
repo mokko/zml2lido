@@ -66,8 +66,7 @@
 		</xsl:message-->
 		<lido:eventActor>
 			<lido:displayActorInRole>
-				<!-- vor event beschreibung aus RIA herausfiltern, z.B. "Herstellung: "-->
-				<xsl:value-of select="normalize-space(substring-after(z:formattedValue, ': '))"/>
+				<xsl:value-of select="normalize-space(z:formattedValue)"/>
 			</lido:displayActorInRole>
 			<lido:actorInRole>
 				<!-- http://xtree-public.digicult-verbund.de/vocnet/?uriVocItem=http://terminology.lido-schema.org/&startNode=lido00409&lang=en&d=n -->
@@ -165,6 +164,9 @@
 					z:vocabularyReference[@instanceName='GenPlaceVgr']"/>
 		
 		<lido:eventPlace>
+			<xsl:attribute name="lido:sortorder">
+				<xsl:value-of select="min($placesN/../z:dataField[@name='SortLnu'])"/>
+			</xsl:attribute>
 			<lido:displayPlace xml:lang="de">
 				<xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
 				<xsl:for-each select="$placesN">

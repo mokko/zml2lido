@@ -23,7 +23,7 @@
 						<xsl:attribute name="lido:type">
 							<xsl:text>Sachbegriff</xsl:text>
 						</xsl:attribute>
-						<lido:appellationValue>
+						<lido:appellationValue xml:lang="de">
 							<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjTechnicalTermClb'])"/>
 						</lido:appellationValue>
 					</lido:titleSet>
@@ -49,7 +49,7 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
-					<lido:appellationValue>
+					<lido:appellationValue xml:lang="de">
 						<xsl:value-of select="normalize-space(z:dataField[@name = 'TitleTxt']/z:value)"/>
 					</lido:appellationValue>
 				</xsl:when>
