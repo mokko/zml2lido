@@ -21,6 +21,7 @@
     first place.
 
     Changes
+    7/3/22   include a saxon command line frontend
     1/9/22   chunk mode (to process multiple chunks)
     1/6/22   transition to flit packaging
     10/28/21 move installation specific config to a separate file in sdata
@@ -193,7 +194,7 @@ class LidoTool(Jobs):
         else:
             print(f"{out} exist already, no overwrite")
         os.chdir(orig)
-        return self.dir.joinpath(out)
+        return xslDir.joinpath(out)
 
     def pix(self, *, Input, output):
         """
@@ -351,8 +352,8 @@ class LidoTool(Jobs):
 
     def saxon(self, *, Input, output, xsl):
         cmd = f"java -Xmx1450m -jar {saxLib} -s:{Input} -xsl:{xsl} -o:{output}"
-        print(f" cmd {cmd}")
+        print(cmd)
 
         subprocess.run(
-            cmd, check=True, stderr=subprocess.STDOUT
+            cmd, check=True  # , stderr=subprocess.STDOUT
         )  # overwrites output file without saying anything

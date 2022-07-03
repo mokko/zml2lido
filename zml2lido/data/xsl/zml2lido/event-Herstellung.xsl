@@ -258,11 +258,15 @@
 						<xsl:when test="$type eq 'Material' or $type eq 'Material (engl.)'">
 							<xsl:text>http://terminology.lido-schema.org/lido00132</xsl:text>
 						</xsl:when>
-						<xsl:when test="$type eq 'Technik'">
+						<xsl:when test="$type eq 'Technik' or $type eq 'Technik (engl.)'">
 							<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
 						</xsl:when>
 						<!-- neu 3.5.22 Frühe Plakate Beschreibung der Technik und Präsentationsform -->
 						<xsl:when test="$type eq 'Beschreibung der Technik' or $type eq 'Präsentationsform'"/>
+						<!-- neu 3.5. 22 Fotografisches Verfahren in Berlin Zeichnet Mode-->
+						<xsl:when test="$type eq 'Fotografisches Verfahren' or $type eq 'Präsentationsform'"/>
+
+
 						<xsl:otherwise>
 							<xsl:message terminate="yes">
 								<xsl:text>ERROR: Unknown material type! </xsl:text>

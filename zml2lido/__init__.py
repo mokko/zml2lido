@@ -1,6 +1,6 @@
 """lido.py - A quick and dirty toolbox for turning zml files into LIDO"""
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 import argparse
 import sys
@@ -9,7 +9,7 @@ from zml2lido.linkChecker import LinkChecker
 
 
 def lido():
-    parser = argparse.ArgumentParser(description="Little LIDO toolchin")
+    parser = argparse.ArgumentParser(description="Little LIDO toolchain")
     parser.add_argument(
         "-c",
         "--chunks",
@@ -47,8 +47,15 @@ def linkChecker():
 
 def saxon():
     m = LidoTool()  # just to run saxon
-    m.saxon(Input=sys.argv[1], xsl=sys.argv[2], output=sys.argv[3])
-    # todo debug/test
+    parser = argparse.ArgumentParser(description="Little SAXON tool written in Python")
+    parser.add_argument("-s", "--source", help="source filename", required=True)
+    parser.add_argument("-o", "--output", help="output filename", required=True)
+    parser.add_argument(
+        "-x", "--xsl", help="(xslt) transformation filename", required=True
+    )
+    args = parser.parse_args()
+
+    m.saxon(Input=args.source, xsl=args.xsl, output=args.output)
 
 
 def validate():

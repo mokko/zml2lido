@@ -177,7 +177,7 @@ class LinkChecker:
             else:
                 raise ValueError("ERROR: Unknown type")
             if ID.text is not None:
-                #print (f"*****{ID.text} {mtype}")
+                # print (f"*****{ID.text} {mtype}")
                 b = sar.checkApproval(ID=ID.text, mtype=mtype)
                 print(f"relatedWorks{ID.text} {b}")
                 if not (b):
