@@ -162,36 +162,42 @@
 						@name != 'Sprachgruppe'
 						]]/
 					z:vocabularyReference[@instanceName='GenPlaceVgr']"/>
+		<xsl:variable name="sorder" select="$placesN/../z:dataField[@name='SortLnu']/z:value[1]"/>
 		
-		<lido:eventPlace>
-			<xsl:attribute name="lido:sortorder">
-				<xsl:value-of select="min($placesN/../z:dataField[@name='SortLnu'])"/>
-			</xsl:attribute>
-			<lido:displayPlace xml:lang="de">
-				<xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
-				<xsl:for-each select="$placesN">
-					<xsl:sort select="../z:dataField[@name='SortLnu']" data-type="number" order="ascending"/>
-					<xsl:value-of select="replace(z:vocabularyReferenceItem/z:formattedValue, '^;(\w*)','$1')"/>
-					<xsl:if test="position() != last()">
-						<xsl:text>, </xsl:text>
-					</xsl:if>
-				</xsl:for-each>
-			</lido:displayPlace>
-			<lido:place>
-				<!-- todo: exclude Ethnien and other collectives-->
-				<xsl:for-each select="$placesN">
-					<xsl:sort select="../z:dataField[@name='SortLnu']" data-type="number" order="descending"/>
-					<xsl:if test="position() = 1">
-						<xsl:call-template name="PLACE"/>
-					</xsl:if>
-					<xsl:if test="position() = 2">
-						<lido:partOfPlace>
+		<xsl:if test="$placesN[1] ne ''">
+			<lido:eventPlace>
+				<xsl:if test="$sorder[1] ne ''">
+					<xsl:attribute name="lido:sortorder">
+						<xsl:value-of select="$sorder[1]"/>
+					</xsl:attribute>
+				</xsl:if>
+				<lido:displayPlace xml:lang="de">
+					<xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
+					<xsl:for-each select="$placesN">
+						<xsl:sort select="../z:dataField[@name='SortLnu']" data-type="number" order="ascending"/>
+
+						<xsl:value-of select="replace(z:vocabularyReferenceItem/z:formattedValue, '^;(\w*)','$1')"/>
+						<xsl:if test="position() != last()">
+							<xsl:text>, </xsl:text>
+						</xsl:if>
+					</xsl:for-each>
+				</lido:displayPlace>
+				<lido:place>
+					<!-- todo: exclude Ethnien and other collectives-->
+					<xsl:for-each select="$placesN">
+						<xsl:sort select="../z:dataField[@name='SortLnu']" data-type="number" order="descending"/>
+						<xsl:if test="position() = 1">
 							<xsl:call-template name="PLACE"/>
-						</lido:partOfPlace>
-					</xsl:if>
-				</xsl:for-each>
-			</lido:place>
-		</lido:eventPlace>					
+						</xsl:if>
+						<xsl:if test="position() = 2">
+							<lido:partOfPlace>
+								<xsl:call-template name="PLACE"/>
+							</lido:partOfPlace>
+						</xsl:if>
+					</xsl:for-each>
+				</lido:place>
+			</lido:eventPlace>
+			</xsl:if>		
 	</xsl:template>
 
 	<xsl:template name="PLACE">
