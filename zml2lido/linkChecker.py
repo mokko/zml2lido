@@ -105,7 +105,9 @@ class LinkChecker:
             for suffix in suffixes:
                 new_link = f"https://recherche.smb.museum/images/{mulId}{size}{suffix}"
                 req = urlrequest.Request(new_link)
-                req.set_proxy("http-proxy-1.sbb.spk-berlin.de:3128", "http")
+                req.set_proxy(
+                    "http-proxy-2.sbb.spk-berlin.de:3128", "http"
+                )  # http-proxy-1.sbb.spk-berlin.de:3128
                 try:
                     # urlrequest.urlopen(req)
                     urllib.request.urlopen(new_link)
@@ -140,7 +142,9 @@ class LinkChecker:
 
         Assumes that only records which have SMBFreigabe=Ja have objectPublishedID
         """
-        self.log("   LinkChecker: Removing records sets that are not published on SMB")
+        self.log(
+            "   LinkChecker: Removing lido records that are not published on recherche.smb"
+        )
         recordsL = self.tree.xpath(
             "/l:lidoWrap/l:lido[not(l:objectPublishedID)]", namespaces=NSMAP
         )

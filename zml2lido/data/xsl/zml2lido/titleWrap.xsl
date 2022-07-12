@@ -49,7 +49,15 @@
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
-					<lido:appellationValue xml:lang="de">
+					<lido:appellationValue>
+						<xsl:attribute name="xml:lang">
+							<xsl:choose>
+								<xsl:when test="z:vocabularyReference[@name='LanguageVoc']/z:vocabularyReferenceItem/@name ne ''">
+									<xsl:value-of select="z:vocabularyReference[@name='LanguageVoc']/z:vocabularyReferenceItem/@name"/>
+								</xsl:when>
+								<xsl:otherwise>de</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
 						<xsl:value-of select="normalize-space(z:dataField[@name = 'TitleTxt']/z:value)"/>
 					</lido:appellationValue>
 				</xsl:when>
