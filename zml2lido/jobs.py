@@ -3,7 +3,7 @@ class Jobs:
         """
         Make Lido for debug purposes
         (1) convert native xml to lido
-        (2) validate always
+        (2) always validate result
 
         No images are processed in this flavor and no internal links checked or
         rewritten.
@@ -15,15 +15,17 @@ class Jobs:
         """
         (1) only process object records with Sachbegriff
         (2) convert to lido
-        (3) split lido into single files
-        (4) copy pix from mpApi (TO DO: needs update)
+        (3) copy pix from mpApi (TO DO: needs update)
+
+        We used to split big lido files into individual ones, but this step is
+        not necessary at the moment.
 
         localLido used to convert lido to html for proof reading. But since
         FvH is doing the proofing I haven't used this function in a long time.
 
         Keeps internal urls.
 
-        Option:
+        Option
         - for validation use command line option -v
 
         Used In
@@ -36,7 +38,7 @@ class Jobs:
         lido_fn = self.zml2lido(Input=mitSachbegriffZML)
         if self.validation:
             self.validate(Input=lido_fn)
-        self.splitLido(input=lido_fn)  # individual records as files
+        # self.splitLido(input=lido_fn)  # individual records as files
         self.pix(Input=self.Input, output=self.output)  # transforms attachments
         # self.lido2html(input=lido_fn)  # to make it easier to read lido
 
@@ -58,7 +60,8 @@ class Jobs:
             Input=self.Input
         )  # drop records without Sachbegriff
         lido_fn = self.zml2lido(Input=mitSachbegriffZML)
-        linklido_fn = self.urlLido(Input=lido_fn)  # fix links and rm unpublished parts
+        # fix internal links and rm unpublished parts
+        linklido_fn = self.urlLido(Input=lido_fn)
         if self.validation:
             self.validate(Input=linklido_fn)
         self.splitLido(input=linklido_fn)  # individual records as files

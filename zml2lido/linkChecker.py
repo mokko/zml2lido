@@ -43,65 +43,111 @@ class LinkChecker:
         else:
             self.cache = dict()
 
-    def log(self, msg):
-        print(msg)
-        logging.info(msg)
+    def fixRelatedWorks(self):
+        """
+        Frank doesn't want dead links in relatedWorks. So we loop thru them, check
+        if they are SMB-approved (using MpApi) and, if not, we remove them.
+        """
+
+        self.log("fixRelatedWorks: Removing relatedWorks that are not online")
+        relatedWorksL = self.tree.xpath(
+            """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
+            l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
+            namespaces=NSMAP,
+        )
+
+        sar = Sar(baseURL=baseURL, user=user, pw=pw)
+
+        for ID in relatedWorksL:
+            self.log(f"fixRelatedWorks checking {ID.text}")
+
+            # assuming that source always exists
+            src = ID.xpath("@l:source", namespaces=NSMAP)[0]
+            if src == "OBJ.ID":
+                mtype = "Object"
+            else:
+                raise ValueError("ERROR: Unknown type")
+            if ID.text is not None:
+                # print (f"*****{ID.text} {mtype}")
+                b = sar.checkApproval(ID=ID.text, mtype=mtype)
+                print(f"relatedWorks{ID.text} {b}")
+                if not b:
+                    self.log(f"removing unpublic relatedWorks {ID.text}")
+                    relWorkSet = ID.getparent().getparent().getparent()
+                    relWorkSet.getparent().remove(relWorkSet)
 
     def guess(self):
+        """
+        Look at a every linkResource in the current lido tree. For each one
+        that doesn't start with http try to guess the link. Also write a
+        cache file.
+        """
         # check first in my file cache
         linkResourceL = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
             namespaces=NSMAP,
         )
 
+        self.log(
+            "guess: replacing internal linkResouces with public URLs or deleting resourceSet"
+        )
         for link in linkResourceL:
             if link.text is not None:
                 if not link.text.startswith("http"):
                     nl = self._guess(link=link.text)
-                    if nl is not None:
+                    if nl is None:  # delete internal linkResources
+                        self.log(f" removing rSets for linkResource '{link.text}'")
+                        resourceSet = link.getparent().getparent()
+                        resourceSet.getparent().remove(resourceSet)
+                    else:
                         link.text = nl
                     # else:
                     #    self.log(f"\tNOT FOUND {nl}")
-        with open(self.cacheFn, "w", encoding="utf-8") as f:
-            json.dump(self.cache, f, ensure_ascii=False, indent=4)
+            # for debugging we might want to save the cache after every guess
+            with open(self.cacheFn, "w", encoding="utf-8") as f:
+                json.dump(self.cache, f, ensure_ascii=False, indent=4)
 
     def _guess(self, *, link) -> Optional[str]:
         """
-        returns a link if it exists in the WWW or none if can't be reached.
+        For a given internal linkResource, guess the URL on recherche.smb
+
+        If mulId is already in self.cache, then take the URL from there.
+
+        For some filetypes not URL request is checked, because we already know
+        they won't be found (pdf, mp3, tif, tiff).
 
         EXPECTS
-        a "link" of the format "1234567.jpg"
+        - link: internal linkResource (i.e. one not starting with http)
+          e.g. "1234567.jpg"
 
         RETURNS
-        full link to the resource in the format
-        https://recherche.smb.museum/images/4305271_1000x600.jpg
-        or None
+        - public link (on smb.recherche.museum), if it exists, or None
+          e.g. https://recherche.smb.museum/images/4305271_1000x600.jpg
         """
 
         p = Path(link)
         mulId = p.stem
-        if p.suffix == ".pdf":
-            self.log(f"   Dont even check for pdf {p}")
-            return  # dont even check pdfs b/c we know that they dont work
-        elif p.suffix == ".mp3":
-            self.log(f"   Dont even check for mp3 {p}")
-            return  # dont even check mp3 b/c we know that they dont work
-        elif p.suffix == ".tif" or p.suffix == ".tiff":
-            self.log(f"   Dont even check for tif/f {p}")
-            return  # dont even check tif b/c we know that they dont work
+        print(f"_guess: Looking for a public equivalent for linkResource {link}")
 
-        try:
-            self.cache[mulId]
-        except:
-            pass  # mulId not yet in cache, continue below
-        else:  # if try succeeds
+        # use link from cache it if exists
+        if mulId in self.cache:
+            print(" using link from CACHE")
             return self.cache[mulId]
+        # was: try: self.cache[mulId]
 
-        suffixes = [p.suffix]
-        if p.suffix.lower() != p.suffix:
-            suffixes.append(p.suffix.lower())
-        if p.suffix.upper() != p.suffix:  # possible that i converted to upper before
-            suffixes.append(p.suffix.upper())
+        # ignore certain file extensions b/c we know they are not online
+        ignore_exts = [".pdf", ".mp3", ".tif", ".tiff"]
+        for ext in ignore_exts:
+            if p.suffix == ext:
+                self.log(f" dont even check for {ext} {p}")
+                self.cache[mulId] = None
+                return None
+
+        # reasonable possibilities for casing the suffix
+        suffixes = set()
+        suffixes.add(p.suffix)
+        suffixes.add(p.suffix.lower())
+        suffixes.add(p.suffix.upper())
 
         for size in sizes:
             for suffix in suffixes:
@@ -114,20 +160,29 @@ class LinkChecker:
                     # urlrequest.urlopen(req)
                     urllib.request.urlopen(new_link)
                 except:
-                    self.cache[mulId] = None
-                    self.log(f"INFO multimedia {mulId} not found")
-                    return None
+                    pass
                 else:
+                    # self.log(f"INFO multimedia {mulId} was FOUND")
                     self.cache[mulId] = new_link
                     return new_link
+        # none of the sizes and suffixes yields a match
+        self.cache[mulId] = None
+        self.log(f" multimedia {mulId} not found")
+        return None
+
+    def log(self, msg):
+        print(msg)
+        logging.info(msg)
 
     def rmInternalLinks(self):
         """
-        Remove resourceSet whose linkResource point to internal links;
+        SEEMS TO BE NO LONGER NEEDED!
+
+        Remove resourceSet whose linkResource point to internal links (i.e.
+        don't beginn with http).
         links are internal if they dont begin with "http", e.g.
-        1234678.jpg
         """
-        self.log("   resourceSet: Removing sets with remaining internal links")
+        self.log("resourceSet: Removing sets with remaining internal links")
         linkResourceL = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
             namespaces=NSMAP,
@@ -144,14 +199,17 @@ class LinkChecker:
 
         Assumes that only records which have SMBFreigabe=Ja have objectPublishedID
         """
-        self.log(
-            "   LinkChecker: Removing lido records that are not published on recherche.smb"
-        )
+        # self.log(
+        #    "   LinkChecker: Removing lido records that are not published on recherche.smb"
+        # )
         recordsL = self.tree.xpath(
             "/l:lidoWrap/l:lido[not(l:objectPublishedID)]", namespaces=NSMAP
         )
-        for record in recordsL:
+        for recordN in recordsL:
+            recID = recordN.xpath("l:lidoRecID", namespaces=NSMAP)[0]
+            self.log(f"\trmUnpublishedRecords: {recID}")
             record.getparent().remove(record)
+        self.log("rmUnpublishedRecords: done!")
 
     def saveTree(self):
         self.log(f"Writing back to {self.out_fn}")
@@ -159,33 +217,3 @@ class LinkChecker:
             self.out_fn, pretty_print=True, encoding="UTF-8", xml_declaration=True
         )
         return self.out_fn
-
-    def fixRelatedWorks(self):
-        """
-        Frank doesn't want dead links in relatedWorks. So we loop thru them, check
-        if the link works and if not we remove that element.
-        """
-        self.log("   relatedWorks: Removing relatedWorks that are not online")
-        relatedWorksL = self.tree.xpath(
-            """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
-            l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
-            namespaces=NSMAP,
-        )
-
-        sar = Sar(baseURL=baseURL, user=user, pw=pw)
-
-        for ID in relatedWorksL:
-            src = ID.xpath("@l:source", namespaces=NSMAP)[
-                0
-            ]  # assuming that source always exists
-            if src == "OBJ.ID":
-                mtype = "Object"
-            else:
-                raise ValueError("ERROR: Unknown type")
-            if ID.text is not None:
-                # print (f"*****{ID.text} {mtype}")
-                b = sar.checkApproval(ID=ID.text, mtype=mtype)
-                print(f"relatedWorks{ID.text} {b}")
-                if not (b):
-                    relWorkSet = ID.getparent().getparent().getparent()
-                    relWorkSet.getparent().remove(relWorkSet)

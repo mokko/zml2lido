@@ -156,7 +156,7 @@ class LidoTool(Jobs):
         if not Path(outFn).exists() or self.force == True:
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             lc.guess()  # rewrite filenames with http-links on SMB-Digital
-            lc.rmInternalLinks()  # remove resourceSets with internal links
+            # lc.rmInternalLinks()  # remove resourceSets with internal links
             lc.fixRelatedWorks()
             lc.saveTree()
         else:
