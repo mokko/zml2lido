@@ -7,6 +7,7 @@
 
 Requires
 * Saxon to run xslt newer than version 1: //http://saxon.sourceforge.net/
+* Pillow, the friendly PIL fork (barely used in this version)
 
 The mapping is partly specific to the RIA installation of the SPK, but might 
 inspire others.
