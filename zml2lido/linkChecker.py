@@ -28,13 +28,16 @@ if Path(cred_fn).exists():  # some things like saxon should run even
 
 class LinkChecker:
     def __init__(self, *, Input):
-        print(f"LinkChecker is working on {Input}")  # not exactly an error
+        self.log(f"LinkChecker is working on {Input} NEW RUN")  # not exactly an error
+        # determine out_fn
         p = Path(Input)
         ext = "".join(p.suffixes)
         stem = str(p).split(".")[0]
         self.out_fn = stem + "-links" + ext
-        # self.log(f"   writing to {self.out_fn}")
+
         self.tree = etree.parse(str(Input))
+
+        # cache for guessing external linkResources
         self.cacheFn = stem + ".cache.json"
         if Path(self.cacheFn).exists():
             print(f"About to load {self.cacheFn}")
@@ -91,6 +94,9 @@ class LinkChecker:
         self.log(
             "guess: replacing internal linkResouces with public URLs or deleting resourceSet"
         )
+        self.log(
+            f" note: there are {len(linkResourceL)} links to check; {len(self.cache)} are currently in the cache"
+        )
         for link in linkResourceL:
             if link.text is not None:
                 if not link.text.startswith("http"):
@@ -104,71 +110,7 @@ class LinkChecker:
                     # else:
                     #    self.log(f"\tNOT FOUND {nl}")
             # for debugging we might want to save the cache after every guess
-            with open(self.cacheFn, "w", encoding="utf-8") as f:
-                json.dump(self.cache, f, ensure_ascii=False, indent=4)
-
-    def _guess(self, *, link) -> Optional[str]:
-        """
-        For a given internal linkResource, guess the URL on recherche.smb
-
-        If mulId is already in self.cache, then take the URL from there.
-
-        For some filetypes not URL request is checked, because we already know
-        they won't be found (pdf, mp3, tif, tiff).
-
-        EXPECTS
-        - link: internal linkResource (i.e. one not starting with http)
-          e.g. "1234567.jpg"
-
-        RETURNS
-        - public link (on smb.recherche.museum), if it exists, or None
-          e.g. https://recherche.smb.museum/images/4305271_1000x600.jpg
-        """
-
-        p = Path(link)
-        mulId = p.stem
-        print(f"_guess: Looking for a public equivalent for linkResource {link}")
-
-        # use link from cache it if exists
-        if mulId in self.cache:
-            print(" using link from CACHE")
-            return self.cache[mulId]
-        # was: try: self.cache[mulId]
-
-        # ignore certain file extensions b/c we know they are not online
-        ignore_exts = [".pdf", ".mp3", ".tif", ".tiff"]
-        for ext in ignore_exts:
-            if p.suffix == ext:
-                self.log(f" dont even check for {ext} {p}")
-                self.cache[mulId] = None
-                return None
-
-        # reasonable possibilities for casing the suffix
-        suffixes = set()
-        suffixes.add(p.suffix)
-        suffixes.add(p.suffix.lower())
-        suffixes.add(p.suffix.upper())
-
-        for size in sizes:
-            for suffix in suffixes:
-                new_link = f"https://recherche.smb.museum/images/{mulId}{size}{suffix}"
-                req = urlrequest.Request(new_link)
-                req.set_proxy(
-                    "http-proxy-2.sbb.spk-berlin.de:3128", "http"
-                )  # http-proxy-1.sbb.spk-berlin.de:3128
-                try:
-                    # urlrequest.urlopen(req)
-                    urllib.request.urlopen(new_link)
-                except:
-                    pass
-                else:
-                    # self.log(f"INFO multimedia {mulId} was FOUND")
-                    self.cache[mulId] = new_link
-                    return new_link
-        # none of the sizes and suffixes yields a match
-        self.cache[mulId] = None
-        self.log(f" multimedia {mulId} not found")
-        return None
+            self._save_cache()
 
     def log(self, msg):
         print(msg)
@@ -217,3 +159,74 @@ class LinkChecker:
             self.out_fn, pretty_print=True, encoding="UTF-8", xml_declaration=True
         )
         return self.out_fn
+
+    #
+    # more private
+    #
+
+    def _guess(self, *, link) -> Optional[str]:
+        """
+        For a given internal linkResource, guess the URL on recherche.smb
+
+        If mulId is already in self.cache, then take the URL from there.
+
+        For some filetypes not URL request is checked, because we already know
+        they won't be found (pdf, mp3, tif, tiff).
+
+        EXPECTS
+        - link: internal linkResource (i.e. one not starting with http)
+          e.g. "1234567.jpg"
+
+        RETURNS
+        - public link (on smb.recherche.museum), if it exists, or None
+          e.g. https://recherche.smb.museum/images/4305271_1000x600.jpg
+        """
+
+        p = Path(link)
+        mulId = p.stem
+        print(f"_guess: Looking for a public equivalent of linkResource {link}")
+
+        # use link from cache it if exists
+        if mulId in self.cache:
+            print(" using CACHE")
+            return self.cache[mulId]
+        # was: try: self.cache[mulId]
+
+        # ignore certain file extensions b/c we know they are not online
+        ignore_exts = [".pdf", ".mp3", ".tif", ".tiff"]
+        for ext in ignore_exts:
+            if p.suffix == ext:
+                self.log(f" dont even check for {ext} {p}")
+                self.cache[mulId] = None
+                return None
+
+        # reasonable possibilities for casing the suffix
+        suffixes = set()
+        suffixes.add(p.suffix)
+        suffixes.add(p.suffix.lower())
+        suffixes.add(p.suffix.upper())
+
+        for size in sizes:
+            for suffix in suffixes:
+                new_link = f"https://recherche.smb.museum/images/{mulId}{size}{suffix}"
+                req = urlrequest.Request(new_link)
+                req.set_proxy(
+                    "http-proxy-2.sbb.spk-berlin.de:3128", "http"
+                )  # http-proxy-1.sbb.spk-berlin.de:3128
+                try:
+                    # urlrequest.urlopen(req)
+                    urllib.request.urlopen(new_link)
+                except:
+                    pass
+                else:
+                    # self.log(f"INFO multimedia {mulId} was FOUND")
+                    self.cache[mulId] = new_link
+                    return new_link
+        # none of the sizes and suffixes yields a match
+        self.cache[mulId] = None
+        self.log(f" multimedia {mulId} not found")
+        return None
+
+    def _save_cache(self):
+        with open(self.cacheFn, "w", encoding="utf-8") as f:
+            json.dump(self.cache, f, ensure_ascii=False, indent=4)

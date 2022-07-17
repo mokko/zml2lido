@@ -138,7 +138,7 @@ class LidoTool(Jobs):
         return out
 
     def urlLido(self, *, Input):
-        print("LINKCHECKER")
+        # print("LINKCHECKER")
         if self.chunks:
             for chunkFn in self.chunkName(Input=Input):
                 new_fn = self.urlLidoSingle(Input=chunkFn)
