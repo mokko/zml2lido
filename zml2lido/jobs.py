@@ -5,7 +5,8 @@ class Jobs:
         (1) convert native xml to lido
         (2) validate always
 
-        No images are processed in this flavor and no internal links checked or rewritten.
+        No images are processed in this flavor and no internal links checked or
+        rewritten.
         """
         lido_fn = self.zml2lido(Input=self.Input)
         self.validate(Input=lido_fn)
@@ -15,17 +16,18 @@ class Jobs:
         (1) only process object records with Sachbegriff
         (2) convert to lido
         (3) split lido into single files
-        (4) copy pix from mpApi (needs update)
+        (4) copy pix from mpApi (TO DO: needs update)
 
-        It used to convert lido to html representation for proof reading
-        But since FvH is doing the proofing I haven't used this function
-        in a long time
-        (5) used to: prepare html version (not used in a long time)
+        localLido used to convert lido to html for proof reading. But since
+        FvH is doing the proofing I haven't used this function in a long time.
+
+        Keeps internal urls.
 
         Option:
         - for validation use command line option -v
 
-        This flavor is currently used for the rst project.
+        Used In
+        - this flavor is currently in use for the rst project.
         """
 
         mitSachbegriffZML = self.splitSachbegriff(
@@ -43,10 +45,14 @@ class Jobs:
         (1) drop records without Sachbegriff in native xml
         (2) rewrite and check internal links with recherche.smb links
         (3) split into individual lido records
-        (4) used to: make html representation
+
+        Used to make html representation as step 5
 
         Optional
         - validate with -v on command line
+
+        Used In
+        - currently not used on a regular basis
         """
         mitSachbegriffZML = self.splitSachbegriff(
             Input=self.Input
@@ -64,11 +70,12 @@ class Jobs:
         (2) filter out records that are not published on recherche.smb
         (3) rewrite and check internal links using recherche.smb urls
         (4) split lido into single files
-        optionally: validate using command line -v
 
-        De we also rewrite internal links to recherche.smb links?
+        Optional
+        - validate using command line switch -v
 
-        This seems to be the default flavor for FvH.
+        Used In
+        - current default flavor for FvH.
         """
         lido_fn = self.zml2lido(Input=self.Input)
         onlyPublished = self.onlyPublished(Input=lido_fn)

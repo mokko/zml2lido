@@ -1,39 +1,30 @@
 """
-	Little script that converts input file to lido
-	We can also add image stuff and other steps from the toolchain.
-
-	source comes from c:\m3\MpApi\sdata\<something>
-	I can specify the path from the command line and expect relative files from there
-		
-	Where do we write the output: C:\m3\zml2lido\sdata\<something>
-	I could bake that path in or specify it on the commandline. The latter is more explicit.
+	Little script that converts native Zetcom xml to lido
 	
-    cd C:\m3\zml2lido # needed for vocmap.xml!
-    lido.py -i c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml -o sdata 
-    # writes lido to file C:\m3\zml2lido\sdata\3Wege\20210904.lido.xml
-    # writes images to dir C:\m3\zml2lido\sdata\3Wege
+    lido Command Line Tool
+    Execute lido from the command line in the project dir. That is the 
+    dir above sdata. In my case that is 
+        C:\M3\zml2lido
+    You need to specify three parameters 
+        -j/--job: which flavor (job) of the transformation you want to use 
+        -i/--input: where the input xml file is
+        -o/--output: will be used as output directory; in my case 
+            C:\m3\zml2lido\sdata\{output}
 
-    TODO: Check whether we only get freigegebene multimedia from MpApi.
+        cd C:\m3\zml2lido 
+        lido -j smb -i c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml -o 3Wege
+        # writes lido to file C:\m3\zml2lido\sdata\3Wege\20210904.lido.xml
 
-    We do a sloppy update, i.e. if attachments have been deleted in RIA, they will
-    remain in the lido sphere. So it wouldn't hurt to check smbfreigabe on asset level again
-    during conversion to lido although we only downloaded smbfreigegebene assets in the 
-    first place.
-
-    Changes
-    7/3/22   include a saxon command line frontend
-    1/9/22   chunk mode (to process multiple chunks)
-    1/6/22   transition to flit packaging
-    10/28/21 move installation specific config to a separate file in sdata
-    10/26/21 outdir simplified; it's always relative to pwd now. One  command line param less.
-    10/21/21 new output dir
-    10/20/21 only checkLinks if output file doesn't exist yet (as usual) 
-    10/20/21 change java max memory
-    10/20/21 zml2lido: usual additions to objectMeasurements
-    9/25/21 introduce different chains: local and for SMB-Digital
-    9/24/21 linkchecker guesses URL for image on recherche.smb 
-    9/11/21 -f force should overwrite existing data in all steps, not just in zml2lido
-    9/11/21 implement simple filter that filters out zml records of type object that have no sachbegriff
+	Flavors (aka jobs):
+    FvH wants links in the Internet instead of image files, but we still give 
+    images to the rst project. So we have different flavors or chains of steps 
+    for these purposes. See jobs.py for details
+    - smb: for FvH
+    - dd: for debug
+    - localLido: for rst
+    
+    In an old version it did also image processing, but that function is
+    currently not used/tested. 
 """
 
 from lxml import etree

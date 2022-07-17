@@ -20,8 +20,10 @@ from typing import Optional, Union
 NSMAP = {"l": "http://www.lido-schema.org"}
 sizes = ["_2500x2500", "_1000x600"]  # from big to small
 
-with open("sdata/credentials.py") as f:
-    exec(f.read())
+cred_fn = "sdata/credentials.py"
+if Path(cred_fn).exists():  # some things like saxon should run even
+    with open(cred_fn) as f:  # credentials are not where expected
+        exec(f.read())
 
 
 class LinkChecker:
