@@ -232,7 +232,7 @@ class LidoTool(Jobs):
         orig = os.getcwd()
         splitDir = self.outdir.joinpath("split")
         # existance of splitDir is a very bad criterion, but cant think of a better one
-        if splitDir.exists() or self.force is True:
+        if splitDir.exists or self.force is True:  # problematic
             print("SPLITLIDO making")
             os.chdir(self.outdir)
             self.saxon(Input=Input, xsl=xsl["splitLido"], output="o.xml")

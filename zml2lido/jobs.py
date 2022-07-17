@@ -22,7 +22,8 @@ class Jobs:
         in a long time
         (5) used to: prepare html version (not used in a long time)
 
-        optional: for validation use command line option -v
+        Option:
+        - for validation use command line option -v
 
         This flavor is currently used for the rst project.
         """
