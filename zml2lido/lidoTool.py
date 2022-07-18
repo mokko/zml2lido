@@ -137,6 +137,26 @@ class LidoTool(Jobs):
             print(f"{out} exist already, no overwrite")
         return out
 
+    def pix(self, *, Input, output):
+        """
+        input is c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml
+        read from C:\m3\MpApi\sdata\3Wege\pix_*
+        write to C:\m3\zml2lido\sdata\3Wege\*
+        resize so that biggest side is 1848px
+
+        CAVEAT: it works on all pix from source dir; there are situations where
+        records may have been filtered out, eg. from splitSachbegriff and pix
+        may end up in target that are no longer included
+
+        TODO: fix. Let's only work on pix that are referenced in a lido file
+        """
+        print("WORKING ON PIX")
+        in_dir = Path(Input).parent
+        # print (f"*input {in_dir}")
+        for pic_fn in Path(in_dir).rglob(f"**/pix_*/*"):
+            # print (f"{pic_fn}")
+            self._resize(pic=pic_fn)
+
     def urlLido(self, *, Input):
         # print("LINKCHECKER")
         if self.chunks:
@@ -163,50 +183,6 @@ class LidoTool(Jobs):
             print(f"   rewrite exists already: {outFn}, no overwrite")
         return outFn
 
-    def splitSachbegriff(self, *, Input):
-        print("SPLITSACHBEGRIFF")
-        if self.chunks:
-            for chunkFn in self.chunkName(Input=Input):
-                sachbegriffFn = self.splitSachbegriff(Input=chunkFn)
-            return self.chunkNameFirst(Input=sachbegriffFn)
-        else:
-            return self.splitSachbegriffSingle(Input=Input)
-
-    def splitSachbegriffSingle(self, *, Input):
-        """
-        Writes two files to output dir
-        ohneSachbegriff.xml is meant for debug purposes.
-        """
-        orig = os.getcwd()
-        os.chdir(self.outdir)
-        out = "mitSachbegriff.xml"
-        if not Path(out).exists() or self.force is True:
-            self.saxon(Input=Input, xsl=xsl["splitSachbegriff"], output=out)
-        else:
-            print(f"{out} exist already, no overwrite")
-        os.chdir(orig)
-        return xslDir.joinpath(out)
-
-    def pix(self, *, Input, output):
-        """
-        input is c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml
-        read from C:\m3\MpApi\sdata\3Wege\pix_*
-        write to C:\m3\zml2lido\sdata\3Wege\*
-        resize so that biggest side is 1848px
-
-        CAVEAT: it works on all pix from source dir; there are situations where
-        records may have been filtered out, eg. from splitSachbegriff and pix
-        may end up in target that are no longer included
-
-        TODO: fix. Let's only work on pix that are referenced in a lido file
-        """
-        print("WORKING ON PIX")
-        in_dir = Path(Input).parent
-        # print (f"*input {in_dir}")
-        for pic_fn in Path(in_dir).rglob(f"**/pix_*/*"):
-            # print (f"{pic_fn}")
-            self._resize(pic=pic_fn)
-
     def splitLido(self, *, Input):
         print("SPLITLIDO enter")
         if self.chunks:
@@ -230,6 +206,30 @@ class LidoTool(Jobs):
             os.chdir(orig)
         else:
             print(f" SPLIT DIR exists already: {splitDir}")
+
+    def splitSachbegriff(self, *, Input):
+        print("SPLITSACHBEGRIFF")
+        if self.chunks:
+            for chunkFn in self.chunkName(Input=Input):
+                sachbegriffFn = self.splitSachbegriff(Input=chunkFn)
+            return self.chunkNameFirst(Input=sachbegriffFn)
+        else:
+            return self.splitSachbegriffSingle(Input=Input)
+
+    def splitSachbegriffSingle(self, *, Input):
+        """
+        Writes two files to output dir
+        ohneSachbegriff.xml is meant for debug purposes.
+        """
+        orig = os.getcwd()
+        os.chdir(self.outdir)
+        out = "mitSachbegriff.xml"
+        if not Path(out).exists() or self.force is True:
+            self.saxon(Input=Input, xsl=xsl["splitSachbegriff"], output=out)
+        else:
+            print(f"{out} exist already, no overwrite")
+        os.chdir(orig)
+        return xslDir.joinpath(out)
 
     def validate(self, *, Input):
         print("VALIDATING LIDO")
@@ -278,26 +278,6 @@ class LidoTool(Jobs):
     # more helpers
     #
 
-    def chunkNameFirst(self, *, Input):
-        """
-        returns the chunk with no. 1
-        """
-        root, no, tail = self._analyze_chunkFn(Input=Input)
-        firstFn = f"{root}-chunk1{tail}"
-        # print(f"going in {Input}")
-        print(f"firstFn {firstFn}")
-        return firstFn
-
-    def _analyze_chunkFn(self, *, Input):
-        print(f"ENTER ANALYZE WITH {Input}")
-        partsL = str(Input).split("-chunk")
-        root = partsL[0]
-        m = re.match("(\d+)[\.-]", partsL[1])
-        no = int(m.group(1))
-        tail = str(Input).split("-chunk" + str(no))[1]
-        print(f"_ANALYZE '{root}' '{no}' '{tail}'")
-        return root, no, tail
-
     def chunkName(self, *, Input):
         """
         returns generator with path for existing files, counting up as long
@@ -312,6 +292,34 @@ class LidoTool(Jobs):
             # print(f"{chunkFn} exists")
             no += 1
             chunkFn = f"{root}-chunk{no}{tail}"
+
+    def chunkNameFirst(self, *, Input):
+        """
+        returns the chunk with no. 1
+        """
+        root, no, tail = self._analyze_chunkFn(Input=Input)
+        firstFn = f"{root}-chunk1{tail}"
+        # print(f"going in {Input}")
+        print(f"firstFn {firstFn}")
+        return firstFn
+
+    def saxon(self, *, Input, output, xsl):
+        cmd = f"java -Xmx1450m -jar {saxLib} -s:{Input} -xsl:{xsl} -o:{output}"
+        print(cmd)
+
+        subprocess.run(
+            cmd, check=True  # , stderr=subprocess.STDOUT
+        )  # overwrites output file without saying anything
+
+    def _analyze_chunkFn(self, *, Input):
+        print(f"ENTER ANALYZE WITH {Input}")
+        partsL = str(Input).split("-chunk")
+        root = partsL[0]
+        m = re.match("(\d+)[\.-]", partsL[1])
+        no = int(m.group(1))
+        tail = str(Input).split("-chunk" + str(no))[1]
+        print(f"_ANALYZE '{root}' '{no}' '{tail}'")
+        return root, no, tail
 
     def _copy(self, *, pic, out):
         if not Path(out).exists:
@@ -340,11 +348,3 @@ class LidoTool(Jobs):
                     self._copy(pic=pic, out=out_fn)
         else:
             self._copy(pic=pic, out=out_fn)
-
-    def saxon(self, *, Input, output, xsl):
-        cmd = f"java -Xmx1450m -jar {saxLib} -s:{Input} -xsl:{xsl} -o:{output}"
-        print(cmd)
-
-        subprocess.run(
-            cmd, check=True  # , stderr=subprocess.STDOUT
-        )  # overwrites output file without saying anything
