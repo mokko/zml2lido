@@ -565,7 +565,6 @@
 			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
 		</concept>
 	</voc>
-
 	<voc name="verwaltendeInstitution">
 		<concept>
 			<source lang="de">Alte Nationalgalerie, Staatliche Museen zu Berlin</source>
@@ -573,9 +572,19 @@
 			<target lang="de" name="homepage">https://www.smb.museum/ang</target>
 		</concept>
 		<concept>
+			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-019118</target>
+			<target lang="de" name="homepage">https://www.smb.museum/em</target>
+		</concept>
+		<concept>
 			<source lang="de">Kupferstichkabinett, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-018511</target>
 			<target lang="de" name="homepage">https://www.smb.museum/museen-einrichtungen/kupferstichkabinett/home/</target>
+		</concept>
+		<concept>
+			<source lang="de">Museum Berggruen, Nationalgalerie, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-906210</target>
+			<target lang="de" name="homepage">http://www.smb.museum/mb</target>
 		</concept>
 		<concept>
 			<source lang="de">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</source>
@@ -591,17 +600,6 @@
 			<source lang="de">Musikinstrumenten-Museum, Staatliches Institut für Musikforschung</source>
 			<target lang="de" name="ISIL">de-MUS-019410</target>
 			<target lang="de" name="homepage">https://www.simpk.de/museum</target>
-		</concept>
-		<concept>
-			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-019118</target>
-			<target lang="de" name="homepage">https://www.smb.museum/em</target>
-		</concept>
-		<!-- not sure why this exists; I think that is an error, "the Berlin, Berlin" error -->
-		<concept>
-			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin, Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-019118</target>
-			<target lang="de" name="homepage">https://www.smb.museum/em</target>
 		</concept>
 		<concept>
 			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>

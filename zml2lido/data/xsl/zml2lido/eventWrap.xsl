@@ -10,6 +10,7 @@
     <xsl:import href="event-Aufführung.xsl" />
     <xsl:import href="event-Auftrag.xsl" />
     <xsl:import href="event-Ausgrabung.xsl" />
+    <xsl:import href="event-Ausstellung.xsl" />
     <xsl:import href="event-Benin.xsl" />
     <xsl:import href="event-Entwurf.xsl" />
     <xsl:import href="event-Erwerb.xsl" />
@@ -37,6 +38,7 @@
             <xsl:call-template name="Aufführung"/>			
 			<xsl:call-template name="Auftrag"/>
 			<xsl:call-template name="Ausgrabung"/>
+			<xsl:call-template name="Ausstellung"/>
 			<xsl:call-template name="Benin"/>
 			<xsl:call-template name="Entwurf"/>
 			<xsl:call-template name="Erwerb"/>
