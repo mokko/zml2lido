@@ -17,7 +17,7 @@
 	Papa Bemba: For some reason, i cant find certain nodes.
 	I find ObjObjectBRef nodes, but not ObjObjectARef. Why?
 		z:moduleReference[@name = 'ObjObjectARef']
-	In the end, i opt to show all related records, wether A or B
+	In the end, i opt to show all related records, whether A or B
 
 	LIDO1.1: SUBJECT
 	A wrapper for information about the subject of the object/work in focus. The sub-elements identify, 
@@ -30,12 +30,18 @@
 	LinkChecker) in RIA nachgucken, ob dieser DS freigegeben ist oder nicht und das entsprechend in LIDO
 	korrigieren. TODO
 	
+	7.10.2022 Frank möchte jetzt Literaturangaben in relatedWorks haben. Dann muss ich zusehen, dass die 
+	nicht wieder herausgefiltert werden an einem späteren Schritt
+	
 	-->
 
 	<xsl:template name="objectRelationWrap">
 		<xsl:variable name="relatedWorks" select="z:composite[
 			@name='ObjObjectCre'
-		]/z:compositeItem/z:moduleReference"/>
+		]/z:compositeItem/z:moduleReference
+		or
+		z:moduleReference[@name='ObjLiteratureRef']
+		"/>
 		
 		<xsl:if test="z:repeatableGroup[@name='ObjIconographyGrp'] 
 			or z:repeatableGroup[@name='ObjKeyWordsGrp']
@@ -51,6 +57,7 @@
 				<xsl:if test="$relatedWorks">
 					<lido:relatedWorksWrap>
 						<xsl:apply-templates select="z:composite[@name='ObjObjectCre']/z:compositeItem/z:moduleReference/z:moduleReferenceItem"/>
+						<xsl:apply-templates select="z:moduleReference[@name='ObjLiteratureRef']/z:moduleReferenceItem"/>
 					</lido:relatedWorksWrap>
 				</xsl:if>
 			</lido:objectRelationWrap>
@@ -179,7 +186,29 @@
 		</xsl:if>
 	</xsl:template>
 
-	<!-- composite -->
+	<xsl:template match="z:moduleReference[@name='ObjLiteratureRef']/z:moduleReferenceItem">
+		<lido:relatedWorkSet>
+            <lido:relatedWork>
+                <lido:displayObject>
+                    <xsl:value-of select="normalize-space(z:formattedValue)"/>
+                </lido:displayObject>
+				<lido:object>
+					<lido:objectID lido:type="local">
+						<xsl:attribute name="lido:source">
+							<xsl:text>LIT.ID</xsl:text>
+						</xsl:attribute>
+						<xsl:value-of select="@moduleItemId"/>
+					</lido:objectID>
+				</lido:object>
+			</lido:relatedWork>
+			<lido:relatedWorkRelType>
+				<lido:conceptID lido:type="URI">http://terminology.lido-schema.org/lido00263</lido:conceptID>
+				<lido:term xml:lang="en">is related to</lido:term>
+			</lido:relatedWorkRelType>
+		</lido:relatedWorkSet>
+	</xsl:template>
+
+	<!-- ObjObjectCre -->
 	<xsl:template match="z:composite[@name='ObjObjectCre']/z:compositeItem/z:moduleReference/z:moduleReferenceItem">
 		<xsl:variable name="moduleItemId" select="@moduleItemId"/>
 		<!-- We're assuming here that all relations are Objects -->
