@@ -78,12 +78,19 @@ class LinkChecker:
                 if mtype == "Literature":
                     print("WARN: No check for mtype 'Literature'")
                 else:
-                    b = sar.checkApproval(ID=ID.text, mtype=mtype)
+                    if mtype + ID.text in self.cache:
+                        print(f"--> from CACHE")
+                        b = self.cache[mtype + ID.text]
+                    else:
+                        print("--> new check")
+                        b = sar.checkApproval(ID=ID.text, mtype=mtype)
+                        self.cache[mtype + ID.text] = b
                     print(f"relatedWorks{ID.text} {b}")
                     if not b:
                         self.log(f"removing unpublic relatedWorks {ID.text}")
                         relWorkSet = ID.getparent().getparent().getparent()
                         relWorkSet.getparent().remove(relWorkSet)
+            self._save_cache()
 
     def guess(self):
         """
