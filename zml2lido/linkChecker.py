@@ -62,26 +62,32 @@ class LinkChecker:
         sar = Sar(baseURL=baseURL, user=user, pw=pw)
 
         for ID in relatedWorksL:
-            self.log(f"fixRelatedWorks checking {ID.text}")
+            # don't log
+            # self.log(f"fixRelatedWorks checking {ID.text}")
 
             # assuming that source always exists
             src = ID.xpath("@l:source", namespaces=NSMAP)[0]
             if src == "OBJ.ID":
                 mtype = "Object"
+            elif src == "LIT.ID":
+                mtype = "Literature"
             else:
-                raise ValueError("ERROR: Unknown type")
+                raise ValueError(f"ERROR: Unknown type: {src}")
             if ID.text is not None:
                 # print (f"*****{ID.text} {mtype}")
-                b = sar.checkApproval(ID=ID.text, mtype=mtype)
-                print(f"relatedWorks{ID.text} {b}")
-                if not b:
-                    self.log(f"removing unpublic relatedWorks {ID.text}")
-                    relWorkSet = ID.getparent().getparent().getparent()
-                    relWorkSet.getparent().remove(relWorkSet)
+                if mtype == "Literature":
+                    print("WARN: No check for mtype 'Literature'")
+                else:
+                    b = sar.checkApproval(ID=ID.text, mtype=mtype)
+                    print(f"relatedWorks{ID.text} {b}")
+                    if not b:
+                        self.log(f"removing unpublic relatedWorks {ID.text}")
+                        relWorkSet = ID.getparent().getparent().getparent()
+                        relWorkSet.getparent().remove(relWorkSet)
 
     def guess(self):
         """
-        Look at a every linkResource in the current lido tree. For each one
+        Look at a every linkResource in the current lido tree. For each link
         that doesn't start with http try to guess the link. Also write a
         cache file.
         """
@@ -111,6 +117,32 @@ class LinkChecker:
                     #    self.log(f"\tNOT FOUND {nl}")
             # for debugging we might want to save the cache after every guess
             self._save_cache()
+
+    def new_check(self):
+        """
+        I might need a check that verifies if resources actually exist online.
+        """
+        linkResourceL = self.tree.xpath(
+            "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
+            namespaces=NSMAP,
+        )
+
+        print("NEW CHECKER")
+        for link in linkResourceL:
+            if link.text is not None:
+                print(link.text)
+                # req = urlrequest.Request(link.text)
+                # req.set_proxy(
+                #    "http-proxy-2.sbb.spk-berlin.de:3128", "http"
+                # )  # http-proxy-1.sbb.spk-berlin.de:3128
+
+                try:
+                    # urlrequest.urlopen(req)
+                    urllib.request.urlopen(link.text)
+                except:
+                    print("\tfailed")
+                else:
+                    print("\tsuccess")
 
     def log(self, msg):
         print(msg)
@@ -230,3 +262,23 @@ class LinkChecker:
     def _save_cache(self):
         with open(self.cacheFn, "w", encoding="utf-8") as f:
             json.dump(self.cache, f, ensure_ascii=False, indent=4)
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Simple linkResource checker")
+    parser.add_argument(
+        "-i",
+        "--input",
+        help="point to LIDO file",
+        required=True,
+    )
+
+    parser.add_argument("-v", "--validate", help="validate lido", action="store_true")
+    args = parser.parse_args()
+
+    m = LinkChecker(
+        Input=args.input,
+    )
+    m.new_check()

@@ -31,7 +31,8 @@
 	korrigieren. TODO
 	
 	7.10.2022 Frank möchte jetzt Literaturangaben in relatedWorks haben. Dann muss ich zusehen, dass die 
-	nicht wieder herausgefiltert werden an einem späteren Schritt
+	nicht wieder herausgefiltert werden an einem späteren Schritt.
+	
 	
 	-->
 
@@ -62,6 +63,19 @@
 				</xsl:if>
 			</lido:objectRelationWrap>
 		</xsl:if>
+		<xsl:message>
+			<xsl:choose>
+				<xsl:when test="z:repeatableGroup[@name='ObjIconographyGrp']">
+					<xsl:message>ObjIconographyGrp</xsl:message>
+				</xsl:when>
+				<xsl:when test="z:repeatableGroup[@name='ObjKeyWordsGrp']">
+					<xsl:message>ObjIconographyGrp</xsl:message>
+				</xsl:when>
+				<xsl:when test="$relatedWorks">
+					<xsl:message>relatedWorks</xsl:message>
+				</xsl:when>
+			</xsl:choose>
+		</xsl:message>
     </xsl:template>
 
 	<!--RIA:ICONCLASS-->

@@ -62,6 +62,8 @@ class LidoTool(Jobs):
         self.chunks = chunks
         if Input is not None:
             self.Input = Path(Input)  # initial input file, e.g. 3Wege.zml.xml
+            if self.Input.is_dir():
+                raise TypeError("ERROR: Input is directory!")
             if re.match("\d\d\d\d\d\d", self.Input.parent.name):
                 self.outdir = (
                     Path("sdata")
@@ -168,14 +170,15 @@ class LidoTool(Jobs):
 
     def urlLidoSingle(self, *, Input):
         """
-        Using Python rewrite (fix) generic Zetcom xml, mostly workng on
+        Using Python rewrite (fix) generic Zetcom xml, mostly working on
         links (urls)
         """
         lc = LinkChecker(Input=Input)
         outFn = lc.out_fn
-        if not Path(outFn).exists() or self.force == True:
+        if not Path(outFn).exists() or self.force:
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
-            lc.guess()  # rewrite filenames with http-links on SMB-Digital
+            # lc.guess()  # rewrite filenames with http-links on SMB-Digital
+            # currently, we dont CHECK if links work
             # lc.rmInternalLinks()  # remove resourceSets with internal links
             lc.fixRelatedWorks()
             lc.saveTree()
@@ -198,8 +201,8 @@ class LidoTool(Jobs):
         """
         orig = os.getcwd()
         splitDir = self.outdir.joinpath("split")
-        # existance of splitDir is a very bad criterion, but cant think of a better one
-        if splitDir.exists or self.force is True:  # problematic
+        # existance of splitDir is a bad criterion, but cant think of a better one
+        if not splitDir.exists() or self.force:  # self.force is True was problematic
             print("SPLITLIDO making")
             os.chdir(self.outdir)
             self.saxon(Input=Input, xsl=xsl["splitLido"], output="o.xml")

@@ -395,6 +395,11 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10435</target>
 		</concept>
 		<concept>
+			<source lang="de">Holz</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300011914</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10577</target>
+		</concept>
+		<concept>
 			<source lang="de">Hose</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300209935</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10036</target>
@@ -458,6 +463,26 @@
 			<source lang="de">Modeillustration</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300015593</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10308</target>
+		</concept>
+		<concept>
+			<source lang="de">Modeobjekt</source>
+			<source lang="de">Modeobjekte</source>
+			<!-- not exact equivalent in aat?-->
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10000</target>
+		</concept>
+		<concept>
+			<source lang="de">Modeveranstaltung</source>
+			<source lang="de">Modeveranstaltungen</source>
+			<!-- not exact equivalent in aat?-->
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10336</target>
+		</concept>
+		
+		
+		
+		<concept>
+			<source lang="de">Papier</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300266707</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10574</target>
 		</concept>
 		<concept>
 			<source lang="de">Pelz</source>

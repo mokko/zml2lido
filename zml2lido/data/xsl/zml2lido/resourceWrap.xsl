@@ -135,25 +135,34 @@
                     <xsl:text>.</xsl:text>
                     <xsl:value-of select="erweiterung"/>
                 </xsl:attribute>
-            -->
+
+				NEW FORM:
+				URL: https://id.smb.museum/digital-asset/[ASSET-ID]
+
+				OLD FORM:
+				https://recherche.smb.museum/images/525075_2500x2500.jpg
+			-->
+
             <lido:resourceRepresentation>
                 <xsl:attribute name="lido:type" xml:lang="en">
 					<xsl:text>Provided image</xsl:text>
                 </xsl:attribute>
 				<xsl:variable name="id" select="normalize-space(z:systemField[@name='__id']/z:value)" />
                 <lido:linkResource> 
+					<xsl:text>https://id.smb.museum/digital-asset/</xsl:text>
+					<xsl:value-of select="z:systemField[@name='__id']/z:value" />
+                </lido:linkResource>
+
+				<!-- OLD FORM
 					<xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex="\.(\w*)$">
 						<xsl:matching-substring>
 							<xsl:attribute name="lido:formatResource">
 								<xsl:value-of select="func:vocmap-replace('formatResource', lower-case(regex-group(1)), 'mimetype')"/>
 							</xsl:attribute>
-							<!-- https://recherche.smb.museum/images/525075_2500x2500.jpg
-							<xsl:value-of select="concat('https://recherche.smb.museum/images/',$id,'_2500x2500.jpg')"/>
-							-->
 							<xsl:value-of select="concat($id,'.',regex-group(1))"/>
 						</xsl:matching-substring>
 					</xsl:analyze-string>
-                </lido:linkResource>
+				-->	
                     <!-- lido:resourceMeasurementsSet>
                         <lido:measurementType>width</lido:measurementType>
                         <lido:measurementUnit>pixel</lido:measurementUnit>

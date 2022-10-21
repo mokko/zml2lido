@@ -36,6 +36,7 @@
 					<lido:eventType>
 						<lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00001</lido:conceptID>
 						<lido:term xml:lang="de">Erwerb</lido:term>
+						<lido:term xml:lang="en">Acquisition (Activity)</lido:term>
 						<xsl:comment>beschreibt den Erwerb des Objekts durch die verwaltende Institution</xsl:comment>
 					</lido:eventType>
 

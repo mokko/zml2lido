@@ -18,9 +18,7 @@ def lido():
         action="store_true",
     )
     parser.add_argument("-i", "--input", help="zml input file", required=True)
-    parser.add_argument(
-        "-j", "--job", help="pick job (localLido or smbLido)", required=True
-    )
+    parser.add_argument("-j", "--job", help="pick job (e.g. smb or dd)", required=True)
     parser.add_argument(
         "-f", "--force", help="force overwrite existing lido", action="store_true"
     )

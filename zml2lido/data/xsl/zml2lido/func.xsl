@@ -141,7 +141,10 @@
 				<xsl:text>WARNING: vocmap-replace-lax returns EMPTY ON </xsl:text>
 				<xsl:value-of select="$src-term"/> 
 				<xsl:text> FROM </xsl:text>
-				<xsl:value-of select="$src-voc"/> 
+				<xsl:value-of select="$src-voc"/>
+				<xsl:text> (</xsl:text>
+				<xsl:value-of select="$target"/>
+				<xsl:text>)</xsl:text>
 			</xsl:message>
 		</xsl:if> 
 		<xsl:value-of select="$return"/>

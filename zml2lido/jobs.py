@@ -48,13 +48,14 @@ class Jobs:
         (2) rewrite and check internal links with recherche.smb links
         (3) split into individual lido records
 
-        Used to make html representation as step 5
-
         Optional
         - validate with -v on command line
 
         Used In
         - currently not used on a regular basis
+
+        Used to
+        - make html representation as step 5
         """
         mitSachbegriffZML = self.splitSachbegriff(
             Input=self.Input
@@ -71,14 +72,20 @@ class Jobs:
         """
         (1) convert from native xml to lido
         (2) filter out records that are not published on recherche.smb
-        (3) rewrite and check internal links using recherche.smb urls
-        (4) split lido into single files
+        (3) split lido into single files
+
+        NEW:
+        - no more link rewriting and checking for linkResources
 
         Optional
         - validate using command line switch -v
 
         Used In
         - current default flavor for FvH.
+
+        Used to
+        - rewrite and check internal links using recherche.smb urls
+
         """
         lido_fn = self.zml2lido(Input=self.Input)
         onlyPublished = self.onlyPublished(Input=lido_fn)
