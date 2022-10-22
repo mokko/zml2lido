@@ -204,11 +204,7 @@
 				Frank will das Feld nicht in LIDO haben, weil da teilweise Müll drin steht (?).
 				14.2.2022 jetzt will er es wieder haben.
 			-->
-			<xsl:variable name="excluded" select="'182397'"/>
-			<xsl:if test="not($object/z:moduleReference[@name='ObjObjectGroupsRef']/z:moduleReferenceItem[@moduleItemId = $excluded])">
-				<xsl:message terminate="no">including Inhalt/Ansicht</xsl:message>
-				<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
-			</xsl:if>
+			<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
 			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
 			<!--Urheber-->
 			<xsl:apply-templates mode="Urheber" select="z:moduleReference[@name='MulPhotographerPerRef']"/>
