@@ -79,10 +79,10 @@ class LinkChecker:
                     print("WARN: No check for mtype 'Literature'")
                 else:
                     if mtype + ID.text in self.cache:
-                        print(f"--> from CACHE")
+                        # print(f"--> from CACHE")
                         b = self.cache[mtype + ID.text]
                     else:
-                        print("--> new check")
+                        # print("--> new check")
                         b = sar.checkApproval(ID=ID.text, mtype=mtype)
                         self.cache[mtype + ID.text] = b
                     print(f"relatedWorks{ID.text} {b}")
