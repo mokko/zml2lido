@@ -271,7 +271,7 @@ class LidoTool(Jobs):
         # print (f"lido file:{lido_fn}")
 
         if not lidoFn.exists() or self.force is True:
-            print("ZML2LIDO new")
+            print("\tnew")
             self.saxon(Input=inputP, xsl=xsl["zml2lido"], output=lidoFn)
         else:
             print("exists already, no overwrite")

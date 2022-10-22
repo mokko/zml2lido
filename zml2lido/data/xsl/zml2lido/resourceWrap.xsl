@@ -152,7 +152,17 @@
 					<xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex="\.(\w*)$">
 						<xsl:matching-substring>
 							<xsl:attribute name="lido:formatResource">
-								<xsl:value-of select="func:vocmap-replace('formatResource', lower-case(regex-group(1)), 'mimetype')"/>
+								<xsl:variable name="mimetype" select="
+									func:vocmap-replace('formatResource', lower-case(regex-group(1)), 'mimetype')"/>
+								<!-- rewrite mimetype for tiffs transparently -->
+								<xsl:choose>
+									<xsl:when test="$mimetype eq 'image/tiff'">
+										<xsl:text>image/jpeg</xsl:text>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:value-of select="$mimetype"/>
+									</xsl:otherwise>
+								</xsl:choose>
 							</xsl:attribute>
 						</xsl:matching-substring>
 					</xsl:analyze-string>
