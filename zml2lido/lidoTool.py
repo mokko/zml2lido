@@ -187,7 +187,7 @@ class LidoTool(Jobs):
         return outFn
 
     def splitLido(self, *, Input):
-        print("SPLITLIDO enter")
+        #print("SPLITLIDO enter")
         if self.chunks:
             for chunkFn in self.chunkName(Input=Input):
                 self.splitLidoSingle(Input=chunkFn)
