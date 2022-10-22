@@ -63,7 +63,7 @@
 				</xsl:if>
 			</lido:objectRelationWrap>
 		</xsl:if>
-		<xsl:message>
+		<!-- xsl:message>
 			<xsl:choose>
 				<xsl:when test="z:repeatableGroup[@name='ObjIconographyGrp']">
 					<xsl:message>ObjIconographyGrp</xsl:message>
@@ -75,7 +75,7 @@
 					<xsl:message>relatedWorks</xsl:message>
 				</xsl:when>
 			</xsl:choose>
-		</xsl:message>
+		</xsl:message -->
     </xsl:template>
 
 	<!--RIA:ICONCLASS-->
