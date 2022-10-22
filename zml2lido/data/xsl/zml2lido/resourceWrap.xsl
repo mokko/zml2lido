@@ -63,7 +63,7 @@
 		-->
 		<xsl:if test="count($objId) > 1">
 			<xsl:message terminate="yes">
-				<xsl:text>ERROR: objId is not UNIQUE</xsl:text>
+				<xsl:text>WARN: objId is not UNIQUE</xsl:text>
 				<xsl:text> (</xsl:text>
 				<xsl:value-of select="../@name"/>
 				<xsl:text>: </xsl:text>
@@ -149,25 +149,17 @@
                 </xsl:attribute>
 				<xsl:variable name="id" select="normalize-space(z:systemField[@name='__id']/z:value)" />
                 <lido:linkResource> 
-					<xsl:text>https://id.smb.museum/digital-asset/</xsl:text>
-					<xsl:value-of select="z:systemField[@name='__id']/z:value" />
-                </lido:linkResource>
-
-				<!-- OLD FORM
 					<xsl:analyze-string select="z:dataField[@name='MulOriginalFileTxt']" regex="\.(\w*)$">
 						<xsl:matching-substring>
 							<xsl:attribute name="lido:formatResource">
 								<xsl:value-of select="func:vocmap-replace('formatResource', lower-case(regex-group(1)), 'mimetype')"/>
 							</xsl:attribute>
-							<xsl:value-of select="concat($id,'.',regex-group(1))"/>
 						</xsl:matching-substring>
 					</xsl:analyze-string>
-				-->	
-                    <!-- lido:resourceMeasurementsSet>
-                        <lido:measurementType>width</lido:measurementType>
-                        <lido:measurementUnit>pixel</lido:measurementUnit>
-                        <lido:measurementValue>120</lido:measurementValue>
-                    </lido:resourceMeasurementsSet -->
+					<xsl:text>https://id.smb.museum/digital-asset/</xsl:text>
+					<xsl:value-of select="z:systemField[@name='__id']/z:value" />
+                </lido:linkResource>
+
             </lido:resourceRepresentation>
 			<lido:resourceType>
 				<!-- 

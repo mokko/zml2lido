@@ -68,7 +68,6 @@
 			<xsl:apply-templates select="z:dataField[@name='MethodTxt']/z:value"/>
 			<xsl:apply-templates select="z:dataField[@name='PositionTxt']/z:value"/>
 			<xsl:apply-templates select="z:dataField[@name='OrientationTxt']/z:value"/>
-			
 		</lido:inscriptions>
 	</xsl:template>
 
