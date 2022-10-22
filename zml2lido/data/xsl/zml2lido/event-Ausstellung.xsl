@@ -33,12 +33,12 @@
 						</lido:event>
 					</lido:eventSet>
 				</xsl:when> 
-				<xsl:otherwise>
+				<!--xsl:otherwise>
 					<xsl:message>
 						EXHIBIT IGNORED
 						<xsl:value-of select="$value"/>
 					</xsl:message>
-			</xsl:otherwise>
+				</xsl:otherwise>-->
 			</xsl:choose>
 		</xsl:for-each>
 
