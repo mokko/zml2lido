@@ -24,12 +24,11 @@
 		drop 
 		Problem: relatedWorksWrap may well remain empty
 	-->
-	<xsl:template match="/lido:lidoWrap/lido:lido/lido:descriptiveMetadata/lido:objectRelationWrap/lido:relatedWorksWrap/lido:relatedWorkSet[lido:relatedWork/lido:object/lido:objectID/@lido:source ='LIT.ID']">
+	<xsl:template match="/lido:lidoWrap/lido:lido/lido:administrativeMetadata/lido:resourceWrap/lido:resourceSet/lido:resourceDescription">
 		<xsl:message>
-			<xsl:text>dropping relatedWorkSet for Literature: </xsl:text>
-			<xsl:value-of select="lido:relatedWork/lido:object/lido:objectID"/>
+			<xsl:text>dropping resourceDescription: </xsl:text>
+			<xsl:value-of select="."/>
 		</xsl:message>
 	</xsl:template>
-
 </xsl:stylesheet>
 
