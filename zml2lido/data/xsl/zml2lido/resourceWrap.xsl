@@ -201,13 +201,17 @@
 			</lido:resourceType>
 			<!-- 
 				22.12.2021 
-				Frank will das Feld nicht in LIDO haben, weil da teilweise Müll drin steht (?).
+				Frank will das Feld Inhalt/Ansicht nicht in LIDO haben, weil da teilweise Müll drin steht (?).
 				14.2.2022 jetzt will er es wieder haben.
 			-->
 			<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
 			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
-			<!--Urheber-->
-			<xsl:apply-templates mode="Urheber" select="z:moduleReference[@name='MulPhotographerPerRef']"/>
+			<!--
+				Urheber
+				Jetzt haben wir zwei rightsHolder 2mal. Wollen wir das wirklich so?	
+				<xsl:apply-templates mode="U" select="z:moduleReference[@name='MulPhotographerPerRef']"/>
+				Einmal reicht
+			-->
 			
             <lido:rightsResource>
 				<lido:rightsType>
@@ -251,15 +255,16 @@
         </lido:resourceSet>
     </xsl:template>
 
-    <xsl:template mode="Urheber" match="z:moduleReference[@name='MulPhotographerPerRef']">
+	<!-- not used anymore -->
+    <xsl:template mode="U" match="z:moduleReference[@name='MulPhotographerPerRef']">
 		<!--xsl:message>
 			<xsl:text>Urheber</xsl:text>
 			<xsl:value-of select="z:moduleReferenceItem/z:formattedValue" />
 		</xsl:message-->
 		<lido:rightsResource>
 			<lido:rightsType>
-				<lido:term xml:lang="DE">Urheber</lido:term>
-			</lido:rightsType>
+				<lido:conceptID lido:source="CC" lido:type="URI">http://creativecommons.org/by-nc-sa/4.0/</lido:conceptID>
+                <lido:term lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</lido:term>			</lido:rightsType>
 			<lido:rightsHolder>
 				<lido:legalBodyName>
 					<lido:appellationValue>
