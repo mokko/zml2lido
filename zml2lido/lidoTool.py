@@ -60,6 +60,13 @@ class LidoTool(Jobs):
         self.validation = validation
         self.force = force
         self.chunks = chunks
+
+        script_dir = Path(__file__).parent.parent
+        # print (f"SCRIPT_DIR: {script_dir}")
+
+        if script_dir != Path.cwd():
+            raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
+
         if Input is not None:
             self.Input = Path(Input)  # initial input file, e.g. 3Wege.zml.xml
             if self.Input.is_dir():
