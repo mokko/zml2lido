@@ -189,7 +189,7 @@ class LinkChecker:
         for recordN in recordsL:
             recID = recordN.xpath("l:lidoRecID", namespaces=NSMAP)[0]
             self.log(f"\trmUnpublishedRecords: {recID}")
-            record.getparent().remove(record)
+            recordN.getparent().remove(recordN)
         self.log("rmUnpublishedRecords: done!")
 
     def saveTree(self):

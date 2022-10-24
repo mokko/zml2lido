@@ -72,6 +72,7 @@ class Jobs:
         """
         (1) convert from native xml to lido
         (2) filter out records that are not published on recherche.smb
+        (3) validate lido (optional)
         (3) split lido into single files
 
         NEW:
@@ -85,14 +86,18 @@ class Jobs:
 
         Used to
         - rewrite and check internal links using recherche.smb urls
+        - create html versions of lido
 
         """
+        #(1) convert input to lido using 
         lido_fn = self.zml2lido(Input=self.Input)
-        onlyPublished = self.onlyPublished(Input=lido_fn)
+        #(2) call LinkChecker: fix links and rm unpublished parts
+        #onlyPublished = self.onlyPublished(Input=lido_fn)
         linklido_fn = self.urlLido(
-            Input=onlyPublished
-        )  # fix links and rm unpublished parts
+           Input=lido_fn
+        )
+        #(3) validate        
         if self.validation:
             self.validate(Input=linklido_fn)
+        #(4) split big lido file into small ones
         self.splitLido(Input=linklido_fn)
-        # self.lido2html(Input=linklido_fn)

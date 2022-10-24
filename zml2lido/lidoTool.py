@@ -56,7 +56,7 @@ xsl = {
 
 
 class LidoTool(Jobs):
-    def __init__(self, *, force=False, validation=False, Input=None, chunks=False):
+    def __init__(self, *, Input, force=False, validation=False, chunks=False):
         self.validation = validation
         self.force = force
         self.chunks = chunks
@@ -67,31 +67,33 @@ class LidoTool(Jobs):
         if script_dir != Path.cwd():
             raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
 
-        if Input is not None:
-            self.Input = Path(Input)  # initial input file, e.g. 3Wege.zml.xml
-            if self.Input.is_dir():
-                raise TypeError("ERROR: Input is directory!")
-            if re.match("\d\d\d\d\d\d", self.Input.parent.name):
-                self.outdir = (
-                    Path("sdata")
-                    .resolve()
-                    .joinpath(self.Input.parent.parent.name, self.Input.parent.name)
-                )
-            else:
-                self.outdir = Path("sdata").resolve().joinpath(self.Input.parent.name)
+        #check Input
+        if Input is None:
+            raise TypeError("ERROR: Input can't be None")
+        self.Input = Path(Input)  # initial input file, e.g. 3Wege.zml.xml
+        if self.Input.is_dir():
+            raise TypeError("ERROR: Input is directory!")
 
-            # alternatively, we could make a new dir based on the input
-            # C:\m3\MpApi\sdata\3Wege\3Wege20211019.xml
-            # 3Wege -> sdata\3Wege
-            if not self.outdir.exists():
-                print(f"Making new dir {self.outdir}")
-                self.outdir.mkdir(parents=True, exist_ok=False)
-            print(f" outdir {self.outdir}")
-            logfile = self.outdir.joinpath("lidoTool.log")
-            # let's append to the log file so we can aggregrate results from multiple runs
-            logging.basicConfig(
-                filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
+        #determine outdir
+        if re.match("\d\d\d\d\d\d", self.Input.parent.name):
+            self.outdir = (
+                Path("sdata")
+                .resolve()
+                .joinpath(self.Input.parent.parent.name, self.Input.parent.name)
             )
+        else:
+            self.outdir = Path("sdata").resolve().joinpath(self.Input.parent.name)
+
+        if not self.outdir.exists():
+            print(f"Making new dir {self.outdir}")
+            self.outdir.mkdir(parents=True, exist_ok=False)
+        print(f" outdir {self.outdir}")
+        logfile = self.outdir.joinpath("lidoTool.log")
+
+        # let's append to the log file so we can aggregrate results from multiple runs
+        logging.basicConfig(
+            filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
+        )
 
     #
     # Steps
@@ -320,6 +322,7 @@ class LidoTool(Jobs):
         subprocess.run(
             cmd, check=True  # , stderr=subprocess.STDOUT
         )  # overwrites output file without saying anything
+
 
     def _analyze_chunkFn(self, *, Input):
         print(f"ENTER ANALYZE WITH {Input}")
