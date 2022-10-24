@@ -89,15 +89,13 @@ class Jobs:
         - create html versions of lido
 
         """
-        #(1) convert input to lido using 
+        # (1) convert input to lido using
         lido_fn = self.zml2lido(Input=self.Input)
-        #(2) call LinkChecker: fix links and rm unpublished parts
-        #onlyPublished = self.onlyPublished(Input=lido_fn)
-        linklido_fn = self.urlLido(
-           Input=lido_fn
-        )
-        #(3) validate        
+        # (2) call LinkChecker: fix links and rm unpublished parts
+        # onlyPublished = self.onlyPublished(Input=lido_fn)
+        linklido_fn = self.urlLido(Input=lido_fn)
+        # (3) validate
         if self.validation:
             self.validate(Input=linklido_fn)
-        #(4) split big lido file into small ones
+        # (4) split big lido file into small ones
         self.splitLido(Input=linklido_fn)

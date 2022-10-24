@@ -67,14 +67,14 @@ class LidoTool(Jobs):
         if script_dir != Path.cwd():
             raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
 
-        #check Input
+        # check Input
         if Input is None:
             raise TypeError("ERROR: Input can't be None")
         self.Input = Path(Input)  # initial input file, e.g. 3Wege.zml.xml
         if self.Input.is_dir():
             raise TypeError("ERROR: Input is directory!")
 
-        #determine outdir
+        # determine outdir
         if re.match("\d\d\d\d\d\d", self.Input.parent.name):
             self.outdir = (
                 Path("sdata")
@@ -322,7 +322,6 @@ class LidoTool(Jobs):
         subprocess.run(
             cmd, check=True  # , stderr=subprocess.STDOUT
         )  # overwrites output file without saying anything
-
 
     def _analyze_chunkFn(self, *, Input):
         print(f"ENTER ANALYZE WITH {Input}")
