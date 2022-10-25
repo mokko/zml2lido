@@ -42,6 +42,7 @@ from zml2lido.jobs import Jobs
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 conf_fn = Path(__file__).parent.parent.joinpath("sdata", "lido_conf.py")
 xslDir = Path(__file__).parent.joinpath("data/xsl")
+lidoXSD = Path(__file__).parent.joinpath("data/xsd/lido-v1.0.xsd")
 
 with open(conf_fn) as f:
     exec(f.read())  # saxLib, lidoXSD
@@ -258,15 +259,16 @@ class LidoTool(Jobs):
         os.chdir(orig)
         return xslDir.joinpath(out)
 
-    def validate(self, *, Input):
+    def validate(self):
+        """If it doesn't die, it validated fine."""
+
         print("VALIDATING LIDO")
         if self.chunks:
             print(" with chunks")
-            for chunkFn in self.chunkName(Input=Input):
+            for chunkFn in self.chunkName(Input=self.Input):
                 self.validateSingle(Input=chunkFn)
         else:
-            self.validateSingle(Input=Input)
-        return Input  # validate does not write new files
+            self.validateSingle(Input=self.Input)
 
     def validateSingle(self, *, Input):
         if not hasattr(self, "schema"):

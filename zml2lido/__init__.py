@@ -102,5 +102,5 @@ def validate():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", required=True)
     args = parser.parse_args()
-    m = LidoTool()
-    m.validate(Input=args.input)
+    m = LidoTool(Input=args.input)
+    m.validate()
