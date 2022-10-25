@@ -16,13 +16,13 @@
 
 		<!-- only if positiv-->
 		<xsl:for-each select="z:moduleReference[@name='ObjRegistrarRef']/z:moduleReferenceItem">
-			<xsl:variable name="value" select="z:formattedValue"/>
+			<xsl:variable name="registrarV" select="z:formattedValue"/>
 			<!-- tokenize("XPath is fun", "\s+") -->
 			<xsl:choose>
-				<xsl:when test="starts-with($value, 'Positiv, ')"> 
+				<xsl:when test="starts-with($registrarV, 'Positiv, ')"> 
 					<lido:eventSet>
 						<lido:displayEvent xml:lang="de">
-							<xsl:value-of select="substring-after($value, 'Positiv, ')"/>
+							<xsl:text>Ausstellung</xsl:text>
 						</lido:displayEvent>
 						<lido:event>
 							<lido:eventType>
@@ -30,6 +30,11 @@
 								<lido:term xml:lang="de">Ausstellung (Aktivität)</lido:term>
 								<lido:term xml:lang="en">Exhibition (Activity)</lido:term>
 							</lido:eventType>
+							<lido:eventName>
+								<lido:appellationValue>
+									<xsl:value-of select="substring-after($registrarV, 'Positiv, ')"/>
+								</lido:appellationValue>
+							</lido:eventName>
 						</lido:event>
 					</lido:eventSet>
 				</xsl:when> 

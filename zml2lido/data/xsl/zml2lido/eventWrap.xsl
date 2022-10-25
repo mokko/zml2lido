@@ -93,13 +93,15 @@
 							<xsl:value-of select="$kue/z:dataField[@name = 'PerNennformTxt']"/>
 						</lido:appellationValue>
 					</lido:nameActorSet>
-					<lido:nationalityActor>
-						<lido:term>
-							<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerNationalityVoc']
-							/z:vocabularyReferenceItem/z:formattedValue"/>
-						</lido:term>
-					</lido:nationalityActor>
-
+					<xsl:variable name="nationality" select="$kue/z:vocabularyReference[@name = 'PerNationalityVoc']
+						/z:vocabularyReferenceItem/z:formattedValue" />
+					<xsl:if test="$nationality ne ''">
+						<lido:nationalityActor>
+							<lido:term>
+								<xsl:value-of select="$nationality"/>
+							</lido:term>
+						</lido:nationalityActor>
+					</xsl:if>
 					<!-- 
 						LIDO 1.0 appears to be missing a mechanism to provide other dates than vitalDates 
 						for an actor. Also missing is a displayDate to allow inexact textual info
