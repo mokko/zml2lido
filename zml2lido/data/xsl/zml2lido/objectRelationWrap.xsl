@@ -215,9 +215,10 @@
 					</lido:objectID>
 				</lido:object>
 			</lido:relatedWork>
+			<!-- was: is related to, see #56-->
 			<lido:relatedWorkRelType>
-				<lido:conceptID lido:type="URI">http://terminology.lido-schema.org/lido00263</lido:conceptID>
-				<lido:term xml:lang="en">is related to</lido:term>
+				<lido:conceptID lido:type="URI">http://terminology.lido-schema.org/lido00617</lido:conceptID>
+				<lido:term xml:lang="en">is documented in</lido:term>
 			</lido:relatedWorkRelType>
 		</lido:relatedWorkSet>
 	</xsl:template>
