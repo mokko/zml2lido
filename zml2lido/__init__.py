@@ -8,6 +8,48 @@ from zml2lido.lidoTool import LidoTool
 from zml2lido.linkChecker import LinkChecker
 
 
+def lfilter():
+    parser = argparse.ArgumentParser(description="Little LIDO toolchain")
+    parser.add_argument(
+        "-c",
+        "--chunks",
+        help="expect the input to be multiple precisely-named chunks",
+        required=False,
+        action="store_true",
+    )
+    parser.add_argument(
+        "-f", "--force", help="force overwrite existing lido", action="store_true"
+    )
+    parser.add_argument("-i", "--input", help="zml input file", required=True)
+    parser.add_argument(
+        "-s",
+        "--split",
+        help="split the resulting file overwriting existing split files",
+        action="store_true",
+    )
+    parser.add_argument(
+        "-t",
+        "--Type",
+        help="select the element that needs to weeded out",
+        required=True,
+    )
+    parser.add_argument("-v", "--validate", help="validate resulting lido file")
+
+    args = parser.parse_args()
+
+    if args.force:
+        args.validate = True
+
+    if args.chunks:
+        raise TypeError("ERROR: Filter in chunking mode not implemented yet!")
+
+    m = LidoTool(
+        Input=args.input, force=args.force, validation=args.validate, chunks=args.chunks
+    )
+
+    m.lfilter(Type=args.Type, split=args.split)
+
+
 def lido():
     parser = argparse.ArgumentParser(description="Little LIDO toolchain")
     parser.add_argument(

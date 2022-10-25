@@ -49,6 +49,8 @@ with open(conf_fn) as f:
 xsl = {
     "zml2lido": xslDir.joinpath("zml2lido.xsl"),
     "lido2html": xslDir.joinpath("lido2html.xsl"),
+    "Inhalt": xslDir.joinpath("dropResourceDescriptionInhaltAnsicht.xsl"),  # filter
+    "Literatur": xslDir.joinpath("dropRelatedWorksLiterature.xsl"),  # filter
     "onlyPublished": xslDir.joinpath("filterPublished.xsl"),
     "splitLido": xslDir.joinpath("splitLido.xsl"),
     "splitSachbegriff": xslDir.joinpath("splitNoSachbegriff.xsl"),
@@ -98,6 +100,19 @@ class LidoTool(Jobs):
     #
     # Steps
     #
+
+    def lfilter(self, *, split=False, Type):
+        if not Type in xsl:
+            raise TypeError(f"Error: Unknown type '{Type}'")
+
+        new_fn = self.Input.stem + f"-no{Type}.xml"
+        out_fn = self.outdir.joinpath(new_fn)
+
+        self.saxon(Input=self.Input, xsl=xsl[Type], output=out_fn)
+
+        if split:
+            self.force = True
+            self.splitLido(Input=out_fn)
 
     def lido2html(self, *, Input):
         print("LIDO2HTML")
