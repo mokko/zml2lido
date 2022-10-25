@@ -67,8 +67,9 @@
 			<xsl:value-of select="$gnd"/>
 		</xsl:message-->
 		<lido:eventActor>
+			<xsl:variable name="actor" select="substring-after(z:formattedValue, ': ')"/>
 			<lido:displayActorInRole>
-				<xsl:value-of select="normalize-space(z:formattedValue)"/>
+				<xsl:value-of select="normalize-space($actor)"/>
 			</lido:displayActorInRole>
 			<lido:actorInRole>
 				<!-- http://xtree-public.digicult-verbund.de/vocnet/?uriVocItem=http://terminology.lido-schema.org/&startNode=lido00409&lang=en&d=n -->
