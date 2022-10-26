@@ -8,6 +8,7 @@ from zml2lido.lidoTool import LidoTool
 from zml2lido.linkChecker import LinkChecker
 from zml2lido.vocmap import Vocmap
 
+
 def lfilter():
     parser = argparse.ArgumentParser(description="Little LIDO toolchain")
     parser.add_argument(
@@ -124,4 +125,4 @@ def vocmap():
 
     args = parser.parse_args()
 
-    vm = Vocmap(Input=args.Input, output=args.ouput)
+    vm = Vocmap(Input=args.Input, output=args.output)
