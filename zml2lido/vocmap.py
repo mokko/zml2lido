@@ -7,7 +7,6 @@ vocmap -i in.xml -o out.xslx
 
 """
 
-
 class Vocmap:
     from pathlib import Path
     from lxml import etree

@@ -22,7 +22,7 @@ lfilter = 'zml2lido:lfilter'
 lido = 'zml2lido:lido'
 lvalidate = 'zml2lido:validate' 
 saxon = 'zml2lido:saxon'
-vocmap = 'vocmap:Vocmap'
+vocmap = 'zml2lido:vocmap'
 
 
 [project.urls]
