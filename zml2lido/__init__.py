@@ -30,7 +30,7 @@ def lfilter():
     parser.add_argument(
         "-t",
         "--Type",
-        help="select the element that needs to weeded out",
+        help="select the element that needs to go [Inhalt, Literatur]",
         required=True,
     )
     parser.add_argument("-v", "--validate", help="validate resulting lido file")

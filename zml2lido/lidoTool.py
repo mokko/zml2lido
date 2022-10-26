@@ -247,7 +247,7 @@ class LidoTool(Jobs):
     def splitSachbegriffSingle(self, *, Input):
         """
         Writes two files to output dir
-        ohneSachbegriff.xml is meant for debug purposes.
+        ohneSachbegriff.xml is meant for debugging.
         """
         orig = os.getcwd()
         os.chdir(self.outdir)
@@ -260,7 +260,7 @@ class LidoTool(Jobs):
         return xslDir.joinpath(out)
 
     def validate(self):
-        """If it doesn't die, it validated fine."""
+        """If it doesn't die, data validates."""
 
         print("VALIDATING LIDO")
         if self.chunks:
