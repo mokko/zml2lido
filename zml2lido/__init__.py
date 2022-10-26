@@ -1,6 +1,6 @@
 """lido.py - A quick and dirty toolbox for turning zml files into LIDO"""
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 
 import argparse
 import sys
@@ -104,3 +104,24 @@ def validate():
     args = parser.parse_args()
     m = LidoTool(Input=args.input)
     m.validate()
+
+
+def vocmap():
+    parser = argparse.ArgumentParser(description="vocmap convertor")
+    parser.add_argument(
+        "-i",
+        "--Input",
+        help="input file",
+        required=True,
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="output file",
+        required=True,
+    )
+
+    args = parser.parse_args()
+
+    vm = vocmap(Input=args.Input, output=args.ouput)

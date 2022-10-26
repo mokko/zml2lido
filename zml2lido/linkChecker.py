@@ -127,7 +127,7 @@ class LinkChecker:
 
     def new_check(self):
         """
-        For all linkResources, check if url responds ok 
+        For all linkResources, check if url responds ok
         """
         linkResourceL = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
@@ -190,7 +190,7 @@ class LinkChecker:
             recID = recordN.xpath("l:lidoRecID", namespaces=NSMAP)[0]
             self.log(f"rm unpublishedRecords: {recID}")
             recordN.getparent().remove(recordN)
-        #self.log("rmUnpublishedRecords: done!")
+        # self.log("rmUnpublishedRecords: done!")
 
     def saveTree(self):
         self.log(f"Writing back to {self.out_fn}")
