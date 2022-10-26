@@ -85,9 +85,9 @@ class LinkChecker:
                         # print("--> new check")
                         b = sar.checkApproval(ID=ID.text, mtype=mtype)
                         self.cache[mtype + ID.text] = b
-                    print(f"relatedWorks{ID.text} {b}")
+                    print(f"relatedWorks {ID.text} {b}")
                     if not b:
-                        self.log(f"removing unpublic relatedWorks {ID.text}")
+                        self.log(f"\tremoving unpublic relatedWorks")
                         relWorkSet = ID.getparent().getparent().getparent()
                         relWorkSet.getparent().remove(relWorkSet)
             self._save_cache()
@@ -127,7 +127,7 @@ class LinkChecker:
 
     def new_check(self):
         """
-        I might need a check that verifies if resources actually exist online.
+        For all linkResources, check if url responds ok 
         """
         linkResourceL = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
@@ -188,9 +188,9 @@ class LinkChecker:
         )
         for recordN in recordsL:
             recID = recordN.xpath("l:lidoRecID", namespaces=NSMAP)[0]
-            self.log(f"\trmUnpublishedRecords: {recID}")
+            self.log(f"rm unpublishedRecords: {recID}")
             recordN.getparent().remove(recordN)
-        self.log("rmUnpublishedRecords: done!")
+        #self.log("rmUnpublishedRecords: done!")
 
     def saveTree(self):
         self.log(f"Writing back to {self.out_fn}")
