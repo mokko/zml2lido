@@ -96,6 +96,7 @@ class Jobs:
         linklido_fn = self.urlLido(Input=lido_fn)
         # (3) validate
         if self.validation:
-            self.validate(Input=linklido_fn)
+            self.Input=linklido_fn
+            self.validate()
         # (4) split big lido file into small ones
         self.splitLido(Input=linklido_fn)

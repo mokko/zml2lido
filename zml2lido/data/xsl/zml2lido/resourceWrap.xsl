@@ -208,17 +208,76 @@
 			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
 			<!--
 				Urheber
-				Jetzt haben wir zwei rightsHolder 2mal. Wollen wir das wirklich so?	
+				Jetzt hatten mal zwei rightsHolder; Oktober 2022 zu einer normalen CreditLine geändert. 	
 				<xsl:apply-templates mode="U" select="z:moduleReference[@name='MulPhotographerPerRef']"/>
-				Einmal reicht
 			-->
+
+			<xsl:variable name="license">
+				<xsl:choose>
+					<xsl:when test="z:repeatableGroup[@name eq 'MulRightsGrp' and @size eq '1']">
+						<xsl:value-of select="
+							z:repeatableGroup[
+								@name eq 'MulRightsGrp'
+							]/z:repeatableGroupItem/z:vocabularyReference[
+								@name eq 'LicenceVoc'
+							]/z:vocabularyReferenceItem/z:formattedValue						
+							"/>
+					</xsl:when>
+					<xsl:when test="not (z:repeatableGroup[@name eq 'MulRightsGrp'])">
+						<!-- return empty string or ''-->
+					</xsl:when>
+					<xsl:when test="z:repeatableGroup[@name eq 'MulRightsGrp' and @size &gt; '1']">
+						<xsl:message>
+							<xsl:text>xxx multiple licenses </xsl:text>
+							<xsl:value-of select="z:repeatableGroup[
+								@name eq 'MulRightsGrp'
+							]/z:repeatableGroupItem/z:vocabularyReference[
+									@name eq 'LicenceVoc'
+								]/z:vocabularyReferenceItem/z:formattedValue
+							"/>
+						</xsl:message>
+						<xsl:value-of select="z:repeatableGroup[
+							@name eq 'MulRightsGrp'
+						]/z:repeatableGroupItem[
+							last()
+						]/z:vocabularyReference[
+								@name eq 'LicenceVoc'
+							]/z:vocabularyReferenceItem/z:formattedValue
+						"/>
+					</xsl:when>
+				</xsl:choose>
+			</xsl:variable> 
+			
+			<xsl:message>
+				<xsl:text>xxx </xsl:text>
+				<xsl:value-of select="$license"/>
+			</xsl:message>
 			
             <lido:rightsResource>
-				<lido:rightsType>
-					<lido:conceptID lido:source="CC"
-					                lido:type="URI">http://creativecommons.org/by-nc-sa/4.0/</lido:conceptID>
-					<lido:term lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</lido:term>
-				</lido:rightsType>                
+				<xsl:choose>
+					<xsl:when test="$license eq 'Public Domain Mark 1.0'">
+						<lido:rightsType>
+							<lido:conceptID lido:source="CC"
+											lido:type="URI">https://creativecommons.org/publicdomain/mark/1.0/</lido:conceptID>
+							<lido:term lido:addedSearchTerm="no">
+								<xsl:text>Public Domain Mark 1.0</xsl:text>
+							</lido:term>
+						</lido:rightsType>                
+					</xsl:when>
+					<!-- reverting back to default -->
+					<xsl:when test="$license eq ''">
+						<xsl:message>DEFAULT LICENSE </xsl:message>
+						<xsl:value-of select="$license"/>
+						<lido:rightsType>
+							<lido:conceptID lido:source="CC"
+											lido:type="URI">http://creativecommons.org/by-nc-sa/4.0/</lido:conceptID>
+							<lido:term lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</lido:term>
+						</lido:rightsType>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:message terminate="yes">ERROR: UNKNOWN LICENSE!</xsl:message>
+					</xsl:otherwise>
+				</xsl:choose>                
 				<lido:rightsHolder>
 					<xsl:call-template name="legalBody">
 						<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
@@ -279,13 +338,17 @@
 		inhaltAnsicht
 		22.12.2021 Frank meint, dass die Kurator*innen nicht erwarten, dass inhaltAnsicht ausgegeben wird.
 		14.2.2022 möchte Frank, resourceDescription doch wieder haben, aber nicht für bestimmte Exporte
+		28.10.2022 Frank möchte jetzt resourceDescription nicht ausspielen, wenn 
+		(issue #63) gleich "bpk Kopie freigestellt"
 
 		Problem in spec: resourceDescription does not allow xml:lang
 	-->
     <xsl:template match="z:dataField[@name='MulSubjectTxt']/z:value">
-		<lido:resourceDescription>
-			<xsl:value-of select="."/>
-		</lido:resourceDescription>
+		<xsl:if test=". ne 'bpk Kopie freigestellt'">
+			<lido:resourceDescription>
+				<xsl:value-of select="."/>
+			</lido:resourceDescription>
+		</xsl:if>
 	</xsl:template>
 
     <!-- 
