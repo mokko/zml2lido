@@ -26,11 +26,17 @@
 	<xsl:template match="z:repeatableGroup[@name='ObjDimAllGrp']/z:repeatableGroupItem">
 		<lido:objectMeasurementsSet>
 			<xsl:if test="normalize-space(z:virtualField[@name='PreviewVrt']/z:value) != ''">
-				<lido:displayObjectMeasurements>
-					<!-- use PreviewENVrt? -->
+				<lido:displayObjectMeasurements xml:lang="de">
 					<xsl:value-of select="normalize-space(z:virtualField[@name='PreviewVrt']/z:value)"/>
 				</lido:displayObjectMeasurements>
 			</xsl:if>
+
+			<xsl:if test="normalize-space(z:virtualField[@name='PreviewENVrt']/z:value) != ''">
+				<lido:displayObjectMeasurements xml:lang="en">
+					<xsl:value-of select="normalize-space(z:virtualField[@name='PreviewENVrt']/z:value)"/>
+				</lido:displayObjectMeasurements>
+			</xsl:if>
+
 			<lido:objectMeasurements>
 				<lido:measurementsSet>
 					<lido:measurementType>
@@ -42,15 +48,15 @@
 							@name='UnitDdiVoc']/z:vocabularyReferenceItem/@name)"/>
 					</lido:measurementUnit>
 					<lido:measurementValue>
-						<xsl:apply-templates select="normalize-space(z:moduleReference[
-							@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue)"/>
+						<xsl:apply-templates mode="value" select="z:moduleReference[
+							@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue"/>
 					</lido:measurementValue>
 				</lido:measurementsSet>
 			</lido:objectMeasurements>
 		</lido:objectMeasurementsSet>
 	</xsl:template>
 
-	<xsl:template match="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue">
+	<xsl:template mode="value" match="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue">
 		<xsl:variable name="this" select="normalize-space(.)"/>
 		<xsl:choose>
 			<xsl:when test="$this eq 'Andere Maße'">
