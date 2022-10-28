@@ -61,7 +61,7 @@ class Vocmap:
                 for src in srcL:
                     slang = src.get("lang")
                     print(f"  s|{slang}:{src.text}")
-                    ws[f"A{lno}"] = lno-1 # concept id
+                    ws[f"A{lno}"] = lno - 1  # concept id
                     ws[f"B{lno}"] = slang
                     ws[f"C{lno}"] = src.text
 
