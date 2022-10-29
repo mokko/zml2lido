@@ -38,20 +38,37 @@
 			</xsl:if>
 
 			<lido:objectMeasurements>
+				<xsl:variable name="value">
+					<xsl:apply-templates select="z:moduleReference[
+						@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue" mode="value"/>
+				</xsl:variable>
 				<lido:measurementsSet>
-					<lido:measurementType>
+					<lido:measurementType xml:lang="de">
 						<xsl:value-of select="normalize-space(z:moduleReference[
 							@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue)"/>
 					</lido:measurementType>
-					<lido:measurementUnit>
+					<lido:measurementUnit xml:lang="de">
 						<xsl:value-of select="normalize-space(z:vocabularyReference[
 							@name='UnitDdiVoc']/z:vocabularyReferenceItem/@name)"/>
 					</lido:measurementUnit>
-					<lido:measurementValue>
-						<xsl:apply-templates mode="value" select="z:moduleReference[
-							@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue"/>
+					<lido:measurementValue xml:lang="de">
+						<xsl:value-of select="translate ($value, '.',',')"/>
 					</lido:measurementValue>
 				</lido:measurementsSet>
+				<lido:measurementsSet>
+					<lido:measurementType xml:lang="de">
+						<xsl:value-of select="normalize-space(z:moduleReference[
+							@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue)"/>
+					</lido:measurementType>
+					<lido:measurementUnit xml:lang="en">
+						<xsl:value-of select="normalize-space(z:vocabularyReference[
+							@name='UnitDdiVoc']/z:vocabularyReferenceItem/@name)"/>
+					</lido:measurementUnit>
+					<lido:measurementValue xml:lang="en">
+						<xsl:value-of select="$value"/>
+					</lido:measurementValue>
+				</lido:measurementsSet>
+
 			</lido:objectMeasurements>
 		</lido:objectMeasurementsSet>
 	</xsl:template>
@@ -138,6 +155,15 @@
 			</xsl:when>
 			<xsl:when test="$this eq 'Fläche'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
+			</xsl:when>
+			<xsl:when test="$this eq 'Format'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='PrefixTxt']/z:value)"/>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SuffixTxt']/z:value)"/>
 			</xsl:when>
 			<!-- Walze ist unnötig; todo: in RIA korrigieren -->
 			<xsl:when test="$this eq 'Geschwindigkeit'">

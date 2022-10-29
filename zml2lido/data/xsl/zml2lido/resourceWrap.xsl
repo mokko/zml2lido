@@ -274,14 +274,30 @@
 							<lido:term lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</lido:term>
 						</lido:rightsType>
 					</xsl:when>
+					<xsl:when test="$license eq 'Copyright'">
+						<xsl:message>Copyright </xsl:message>
+						<xsl:value-of select="$license"/>
+						<lido:rightsType>
+							<lido:conceptID lido:source="RIA"
+											lido:type="URI">a</lido:conceptID>
+							<lido:term lido:addedSearchTerm="no">df</lido:term>
+						</lido:rightsType>
+					</xsl:when>
 					<xsl:otherwise>
 						<xsl:message terminate="yes">ERROR: UNKNOWN LICENSE!</xsl:message>
 					</xsl:otherwise>
 				</xsl:choose>                
 				<lido:rightsHolder>
-					<xsl:call-template name="legalBody">
-						<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
-					</xsl:call-template>
+					<xsl:choose>
+						<xsl:when test="$license eq 'Copyright'">
+							<xsl:value-of select="z:vocabularyReference[@name='HolderVoc']/z:vocabularyReferenceItem/z:formattedValue" /> 						
+						</xsl:when>
+							<xsl:otherwise>
+								<xsl:call-template name="legalBody">
+									<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
+								</xsl:call-template>
+							</xsl:otherwise>
+					</xsl:choose>
                 </lido:rightsHolder>
 
                 <!-- 
