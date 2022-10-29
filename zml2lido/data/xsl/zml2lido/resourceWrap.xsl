@@ -228,7 +228,7 @@
 					</xsl:when>
 					<xsl:when test="z:repeatableGroup[@name eq 'MulRightsGrp' and @size &gt; '1']">
 						<xsl:message>
-							<xsl:text>xxx multiple licenses </xsl:text>
+							<xsl:text>multiple licenses -> take last</xsl:text>
 							<xsl:value-of select="z:repeatableGroup[
 								@name eq 'MulRightsGrp'
 							]/z:repeatableGroupItem/z:vocabularyReference[
@@ -249,7 +249,6 @@
 			</xsl:variable> 
 			
 			<xsl:message>
-				<xsl:text>xxx </xsl:text>
 				<xsl:value-of select="$license"/>
 			</xsl:message>
 			
@@ -266,8 +265,7 @@
 					</xsl:when>
 					<!-- reverting back to default -->
 					<xsl:when test="$license eq ''">
-						<xsl:message>DEFAULT LICENSE </xsl:message>
-						<xsl:value-of select="$license"/>
+						<!-- xsl:message>DEFAULT LICENSE </xsl:message-->
 						<lido:rightsType>
 							<lido:conceptID lido:source="CC"
 											lido:type="URI">http://creativecommons.org/by-nc-sa/4.0/</lido:conceptID>
@@ -276,11 +274,10 @@
 					</xsl:when>
 					<xsl:when test="$license eq 'Copyright'">
 						<xsl:message>Copyright </xsl:message>
-						<xsl:value-of select="$license"/>
 						<lido:rightsType>
 							<lido:conceptID lido:source="RIA"
-											lido:type="URI">a</lido:conceptID>
-							<lido:term lido:addedSearchTerm="no">df</lido:term>
+											lido:type="URI">http://rightsstatements.org/vocab/InC/1.0/</lido:conceptID>
+							<lido:term lido:addedSearchTerm="no">in copyright</lido:term>
 						</lido:rightsType>
 					</xsl:when>
 					<xsl:otherwise>
@@ -290,7 +287,17 @@
 				<lido:rightsHolder>
 					<xsl:choose>
 						<xsl:when test="$license eq 'Copyright'">
-							<xsl:value-of select="z:vocabularyReference[@name='HolderVoc']/z:vocabularyReferenceItem/z:formattedValue" /> 						
+							<lido:legalBodyName>
+								<lido:appellationValue>
+									<xsl:value-of select="z:repeatableGroup[
+										@name eq 'MulRightsGrp'
+									]/z:repeatableGroupItem[
+										last()
+									]/z:vocabularyReference[
+										@name='HolderVoc'
+									]/z:vocabularyReferenceItem/z:formattedValue" /> 						
+								</lido:appellationValue>
+							</lido:legalBodyName>
 						</xsl:when>
 							<xsl:otherwise>
 								<xsl:call-template name="legalBody">
