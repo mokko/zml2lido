@@ -75,8 +75,9 @@ class LinkChecker:
                 raise ValueError(f"ERROR: Unknown type: {src}")
             if ID.text is not None:
                 # print (f"*****{ID.text} {mtype}")
-                if mtype == "Literature": pass
-                    # print("WARN: No check for mtype 'Literature'")
+                if mtype == "Literature":
+                    pass
+                # print("WARN: No check for mtype 'Literature'")
                 else:
                     if mtype + ID.text in self.cache:
                         # print(f"--> from CACHE")
