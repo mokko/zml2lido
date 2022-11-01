@@ -203,6 +203,7 @@
 				22.12.2021 
 				Frank will das Feld Inhalt/Ansicht nicht in LIDO haben, weil da teilweise Müll drin steht (?).
 				14.2.2022 jetzt will er es wieder haben.
+				lido:resourceDescription
 			-->
 			<xsl:apply-templates select="z:dataField[@name='MulSubjectTxt']/z:value"/>
 			<xsl:apply-templates select="z:dataField[@name='MulDateTxt']/z:value"/>
@@ -210,7 +211,16 @@
 				Urheber
 				Jetzt hatten mal zwei rightsHolder; Oktober 2022 zu einer normalen CreditLine geändert. 	
 				<xsl:apply-templates mode="U" select="z:moduleReference[@name='MulPhotographerPerRef']"/>
+				Oktober 2022 -> jetzt resourceSource type="Fotograf" hinzugefügt
 			-->
+			<lido:resourceSource lido:type="Fotograf">
+				<lido:legalBodyName>
+					<lido:appellationValue>
+						<!-- RIA Feld: Urhebr/Fotograf-->
+						<xsl:value-of select="z:moduleReference[@name='MulPhotographerPerRef']/z:moduleReferenceItem/z:formattedValue"/>
+					</lido:appellationValue>
+				</lido:legalBodyName>
+			</lido:resourceSource>
 
 			<xsl:variable name="license">
 				<xsl:choose>
