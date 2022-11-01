@@ -27,6 +27,9 @@
 		<lido:objectMeasurementsSet>
 			<xsl:if test="normalize-space(z:virtualField[@name='PreviewVrt']/z:value) != ''">
 				<lido:displayObjectMeasurements xml:lang="de">
+					<xsl:value-of select="normalize-space(z:moduleReference[
+						@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue)"/>
+					<xsl:text>: </xsl:text>
 					<xsl:value-of select="normalize-space(z:virtualField[@name='PreviewVrt']/z:value)"/>
 				</lido:displayObjectMeasurements>
 			</xsl:if>
