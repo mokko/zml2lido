@@ -237,9 +237,12 @@
 		<xsl:variable name="ethnologischeBereiche" select="
 			'EM-Afrika', 
 			'EM-Am Ethnologie',
+			'EM-Musikethnologie',
 			'EM-Nordafrika, West- und Zentralasien',
 			'EM-Ost- und Nordasien',
-			'EM-Phonogramm-Archiv'
+			'EM-Ozeanien',
+			'EM-Phonogramm-Archiv',
+			'EM-Süd- und Süstostasien',
 		"/>
 		<xsl:if test="normalize-space(substring-before($bereich, '-')) = $kunstmuseen">
 			<lido:classification>
