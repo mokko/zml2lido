@@ -29,6 +29,7 @@
 			<xsl:call-template name="europeanaType"/>
 			<xsl:call-template name="genericAAT"/>
 			<xsl:call-template name="objekttyp"/>
+			<xsl:call-template name="objekttyp2aat"/>
 			<xsl:call-template name="sachbegriff"/>
 			<xsl:call-template name="sammlung2"/>
 			<xsl:call-template name="systematikArt"/>
@@ -172,11 +173,6 @@
 				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300054146</lido:conceptID>
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">music (performing arts genre)</lido:term>
 			</lido:classification>
-
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300041620</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">musical instruments</lido:term>
-			</lido:classification>
 		</xsl:if>
 
 		<xsl:if test="$bereich = 'EM-Phonogramm-Archiv'">
@@ -243,6 +239,67 @@
 		</xsl:if>
 	</xsl:template>
 
+	<xsl:template name="objekttyp2aat">
+		<xsl:variable name="objekttyp" select="z:vocabularyReference[
+		@name = 'ObjCategoryVoc']/z:vocabularyReferenceItem[
+		z:formattedValue]"/>
+
+		<xsl:if test="$objekttyp eq 'Druckgrafik'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300131119</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">printmaking</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$objekttyp eq 'Malerei/Gemälde'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300033618</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">paintings (visual works)</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$objekttyp eq 'Fotografie'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300054225</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">photography (process)</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$objekttyp eq 'Installation'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300047896</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">installations (visual works)</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$objekttyp eq 'Musikinstrument'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300041620</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">musical instruments</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$objekttyp eq 'Skulptur/Plastik/Objektkunst'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300047090</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">sculpture (visual works)</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$objekttyp eq 'Textilie'">
+			<!-- lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300041620</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">musical instruments</lido:term>
+			</lido:classification-->
+		</xsl:if>
+
+		<xsl:if test="$objekttyp eq 'Zeichnung'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300033973</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">drawings (visual works)</lido:term>
+			</lido:classification>
+		</xsl:if>
+	</xsl:template>
 
 	<!-- sachbegriff -->
 	<xsl:template name="sachbegriff">
