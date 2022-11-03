@@ -36,12 +36,14 @@
 	</xsl:template>
 
 	<xsl:template name="systematikArt">
-		<lido:classification>
-			<xsl:comment>SystematikArt</xsl:comment>
-			<lido:term xml:lang="de">
-				<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value)"/>
-			</lido:term>
-		</lido:classification>
+		<xsl:if test="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value) ne ''">
+			<lido:classification>
+				<xsl:comment>SystematikArt</xsl:comment>
+				<lido:term xml:lang="de">
+					<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value)"/>
+				</lido:term>
+			</lido:classification>
+		</xsl:if>
 	</xsl:template>
 
 	<xsl:template name="sachbegriff">
