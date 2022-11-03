@@ -25,54 +25,180 @@
 	<xsl:template name="classificationWrap">
 		<!--unlikely that all of them are empty-->
         <lido:classificationWrap>
-			<xsl:call-template name="sachbegriff"/>
-			<xsl:call-template name="objekttyp"/>
-			<xsl:call-template name="europeanaType"/>
-			<xsl:call-template name="sammlung2"/>
 			<xsl:call-template name="dreiWege"/>
+			<xsl:call-template name="europeanaType"/>
 			<xsl:call-template name="genericAAT"/>
+			<xsl:call-template name="objekttyp"/>
+			<xsl:call-template name="sachbegriff"/>
+			<xsl:call-template name="sammlung2"/>
 			<xsl:call-template name="systematikArt"/>
         </lido:classificationWrap>
 	</xsl:template>
 
-	<xsl:template name="systematikArt">
-		<xsl:if test="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value) ne ''">
-			<lido:classification>
-				<xsl:comment>SystematikArt</xsl:comment>
-				<lido:term xml:lang="de">
-					<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value)"/>
-				</lido:term>
+	<!-- 
+		classification specific to 3 Wege project
+		Gruppen und Freigaben müssen hier aufgezählt werden, damit sie entsprechend gekennzeichnet werden 
+		3Wege:
+			getPack group 117396 Boxeraufstand200
+			getPack group 106400 Musik100
+			getPack approval 4460851 Benin
+			getPack group 101396 AKuOstasien42
+			getPack group 162397 Walzen
+			getPack group 163396 AfrikaSM
+			pack
+	-->
+	<xsl:template name="dreiWege">
+		<!-- 
+			Daten für die DDB sollen getrennt werden, je nachdem ob sie bei 3 Wege benutzt werden 
+			oder nicht. Um dies zu ermöglichen, sind Daten für 3 Wege hier als solche ausgezeichnet.
+		-->
+		<xsl:variable name="grpIds" select="
+			'101396',
+			'106400',
+			'117396', 
+			'163396',
+			'162397'
+		"/>
+		<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem[@moduleItemId = $grpIds]"/>
+		<xsl:apply-templates mode="DDB" select="z:repeatableGroup[@name = 'ObjPublicationGrp']
+			/z:repeatableGroupItem[z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']"/>
+	</xsl:template>
+
+	<xsl:template match="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem">
+		<lido:classification lido:type="DDB">
+			<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
+		</lido:classification>
+	</xsl:template>
+
+	<!-- Im Augenblick gibt es nur eine ApprovalGrp, die für 3 Wege freigegeben ist -->
+	<xsl:template mode="DDB" match="z:repeatableGroup[@name = 'ObjPublicationGrp']/z:repeatableGroupItem[
+		z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']">
+		<xsl:if test="z:vocabularyReference[@name = 'PublicationVoc']/z:vocabularyReferenceItem/z:formattedValue">
+			<lido:classification lido:type="DDB">
+				<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
 			</lido:classification>
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template name="sachbegriff">
-		<xsl:choose>
-			<!-- specific to EM; EM-Sachbegriff Thesaurus -->
-			<xsl:when test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem[@moduleItemId = '67678']">
-				<xsl:apply-templates mode="classification" select="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
-					/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:apply-templates mode="classification" select="z:dataField[@name = 'ObjTechnicalTermClb']/z:value"/>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 
-	<xsl:template mode="classification" match="z:dataField[@name = 'ObjTechnicalTermClb']/z:value">
-		<lido:classification lido:type="RIA:Sachbegriff">
-			<lido:term xml:lang="de">
-				<xsl:value-of select="normalize-space(.)"/>
-			</lido:term>
+	<!-- europeanaType-->
+	<xsl:template name="europeanaType">
+		<!-- 2nd classification for ontologically wrong europeana:type-->
+		<lido:classification lido:type="europeana:type">
+			<xsl:comment>europeana:type refers to a resource of the representation in the description of the object. 
+			This seems ontologically wrong. Seems to be remnant of old/first EUROPEANA data structure.</xsl:comment>
+			<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
 		</lido:classification>
 	</xsl:template>
 
-	<xsl:template mode="classification" match="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
-		/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']">
-		<lido:classification lido:type="RIA:EM-Sachbegriff">
-			<xsl:call-template name="conceptTerm"/>
-		</lido:classification>
-	</xsl:template>	
+
+	<!-- AAT -->
+	<xsl:template name="genericAAT">
+		<xsl:variable name="bereich" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+		<xsl:variable name="kunstmuseen" select="
+			'AKU', 
+			'ISL',
+			'KK'
+		"/>
+		<xsl:variable name="archäologischeBereiche" select="
+			'EM-Am Archäologie' 
+		"/>
+		<xsl:variable name="ethnologischeBereiche" select="
+			'EM-Afrika', 
+			'EM-Am Ethnologie',
+			'EM-Musikethnologie',
+			'EM-Nordafrika, West- und Zentralasien',
+			'EM-Ost- und Nordasien',
+			'EM-Ozeanien',
+			'EM-Phonogramm-Archiv',
+			'EM-Süd- und Süstostasien',
+		"/>
+		<xsl:if test="normalize-space(substring-before($bereich, '-')) = $kunstmuseen">
+			<lido:classification>
+				<!-- art; better than art work? -->
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
+			</lido:classification>
+		</xsl:if>
+		
+		<!-- ISL. Why this extrawurst? -->
+		<xsl:if test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/@moduleItemId = '67676' "> 
+			<lido:classification>
+				<!-- art; better than art work? -->
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
+			</lido:classification>
+		</xsl:if>
+		
+		<xsl:if test="$bereich = $archäologischeBereiche">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234110</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">archaeologic object</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$bereich = $ethnologischeBereiche">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234108</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">ethnographic object</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<!-- einzelne Bereiche -->
+		
+		<xsl:if test="$bereich = 'EM-Afrika'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300015647</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">African</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$bereich = 'EM-Ost- und Nordasien' or $bereich = 'EM-Süd- und Süstostasien'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300018279</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">Asian</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$bereich = 'EM-Ozeanien'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300021854</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">Oceanic</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$bereich = 'EM-Musikethnologie'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300054146</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">music (performing arts genre)</lido:term>
+			</lido:classification>
+
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300041620</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">musical instruments</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$bereich = 'EM-Phonogramm-Archiv'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300028633</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">sound recordings</lido:term>
+			</lido:classification>
+
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300265798</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">cylinder phonographs (phonographs)</lido:term>
+			</lido:classification>
+		</xsl:if>
+
+		<xsl:if test="$bereich = 'EM-Medienarchiv'">
+			<lido:classification>
+				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300429823</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="yes">recordings</lido:term>
+			</lido:classification>
+		</xsl:if>
+	</xsl:template>
+
 
 	<!-- objekttyp-->
 	<xsl:template name="objekttyp">
@@ -117,16 +243,36 @@
 		</xsl:if>
 	</xsl:template>
 
-	<!-- europeanaType-->
 
-	<xsl:template name="europeanaType">
-		<!-- 2nd classification for ontologically wrong europeana:type-->
-		<lido:classification lido:type="europeana:type">
-			<xsl:comment>europeana:type refers to a resource of the representation in the description of the object. 
-			This seems ontologically wrong. Seems to be remnant of old/first EUROPEANA data structure.</xsl:comment>
-			<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
+	<!-- sachbegriff -->
+	<xsl:template name="sachbegriff">
+		<xsl:choose>
+			<!-- specific to EM; EM-Sachbegriff Thesaurus -->
+			<xsl:when test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem[@moduleItemId = '67678']">
+				<xsl:apply-templates mode="classification" select="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
+					/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:apply-templates mode="classification" select="z:dataField[@name = 'ObjTechnicalTermClb']/z:value"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template mode="classification" match="z:dataField[@name = 'ObjTechnicalTermClb']/z:value">
+		<lido:classification lido:type="RIA:Sachbegriff">
+			<lido:term xml:lang="de">
+				<xsl:value-of select="normalize-space(.)"/>
+			</lido:term>
 		</lido:classification>
 	</xsl:template>
+
+	<xsl:template mode="classification" match="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
+		/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']">
+		<lido:classification lido:type="RIA:EM-Sachbegriff">
+			<xsl:call-template name="conceptTerm"/>
+		</lido:classification>
+	</xsl:template>	
+
 
 	<!-- 
 		classification from RIA:Bereich
@@ -177,100 +323,15 @@
 		</xsl:if>	
 	</xsl:template>
 
-	<!-- 
-		classification specific to 3 Wege project
-		Gruppen und Freigaben müssen hier aufgezählt werden, damit sie entsprechend gekennzeichnet werden 
-		3Wege:
-			getPack group 117396 Boxeraufstand200
-			getPack group 106400 Musik100
-			getPack approval 4460851 Benin
-			getPack group 101396 AKuOstasien42
-			getPack group 162397 Walzen
-			getPack group 163396 AfrikaSM
-			pack
-	-->
-	<xsl:template name="dreiWege">
-		<!-- 
-			Daten für die DDB sollen getrennt werden, je nachdem ob sie bei 3 Wege benutzt werden 
-			oder nicht. Um dies zu ermöglichen, sind Daten für 3 Wege hier als solche ausgezeichnet.
-		-->
-		<xsl:variable name="grpIds" select="
-			'101396',
-			'106400',
-			'117396', 
-			'163396',
-			'162397'
-		"/>
-		<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem[@moduleItemId = $grpIds]"/>
-		<xsl:apply-templates mode="DDB" select="z:repeatableGroup[@name = 'ObjPublicationGrp']
-			/z:repeatableGroupItem[z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']"/>
-	</xsl:template>
 
-	<xsl:template match="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem">
-		<lido:classification lido:type="DDB">
-			<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
-		</lido:classification>
-	</xsl:template>
-
-	<!-- Im Augenblick gibt es nur eine ApprovalGrp, die für 3 Wege freigegeben ist -->
-	<xsl:template mode="DDB" match="z:repeatableGroup[@name = 'ObjPublicationGrp']/z:repeatableGroupItem[
-		z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']">
-		<xsl:if test="z:vocabularyReference[@name = 'PublicationVoc']/z:vocabularyReferenceItem/z:formattedValue">
-			<lido:classification lido:type="DDB">
-				<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
-			</lido:classification>
-		</xsl:if>
-	</xsl:template>
-
-	<!-- AAT -->
-	
-	<xsl:template name="genericAAT">
-		<xsl:variable name="bereich" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-		<xsl:variable name="kunstmuseen" select="
-			'AKU', 
-			'ISL',
-			'KK'
-		"/>
-		<xsl:variable name="archäologischeBereiche" select="
-			'EM-Am Archäologie' 
-		"/>
-		<xsl:variable name="ethnologischeBereiche" select="
-			'EM-Afrika', 
-			'EM-Am Ethnologie',
-			'EM-Musikethnologie',
-			'EM-Nordafrika, West- und Zentralasien',
-			'EM-Ost- und Nordasien',
-			'EM-Ozeanien',
-			'EM-Phonogramm-Archiv',
-			'EM-Süd- und Süstostasien',
-		"/>
-		<xsl:if test="normalize-space(substring-before($bereich, '-')) = $kunstmuseen">
+	<!-- systematikArt -->
+	<xsl:template name="systematikArt">
+		<xsl:if test="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value) ne ''">
 			<lido:classification>
-				<!-- art; better than art work? -->
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
-			</lido:classification>
-		</xsl:if>
-		
-		<!-- ISL. Why this extrawurst? -->
-		<xsl:if test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/@moduleItemId = '67676' "> 
-			<lido:classification>
-				<!-- art; better than art work? -->
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
-			</lido:classification>
-		</xsl:if>
-		
-		<xsl:if test="$bereich = $archäologischeBereiche">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234110</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">archaeologic object</lido:term>
-			</lido:classification>
-		</xsl:if>
-		<xsl:if test="$bereich = $ethnologischeBereiche">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234108</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">ethnographic object</lido:term>
+				<xsl:comment>SystematikArt</xsl:comment>
+				<lido:term xml:lang="de">
+					<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value)"/>
+				</lido:term>
 			</lido:classification>
 		</xsl:if>
 	</xsl:template>
