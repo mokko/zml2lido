@@ -25,9 +25,9 @@
 	<xsl:template name="classificationWrap">
 		<!--unlikely that all of them are empty-->
         <lido:classificationWrap>
+			<xsl:call-template name="bereich2aat"/>
 			<xsl:call-template name="dreiWege"/>
 			<xsl:call-template name="europeanaType"/>
-			<xsl:call-template name="genericAAT"/>
 			<xsl:call-template name="objekttyp"/>
 			<xsl:call-template name="objekttyp2aat"/>
 			<xsl:call-template name="sachbegriff"/>
@@ -36,65 +36,9 @@
         </lido:classificationWrap>
 	</xsl:template>
 
-	<!-- 
-		classification specific to 3 Wege project
-		Gruppen und Freigaben müssen hier aufgezählt werden, damit sie entsprechend gekennzeichnet werden 
-		3Wege:
-			getPack group 117396 Boxeraufstand200
-			getPack group 106400 Musik100
-			getPack approval 4460851 Benin
-			getPack group 101396 AKuOstasien42
-			getPack group 162397 Walzen
-			getPack group 163396 AfrikaSM
-			pack
-	-->
-	<xsl:template name="dreiWege">
-		<!-- 
-			Daten für die DDB sollen getrennt werden, je nachdem ob sie bei 3 Wege benutzt werden 
-			oder nicht. Um dies zu ermöglichen, sind Daten für 3 Wege hier als solche ausgezeichnet.
-		-->
-		<xsl:variable name="grpIds" select="
-			'101396',
-			'106400',
-			'117396', 
-			'163396',
-			'162397'
-		"/>
-		<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem[@moduleItemId = $grpIds]"/>
-		<xsl:apply-templates mode="DDB" select="z:repeatableGroup[@name = 'ObjPublicationGrp']
-			/z:repeatableGroupItem[z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']"/>
-	</xsl:template>
 
-	<xsl:template match="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem">
-		<lido:classification lido:type="DDB">
-			<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
-		</lido:classification>
-	</xsl:template>
-
-	<!-- Im Augenblick gibt es nur eine ApprovalGrp, die für 3 Wege freigegeben ist -->
-	<xsl:template mode="DDB" match="z:repeatableGroup[@name = 'ObjPublicationGrp']/z:repeatableGroupItem[
-		z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']">
-		<xsl:if test="z:vocabularyReference[@name = 'PublicationVoc']/z:vocabularyReferenceItem/z:formattedValue">
-			<lido:classification lido:type="DDB">
-				<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
-			</lido:classification>
-		</xsl:if>
-	</xsl:template>
-
-
-	<!-- europeanaType-->
-	<xsl:template name="europeanaType">
-		<!-- 2nd classification for ontologically wrong europeana:type-->
-		<lido:classification lido:type="europeana:type">
-			<xsl:comment>europeana:type refers to a resource of the representation in the description of the object. 
-			This seems ontologically wrong. Seems to be remnant of old/first EUROPEANA data structure.</xsl:comment>
-			<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
-		</lido:classification>
-	</xsl:template>
-
-
-	<!-- AAT -->
-	<xsl:template name="genericAAT">
+	<!-- bereich2AAT -->
+	<xsl:template name="bereich2aat">
 		<xsl:variable name="bereich" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 		<xsl:variable name="kunstmuseen" select="
 			'AKU', 
@@ -193,6 +137,63 @@
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">recordings</lido:term>
 			</lido:classification>
 		</xsl:if>
+	</xsl:template>
+
+
+	<!-- 
+		classification specific to 3 Wege project
+		Gruppen und Freigaben müssen hier aufgezählt werden, damit sie entsprechend gekennzeichnet werden 
+		3Wege:
+			getPack group 117396 Boxeraufstand200
+			getPack group 106400 Musik100
+			getPack approval 4460851 Benin
+			getPack group 101396 AKuOstasien42
+			getPack group 162397 Walzen
+			getPack group 163396 AfrikaSM
+			pack
+	-->
+	<xsl:template name="dreiWege">
+		<!-- 
+			Daten für die DDB sollen getrennt werden, je nachdem ob sie bei 3 Wege benutzt werden 
+			oder nicht. Um dies zu ermöglichen, sind Daten für 3 Wege hier als solche ausgezeichnet.
+		-->
+		<xsl:variable name="grpIds" select="
+			'101396',
+			'106400',
+			'117396', 
+			'163396',
+			'162397'
+		"/>
+		<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem[@moduleItemId = $grpIds]"/>
+		<xsl:apply-templates mode="DDB" select="z:repeatableGroup[@name = 'ObjPublicationGrp']
+			/z:repeatableGroupItem[z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']"/>
+	</xsl:template>
+
+	<xsl:template match="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem">
+		<lido:classification lido:type="DDB">
+			<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
+		</lido:classification>
+	</xsl:template>
+
+	<!-- Im Augenblick gibt es nur eine ApprovalGrp, die für 3 Wege freigegeben ist -->
+	<xsl:template mode="DDB" match="z:repeatableGroup[@name = 'ObjPublicationGrp']/z:repeatableGroupItem[
+		z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']">
+		<xsl:if test="z:vocabularyReference[@name = 'PublicationVoc']/z:vocabularyReferenceItem/z:formattedValue">
+			<lido:classification lido:type="DDB">
+				<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
+			</lido:classification>
+		</xsl:if>
+	</xsl:template>
+
+
+	<!-- europeanaType-->
+	<xsl:template name="europeanaType">
+		<!-- 2nd classification for ontologically wrong europeana:type-->
+		<lido:classification lido:type="europeana:type">
+			<xsl:comment>europeana:type refers to a resource of the representation in the description of the object. 
+			This seems ontologically wrong. Seems to be remnant of old/first EUROPEANA data structure.</xsl:comment>
+			<lido:term lido:addedSearchTerm="no">IMAGE</lido:term>
+		</lido:classification>
 	</xsl:template>
 
 
