@@ -67,10 +67,22 @@
 			<xsl:value-of select="$gnd"/>
 		</xsl:message-->
 		<lido:eventActor>
-			<xsl:variable name="actor" select="substring-after(z:formattedValue, ': ')"/>
-			<lido:displayActorInRole>
-				<xsl:value-of select="normalize-space($actor)"/>
-			</lido:displayActorInRole>
+			<xsl:variable name="actor">
+				<xsl:choose>
+					<xsl:when test="matches(z:formattedValue, ': ')">
+						<xsl:value-of select="substring-after(z:formattedValue, ': ')"/>
+					</xsl:when>
+					<!-- there is a chance that role is not specified-->
+					<xsl:otherwise>
+						<xsl:value-of select="z:formattedValue"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable> 
+			<xsl:if test="normalize-space($actor) ne ''">
+				<lido:displayActorInRole>
+					<xsl:value-of select="normalize-space($actor)"/>
+				</lido:displayActorInRole>
+			</xsl:if>
 			<lido:actorInRole>
 				<!-- http://xtree-public.digicult-verbund.de/vocnet/?uriVocItem=http://terminology.lido-schema.org/&startNode=lido00409&lang=en&d=n -->
 				<lido:actor>
@@ -138,9 +150,12 @@
 							-->
 						</lido:vitalDatesActor>
 					</xsl:if>
-					<lido:genderActor xml:lang="en">
-						<xsl:value-of select="$kue/z:vocabularyReference[@name = 'PerGenderVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-					</lido:genderActor>
+					<xsl:variable name="gender" select="$kue/z:vocabularyReference[@name = 'PerGenderVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+					<xsl:if test="$gender ne ''">
+						<lido:genderActor xml:lang="en">
+							<xsl:value-of select="$gender"/>
+						</lido:genderActor>
+					</xsl:if>
 				</lido:actor>
 				<lido:roleActor>
 					<lido:term xml:lang="de" lido:encodinganalog="RIA:Rolle">

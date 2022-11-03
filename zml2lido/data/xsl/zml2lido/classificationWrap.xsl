@@ -56,7 +56,7 @@
 			'EM-Ost- und Nordasien',
 			'EM-Ozeanien',
 			'EM-Phonogramm-Archiv',
-			'EM-Süd- und Süstostasien',
+			'EM-Süd- und Süstostasien'
 		"/>
 		<xsl:if test="normalize-space(substring-before($bereich, '-')) = $kunstmuseen">
 			<lido:classification>
@@ -90,7 +90,6 @@
 		</xsl:if>
 
 		<!-- einzelne Bereiche -->
-		
 		<xsl:if test="$bereich = 'EM-Afrika'">
 			<lido:classification>
 				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300015647</lido:conceptID>
