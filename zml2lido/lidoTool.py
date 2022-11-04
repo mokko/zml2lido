@@ -333,6 +333,9 @@ class LidoTool(Jobs):
         return firstFn
 
     def saxon(self, *, Input, output, xsl):
+        if not Path(saxLib).exists():
+            raise SyntaxError(f"ERROR: saxLib {saxLib} does not exist!")
+
         cmd = f"java -Xmx1450m -jar {saxLib} -s:{Input} -xsl:{xsl} -o:{output}"
         print(cmd)
 
@@ -351,7 +354,7 @@ class LidoTool(Jobs):
         return root, no, tail
 
     def _copy(self, *, pic, out):
-        if not Path(out).exists:
+        if not Path(out).exists():
             print(f"*copying {pic} -> {out}")
             shutil.copyfile(pic, out)
 

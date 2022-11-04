@@ -11,6 +11,7 @@ dynamic = ["version", "description"]
 dependencies = [
     "lxml",
 	"pillow",
+	"openpyxl",
 ]
 [project.optional-dependencies]
 test = [
