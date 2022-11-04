@@ -336,6 +336,9 @@ class LidoTool(Jobs):
         if not Path(saxLib).exists():
             raise SyntaxError(f"ERROR: saxLib {saxLib} does not exist!")
 
+        if not Path(Input).exists():
+            raise SyntaxError(f"ERROR: input {Input} does not exist!")
+
         cmd = f"java -Xmx1450m -jar {saxLib} -s:{Input} -xsl:{xsl} -o:{output}"
         print(cmd)
 
