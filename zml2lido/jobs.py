@@ -8,8 +8,9 @@ class Jobs:
         No images are processed in this flavor and no internal links checked or
         rewritten.
         """
-        lido_fn = self.zml2lido(Input=self.Input)
-        self.validate(Input=lido_fn)
+        lido_fn = self.zml2lido()
+        self.Input = lido_fn
+        self.validate()
 
     def localLido(self):
         """
@@ -37,7 +38,8 @@ class Jobs:
         )  # drop records without Sachbegriff
         lido_fn = self.zml2lido(Input=mitSachbegriffZML)
         if self.validation:
-            self.validate(Input=lido_fn)
+            self.Input = lido_fn
+            self.validate()
         # self.splitLido(input=lido_fn)  # individual records as files
         self.pix(Input=self.Input, output=self.output)  # transforms attachments
         # self.lido2html(input=lido_fn)  # to make it easier to read lido
@@ -64,7 +66,8 @@ class Jobs:
         # fix internal links and rm unpublished parts
         linklido_fn = self.urlLido(Input=lido_fn)
         if self.validation:
-            self.validate(Input=linklido_fn)
+            self.Input = linklido_fn
+            self.validate()
         self.splitLido(input=linklido_fn)  # individual records as files
         # self.lido2html(input=linklido_fn)  # to make it easier to read lido
 
