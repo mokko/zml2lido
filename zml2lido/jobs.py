@@ -8,7 +8,7 @@ class Jobs:
         No images are processed in this flavor and no internal links checked or
         rewritten.
         """
-        lido_fn = self.zml2lido()
+        lido_fn = self.zml2lido(Input=self.Input)
         self.Input = lido_fn
         self.validate()
 
