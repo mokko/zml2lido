@@ -72,10 +72,13 @@ class LidoTool(Jobs):
 
         # check Input
         if Input is None:
-            raise TypeError("ERROR: Input can't be None")
+            raise SyntaxError("ERROR: Input can't be None!")
         self.Input = Path(Input)  # initial input file, e.g. 3Wege.zml.xml
+
         if self.Input.is_dir():
-            raise TypeError("ERROR: Input is directory!")
+            raise SyntaxError("ERROR: Input is directory!")
+        elif not self.Input.exists():
+            raise SyntaxError("ERROR: Input file does not exist!")
 
         # determine outdir
         if re.match("\d\d\d\d\d\d", self.Input.parent.name):
