@@ -78,7 +78,7 @@ class LidoTool(Jobs):
         if self.Input.is_dir():
             raise SyntaxError("ERROR: Input is directory!")
         elif not self.Input.exists():
-            raise SyntaxError("ERROR: Input file does not exist!")
+            raise SyntaxError("ERROR: Input does not exist!")
 
         # determine outdir
         if re.match("\d\d\d\d\d\d", self.Input.parent.name):
