@@ -67,8 +67,8 @@ class LidoTool(Jobs):
         script_dir = Path(__file__).parent.parent
         # print (f"SCRIPT_DIR: {script_dir}")
 
-        if script_dir != Path.cwd():
-            raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
+        # if script_dir != Path.cwd():
+        #    raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
 
         # check Input
         if Input is None:
