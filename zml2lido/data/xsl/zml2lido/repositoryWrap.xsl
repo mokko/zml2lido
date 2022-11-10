@@ -78,10 +78,10 @@
 			</xsl:choose>
 		</xsl:variable>
 
-		<xsl:message>
-			<xsl:text>identNr </xsl:text>
+		<!--xsl:message>
+			<xsl:text>repositoryWrap: identNr </xsl:text>
 			<xsl:value-of select="normalize-space($identNr)"/>
-		</xsl:message>
+		</xsl:message-->
 		
 		<lido:workID lido:type="Inventory number" lido:label="Ident.Nr.">
 			<xsl:value-of select="normalize-space($identNr)"/>
