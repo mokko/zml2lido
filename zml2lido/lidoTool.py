@@ -64,11 +64,11 @@ class LidoTool(Jobs):
         self.force = force
         self.chunks = chunks
 
-        script_dir = Path(__file__).parent.parent.resolve()
+        script_dir = Path(__file__).parent.parent
         print(f"SCRIPT_DIR: {script_dir}")
 
         # didn't work for Frank without resolve, so not using this test atm
-        if script_dir != Path.cwd().resolve():
+        if not Path.cwd().samefile(script_dir):
             raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
 
         # check Input
