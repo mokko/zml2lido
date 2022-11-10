@@ -64,11 +64,12 @@ class LidoTool(Jobs):
         self.force = force
         self.chunks = chunks
 
-        script_dir = Path(__file__).parent.parent
-        # print (f"SCRIPT_DIR: {script_dir}")
+        script_dir = Path(__file__).parent.parent.resolve()
+        print (f"SCRIPT_DIR: {script_dir}")
 
-        # if script_dir != Path.cwd():
-        #    raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
+        #didn't work for Frank without resolve, so not using this test atm
+        if script_dir != Path.cwd().resolve():
+           raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
 
         # check Input
         if Input is None:
@@ -79,6 +80,9 @@ class LidoTool(Jobs):
             raise SyntaxError("ERROR: Input is directory!")
         elif not self.Input.exists():
             raise SyntaxError("ERROR: Input does not exist!")
+
+        if not Path(saxLib).is_file():
+            raise SyntaxError(f"ERROR: Saxon not found, check config file at {conf_fn}")
 
         # determine outdir
         if re.match("\d\d\d\d\d\d", self.Input.parent.name):
