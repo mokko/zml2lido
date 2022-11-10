@@ -97,7 +97,8 @@
 		<xsl:param name="src-voc"/>
 		<xsl:param name="src-term"/>
 		<xsl:param name="target"/>
-		<xsl:variable name="dict" select="document('file:zml2lido/data/vocmap.xml')"/>
+		<!-- used to be file:zml2lido/data/vocmap.xml -->
+		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
 		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
 		<xsl:variable name="return" select="$dict/vocmap/voc[
 				@name eq normalize-space($src-voc)
@@ -126,7 +127,8 @@
 		<xsl:param name="src-voc"/>
 		<xsl:param name="src-term"/>
 		<xsl:param name="target"/>
-		<xsl:variable name="dict" select="document('file:zml2lido/data/vocmap.xml')"/>
+		<!-- used to be file:zml2lido/data/vocmap.xml -->
+		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
 		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
 		
 		<xsl:variable name="return" select="$dict/vocmap/voc[
