@@ -1,6 +1,6 @@
 """lido.py - A quick and dirty toolbox for turning zml files into LIDO"""
 
-__version__ = "0.0.5"
+__version__ = "0.0.6"
 
 import argparse
 import sys
