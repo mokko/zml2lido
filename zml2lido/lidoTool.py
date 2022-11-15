@@ -266,16 +266,28 @@ class LidoTool(Jobs):
         os.chdir(orig)
         return xslDir.joinpath(out)
 
-    def validate(self):
-        """If it doesn't die, data validates."""
+    def validate(self, *, path=None):
+        """
+        It's optionally possible to specify a path for a file that needs validatation. If
+        Path is None, the file that was specified during __init__ will be validated.
+
+        If the method validate doesn't die, data validates.
+
+        (Not tested recently for chunks...)
+        """
+
+        if Path is None:
+            to_val_fn = self.Input
+        else:
+            to_val_fn = path
 
         print("VALIDATING LIDO")
         if self.chunks:
             print(" with chunks")
-            for chunkFn in self.chunkName(Input=self.Input):
+            for chunkFn in self.chunkName(Input=to_val_fn):
                 self.validateSingle(Input=chunkFn)
         else:
-            self.validateSingle(Input=self.Input)
+            self.validateSingle(Input=to_val_fn)
 
     def validateSingle(self, *, Input):
         if not hasattr(self, "schema"):
@@ -345,6 +357,9 @@ class LidoTool(Jobs):
 
         if not Path(Input).exists():
             raise SyntaxError(f"ERROR: input {Input} does not exist!")
+
+        if not Path(xsl).exists():
+            raise SyntaxError(f"ERROR: xsl file does not exist!")
 
         cmd = f"java -Xmx1450m -jar {saxLib} -s:{Input} -xsl:{xsl} -o:{output}"
         print(cmd)

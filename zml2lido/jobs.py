@@ -9,8 +9,7 @@ class Jobs:
         rewritten.
         """
         lido_fn = self.zml2lido(Input=self.Input)
-        self.Input = lido_fn
-        self.validate()
+        self.validate(path=lido_fn)
 
     def localLido(self):
         """
@@ -38,8 +37,7 @@ class Jobs:
         )  # drop records without Sachbegriff
         lido_fn = self.zml2lido(Input=mitSachbegriffZML)
         if self.validation:
-            self.Input = lido_fn
-            self.validate()
+            self.validate(path=lido_fn)
         # self.splitLido(input=lido_fn)  # individual records as files
         self.pix(Input=self.Input, output=self.output)  # transforms attachments
         # self.lido2html(input=lido_fn)  # to make it easier to read lido
@@ -66,8 +64,7 @@ class Jobs:
         # fix internal links and rm unpublished parts
         linklido_fn = self.urlLido(Input=lido_fn)
         if self.validation:
-            self.Input = linklido_fn
-            self.validate()
+            self.validate(path=linklido_fn)
         self.splitLido(input=linklido_fn)  # individual records as files
         # self.lido2html(input=linklido_fn)  # to make it easier to read lido
 
@@ -99,7 +96,6 @@ class Jobs:
         linklido_fn = self.urlLido(Input=lido_fn)
         # (3) validate
         if self.validation:
-            self.Input = linklido_fn
-            self.validate()
+            self.validate(path=linklido_fn)
         # (4) split big lido file into small ones
         self.splitLido(Input=linklido_fn)
