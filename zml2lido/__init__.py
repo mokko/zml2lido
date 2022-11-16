@@ -87,7 +87,6 @@ def linkChecker():
 
 
 def saxon():
-    m = LidoTool()  # just to run saxon
     parser = argparse.ArgumentParser(description="Little SAXON tool written in Python")
     parser.add_argument("-s", "--source", help="source filename", required=True)
     parser.add_argument("-o", "--output", help="output filename", required=True)
@@ -95,6 +94,7 @@ def saxon():
         "-x", "--xsl", help="(xslt) transformation filename", required=True
     )
     args = parser.parse_args()
+    m = LidoTool(Input=args.source)  # just to run saxon
 
     m.saxon(Input=args.source, xsl=args.xsl, output=args.output)
 

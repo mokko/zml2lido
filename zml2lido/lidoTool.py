@@ -67,6 +67,7 @@ class LidoTool(Jobs):
         script_dir = Path(__file__).parent.parent
         print(f"SCRIPT_DIR: {script_dir}")
 
+        # we run these tests now also when just using saxon
         # didn't work for Frank without resolve, so not using this test atm
         if not Path.cwd().samefile(script_dir):
             raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")

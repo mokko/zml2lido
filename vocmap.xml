@@ -1,0 +1,635 @@
+<!--
+	I want to outsource and bundle pure vocabulary mappings, i.e. from one RIA Vocabulary 
+	to a lido vocabulary. If we're at it, we can do multiple target vocabularies.
+	
+	https://pro.europeana.eu/page/intro#ore:Proxy/edm:type
+-->
+
+<vocmap>
+	<voc name="Bereich"> 
+		<!-- 
+			NOT USED AT THE MOMENT, BUT WORKS!
+			Bereich = __orgUnit
+			I am sure that I can have multiple targets, but I am not sure that I can have multiple sources
+			todo: check
+			
+		-->
+		<concept>
+			<source lang="de">AKu</source>
+			<target lang="de" name="ISIL">de-MUS-019014</target>
+			<target lang="de" name="verwaltendeInstitution">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</target>
+		</concept>
+		<concept>
+			<source lang="de">EM</source>
+			<source lang="de">EMAmArchaologie</source>
+			<source lang="de">EMAllgemein</source>
+			<target lang="de" name="ISIL">de-MUS-019118</target>
+			<target lang="de" name="verwaltendeInstitution">Ethnologisches Museum, Staatliche Museen zu Berlin</target>
+		</concept>
+		<concept>
+			<source lang="de">KB</source>
+			<target lang="de" name="ISIL">de-MUS-018313</target>
+			<target lang="de" name="verwaltendeInstitution">Kunstbibliothek, Staatliche Museen zu Berlin</target>
+		</concept>
+		<concept>
+			<source lang="de">KK</source>
+			<target lang="de" name="ISIL">de-MUS-018511</target>
+			<target lang="de" name="verwaltendeInstitution">Kupferstichkabinett, Staatliche Museen zu Berlin</target>
+		</concept>
+		<concept>
+			<source lang="de">ISL</source>
+			<target lang="de" name="ISIL">de-MUS-814517</target>
+			<target lang="de" name="verwaltendeInstitution">Museum für Islamische Kunst, Staatliche Museen zu Berlin</target>
+		</concept>
+	</voc>
+
+	<voc name="formatResource">
+		<concept>
+			<source lang="de">doc</source>
+			<target lang="en" name="mimetype">application/vnd.ms-word</target>
+		</concept>
+		<concept>
+			<source lang="de">jpg</source>
+			<target lang="en" name="mimetype">image/jpeg</target>
+		</concept>
+		<concept>
+			<source lang="de">jpeg</source>
+			<target lang="en" name="mimetype">image/jpeg</target>
+		</concept>
+		<concept>
+			<source lang="de">mp3</source>
+			<target lang="en" name="mimetype">audio/mpeg</target>
+		</concept>
+		<concept>
+			<source lang="de">pdf</source>
+			<target lang="en" name="mimetype">application/pdf</target>
+		</concept>
+		<concept>
+			<source lang="de">tif</source>
+			<target lang="en" name="mimetype">image/tiff</target>
+		</concept>
+		<concept>
+			<source lang="de">tiff</source>
+			<target lang="en" name="mimetype">image/tiff</target>
+		</concept>
+		<concept>
+			<source lang="de">xls</source>
+			<target lang="en" name="mimetype">application/vnd.ms-excel</target>
+		</concept>
+	</voc>
+
+	<voc name="MulTypeVgr">
+		<!-- Analoges Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
+		<concept>
+			<source lang="de">3 D- Polygon</source>
+			<target lang="en" name="lido">3D</target>
+			<target lang="en" name="europeana:type">3D</target>
+		</concept>	
+		<concept>
+			<source lang="de">3 D- Volumen</source>
+			<target lang="en" name="lido">3D</target>
+			<target lang="en" name="europeana:type">3D</target>
+		</concept>	
+		<concept>
+			<source lang="de">Analoges Ausgangsmaterial</source>
+			<target lang="en" name="lido">audio</target>
+			<target lang="en" name="europeana:type">audio</target>
+		</concept>	
+		<concept>
+			<source lang="de">audio</source>
+			<target lang="en" name="lido">audio</target>
+			<target lang="en" name="europeana:type">audio</target>
+		</concept>	
+		<concept>
+			<source lang="de">Dia</source>
+			<target lang="en" name="europeana:type">image</target>
+		</concept>	
+		<concept>
+			<source lang="de">Dia (SPK)</source>
+			<target lang="en" name="lido">image</target>
+			<target lang="en" name="europeana:type">image</target>
+		</concept>
+		<!-- Digitales Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
+		<concept>
+			<source lang="de">Digitales Ausgangsmaterial</source>
+			<target lang="en" name="lido">audio</target>
+			<target lang="en" name="europeana:type">audio</target>
+		</concept>
+		<concept>
+			<source lang="de">Digitalisat p</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept> 
+			<source lang="de">Digitalisat s</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept> 
+			<!-- nicht klar, worauf man hier mappen soll-->
+			<source lang="de">document</source>
+			<target lang="en" name="europeana:type">text</target>
+			<target lang="en" name="lido">document</target>
+		</concept>
+		<concept> 
+			<source lang="de">eMuseum Digitalisat</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept>
+			<source lang="en">image</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept>
+			<source lang="en">Kontaktabzug</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept> 
+			<source lang="de">Negativ</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept> 
+			<source lang="de">Negativ (Glasplatte)</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept> 
+			<source lang="de">Negativ (original)</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept> 
+			<source lang="de">Negativ (repro)</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept> 
+			<source lang="de">Negativ (SPK)</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept>
+			<source lang="de">Positiv</source>
+			<target lang="en" name="europeana:type">audio</target>
+		</concept>
+		<concept>
+			<source lang="de">Repro</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept>
+			<source lang="de">Scan</source>
+			<target lang="en" name="lido">image</target>
+			<target lang="en" name="europeana:type">image</target>
+		</concept>	
+		<concept>
+			<source lang="de">Weblink</source>
+			<target lang="en" name="lido">text</target>
+			<target lang="en" name="europeana:type">text</target>
+		</concept>	
+	</voc>
+
+	<voc name="Sammlung">
+		<concept>
+			<source lang="de">AKuOstasiatischeKunst</source>
+			<target lang="de" name="DDB">Ostasiatische Kunst</target>
+		</concept>
+		<concept>
+			<source lang="de">AKuSudSudostundZentralasien</source>
+			<target lang="de" name="DDB">Süd-, Südost und Zentralasien</target>
+		</concept>
+		<concept>
+			<source lang="de">EMAfrika1</source>
+			<target lang="de" name="DDB">Afrika</target>
+		</concept>
+		<concept>
+			<source lang="de">EMMusikethnologie</source>
+			<target lang="de" name="DDB">Musikethnologie</target>
+		</concept>
+		<concept>
+			<source lang="de">EMOstundNordasien</source>
+			<target lang="de" name="DDB">Ost- und Nordasien</target>
+		</concept>
+		<concept>
+			<source lang="de">EMSudundSudostasien</source>
+			<target lang="de" name="DDB">Süd- und Südostasien</target>
+		</concept>
+		<concept>
+			<source lang="de">EMSudseeAustralien</source>
+			<target lang="de" name="DDB">Ozeanien und Australien</target>
+		</concept>
+		<concept>
+			<source lang="de">KBPlakat</source>
+			<target lang="de" name="DDB">Grafikdesign</target>
+		</concept>
+		<concept>
+			<source lang="de">KBModekarikatur</source>
+			<target lang="de" name="DDB">Modebild</target>
+		</concept>
+	</voc>
+
+
+	<voc name="subjects">
+		<!-- sort source alphabetically please -->
+		<concept>
+			<source lang="de">Anzug</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300209863</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10015</target>
+		</concept>
+		<concept>
+			<source lang="de">Armband</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300045991</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10164</target>
+		</concept>
+		<concept>
+			<source lang="de">Ärmel</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300210530</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10052</target>
+		</concept>
+		<concept>
+			<source lang="de">Bade- und Strandkleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300221470</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10123</target>
+		</concept>
+		<concept>
+			<source lang="de">Badeanzug</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300129420</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10624</target>
+		</concept>
+		<concept>
+			<source lang="de">Band</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300014668</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10510</target>
+		</concept>
+		<concept>
+			<source lang="de">Blau</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300129361</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10402</target>
+		</concept>
+		<concept>
+			<source lang="de">Bluse</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046133</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10018</target>
+		</concept>
+		<concept>
+			<source lang="de">Büstenhalter</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300210538</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10081</target>
+		</concept>
+		<concept>
+			<source lang="de">Braun</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300127490</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10403</target>		
+		</concept>
+		<concept>
+			<source lang="de">Cape</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046140</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10040</target>
+		</concept>
+		<concept>
+			<source lang="de">Cloche</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300210733</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10202</target>
+		</concept>
+		<concept>
+			<source lang="de">Collage</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033963</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10458</target>
+		</concept>
+		<concept>
+			<source lang="de">Cowboyhut</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300210737</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10203</target>
+		</concept>
+		<concept>
+			<source lang="de">Damenbekleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300379344</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10434</target>
+		</concept>
+		<concept>
+			<source lang="de">Damenstrumpf</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046088</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10288</target>
+		</concept>
+		<concept>
+			<source lang="de">Ensemble</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209844</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10006</target>
+		</concept>
+		<concept>
+			<source lang="de">Entwurfszeichnung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300069413</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10462</target>
+		</concept>
+		<concept>
+			<source lang="de">Feder</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300011809</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10643</target>
+		</concept>
+		<concept>
+			<source lang="de">Frühling-Sommer</source>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10466</target>
+		</concept>
+		<concept>
+			<source lang="de">Fuchspelz</source>
+			<!-- fur stole -->
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300375744</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10541</target>
+		</concept>
+		<concept>
+			<source lang="de">Fächer</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300258857</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10142</target>
+		</concept>
+		<concept>
+			<source lang="de">Gelb</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300127794</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10417</target>
+		</concept>
+		<concept>
+			<source lang="de">Grau</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300130811</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10405</target>
+		</concept>
+		<concept>
+			<source lang="de">Grün</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300128438</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10404</target>
+		</concept>
+		<concept>
+			<source lang="de">Gürtel (Accessoires)</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300210002</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10151</target>
+		</concept>
+		<!-- double space seems to be an error -->
+		<concept>
+			<source lang="de">halbhohe Stiefel</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300411682</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10266</target>
+		</concept>
+		<concept>
+			<source lang="de">Halskette</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046001</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10162</target>
+		</concept>
+		<concept>
+			<source lang="de">Handtasche</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300312361</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10138</target>
+		</concept>
+		<concept>
+			<source lang="de">Haube</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300213433</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10646</target>
+		</concept>
+		<concept>
+			<source lang="de">Herbst-Winter</source>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10465</target>
+		</concept>
+		<concept>
+			<source lang="de">Herrenbekleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300379341</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10435</target>
+		</concept>
+		<concept>
+			<source lang="de">Holz</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300011914</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10577</target>
+		</concept>
+		<concept>
+			<source lang="de">Hose</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209935</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10036</target>
+		</concept>
+		<concept>
+			<source lang="de">Hut</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046106</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10200</target>
+		</concept>
+		<concept>
+			<source lang="de">Jacke</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046167</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10045</target>
+		</concept>
+		<concept>
+			<source lang="de">Jumpsuit</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209835</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10007</target>
+		</concept>
+		<concept>
+			<source lang="de">Kinderbekleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300379348</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10436</target>
+		</concept>
+		<concept>
+			<source lang="de">Kleid</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046159</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10005</target>
+		</concept>
+		<concept>
+			<source lang="de">Kniebundhosen</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046158</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10031</target>
+		</concept>
+		<concept>
+			<source lang="de">Kopftuch</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300212997</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10211</target>
+		</concept>
+		<concept>
+			<source lang="de">Kostüm</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300411730</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10869</target>
+		</concept>
+		<concept>
+			<source lang="de">Krawatte</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300210068</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10229</target>
+		</concept>
+		<concept>
+			<source lang="de">Ländliche Bekleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300380192</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10131</target>
+		</concept>
+		<concept>
+			<source lang="de">Mantel</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046143</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10042</target>
+		</concept>
+		<concept>
+			<source lang="de">Modeillustration</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300015593</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10308</target>
+		</concept>
+		<concept>
+			<source lang="de">Modeobjekt</source>
+			<source lang="de">Modeobjekte</source>
+			<!-- not exact equivalent in aat?-->
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10000</target>
+		</concept>
+		<concept>
+			<source lang="de">Modeveranstaltung</source>
+			<source lang="de">Modeveranstaltungen</source>
+			<!-- not exact equivalent in aat?-->
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10336</target>
+		</concept>
+		
+		
+		
+		<concept>
+			<source lang="de">Papier</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300266707</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10574</target>
+		</concept>
+		<concept>
+			<source lang="de">Pelz</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300011811</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10539</target>
+		</concept>
+		<concept>
+			<source lang="de">Pink</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300124707</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10400</target>
+		</concept>
+		<concept>
+			<source lang="de">Pullover</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209897</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10026</target>
+		</concept>
+		<concept>
+			<source lang="de">Rock</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209932</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10035</target>
+		</concept>
+		<concept>
+			<source lang="de">Rot</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300126225</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10414</target>
+		</concept>
+		<concept>
+			<source lang="de">Schärpe</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300216864</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10514</target>
+		</concept>
+		<concept>
+			<source lang="de">Schmuck</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300209286</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10152</target>
+		</concept>
+		<concept>
+			<source lang="de">Schürzen (Schutzkleidung)</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046131</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10293</target>
+		</concept>
+		<concept>
+			<source lang="de">Schwarz</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300130920</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10401</target>
+		</concept>
+		<concept>
+			<source lang="de">Skikleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300210460</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10129</target>
+		</concept>
+		<concept>
+			<source lang="de">Schleppe</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300224243</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10055</target>
+		</concept>
+		<concept>
+			<source lang="de">Sonnenschirm</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046218</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10145</target>
+		</concept>
+		<concept>
+			<source lang="de">Sport- und Freizeitkleidung</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300221269</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10121</target>
+		</concept>
+		<concept>
+			<source lang="de">Stiefel</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300046057</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10261</target>
+		</concept>
+		<concept>
+			<source lang="de">Taschentuch</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300216195</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10143</target>
+		</concept>
+		<concept>
+			<source lang="de">Tücher</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046123</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10177</target>
+		</concept>
+		<concept>
+			<source lang="de">Umhang</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300212298</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10046</target>
+		</concept>
+		<concept>
+			<source lang="de">Unterhosen</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300220740</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10099</target>
+		</concept>
+		<concept>
+			<source lang="de">Unterwäsche</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209267</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10068</target>
+		</concept>
+		<concept>
+			<source lang="de">Weste</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300216053</target>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10029</target>
+		</concept>
+		<concept>
+			<source lang="de">Zeichnung</source>
+			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10307</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+	</voc>
+	<voc name="verwaltendeInstitution">
+		<concept>
+			<source lang="de">Alte Nationalgalerie, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-815114</target>
+			<target lang="de" name="homepage">https://www.smb.museum/ang</target>
+		</concept>
+		<concept>
+			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-019118</target>
+			<target lang="de" name="homepage">https://www.smb.museum/em</target>
+		</concept>
+		<concept>
+			<source lang="de">Kupferstichkabinett, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-018511</target>
+			<target lang="de" name="homepage">https://www.smb.museum/museen-einrichtungen/kupferstichkabinett/home/</target>
+		</concept>
+		<concept>
+			<source lang="de">Museum Berggruen, Nationalgalerie, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-906210</target>
+			<target lang="de" name="homepage">http://www.smb.museum/mb</target>
+		</concept>
+		<concept>
+			<source lang="de">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-019014</target>
+			<target lang="de" name="homepage">https://www.smb.museum/aku</target>
+		</concept>
+		<concept>
+			<source lang="de">Museum für Islamische Kunst, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-814517</target>
+			<target lang="de" name="homepage">https://www.smb.museum/isl</target>
+		</concept>
+		<concept>
+			<source lang="de">Musikinstrumenten-Museum, Staatliches Institut für Musikforschung</source>
+			<target lang="de" name="ISIL">de-MUS-019410</target>
+			<target lang="de" name="homepage">https://www.simpk.de/museum</target>
+		</concept>
+		<concept>
+			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-018313</target>
+			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
+		</concept>
+	</voc>
+</vocmap>
