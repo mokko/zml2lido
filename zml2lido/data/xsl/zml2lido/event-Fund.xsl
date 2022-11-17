@@ -22,7 +22,6 @@
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $findendeRollen]"/>
 
 		<xsl:variable name="findendeOrtstypen" select="
-			'Aufnahmeort',
 			'Fundort',
 			'Fundort modern',
 			'Fundort detail',
