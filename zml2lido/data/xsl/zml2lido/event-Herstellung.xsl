@@ -29,7 +29,14 @@
 			'Sprachgruppe'
 		"/>
 
-		<xsl:variable name="herstellendeOrtstypen" select="'Herstellungsort'"/>
+		<xsl:variable name="herstellendeOrtstypen" select="
+			'dargestellter Ort',
+			'Druckort',
+			'Entstehungsort',
+			'Entstehungsort stilistisch',
+			'faktischer Entstehungsort',
+			'Herstellungsort',
+		"/>
 		
 		<xsl:variable name="herstellendeRollenN" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
