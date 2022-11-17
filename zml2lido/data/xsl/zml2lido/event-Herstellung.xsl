@@ -50,15 +50,26 @@
 				and z:vocabularyReferenceItem/@name = $herstellendeKollektive
 			]"/>
 
-		<xsl:variable name="herstellendeOrteN" select="
+		<!-- 
+		old version selected
+			z:repeatableGroup[@name = 'ObjGeograficGrp']
+		but now I expect 
+			z:repeatableGroup[@name = 'ObjGeograficGrp']/z:repeatableGroupItem
+
+		Old version did that to have access to all geonames in one place. That was a solution specific for EM's 
+		geoname chains
+		-->
+		<xsl:variable name="herstellendeOrteNN" select="
 			z:repeatableGroup[
-				@name = 'ObjGeograficGrp' 
-				and z:repeatableGroupItem/z:vocabularyReference[
+				@name = 'ObjGeograficGrp'
+			]/z:repeatableGroupItem[
+				z:vocabularyReference[
 					@name = 'TypeVoc' 
-					and z:vocabularyReferenceItem/@name = $herstellendeOrtstypen
-					or not (@name = 'TypeVoc')
+				]/z:vocabularyReferenceItem[
+					@name = $herstellendeOrtstypen
 				]
 			]"/>
+
 
 		<!-- "Aufnahmejahr" should be "Aufnahme" etc., but it will exist for some time -->
 		<xsl:variable name="herstellendeDatenTypen" select="
@@ -79,7 +90,7 @@
 
         <xsl:if test="$herstellendeRollenN 
 			or $herstellendeKollektiveN 
-			or $herstellendeOrteN 
+			or $herstellendeOrteNN 
 			or $herstellendeDatenTypenN
 			or z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']
 		">
@@ -120,8 +131,15 @@
 						</lido:eventDate>
 					</xsl:for-each>
 					
-					<!-- eventPlace -->	
-					<xsl:apply-templates mode="eventPlace" select="$herstellendeOrteN"/>
+					<!-- 
+					eventPlace 
+					
+					We used to call eventPlace once for all places, now we call eventPlace once for every place,
+					hence we need to sort each place now
+					-->	
+					<xsl:apply-templates mode="eventPlace" select="$herstellendeOrteNN">
+						<xsl:sort select="z:dataField[@name='SortLnu']" data-type="number" order="ascending"/>
+					</xsl:apply-templates>
 					
 					<!--  
 						at the moment Herstellung is the only eventType with materialTech 
