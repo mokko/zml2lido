@@ -205,6 +205,10 @@
 						<xsl:value-of select="$sorder[1]"/>
 					</xsl:attribute>
 				</xsl:if>
+				<xsl:comment>
+					<xsl:value-of select="z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+				</xsl:comment>
+
 				<!-- lang is hardcoded because qualifier in RIA is wrong. 20221117 -->
 				<lido:displayPlace xml:lang="de">
 					<xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
@@ -228,9 +232,6 @@
 	</xsl:template>
 
 	<xsl:template name="PLACE">
-		<xsl:comment>
-			<xsl:value-of select="z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-		</xsl:comment>
 		<lido:placeID lido:type="internal">
 			<xsl:value-of select="z:vocabularyReference[@name='PlaceVoc']/z:vocabularyReferenceItem/@id"/>
 		</lido:placeID>
