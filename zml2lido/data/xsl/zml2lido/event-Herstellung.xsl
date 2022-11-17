@@ -30,6 +30,7 @@
 		"/>
 
 		<xsl:variable name="herstellendeOrtstypen" select="
+			'Aufnahmeort',
 			'dargestellter Ort',
 			'Druckort',
 			'Entstehungsort',

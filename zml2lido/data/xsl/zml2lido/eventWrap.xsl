@@ -179,9 +179,12 @@
 	So new implementaton as of 17.11.2022 treats every place as a separate place.
 	
 	-->
+	<xsl:template mode="eventPlace" match="z:repeatableGroup[@name = 'ObjGeograficGrp']">
+	</xsl:template>
+	
+	
 	<xsl:template mode="eventPlace" match="z:repeatableGroup[@name = 'ObjGeograficGrp']/z:repeatableGroupItem">
-
-		<!-- we used placesN to filter out entries in GeogrBezug that are no places -->
+		<!-- placesN to filter out entries in GeogrBezug that are no places -->
 		<xsl:variable name="placesN" select=".[
 			z:vocabularyReference[
 				@instanceName='ObjGeopolVgr'
@@ -191,58 +194,80 @@
 					@name != 'Sprachgruppe'
 				]
 			]"/>
-		<xsl:variable name="sorder" select="$placesN/z:dataField[@name='SortLnu']/z:value[1]"/>
 
+		<xsl:variable name="sorder" select="$placesN/z:dataField[@name='SortLnu']/z:value"/>
 		<xsl:if test="$placesN ne ''">
 			<!-- 
 				<xsl:message>new eventPlace
 					<xsl:value-of select="$sorder"/>
 				</xsl:message>
 			-->
-			<lido:eventPlace>
-				<xsl:if test="$sorder[1] ne ''">
-					<xsl:attribute name="lido:sortorder">
-						<xsl:value-of select="$sorder[1]"/>
-					</xsl:attribute>
-				</xsl:if>
-				<xsl:comment>
-					<xsl:value-of select="z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-				</xsl:comment>
+			<xsl:variable name="geopicker">
+				<xsl:choose>
+					<xsl:when test="z:vocabularyReference[@name='PlaceVoc']/z:vocabularyReferenceItem/@id ne ''">
+						<xsl:text>PlaceVoc</xsl:text>
+					</xsl:when>
+					<xsl:when test="z:vocabularyReference[@name='PlaceILSVoc']/z:vocabularyReferenceItem/@id ne ''">
+						<xsl:text>PlaceILSVoc</xsl:text>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:message terminate="yes">
+							<xsl:text>ERROR: geo info not found!</xsl:text>
+						</xsl:message>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:variable>
 
-				<!-- lang is hardcoded because qualifier in RIA is wrong. 20221117 -->
-				<lido:displayPlace xml:lang="de">
-					<xsl:attribute name="lido:encodinganalog">PlaceVoc</xsl:attribute>
-					<xsl:value-of select="replace(
-						z:vocabularyReference[@name='PlaceVoc']/z:vocabularyReferenceItem/z:formattedValue, 
-						'^;(\w*)',
-						'$1'
-					)"/>
-				</lido:displayPlace>
-				<lido:place>
-					<!-- todo: exclude Ethnien and other collectives-->
-					<xsl:call-template name="PLACE"/>
+			<xsl:variable name="geoname">
+				<xsl:value-of select="z:vocabularyReference[@name eq $geopicker]/z:vocabularyReferenceItem/z:formattedValue"/>
+			</xsl:variable>
+			
+			<xsl:if test="$geoname ne ''">
+				<!-- xsl:message>
+					GEONAME
+					<xsl:value-of select="$geoname"/
+					</xsl:message>-->
+
+				<lido:eventPlace>
+					<xsl:if test="$sorder[1] ne ''">
+						<xsl:attribute name="lido:sortorder">
+							<xsl:value-of select="$sorder[1]"/>
+						</xsl:attribute>
+					</xsl:if>
+
+					<xsl:comment>
+						<xsl:value-of select="z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+					</xsl:comment>
+
+					<!-- lang is hardcoded because qualifier in RIA is wrong. 20221117 -->
+					<lido:displayPlace xml:lang="de">
+						<xsl:attribute name="lido:encodinganalog">
+							<xsl:value-of select="$geopicker"/>
+						</xsl:attribute>
+						<xsl:value-of select="replace($geoname,'^;(\w*)','$1')"/>
+					</lido:displayPlace>
+					<lido:place>
+						<!-- todo: exclude Ethnien and other collectives-->
+						<lido:placeID lido:type="{$geopicker}">
+								<xsl:value-of select="z:vocabularyReference[@name=$geopicker]/z:vocabularyReferenceItem/@id"/>
+						</lido:placeID>
+						<lido:namePlaceSet>
+							<!-- hardcoded because value in RIA wrong 17.11.2022 -->
+							<lido:appellationValue xml:lang="de">
+								<xsl:value-of select="replace($geoname, '^;(\w*)','$1')"/>
+							</lido:appellationValue>
+						</lido:namePlaceSet>
+						<xsl:call-template name="placeClassification"/>
+
 						<!-- xsl:if test="position() = 2">
 							<lido:partOfPlace>
 								<xsl:call-template name="PLACE"/>
 							</lido:partOfPlace>
 						</xsl:if-->
-				</lido:place>
-			</lido:eventPlace>
-			</xsl:if>		
-	</xsl:template>
-
-	<xsl:template name="PLACE">
-		<lido:placeID lido:type="internal">
-			<xsl:value-of select="z:vocabularyReference[@name='PlaceVoc']/z:vocabularyReferenceItem/@id"/>
-		</lido:placeID>
-		<lido:namePlaceSet>
-			<xsl:variable name="geoname" select="z:vocabularyReference[@name='PlaceVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-			<!-- hardcoded because value in RIA wrong 17.11.2022 -->
-			<lido:appellationValue xml:lang="de">
-				<xsl:value-of select="replace($geoname, '^;(\w*)','$1')"/>
-			</lido:appellationValue>
-		</lido:namePlaceSet>
-		<xsl:call-template name="placeClassification"/>
+					</lido:place>
+				</lido:eventPlace>
+			</xsl:if>
+		</xsl:if>			
 	</xsl:template>
 
 	<xsl:template name="placeClassification">

@@ -22,6 +22,7 @@
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $findendeRollen]"/>
 
 		<xsl:variable name="findendeOrtstypen" select="
+			'Aufnahmeort',
 			'Fundort',
 			'Fundort modern',
 			'Fundort detail',
@@ -36,11 +37,14 @@
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $findendeRollen]"/>
 
-		<xsl:variable name="fundorteN" select="z:repeatableGroup[
-			@name = 'ObjGeograficGrp' and 
-			z:repeatableGroupItem/z:vocabularyReference[
-				@name = 'TypeVoc' and 
-				z:vocabularyReferenceItem/@name = $findendeOrtstypen
+		<xsl:variable name="fundorteN" select="
+			z:repeatableGroup[
+				@name = 'ObjGeograficGrp'
+			]/z:repeatableGroupItem[
+				z:vocabularyReference[
+					@name = 'TypeVoc' 
+				]/z:vocabularyReferenceItem[
+					@name = $findendeOrtstypen
 				]
 			]"/>
 
