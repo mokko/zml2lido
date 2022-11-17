@@ -25,7 +25,8 @@
 			<xsl:when test="z:dataField[@name = 'ObjTechnicalTermClb']">
 				<lido:objectWorkTypeWrap>
 					<lido:objectWorkType lido:type="ObjTechnicalTermClb">
-						<lido:term>
+						<!-- hardcoded since dataField has no language qualifier in RIA! -->
+						<lido:term xml:lang="de">
 							<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjTechnicalTermClb']/z:value)"/>
 						</lido:term>
 					</lido:objectWorkType>
