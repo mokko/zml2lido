@@ -228,6 +228,9 @@
 	</xsl:template>
 
 	<xsl:template name="PLACE">
+		<xsl:comment>
+			<xsl:value-of select="z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+		</xsl:comment>
 		<lido:placeID lido:type="internal">
 			<xsl:value-of select="z:vocabularyReference[@name='PlaceVoc']/z:vocabularyReferenceItem/@id"/>
 		</lido:placeID>
