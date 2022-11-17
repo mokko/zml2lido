@@ -35,7 +35,7 @@
 			'Entstehungsort',
 			'Entstehungsort stilistisch',
 			'faktischer Entstehungsort',
-			'Herstellungsort',
+			'Herstellungsort'
 		"/>
 		
 		<xsl:variable name="herstellendeRollenN" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
