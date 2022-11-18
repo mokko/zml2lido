@@ -260,6 +260,10 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10624</target>
 		</concept>
 		<concept>
+			<source lang="de">Badekappe</source>
+			<target name="aatUri">http://vocab.getty.edu/page/aat/300046095</target>
+		</concept>
+		<concept>
 			<source lang="de">Band</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300014668</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10510</target>
@@ -350,6 +354,10 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10417</target>
 		</concept>
 		<concept>
+			<source lang="de">Gold</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300011021</target>
+		</concept>
+		<concept>
 			<source lang="de">Grau</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300130811</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10405</target>
@@ -420,6 +428,10 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10007</target>
 		</concept>
 		<concept>
+			<source lang="de">Kappen (Kopfbedeckung)</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046094</target>
+		</concept>
+		<concept>
 			<source lang="de">Kinderbekleidung</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300379348</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10436</target>
@@ -460,6 +472,14 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10042</target>
 		</concept>
 		<concept>
+			<source lang="de">Maske</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300138758</target>
+		</concept>
+		<concept>
+			<source lang="de">Melone</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046103</target>
+		</concept>
+		<concept>
 			<source lang="de">Modeillustration</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300015593</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10308</target>
@@ -476,9 +496,18 @@
 			<!-- not exact equivalent in aat?-->
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10336</target>
 		</concept>
-		
-		
-		
+		<concept>
+			<source lang="de">Monokel</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300263207</target>
+		</concept>
+		<concept>
+			<source lang="de">Muff</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300210014</target>
+		</concept>
+		<concept>
+			<source lang="de">Panier</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300216740</target>
+		</concept>
 		<concept>
 			<source lang="de">Papier</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300266707</target>
@@ -530,6 +559,10 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10401</target>
 		</concept>
 		<concept>
+			<source lang="de">Shorts</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209930</target>
+		</concept>
+		<concept>
 			<source lang="de">Skikleidung</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300210460</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10129</target>
@@ -553,6 +586,10 @@
 			<source lang="de">Stiefel</source>
 			<target name="aatUri">http://vocab.getty.edu/page/aat/300046057</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10261</target>
+		</concept>
+		<concept>
+			<source lang="de">Taschen</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300198926</target>
 		</concept>
 		<concept>
 			<source lang="de">Taschentuch</source>
@@ -585,11 +622,18 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10029</target>
 		</concept>
 		<concept>
+			<source lang="de">Wanderstock</source>
+			<source lang="de">Wanderstab</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300221268</target>
+		</concept>
+		<concept>
 			<source lang="de">Zeichnung</source>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10307</target>
 			<target name="aatUri">http://vocab.getty.edu/aat/300033973</target>
 		</concept>
 	</voc>
+
+
 	<voc name="verwaltendeInstitution">
 		<concept>
 			<source lang="de">Alte Nationalgalerie, Staatliche Museen zu Berlin</source>
