@@ -201,6 +201,11 @@
 			<xsl:when test="$this eq 'Höhe'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
 			</xsl:when>
+			<xsl:when test="$this eq 'Höhe x Breite'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
+			</xsl:when>
 			<xsl:when test="$this eq 'Höhe x Breite (aufgeschlagen)'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
 				<xsl:text> x </xsl:text>
