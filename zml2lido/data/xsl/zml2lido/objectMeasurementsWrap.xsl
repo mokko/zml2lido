@@ -35,29 +35,65 @@
 			</xsl:if>
 
 			<xsl:if test="normalize-space(z:virtualField[@name='PreviewENVrt']/z:value) != ''">
+				<xsl:comment>
+					<xsl:text>
+						Client response includes only one language for measurementType, either 
+						English or German. So there is no English term available at the moment in RIA.
+					</xsl:text>
+				</xsl:comment>
 				<lido:displayObjectMeasurements xml:lang="en">
 					<xsl:value-of select="normalize-space(z:virtualField[@name='PreviewENVrt']/z:value)"/>
 				</lido:displayObjectMeasurements>
 			</xsl:if>
 
-			<lido:objectMeasurements>
-				<xsl:variable name="value">
-					<xsl:apply-templates select="z:moduleReference[
-						@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue" mode="value"/>
-				</xsl:variable>
-				<lido:measurementsSet>
-					<lido:measurementType xml:lang="de">
-						<xsl:value-of select="normalize-space(z:moduleReference[
-							@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue)"/>
-					</lido:measurementType>
-					<lido:measurementUnit xml:lang="de">
-						<xsl:value-of select="normalize-space(z:vocabularyReference[
-							@name='UnitDdiVoc']/z:vocabularyReferenceItem/@name)"/>
-					</lido:measurementUnit>
-					<lido:measurementValue xml:lang="de">
-						<xsl:value-of select="translate ($value, '.',',')"/>
-					</lido:measurementValue>
-				</lido:measurementsSet>
+			<!-- 
+				used to get en (English) values, now expects de values 
+				Let's make language attribute dynamic now
+			-->
+			<xsl:variable name="type" select="z:moduleReference[
+					@name='TypeDimRef'
+				]/z:moduleReferenceItem/z:formattedValue"/>
+			<xsl:variable name="unit" select="z:vocabularyReference[
+					@name='UnitDdiVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue"/>
+			<xsl:variable name="unit" select="z:vocabularyReference[
+					@name='UnitDdiVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue"/>
+			<xsl:variable name="value">
+				<xsl:apply-templates select="z:moduleReference[
+					@name='TypeDimRef'
+				]/z:moduleReferenceItem/z:formattedValue" mode="value"/>
+			</xsl:variable>
+			<xsl:choose>
+				<xsl:when test="normalize-space($type) ne '' 
+					and normalize-space($unit) ne '' 
+					and normalize-space($value) ne ''">
+					<xsl:comment>Lang attributes are dynamically created here!</xsl:comment>
+					<lido:objectMeasurements>
+						<lido:measurementsSet>
+								<lido:measurementType>
+									<xsl:attribute name="xml:lang">
+										<xsl:value-of select="$type/@language"/>
+									</xsl:attribute>
+									<xsl:value-of select="normalize-space($type)"/>
+								</lido:measurementType>
+								<lido:measurementUnit>
+									<xsl:attribute name="xml:lang">
+										<xsl:value-of select="$unit/@language"/>
+									</xsl:attribute>
+									<xsl:value-of select="normalize-space($unit)"/>
+								</lido:measurementUnit>
+								<lido:measurementValue>
+									<xsl:attribute name="xml:lang">
+										<xsl:value-of select="z:moduleReference[
+											@name='TypeDimRef'
+										]/z:moduleReferenceItem/z:formattedValue/@language"/>
+									</xsl:attribute>
+									<xsl:value-of select="normalize-space($value)"/>
+								</lido:measurementValue>
+						</lido:measurementsSet>
+				<!-- 
+					Let's not try to translate LIDO at the moment 
 				<lido:measurementsSet>
 					<lido:measurementType xml:lang="de">
 						<xsl:value-of select="normalize-space(z:moduleReference[
@@ -70,9 +106,16 @@
 					<lido:measurementValue xml:lang="en">
 						<xsl:value-of select="$value"/>
 					</lido:measurementValue>
-				</lido:measurementsSet>
-
-			</lido:objectMeasurements>
+				</lido:measurementsSet> -->
+					</lido:objectMeasurements>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:message>
+						<xsl:text>WARNING: measurement type, unit or value missing! object </xsl:text>
+						<xsl:value-of select="../../@id"/>
+					</xsl:message>
+				</xsl:otherwise>
+			</xsl:choose>
 		</lido:objectMeasurementsSet>
 	</xsl:template>
 
