@@ -92,13 +92,14 @@
 			<xsl:comment>ObjKeyWordsGrp</xsl:comment>
 			<xsl:apply-templates mode="display" select="z:dataField[@name = 'NotationTxt']/z:value"/>
 			<lido:subject>
-				<lido:extentSubject>
-					<xsl:value-of select="normalize-space(
-						z:vocabularyReference[
+				<xsl:variable name="typeVoc" select="normalize-space(z:vocabularyReference[
 							@name = 'TypeVoc'
-						]/z:vocabularyReferenceItem/z:formattedValue
-					)"/>
-				</lido:extentSubject>
+						]/z:vocabularyReferenceItem/z:formattedValue)"/>
+				<xsl:if test="$typeVoc ne ''">
+					<lido:extentSubject>
+						<xsl:value-of select="$typeVoc"/>
+					</lido:extentSubject>
+				</xsl:if>
 				<lido:subjectConcept>
 					<xsl:if test="z:vocabularyReference[@instanceName = 'ObjKeyWordVgr']/z:vocabularyReferenceItem/@name">
 						<lido:conceptID lido:type="URL" lido:source="iconclass">
