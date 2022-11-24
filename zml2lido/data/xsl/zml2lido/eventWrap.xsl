@@ -160,16 +160,20 @@
 				</lido:actor>
 				<xsl:variable name="rolle" select="z:vocabularyReference[@name = 'RoleVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 				<xsl:variable name="attribution" select="z:vocabularyReference[@name = 'AttributionVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-				<lido:roleActor>
-					<lido:term lido:encodinganalog="RIA:Rolle">
-						<xsl:attribute name="xml:lang" select="$rolle/@language"/>
-						<xsl:value-of select="$rolle"/> 
-					</lido:term>
-				</lido:roleActor>
-				<lido:attributionQualifierActor>
-					<xsl:attribute name="xml:lang" select="$attribution/@language"/>
-					<xsl:value-of select="$attribution"/>
-				</lido:attributionQualifierActor>
+				<xsl:if test="normalize-space($rolle) ne ''">
+					<lido:roleActor>
+						<lido:term lido:encodinganalog="RIA:Rolle">
+							<xsl:attribute name="xml:lang" select="$rolle/@language"/>
+							<xsl:value-of select="normalize-space($rolle)"/> 
+						</lido:term>
+					</lido:roleActor>
+				</xsl:if>
+				<xsl:if test="normalize-space($attribution) ne ''">
+					<lido:attributionQualifierActor>
+						<xsl:attribute name="xml:lang" select="$attribution/@language"/>
+						<xsl:value-of select="normalize-space($attribution)"/>
+					</lido:attributionQualifierActor>
+				</xsl:if>
 			</lido:actorInRole>
 		</lido:eventActor>
 	</xsl:template>

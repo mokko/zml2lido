@@ -40,9 +40,7 @@
 		<xsl:variable name="relatedWorks" select="z:composite[
 			@name='ObjObjectCre'
 		]/z:compositeItem/z:moduleReference
-		or
-		z:moduleReference[@name='ObjLiteratureRef']
-		"/>
+		or z:moduleReference[@name='ObjLiteratureRef']"/>
 		
 		<xsl:if test="z:repeatableGroup[@name='ObjIconographyGrp'] 
 			or z:repeatableGroup[@name='ObjKeyWordsGrp']
@@ -123,6 +121,7 @@
 	</xsl:template>
 
 	<xsl:template mode="index" match="z:dataField[@name = 'NotationTxt']/z:value">
+		<!-- todo: dynamic -->
 		<lido:term xml:lang="de">
 			<xsl:value-of select="normalize-space(.)"/>
 		</lido:term>
