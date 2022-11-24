@@ -88,7 +88,18 @@
 		<lido:subjectSet>
 			<xsl:call-template name="sortorderAttribute"/>
 			<xsl:comment>ObjKeyWordsGrp</xsl:comment>
-			<xsl:apply-templates mode="display" select="z:dataField[@name = 'NotationTxt']/z:value"/>
+
+			<xsl:variable name="keyword2" select="z:vocabularyReference[
+						@name = 'KeyWordVoc'
+					]/z:vocabularyReferenceItem/z:formattedValue"/>
+
+			<xsl:if test="normalize-space($keyword2) ne ''">
+				<lido:displaySubject>
+					<xsl:attribute name="xml:lang" select="$keyword2/@language"/>
+					<xsl:value-of select="normalize-space($keyword2)"/>
+				</lido:displaySubject>
+			</xsl:if>
+			<!-- xsl:apply-templates mode="display" select="z:dataField[@name = 'NotationTxt']/z:value"/-->
 			<lido:subject>
 				<xsl:variable name="typeVoc" select="normalize-space(z:vocabularyReference[
 							@name = 'TypeVoc'
@@ -99,21 +110,26 @@
 					</lido:extentSubject>
 				</xsl:if>
 				<lido:subjectConcept>
-					<xsl:if test="z:vocabularyReference[@instanceName = 'ObjKeyWordVgr']/z:vocabularyReferenceItem/@name">
+					<xsl:variable name="keyword" select="z:vocabularyReference[
+						@instanceName = 'ObjKeyWordVgr'
+					]/z:vocabularyReferenceItem"/>
+					<xsl:if test="$keyword ne ''">
 						<lido:conceptID lido:type="URL" lido:source="iconclass">
-							<xsl:value-of select="normalize-space(
-								z:vocabularyReference[
-									@instanceName = 'ObjKeyWordVgr'
-								]/z:vocabularyReferenceItem/@name
-							)"/>
+							<xsl:value-of select="normalize-space($keyword/@name)"/>
 						</lido:conceptID>
+						<lido:term>
+							<xsl:attribute name="xml:lang" select="$keyword/z:formattedValue/@language"/>
+							<xsl:value-of select="normalize-space($keyword/z:formattedValue)"/>
+						</lido:term>
 					</xsl:if>
+					<!-- not sure if NotationTxt is still used -->
 					<xsl:apply-templates mode="index" select="z:dataField[@name = 'NotationTxt']/z:value"/>
 				</lido:subjectConcept>
 			</lido:subject>
 		</lido:subjectSet>
     </xsl:template>
 
+	<!-- not used any more -->
 	<xsl:template mode="display" match="z:dataField[@name = 'NotationTxt']/z:value">
 		<lido:displaySubject>
 			<xsl:value-of select="normalize-space(.)"/>
@@ -155,7 +171,8 @@
 		<xsl:comment>
 			<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
 		</xsl:comment>
-		<lido:displaySubject xml:lang="de">
+		<lido:displaySubject>
+			<xsl:attribute name="xml:lang" select="z:vocabularyReferenceItem/z:formattedValue/@language"/>
 			<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 		</lido:displaySubject>
 		<lido:subject>
@@ -175,7 +192,8 @@
 						<xsl:with-param name="uri" select="$euro"/>
 					</xsl:call-template>
 				</xsl:if>
-				<lido:term xml:lang="de">
+				<lido:term>
+					<xsl:attribute name="xml:lang" select="z:vocabularyReferenceItem/z:formattedValue/@language"/>
 					<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 				</lido:term>
 			</lido:subjectConcept>
@@ -280,7 +298,11 @@
 				</lido:object>
             </lido:relatedWork>
             <lido:relatedWorkRelType>
-                <lido:term xml:lang="de">
+                <lido:term>
+					<xsl:attribute name="xml:lang" select="z:vocabularyReference[
+							@name = 'TypeAVoc'
+						]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
+
                     <xsl:value-of select="normalize-space(
 						z:vocabularyReference[
 							@name = 'TypeAVoc'
