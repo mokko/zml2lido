@@ -353,17 +353,23 @@
 				Epoche des Originals
 				Aufnahmejahr: seems to be a bad value, should be Aufnahme
 		-->
-		<xsl:variable name="displayDate">
+		<xsl:variable name="displayDate-de">
 			<xsl:choose>
-				<xsl:when test="normalize-space(z:dataField[@name = 'PreviewTxt']/z:value) ne ''">
-					<xsl:value-of select="normalize-space(z:dataField[@name = 'PreviewTxt']/z:value)"/>
-				</xsl:when>
 				<xsl:when test="normalize-space(z:virtualField[@name = 'PreviewVrt']/z:value) ne ''">
 					<xsl:value-of select="normalize-space(z:virtualField[@name = 'PreviewVrt']/z:value)"/>
 				</xsl:when>
+				<xsl:when test="normalize-space(z:dataField[@name = 'PreviewTxt']/z:value) ne ''">
+					<xsl:value-of select="normalize-space(z:dataField[@name = 'PreviewTxt']/z:value)"/>
+				</xsl:when>
+				<xsl:when test="normalize-space(z:dataField[@name = 'DateTxt']/z:value) ne ''">
+					<xsl:value-of select="normalize-space(z:dataField[@name = 'DateTxt']/z:value)"/>
+				</xsl:when>
+
+				<!--
 				<xsl:when test="normalize-space(z:dataField[@name = 'NotesClb']/z:value) ne ''">
 					<xsl:value-of select="normalize-space(z:dataField[@name = 'NotesClb']/z:value)"/>
 				</xsl:when>
+				-->
 				
 				<xsl:otherwise>
 					<xsl:message terminate="no">
@@ -379,11 +385,52 @@
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
-		<xsl:if test="$displayDate ne ''">
+		<xsl:if test="$displayDate-de ne ''">
+			<!-- How can we make qualifier dynamic? Is there one in RIA? -->
 			<lido:displayDate xml:lang="de">
-				<xsl:value-of select="$displayDate"/>
+				<xsl:value-of select="$displayDate-de"/>
 			</lido:displayDate>
 		</xsl:if>
+
+		<xsl:variable name="displayDate-en">
+			<xsl:choose>
+				<xsl:when test="normalize-space(z:virtualField[@name = 'PreviewENVrt']/z:value) ne ''">
+					<xsl:value-of select="normalize-space(z:virtualField[@name = 'PreviewENVrt']/z:value)"/>
+				</xsl:when>
+				<!-- xsl:when test="normalize-space(z:dataField[@name = 'PreviewTxt']/z:value) ne ''">
+					<xsl:value-of select="normalize-space(z:dataField[@name = 'PreviewTxt']/z:value)"/>
+				</xsl:when-->
+				<!--xsl:when test="normalize-space(z:dataField[@name = 'DateTxt']/z:value) ne ''">
+					<xsl:value-of select="normalize-space(z:dataField[@name = 'DateTxt']/z:value)"/>
+				</xsl:when-->
+
+				<!--
+				<xsl:when test="normalize-space(z:dataField[@name = 'NotesClb']/z:value) ne ''">
+					<xsl:value-of select="normalize-space(z:dataField[@name = 'NotesClb']/z:value)"/>
+				</xsl:when>
+				-->
+				
+				<xsl:otherwise>
+					<xsl:message terminate="no">
+						<xsl:text>INFO: No displayDate-en</xsl:text>
+						<xsl:value-of select="../../../@name"/>
+						<xsl:text>: </xsl:text>
+						<xsl:value-of select="../../@id"/>
+					</xsl:message>
+					<!--
+					If this fails ObjDateGrp exists, but no entry in the fields above;
+					it is no error if displayDate is empty.
+					-->
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+		<xsl:if test="$displayDate-en ne ''">
+			<!-- How can we make qualifier dynamic? Is there one in RIA? -->
+			<lido:displayDate xml:lang="en">
+				<xsl:value-of select="$displayDate-en"/>
+			</lido:displayDate>
+		</xsl:if>
+
 		<xsl:if test="normalize-space(z:dataField[@name = 'DateFromTxt']) ne '' 
 			or normalize-space(z:dataField[@name = 'DateToTxt']) ne ''">
 			<lido:date>
