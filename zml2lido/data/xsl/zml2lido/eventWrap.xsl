@@ -158,13 +158,17 @@
 						</lido:genderActor>
 					</xsl:if>
 				</lido:actor>
+				<xsl:variable name="rolle" select="z:vocabularyReference[@name = 'RoleVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+				<xsl:variable name="attribution" select="z:vocabularyReference[@name = 'AttributionVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 				<lido:roleActor>
-					<lido:term xml:lang="de" lido:encodinganalog="RIA:Rolle">
-						<xsl:value-of select="z:vocabularyReference[@name = 'RoleVoc']/z:vocabularyReferenceItem/z:formattedValue"/> 
+					<lido:term lido:encodinganalog="RIA:Rolle">
+						<xsl:attribute name="xml:lang" select="$rolle/@language"/>
+						<xsl:value-of select="$rolle"/> 
 					</lido:term>
 				</lido:roleActor>
-				<lido:attributionQualifierActor xml:lang="de">
-					<xsl:value-of select="z:vocabularyReference[@name = 'AttributionVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+				<lido:attributionQualifierActor>
+					<xsl:attribute name="xml:lang" select="$attribution/@language"/>
+					<xsl:value-of select="$attribution"/>
 				</lido:attributionQualifierActor>
 			</lido:actorInRole>
 		</lido:eventActor>
