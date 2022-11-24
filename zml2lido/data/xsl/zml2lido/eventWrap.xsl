@@ -152,7 +152,8 @@
 					</xsl:if>
 					<xsl:variable name="gender" select="$kue/z:vocabularyReference[@name = 'PerGenderVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 					<xsl:if test="$gender ne ''">
-						<lido:genderActor xml:lang="en">
+						<lido:genderActor>
+							<xsl:attribute name="xml:lang" select="$gender/@language"/>
 							<xsl:value-of select="$gender"/>
 						</lido:genderActor>
 					</xsl:if>
