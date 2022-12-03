@@ -202,36 +202,36 @@ class LinkChecker:
                     print("\tsuccess")
 
     def prepareRelWorksCache(self, *, client, relWorksL: list):
-        if not Path(self.relWorksFn).exists():
+        if Path(self.relWorksFn).exists():
+            return
+        print("   Preparing relWorks cache")
+        q = Search(module="Object", limit=-1)
+        q.OR()
 
-            print("   Preparing relWorks cache")
-            q = Search(module="Object", limit=-1)
-            q.OR()
-
-            aset = set()  # no duplicates
-            for ID in relWorksL:
-                src = ID.xpath("@l:source", namespaces=NSMAP)[0]
-                if src == "OBJ.ID":
-                    modType = "Object"
-                elif src == "LIT.ID":
-                    modType = "Literature"
-                else:
-                    raise ValueError(f"ERROR: Unknown type: {src}")
-                if ID.text is not None and modType == "Object":
-                    id_str = ID.text
-                    if id_str not in aset:
-                        q.addCriterion(
-                            operator="equalsField",
-                            field="__id",
-                            value=id_str,
-                        )
-                    aset.add(id_str)
-            q.validate(mode="search")
-            q.toFile(path="debug-search.xml")
-            print("\tgetting stuff")
-            self.relWorks = client.search(query=q)
-            self.relWorks.toFile(path=self.relWorksFn)
-            print("\tdone")
+        aset = set()  # no duplicates
+        for ID in relWorksL:
+            src = ID.xpath("@l:source", namespaces=NSMAP)[0]
+            if src == "OBJ.ID":
+                modType = "Object"
+            elif src == "LIT.ID":
+                modType = "Literature"
+            else:
+                raise ValueError(f"ERROR: Unknown type: {src}")
+            if ID.text is not None and modType == "Object":
+                id_str = ID.text
+                if id_str not in aset:
+                    q.addCriterion(
+                        operator="equalsField",
+                        field="__id",
+                        value=id_str,
+                    )
+                aset.add(id_str)
+        q.validate(mode="search")
+        # q.toFile(path="debug-search.xml")
+        print("\tgetting stuff")
+        self.relWorks = client.search(query=q)
+        self.relWorks.toFile(path=self.relWorksFn)
+        print("\tdone")
 
     def rmInternalLinks(self):
         """
