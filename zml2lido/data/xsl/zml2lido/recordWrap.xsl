@@ -13,9 +13,18 @@
 	<xsl:template name="recordWrap">
 		<lido:recordWrap>
 			<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
-			<lido:recordID lido:type="local" lido:source="SMB/Obj.ID">
-				<xsl:value-of select="func:getISIL($verwaltendeInstitution)"/>
-				<xsl:text>/</xsl:text>
+			<xsl:variable name="ISIL" select="func:getISIL($verwaltendeInstitution)"/>
+			<lido:recordID lido:type="local">
+				<xsl:attribute name="lido:source">
+					<xsl:if test="$verwaltendeInstitution ne ''">
+						<xsl:text>ISIL/</xsl:text>
+					</xsl:if>
+					<xsl:text>Obj.ID</xsl:text>
+				</xsl:attribute>
+				<xsl:if test="$verwaltendeInstitution ne ''">
+					<xsl:value-of select="$ISIL"/>
+					<xsl:text>/</xsl:text>
+				</xsl:if>
 				<xsl:value-of select="@id"/>
 			</lido:recordID>
 			<lido:recordType>
@@ -27,11 +36,13 @@
 				<lido:conceptID lido:type="URI" lido:source="LIDO-Terminologie">http://terminology.lido-schema.org/lido00141</lido:conceptID>
 				<lido:term xml:lang="de">Einzelobjekt</lido:term>
 			</lido:recordType>
-			<lido:recordSource lido:type="Institution">
-				<xsl:call-template name="legalBody">
-					<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
-				</xsl:call-template>
-			</lido:recordSource>
+			<xsl:if test="$verwaltendeInstitution ne ''">
+				<lido:recordSource lido:type="Institution">
+					<xsl:call-template name="legalBody">
+						<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
+					</xsl:call-template>
+				</lido:recordSource>
+			</xsl:if>
 			<lido:recordRights>
 				<lido:rightsType>
                     <lido:conceptID lido:source="CC" lido:type="URI">https://creativecommons.org/publicdomain/zero/1.0/</lido:conceptID>

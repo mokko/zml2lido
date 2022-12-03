@@ -33,12 +33,28 @@
 			<xsl:value-of select="@id"/>
 		</xsl:message-->
 		<xsl:variable name="verwaltendeInstitution" select="normalize-space(z:moduleReference[@name='ObjOwnerRef'])"/>
+		<xsl:variable name="ISIL" select="func:getISIL($verwaltendeInstitution)"/>
+		<xsl:if test="verwaltendeInstitution ne ''">
+			<xsl:message>
+				<xsl:text>WARNING: no administering institution (verwaltendeInstitution) </xsl:text>
+				<xsl:value-of select="@id"/>
+			</xsl:message>
+		</xsl:if>
 		<lido:lido>
 			<lido:lidoRecID>
-				<xsl:attribute name="lido:source">ISIL (ISO 15511)/Obj.ID</xsl:attribute>
+				<xsl:choose>
+					<xsl:when test="$ISIL ne ''">
+						<xsl:attribute name="lido:source">ISIL (ISO 15511)/Obj.ID</xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:attribute name="lido:source">Obj.ID</xsl:attribute>
+					</xsl:otherwise>
+				</xsl:choose>
 				<xsl:attribute name="lido:type">local</xsl:attribute>
-					<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
-					<xsl:text>/</xsl:text>
+					<xsl:if test="$ISIL ne ''">
+						<xsl:value-of select="$ISIL" />
+						<xsl:text>/</xsl:text>
+					</xsl:if>
 					<xsl:value-of select="@id" />
 			</lido:lidoRecID>
 			<xsl:comment>
@@ -54,9 +70,20 @@
 					<!--sometimes identical date is repeated; not sure why, so just taking first -->
 					<xsl:variable name="pubdate" select="z:repeatableGroup[
 						@name='ObjPublicationGrp']/z:repeatableGroupItem[1]/z:dataField[@name='ModifiedDateDat']/z:value"/>
-					<lido:objectPublishedID lido:source="ISIL (ISO 15511)/Obj.ID/publishing-timeStamp" lido:type="local">
-						<xsl:value-of select="func:getISIL($verwaltendeInstitution)" />
-						<xsl:text>/</xsl:text>
+					<lido:objectPublishedID lido:type="local">
+						<xsl:attribute name="lido:source">
+						<xsl:if test="$ISIL ne ''">
+							<xsl:text>ISIL (ISO 15511)/</xsl:text>
+						</xsl:if>
+						<xsl:text>Obj.ID</xsl:text>	
+						<xsl:if test="$pubdate">
+							<xsl:text>/publishing-timeStamp</xsl:text> 
+						</xsl:if>
+						</xsl:attribute>
+						<xsl:if test="$ISIL ne ''">
+							<xsl:value-of select="$ISIL" />
+							<xsl:text>/</xsl:text>
+						</xsl:if>
 						<xsl:value-of select="@id" />
 						<xsl:if test="$pubdate">
 							<xsl:text>/</xsl:text>

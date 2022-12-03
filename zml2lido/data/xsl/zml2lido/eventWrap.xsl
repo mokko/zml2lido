@@ -219,16 +219,28 @@
 					<xsl:when test="z:vocabularyReference[@name='PlaceILSVoc']/z:vocabularyReferenceItem/@id ne ''">
 						<xsl:text>PlaceILSVoc</xsl:text>
 					</xsl:when>
+					<xsl:when test="z:dataField[@name='DetailsTxt']/z:value ne ''">
+						<xsl:text>DetailsTxt</xsl:text>
+					</xsl:when>
 					<xsl:otherwise>
+						<!-- terminates if there is ObjGeograficGrp, but no PlaceVoc or PlaceILSVoc -->
 						<xsl:message terminate="yes">
-							<xsl:text>ERROR: geo info not found!</xsl:text>
+							<xsl:text>ERROR: Geo info not found! id: </xsl:text>
+							<xsl:value-of select="../../@id"/>
 						</xsl:message>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:variable>
 
 			<xsl:variable name="geoname">
-				<xsl:value-of select="z:vocabularyReference[@name eq $geopicker]/z:vocabularyReferenceItem/z:formattedValue"/>
+				<xsl:choose>
+					<xsl:when test="$geopicker eq 'PlaceVoc' or $geopicker eq PlaceILSVoc">
+						<xsl:value-of select="z:vocabularyReference[@name eq $geopicker]/z:vocabularyReferenceItem/z:formattedValue"/>
+					</xsl:when>
+					<xsl:when test="$geopicker eq 'DetailsText'">
+						<xsl:value-of select="z:dataField[@name='DetailsTxt']/z:value"/>
+					</xsl:when>
+				</xsl:choose>
 			</xsl:variable>
 			
 			<xsl:if test="$geoname ne ''">

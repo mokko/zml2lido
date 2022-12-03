@@ -19,11 +19,24 @@
 	<xsl:template name="repositoryWrap">
         <lido:repositoryWrap>
         	<lido:repositorySet lido:type="current">
-				<lido:repositoryName>
-					<xsl:call-template name="legalBody">
-						<xsl:with-param name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
-					</xsl:call-template>
-				</lido:repositoryName>
+				<xsl:choose>
+					<xsl:when test="z:moduleReference[@name='ObjOwnerRef']">
+						<lido:repositoryName>
+							<xsl:call-template name="legalBody">
+								<xsl:with-param name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
+							</xsl:call-template>
+						</lido:repositoryName>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:message>
+							<xsl:text>WARNING: verwaltede Institution missing! </xsl:text>
+							<xsl:value-of select="../@name"/>
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="@id"/>
+							<xsl:text> repositoryWrap</xsl:text>
+						</xsl:message>
+					</xsl:otherwise>
+				</xsl:choose>
 	        	<xsl:apply-templates select="z:moduleReference[@name='ObjOwnerRef']"/>
 	        	<xsl:apply-templates select="z:repeatableGroup[@name='ObjObjectNumberGrp']/z:repeatableGroupItem"/>
 		        <!-- Berlin repository location -->
@@ -88,10 +101,14 @@
 		</lido:workID>
 	</xsl:template>
 
+	<!-- if ObjOwnerRef doesn't exist, this should not get called -->
 	<xsl:template match="z:moduleReference[@name='ObjOwnerRef']">
 		<lido:repositoryName>	
 	        <xsl:choose>
-	        	<!-- The following values culd be taken from PK module, but at what cost... -->
+	        	<!-- 
+					The following values culd be taken from PK module, but at what cost? 
+					We could also take them from vocmap.xml 
+				-->
 	            <xsl:when test=". eq 'Ethnologisches Museum, Staatliche Museen zu Berlin'">
 	                <lido:legalBodyID lido:type="URI" lido:source="ISIL (ISO 15511)">http://www.museen-in-deutschland.de/singleview.php?muges=019118</lido:legalBodyID>
 	                <lido:legalBodyID lido:type="concept-ID" lido:source="ISIL (ISO 15511)">DE-MUS-019118</lido:legalBodyID>
@@ -121,10 +138,18 @@
 	</xsl:template>
 
 	<xsl:template name="legalBodyName">
-        <lido:legalBodyName>
-            <lido:appellationValue>
-                <xsl:value-of select="." />
-            </lido:appellationValue>
-        </lido:legalBodyName>
+		<!-- at least prevent empty elements, but perhaps we should terminate here? -->
+		<xsl:choose>
+			<xsl:when test=". ne ''">
+				<lido:legalBodyName>
+					<lido:appellationValue>
+						<xsl:value-of select="." />
+					</lido:appellationValue>
+				</lido:legalBodyName>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>WARNING: verwaltede Institution missing!</xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
     </xsl:template>
 </xsl:stylesheet>

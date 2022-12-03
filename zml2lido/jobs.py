@@ -62,10 +62,10 @@ class Jobs:
         )  # drop records without Sachbegriff
         lido_fn = self.zml2lido(Input=mitSachbegriffZML)
         # fix internal links and rm unpublished parts
-        linklido_fn = self.urlLido(Input=lido_fn)
+        rewrite_fn = self.urlLido(Input=lido_fn)
         if self.validation:
-            self.validate(path=linklido_fn)
-        self.splitLido(input=linklido_fn)  # individual records as files
+            self.validate(path=rewrite_fn)
+        self.splitLido(input=rewrite_fn)  # individual records as files
         # self.lido2html(input=linklido_fn)  # to make it easier to read lido
 
     def smb(self):
@@ -93,9 +93,9 @@ class Jobs:
         lido_fn = self.zml2lido(Input=self.Input)
         # (2) call LinkChecker: fix links and rm unpublished parts
         # onlyPublished = self.onlyPublished(Input=lido_fn)
-        linklido_fn = self.urlLido(Input=lido_fn)
+        rewrite_fn = self.urlLido(Input=lido_fn)
         # (3) validate
         if self.validation:
-            self.validate(path=linklido_fn)
+            self.validate(path=rewrite_fn)
         # (4) split big lido file into small ones
-        self.splitLido(Input=linklido_fn)
+        self.splitLido(Input=rewrite_fn)

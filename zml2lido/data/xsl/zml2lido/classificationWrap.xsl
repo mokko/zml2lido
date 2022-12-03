@@ -346,7 +346,6 @@
 				<xsl:otherwise>
 					<!-- 
 						I dont know why ISL-Fotos has no ObjOrgGroupVoc. Let's investigate...
-						not a proper solution 
 					-->
 					<xsl:choose>
 						<!-- ISL -->
@@ -358,8 +357,9 @@
 							<xsl:value-of select="normalize-space(replace(z:systemField[@name='__orgUnit'], '^KB',''))"/>
 						</xsl:when>
 						<xsl:otherwise>
-							<xsl:message terminate="yes">
-								<xsl:text>UNKNOWN INSTITUTION: PLEASE TEACH ME</xsl:text>
+							<xsl:message terminate="no">
+								<xsl:text>WARNING: No subject from Bereich (classificationWrap)</xsl:text>
+								<!--xsl:value-of select="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/z:value"/-->
 							</xsl:message>
 						</xsl:otherwise>
 					</xsl:choose>

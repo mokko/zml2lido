@@ -222,6 +222,7 @@ class LidoTool(Jobs):
     def splitLido(self, *, Input):
         # print("SPLITLIDO enter")
         if self.chunks:
+            self.force = True  # otherwise subsequent chunks are not written
             for chunkFn in self.chunkName(Input=Input):
                 self.splitLidoSingle(Input=chunkFn)
         else:
@@ -317,7 +318,7 @@ class LidoTool(Jobs):
         # print (f"lido file:{lido_fn}")
 
         if not lidoFn.exists() or self.force is True:
-            print("\tnew")
+            # print("\tnew")
             self.saxon(Input=inputP, xsl=xsl["zml2lido"], output=lidoFn)
         else:
             print("exists already, no overwrite")
@@ -330,7 +331,7 @@ class LidoTool(Jobs):
     def chunkName(self, *, Input):
         """
         returns generator with path for existing files, counting up as long
-        files are existing. For this to work, filename has to include
+        files exist. For this to work, filename has to include
             path/to/group1234-chunk1.xml
         """
         print(f"chunk input: {Input}")
