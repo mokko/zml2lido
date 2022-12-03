@@ -90,8 +90,7 @@ class LinkChecker:
 
         # How do we prevent from running this query every time?
         # Let's run it only if cache file doesn't exist yet
-        if not Path(self.relWorksFn).exists():
-            self.prepareRelWorksCache(client=client2, relWorksL=relatedWorksL)
+        self.prepareRelWorksCache(client=client2, relWorksL=relatedWorksL)
 
         for ID in relatedWorksL:
             # don't log
@@ -203,34 +202,37 @@ class LinkChecker:
                     print("\tsuccess")
 
     def prepareRelWorksCache(self, *, client, relWorksL: list):
-        print("   Preparing relWorks cache")
-        q = Search(module="Object", limit=-1)
-        q.OR()
+        if not Path(self.relWorksFn).exists():
 
-        aset = set()  # no duplicates
-        for ID in relWorksL:
-            src = ID.xpath("@l:source", namespaces=NSMAP)[0]
-            if src == "OBJ.ID":
-                modType = "Object"
-            elif src == "LIT.ID":
-                modType = "Literature"
-            else:
-                raise ValueError(f"ERROR: Unknown type: {src}")
-            if ID.text is not None and modType == "Object":
-                id_str = ID.text
-                if id_str not in aset:
-                    q.addCriterion(
-                        operator="equalsField",
-                        field="__id",
-                        value=id_str,
-                    )
-                aset.add(id_str)
-        q.validate(mode="search")
-        q.toFile(path="debug-search.xml")
-        m = client.search(query=q)
-        print("\tadding stuff")
-        self.relWorks += client.search(query=q)
-        self.relWorks.toFile(path=self.relWorksFn)
+            print("   Preparing relWorks cache")
+            q = Search(module="Object", limit=-1)
+            q.OR()
+
+            aset = set()  # no duplicates
+            for ID in relWorksL:
+                src = ID.xpath("@l:source", namespaces=NSMAP)[0]
+                if src == "OBJ.ID":
+                    modType = "Object"
+                elif src == "LIT.ID":
+                    modType = "Literature"
+                else:
+                    raise ValueError(f"ERROR: Unknown type: {src}")
+                if ID.text is not None and modType == "Object":
+                    id_str = ID.text
+                    if id_str not in aset:
+                        q.addCriterion(
+                            operator="equalsField",
+                            field="__id",
+                            value=id_str,
+                        )
+                    aset.add(id_str)
+            q.validate(mode="search")
+            q.toFile(path="debug-search.xml")
+            m = client.search(query=q)
+            print("\tadding stuff")
+            self.relWorks = client.search(query=q)
+            print("\done")
+            self.relWorks.toFile(path=self.relWorksFn)
 
     def rmInternalLinks(self):
         """
