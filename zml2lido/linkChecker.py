@@ -8,17 +8,16 @@
     lidoWrap/lido/administrativeMetadata/resourceWrap/resourceSet/resourceRepresentation/linkResource
 """
 
-import logging
 import json
-import urllib.request
+import logging
 from lxml import etree
-from mpapi.sar import Sar
+from mpapi.client2 import Client2
+from mpapi.module import Module
 from pathlib import Path
-from urllib import request as urlrequest
 from typing import Optional, Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
-sizes = ["_2500x2500", "_1000x600"]  # from big to small
+
 
 cred_fn = "sdata/credentials.py"
 if Path(cred_fn).exists():  # some things like saxon should run even
@@ -33,33 +32,58 @@ class LinkChecker:
         p = Path(Input)
         ext = "".join(p.suffixes)
         stem = str(p).split(".")[0]
-        self.out_fn = stem + "-links" + ext
+        self.out_fn = stem + "-2" + ext
+
+        self.relWorksFn = p.parent / "relWorks.cache.xml"
 
         self.tree = etree.parse(str(Input))
 
-        # cache for guessing external linkResources
-        self.cacheFn = stem + ".cache.json"
-        if Path(self.cacheFn).exists():
-            print(f"About to load {self.cacheFn}")
-            with open(self.cacheFn) as jsonfile:
-                self.cache = json.load(jsonfile)
+        # new xml cache for fixRelatedWorks
+        if Path(self.relWorksFn).exists():
+            print(f"   About to load relWorks cache {self.relWorksFn}")
+            self.relWorks = Module(tree=etree.parse(self.relWorksFn))
         else:
-            self.cache = dict()
+            print("   starting new relWorks cache file")
+            self.relWorks = Module()
+
+    def checkRelWorkOnline(self, *, modType: str, modItemId: int):
+        """
+        Checks if a specific relWork is online. No urlrequest, just examins if
+        SMB-Freigabe = Ja.
+
+        Expects modItemId as int; but str should work as well.
+        """
+        r = self.relWorks.xpath(
+            f"""/m:application/m:modules/m:module[
+                @name = '{modType}']/m:moduleItem[
+                @id = {str(modItemId)}]/m:repeatableGroup[
+                @name = 'ObjPublicationGrp']/m:repeatableGroupItem[
+                    m:vocabularyReference[@name='PublicationVoc']/m:vocabularyReferenceItem[@name='Ja'] 
+                    and m:vocabularyReference[@name='TypeVoc']/m:vocabularyReferenceItem[@id = 2600647]
+                ]"""
+        )
+        if len(r) > 0:
+            return True
+        else:
+            return False
 
     def fixRelatedWorks(self):
         """
         Frank doesn't want dead links in relatedWorks. So we loop thru them, check
-        if they are SMB-approved (using MpApi) and, if not, we remove them.
+        if they are SMB-approved (using MpApi) and, if not, we remove them. We're
+        also include ISILs in the same step.
         """
 
-        self.log("fixRelatedWorks: Removing relatedWorks that are not online")
+        self.log(
+            "fixRelatedWorks: Removing relatedWorks that are not online and getting ISILs"
+        )
         relatedWorksL = self.tree.xpath(
             """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
             l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
             namespaces=NSMAP,
         )
 
-        sar = Sar(baseURL=baseURL, user=user, pw=pw)
+        client2 = Client2(baseURL=baseURL, user=user, pw=pw)
 
         for ID in relatedWorksL:
             # don't log
@@ -68,63 +92,78 @@ class LinkChecker:
             # assuming that source always exists
             src = ID.xpath("@l:source", namespaces=NSMAP)[0]
             if src == "OBJ.ID":
-                mtype = "Object"
+                modType = "Object"
             elif src == "LIT.ID":
-                mtype = "Literature"
+                modType = "Literature"
             else:
                 raise ValueError(f"ERROR: Unknown type: {src}")
+
             if ID.text is not None:
-                # print (f"*****{ID.text} {mtype}")
-                if mtype == "Literature":
+                id_str = ID.text
+                id_int = int(ID.text)
+                # print (f"*****{id_str} {modType}")
+                if modType == "Literature":
                     pass
-                # print("WARN: No check for mtype 'Literature'")
+                # print("WARN: No check for modType 'Literature'")
                 else:
-                    if mtype + ID.text in self.cache:
-                        # print(f"--> from CACHE")
-                        b = self.cache[mtype + ID.text]
+                    print(f"fixing relatedWork {modType} {id_str}")
+                    try:  # is the work already in the cache?
+                        relWorkN = self.relWorks[(modType, id_int)]
+                    except:  # if not, get record and add it to cache
+                        print("   getting item from online RIA")
+                        relWork = client2.getItem(modItemId=id_int, modType=modType)
+                        self.relWorks += relWork
+                        # print ("   update file cache")
+                        self.relWorks.toFile(path=self.relWorksFn)
                     else:
-                        # print("--> new check")
-                        b = sar.checkApproval(ID=ID.text, mtype=mtype)
-                        self.cache[mtype + ID.text] = b
-                    print(f"relatedWorks {ID.text} {b}")
-                    if not b:
-                        self.log(f"\tremoving unpublic relatedWorks")
+                        print("   taking from cache")
+                        relWork = Module()
+                        relWork.addItem(itemN=relWorkN, mtype=modType)
+
+                    if self.checkRelWorkOnline(modType=modType, modItemId=id_int):
+                        # rewrite ISIL, should look like this:
+                        # <lido:objectID lido:type="local" lido:source="ISIL/ID">de-MUS-018313/744501</lido:objectID>
+                        self.log(f"   looking up ISIL for relWork")
+                        ID.attrib["{http://www.lido-schema.org}source"] = "ISIL/ID"
+                        # we're assuming there is always a verwaltendeInstitution, but that is not enforced by RIA!
+                        verwInst = relWork.xpath(
+                            """//m:moduleReference[
+                                @name='ObjOwnerRef'
+                            ]/m:moduleReferenceItem/m:formattedValue"""
+                        )[0]
+                        ISIL = self.ISIL_lookup(institution=verwInst.text)
+                        ID.text = f"{ISIL}/{id_str}"
+                        print(f"   relWork: {id_str}:{verwInst.text} -> {ISIL}")
+                    else:
+                        self.log(f"   removing unpublic relWork")
                         relWorkSet = ID.getparent().getparent().getparent()
                         relWorkSet.getparent().remove(relWorkSet)
-            self._save_cache()
 
-    def guess(self):
+    def ISIL_lookup(self, *, institution):
         """
-        Look at a every linkResource in the current lido tree. For each link
-        that doesn't start with http try to guess the link. Also write a
-        cache file.
+        Load vocmap.xml and lookup ISIL for name of institution
         """
-        # check first in my file cache
-        linkResourceL = self.tree.xpath(
-            "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
-            namespaces=NSMAP,
-        )
+        vm_fn = Path(__file__).parent.joinpath("data/xsl/zml2lido/vocmap.xml")
+        if not vm_fn.exists():
+            raise SyntaxError(f"File not found {vm_fn}")
+        vocMap = etree.parse(vm_fn)
+        try:
+            ISIL = vocMap.xpath(
+                f"""/vocmap/voc[
+                @name='verwaltendeInstitution'
+            ]/concept[
+                source = '{institution}'
+            ]/target[
+                @name = 'ISIL'
+            ]"""
+            )[0]
+        except:
+            raise SyntaxError(f"vocMap: verwaltendeInstitution {institution} not found")
+        return ISIL.text
 
-        self.log(
-            "guess: replacing internal linkResouces with public URLs or deleting resourceSet"
-        )
-        self.log(
-            f" note: there are {len(linkResourceL)} links to check; {len(self.cache)} are currently in the cache"
-        )
-        for link in linkResourceL:
-            if link.text is not None:
-                if not link.text.startswith("http"):
-                    nl = self._guess(link=link.text)
-                    if nl is None:  # delete internal linkResources
-                        self.log(f" removing rSets for linkResource '{link.text}'")
-                        resourceSet = link.getparent().getparent()
-                        resourceSet.getparent().remove(resourceSet)
-                    else:
-                        link.text = nl
-                    # else:
-                    #    self.log(f"\tNOT FOUND {nl}")
-            # for debugging we might want to save the cache after every guess
-            self._save_cache()
+    def log(self, msg):
+        print(msg)
+        logging.info(msg)
 
     def new_check(self):
         """
@@ -151,10 +190,6 @@ class LinkChecker:
                     print("\tfailed")
                 else:
                     print("\tsuccess")
-
-    def log(self, msg):
-        print(msg)
-        logging.info(msg)
 
     def rmInternalLinks(self):
         """
@@ -194,82 +229,15 @@ class LinkChecker:
         # self.log("rmUnpublishedRecords: done!")
 
     def saveTree(self):
+        """
+        During __init__ we loaded a LIDO file, with this function we write it back to the
+        out file location as set during __init__.
+        """
         self.log(f"Writing back to {self.out_fn}")
         self.tree.write(
             self.out_fn, pretty_print=True, encoding="UTF-8", xml_declaration=True
         )
         return self.out_fn
-
-    #
-    # more private
-    #
-
-    def _guess(self, *, link) -> Optional[str]:
-        """
-        For a given internal linkResource, guess the URL on recherche.smb
-
-        If mulId is already in self.cache, then take the URL from there.
-
-        For some filetypes not URL request is checked, because we already know
-        they won't be found (pdf, mp3, tif, tiff).
-
-        EXPECTS
-        - link: internal linkResource (i.e. one not starting with http)
-          e.g. "1234567.jpg"
-
-        RETURNS
-        - public link (on smb.recherche.museum), if it exists, or None
-          e.g. https://recherche.smb.museum/images/4305271_1000x600.jpg
-        """
-
-        p = Path(link)
-        mulId = p.stem
-        print(f"_guess: Looking for a public equivalent of linkResource {link}")
-
-        # use link from cache it if exists
-        if mulId in self.cache:
-            print(" using CACHE")
-            return self.cache[mulId]
-        # was: try: self.cache[mulId]
-
-        # ignore certain file extensions b/c we know they are not online
-        ignore_exts = [".pdf", ".mp3", ".tif", ".tiff"]
-        for ext in ignore_exts:
-            if p.suffix == ext:
-                self.log(f" dont even check for {ext} {p}")
-                self.cache[mulId] = None
-                return None
-
-        # reasonable possibilities for casing the suffix
-        suffixes = set()
-        suffixes.add(p.suffix)
-        suffixes.add(p.suffix.lower())
-        suffixes.add(p.suffix.upper())
-
-        for size in sizes:
-            for suffix in suffixes:
-                new_link = f"https://recherche.smb.museum/images/{mulId}{size}{suffix}"
-                req = urlrequest.Request(new_link)
-                req.set_proxy(
-                    "http-proxy-2.sbb.spk-berlin.de:3128", "http"
-                )  # http-proxy-1.sbb.spk-berlin.de:3128
-                try:
-                    # urlrequest.urlopen(req)
-                    urllib.request.urlopen(new_link)
-                except:
-                    pass
-                else:
-                    # self.log(f"INFO multimedia {mulId} was FOUND")
-                    self.cache[mulId] = new_link
-                    return new_link
-        # none of the sizes and suffixes yields a match
-        self.cache[mulId] = None
-        self.log(f" multimedia {mulId} not found")
-        return None
-
-    def _save_cache(self):
-        with open(self.cacheFn, "w", encoding="utf-8") as f:
-            json.dump(self.cache, f, ensure_ascii=False, indent=4)
 
 
 if __name__ == "__main__":
