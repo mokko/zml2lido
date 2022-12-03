@@ -91,6 +91,11 @@
 			<target lang="en" name="europeana:type">3D</target>
 		</concept>	
 		<concept>
+			<source lang="de">Abzug</source>
+			<target lang="en" name="lido">image</target>
+			<target lang="en" name="europeana:type">image</target>
+		</concept>	
+		<concept>
 			<source lang="de">Analoges Ausgangsmaterial</source>
 			<target lang="en" name="lido">audio</target>
 			<target lang="en" name="europeana:type">audio</target>
@@ -105,10 +110,16 @@
 			<target lang="en" name="europeana:type">image</target>
 		</concept>	
 		<concept>
+			<source lang="de">Dia (original)</source>
+			<target lang="en" name="lido">image</target>
+			<target lang="en" name="europeana:type">image</target>
+		</concept>
+		<concept>
 			<source lang="de">Dia (SPK)</source>
 			<target lang="en" name="lido">image</target>
 			<target lang="en" name="europeana:type">image</target>
 		</concept>
+		
 		<!-- Digitales Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
 		<concept>
 			<source lang="de">Digitales Ausgangsmaterial</source>
@@ -130,6 +141,11 @@
 			<source lang="de">document</source>
 			<target lang="en" name="europeana:type">text</target>
 			<target lang="en" name="lido">document</target>
+		</concept>
+		<concept> 
+			<source lang="de">Ektachrome</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
 		</concept>
 		<concept> 
 			<source lang="de">eMuseum Digitalisat</source>
