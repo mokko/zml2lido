@@ -122,6 +122,9 @@
 	<xsl:template mode="value" match="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue">
 		<xsl:variable name="this" select="normalize-space(.)"/>
 		<xsl:choose>
+			<xsl:when test="$this eq 'Andere'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='TextTxt']/z:value)"/>
+			</xsl:when>
 			<xsl:when test="$this eq 'Andere Maße'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown3Num']/z:value)"/>
 				<xsl:text> x </xsl:text>
@@ -240,6 +243,11 @@
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
+			</xsl:when>
+			<xsl:when test="$this eq 'Größe'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='PrefixTxt']/z:value)"/>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SuffixTxt']/z:value)"/>
 			</xsl:when>
 			<xsl:when test="$this eq 'height x width'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
@@ -400,6 +408,11 @@
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
+			</xsl:when>
+			<xsl:when test="$this eq 'Rollenmaß'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='LengthNum']/z:value)"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
 			</xsl:when>
 			<xsl:when test="$this eq 'Sehnenlänge'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
