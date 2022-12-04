@@ -297,19 +297,38 @@
 					</lido:objectNote>
 				</lido:object>
             </lido:relatedWork>
-            <lido:relatedWorkRelType>
-                <lido:term>
-					<xsl:attribute name="xml:lang" select="z:vocabularyReference[
+			
+			<xsl:variable name="TypeAVoc" select="z:vocabularyReference[
 							@name = 'TypeAVoc'
-						]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
-
-                    <xsl:value-of select="normalize-space(
-						z:vocabularyReference[
-							@name = 'TypeAVoc'
-						]/z:vocabularyReferenceItem/z:formattedValue
-					)"/>
-                </lido:term>
-            </lido:relatedWorkRelType>
+						]/z:vocabularyReferenceItem/z:formattedValue"/>
+			<xsl:variable name="TypeBVoc" select="z:vocabularyReference[
+							@name = 'TypeBVoc'
+						]/z:vocabularyReferenceItem/z:formattedValue"/>
+			<xsl:choose>
+				<xsl:when test="$TypeAVoc">
+					<lido:relatedWorkRelType>
+						<lido:term>
+							<xsl:attribute name="xml:lang" select="$TypeAVoc/@language"/>
+							<xsl:value-of select="normalize-space($TypeAVoc)"/>
+						</lido:term>
+					</lido:relatedWorkRelType>
+				</xsl:when>
+				<xsl:when test="$TypeBVoc">
+					<lido:relatedWorkRelType>
+						<lido:term>
+							<xsl:attribute name="xml:lang" select="$TypeBVoc/@language"/>
+							<xsl:value-of select="normalize-space($TypeBVoc)"/>
+						</lido:term>
+					</lido:relatedWorkRelType>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:message>
+						<xsl:text>WARN: Empty relWorkRelType </xsl:text>
+						<xsl:value-of select="$moduleItemId"/>
+						<xsl:text> (objectRelWrap)</xsl:text>
+					</xsl:message>
+				</xsl:otherwise>
+			</xsl:choose>
         </lido:relatedWorkSet>
 	</xsl:template>
  </xsl:stylesheet>
