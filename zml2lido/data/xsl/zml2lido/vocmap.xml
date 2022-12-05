@@ -691,5 +691,15 @@
 			<target lang="de" name="ISIL">de-MUS-018313</target>
 			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
 		</concept>
+		<concept>
+			<source lang="de">Vorderasiatisches Museum, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-815718</target>
+			<target lang="de" name="homepage">https://www.smb.museum/vam</target>
+		</concept>
+		<concept>
+			<source lang="de">Skulpturensammlung und Museum für Byzantinische Kunst, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-815614</target>
+			<target lang="de" name="homepage">https://www.smb.museum/sbm</target>
+		</concept>
 	</voc>
 </vocmap>

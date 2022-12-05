@@ -290,8 +290,25 @@
 							<lido:term lido:addedSearchTerm="no">in copyright</lido:term>
 						</lido:rightsType>
 					</xsl:when>
+					<xsl:when test="$license eq 'CC BY-NC-SA 4.0'">
+						<xsl:message>CC BY-NC-SA 4.0 </xsl:message>
+						<lido:rightsType>
+							<lido:conceptID lido:source="RIA"
+											lido:type="URI">https://creativecommons.org/licenses/by-nc-sa/4.0/</lido:conceptID>
+							<lido:term lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International</lido:term>
+						</lido:rightsType>
+					</xsl:when>
+					<xsl:when test="$license eq 'CC BY-SA 4.0'">
+						<xsl:message>CC BY-SA 4.0 </xsl:message>
+						<lido:rightsType>
+							<lido:conceptID lido:source="RIA"
+											lido:type="URI">https://creativecommons.org/licenses/by-sa/4.0/</lido:conceptID>
+							<lido:term lido:addedSearchTerm="no">Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</lido:term>
+						</lido:rightsType>
+					</xsl:when>
+
 					<xsl:otherwise>
-						<xsl:message terminate="yes">ERROR: UNKNOWN LICENSE!</xsl:message>
+						<xsl:message terminate="yes">ERROR: UNKNOWN LICENSE! (resWrap)</xsl:message>
 					</xsl:otherwise>
 				</xsl:choose>                
 				<lido:rightsHolder>

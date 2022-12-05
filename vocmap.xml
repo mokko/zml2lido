@@ -662,6 +662,11 @@
 			<target lang="de" name="homepage">https://www.smb.museum/em</target>
 		</concept>
 		<concept>
+			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-018313</target>
+			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
+		</concept>
+		<concept>
 			<source lang="de">Kupferstichkabinett, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-018511</target>
 			<target lang="de" name="homepage">https://www.smb.museum/museen-einrichtungen/kupferstichkabinett/home/</target>
@@ -687,9 +692,14 @@
 			<target lang="de" name="homepage">https://www.simpk.de/museum</target>
 		</concept>
 		<concept>
-			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-018313</target>
-			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
+			<source lang="de">Skulpturensammlung und Museum für Byzantinische Kunst, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-815614</target>
+			<target lang="de" name="homepage">https://www.smb.museum/sbm</target>
+		</concept>
+		<concept>
+			<source lang="de">Vorderasiatisches Museum, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-815718</target>
+			<target lang="de" name="homepage">https://www.smb.museum/vam</target>
 		</concept>
 	</voc>
 </vocmap>

@@ -64,58 +64,52 @@
 					@name='TypeDimRef'
 				]/z:moduleReferenceItem/z:formattedValue" mode="value"/>
 			</xsl:variable>
-			<xsl:choose>
-				<xsl:when test="normalize-space($type) ne '' 
-					and normalize-space($unit) ne '' 
-					and normalize-space($value) ne ''">
-					<xsl:comment>Lang attributes are dynamically created here!</xsl:comment>
-					<lido:objectMeasurements>
-						<lido:measurementsSet>
-								<lido:measurementType>
-									<xsl:attribute name="xml:lang">
-										<xsl:value-of select="$type/@language"/>
-									</xsl:attribute>
-									<xsl:value-of select="normalize-space($type)"/>
-								</lido:measurementType>
-								<lido:measurementUnit>
-									<xsl:attribute name="xml:lang">
-										<xsl:value-of select="$unit/@language"/>
-									</xsl:attribute>
-									<xsl:value-of select="normalize-space($unit)"/>
-								</lido:measurementUnit>
-								<lido:measurementValue>
-									<xsl:attribute name="xml:lang">
-										<xsl:value-of select="z:moduleReference[
-											@name='TypeDimRef'
-										]/z:moduleReferenceItem/z:formattedValue/@language"/>
-									</xsl:attribute>
-									<xsl:value-of select="normalize-space($value)"/>
-								</lido:measurementValue>
-						</lido:measurementsSet>
-				<!-- 
-					Let's not try to translate LIDO at the moment 
-				<lido:measurementsSet>
-					<lido:measurementType xml:lang="de">
-						<xsl:value-of select="normalize-space(z:moduleReference[
-							@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue)"/>
-					</lido:measurementType>
-					<lido:measurementUnit xml:lang="en">
-						<xsl:value-of select="normalize-space(z:vocabularyReference[
-							@name='UnitDdiVoc']/z:vocabularyReferenceItem/@name)"/>
-					</lido:measurementUnit>
-					<lido:measurementValue xml:lang="en">
-						<xsl:value-of select="$value"/>
-					</lido:measurementValue>
-				</lido:measurementsSet> -->
-					</lido:objectMeasurements>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:message>
-						<xsl:text>WARNING: measurement type, unit or value missing! object </xsl:text>
-						<xsl:value-of select="../../@id"/>
-					</xsl:message>
-				</xsl:otherwise>
-			</xsl:choose>
+			<!-- 
+			measurementSets is only valid with type, unit and value, so only records 
+			which use all three -->
+			<xsl:if test="normalize-space($type) ne ''
+				and normalize-space($value) ne ''
+				and normalize-space($unit) ne ''">
+				<lido:objectMeasurements>
+					<lido:measurementsSet>
+						<lido:measurementType>
+							<xsl:attribute name="xml:lang">
+								<xsl:value-of select="$type/@language"/>
+							</xsl:attribute>
+							<xsl:value-of select="normalize-space($type)"/>
+						</lido:measurementType>
+						<lido:measurementUnit>
+							<xsl:attribute name="xml:lang">
+								<xsl:value-of select="$unit/@language"/>
+							</xsl:attribute>
+							<xsl:value-of select="normalize-space($unit)"/>
+						</lido:measurementUnit>
+						<lido:measurementValue>
+							<xsl:attribute name="xml:lang">
+								<xsl:value-of select="z:moduleReference[
+									@name='TypeDimRef'
+								]/z:moduleReferenceItem/z:formattedValue/@language"/>
+							</xsl:attribute>
+							<xsl:value-of select="normalize-space($value)"/>
+						</lido:measurementValue>
+					</lido:measurementsSet>
+					<!-- 
+						Let's not try to translate LIDO at the moment 
+					<lido:measurementsSet>
+						<lido:measurementType xml:lang="de">
+							<xsl:value-of select="normalize-space(z:moduleReference[
+								@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue)"/>
+						</lido:measurementType>
+						<lido:measurementUnit xml:lang="en">
+							<xsl:value-of select="normalize-space(z:vocabularyReference[
+								@name='UnitDdiVoc']/z:vocabularyReferenceItem/@name)"/>
+						</lido:measurementUnit>
+						<lido:measurementValue xml:lang="en">
+							<xsl:value-of select="$value"/>
+						</lido:measurementValue>
+					</lido:measurementsSet> -->
+				</lido:objectMeasurements>
+			</xsl:if>
 		</lido:objectMeasurementsSet>
 	</xsl:template>
 
@@ -171,6 +165,11 @@
 			</xsl:when>
 			<xsl:when test="$this eq 'Breite'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
+			</xsl:when>
+			<xsl:when test="$this eq 'Breite x Höhe'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
 			</xsl:when>
 			<xsl:when test="$this eq 'Breite x Tiefe'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
@@ -329,6 +328,9 @@
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
+			</xsl:when>
+			<xsl:when test="$this eq 'Maßstab'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
 			</xsl:when>
 			<xsl:when test="$this eq 'Mündung'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
