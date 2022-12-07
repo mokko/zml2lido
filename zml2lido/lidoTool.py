@@ -55,6 +55,7 @@ xsl = {
     "onlyPublished": xslDir.joinpath("filterPublished.xsl"),
     "splitLido": xslDir.joinpath("splitLido.xsl"),
     "splitSachbegriff": xslDir.joinpath("splitNoSachbegriff.xsl"),
+    "ohneLit": xslDir / "ohneLit.xsl",
 }
 
 
@@ -302,24 +303,24 @@ class LidoTool(Jobs):
         self.schema.assert_(doc)  # raises error when not valid
         return Input
 
-    def zml2lido(self, *, Input):
-        print("ZML2LIDO")
+    def zml2lido(self, *, Input, xslt="zml2lido"):
+        print(f"ZML2LIDO {xslt}")
         if self.chunks:
             print(" with chunks")
             for chunkFn in self.chunkName(Input=self.Input):
-                lidoFn = self.zml2lidoSingle(Input=chunkFn)
+                lidoFn = self.zml2lidoSingle(Input=chunkFn, xslt=xslt)
             return self.chunkNameFirst(Input=lidoFn)
         else:
             return self.zml2lidoSingle(Input=Input)
 
-    def zml2lidoSingle(self, *, Input):
+    def zml2lidoSingle(self, *, Input, xslt="zml2lido"):
         inputP = Path(Input)
         lidoFn = self.outdir.joinpath(inputP.stem + ".lido.xml")
         # print (f"lido file:{lido_fn}")
 
         if not lidoFn.exists() or self.force is True:
             # print("\tnew")
-            self.saxon(Input=inputP, xsl=xsl["zml2lido"], output=lidoFn)
+            self.saxon(Input=inputP, xsl=xsl[xslt], output=lidoFn)
         else:
             print("exists already, no overwrite")
         return lidoFn

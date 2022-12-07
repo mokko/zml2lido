@@ -99,3 +99,10 @@ class Jobs:
             self.validate(path=rewrite_fn)
         # (4) split big lido file into small ones
         self.splitLido(Input=rewrite_fn)
+
+    def ohneLit(self):
+        lido_fn = self.zml2lido(Input=self.Input, xslt="ohneLit")
+        rewrite_fn = self.urlLido(Input=lido_fn)
+        if self.validation:
+            self.validate(path=rewrite_fn)
+        self.splitLido(Input=rewrite_fn)
