@@ -652,9 +652,19 @@
 
 	<voc name="verwaltendeInstitution">
 		<concept>
+			<source lang="de">Ägyptisches Museum und Papyrussammlung, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-015418</target>
+			<target lang="de" name="homepage">https://www.smb.museum/aemp</target>
+		</concept>
+		<concept>
 			<source lang="de">Alte Nationalgalerie, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-815114</target>
 			<target lang="de" name="homepage">https://www.smb.museum/ang</target>
+		</concept>
+		<concept>
+			<source lang="de">Antikensammlung, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-814319</target>
+			<target lang="de" name="homepage">https://www.smb.museum/ant</target>
 		</concept>
 		<concept>
 			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
@@ -662,14 +672,39 @@
 			<target lang="de" name="homepage">https://www.smb.museum/em</target>
 		</concept>
 		<concept>
+			<source lang="de">Gemäldegalerie, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-017018</target>
+			<target lang="de" name="homepage">https://www.smb.museum/gg</target>
+		</concept>
+		<concept>
+			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">de-MUS-018313</target>
+			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
+		</concept>
+		<concept>
+			<source lang="de">Kunstgewerbemuseum, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-018417</target>
+			<target lang="de" name="homepage">https://www.smb.museum/museen-einrichtungen/kunstgewerbemuseum/home/</target>
+		</concept>
+		<concept>
 			<source lang="de">Kupferstichkabinett, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-018511</target>
-			<target lang="de" name="homepage">https://www.smb.museum/museen-einrichtungen/kupferstichkabinett/home/</target>
+			<target lang="de" name="homepage">https://www.smb.museum/kk</target>
+		</concept>
+		<concept>
+			<source lang="de">Münzkabinett, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-814819</target>
+			<target lang="de" name="homepage">https://www.smb.museum/mk</target>
 		</concept>
 		<concept>
 			<source lang="de">Museum Berggruen, Nationalgalerie, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">DE-MUS-906210</target>
 			<target lang="de" name="homepage">http://www.smb.museum/mb</target>
+		</concept>
+		<concept>
+			<source lang="de">Museum Europäischer Kulturen, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-018719</target>
+			<target lang="de" name="homepage">https://www.smb.museum/mek</target>
 		</concept>
 		<concept>
 			<source lang="de">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</source>
@@ -682,14 +717,24 @@
 			<target lang="de" name="homepage">https://www.smb.museum/isl</target>
 		</concept>
 		<concept>
+			<source lang="de">Museum für Vor- und Frühgeschichte, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-019212</target>
+			<target lang="de" name="homepage">https://www.smb.museum/mvf</target>
+		</concept>
+		<concept>
 			<source lang="de">Musikinstrumenten-Museum, Staatliches Institut für Musikforschung</source>
 			<target lang="de" name="ISIL">de-MUS-019410</target>
 			<target lang="de" name="homepage">https://www.simpk.de/museum</target>
 		</concept>
 		<concept>
-			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-018313</target>
-			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
+			<source lang="de">Neue Nationalgalerie, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-019514</target>
+			<target lang="de" name="homepage">https://www.smb.museum/nng</target>
+		</concept>
+		<concept>
+			<source lang="de">Skulpturensammlung und Museum für Byzantinische Kunst, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-815614</target>
+			<target lang="de" name="homepage">https://www.smb.museum/sbm</target>
 		</concept>
 		<concept>
 			<source lang="de">Vorderasiatisches Museum, Staatliche Museen zu Berlin</source>
@@ -697,9 +742,9 @@
 			<target lang="de" name="homepage">https://www.smb.museum/vam</target>
 		</concept>
 		<concept>
-			<source lang="de">Skulpturensammlung und Museum für Byzantinische Kunst, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">DE-MUS-815614</target>
-			<target lang="de" name="homepage">https://www.smb.museum/sbm</target>
+			<source lang="de">Zentralarchiv, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-036420</target>
+			<target lang="de" name="homepage">https://www.smb.museum/za</target>
 		</concept>
 	</voc>
 </vocmap>
