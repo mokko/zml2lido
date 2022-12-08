@@ -73,20 +73,21 @@ class Jobs:
 
     def mitLit(self):
         """
-        (war smb)
+        This job used to be called 'smb'. It has all fields that have been mapped, incl. rudimentary
+        literature reference inside of lido:relatedWorks. The alternative is to use ohneLit.
+
         (1) convert from native xml to lido
-        (2) filter out records that are not published on recherche.smb
+        (2) Python transformation which corrects relatedWorks
         (3) validate lido (optional)
         (3) split lido into single files
 
         NEW:
         - no more link rewriting and checking for linkResources
+        - include ISIL to relatedWorks
+        - relatedWorks are being checked if they are online; if not they are deleted from lido.
 
         Optional
         - validate using command line switch -v
-
-        Used In
-        - current default flavor for FvH.
 
         Used to
         - rewrite and check internal links using recherche.smb urls

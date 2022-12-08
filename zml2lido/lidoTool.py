@@ -40,21 +40,21 @@ from zml2lido.linkChecker import LinkChecker
 from zml2lido.jobs import Jobs
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-conf_fn = Path(__file__).parent.parent.joinpath("sdata", "lido_conf.py")
-xslDir = Path(__file__).parent.joinpath("data/xsl")
-lidoXSD = Path(__file__).parent.joinpath("data/xsd/lido-v1.0.xsd")
+conf_fn = Path(__file__).parent.parent / "sdata" / "lido_conf.py"
+xslDir = Path(__file__).parent / "data/xsl"
+lidoXSD = Path(__file__).parent / "data/xsd/lido-v1.0.xsd"
 
 with open(conf_fn) as f:
     exec(f.read())  # saxLib, lidoXSD
 
 xsl = {
-    "zml2lido": xslDir.joinpath("zml2lido.xsl"),
-    "lido2html": xslDir.joinpath("lido2html.xsl"),
-    "Inhalt": xslDir.joinpath("dropResourceDescriptionInhaltAnsicht.xsl"),  # filter
-    "Literatur": xslDir.joinpath("dropRelatedWorksLiterature.xsl"),  # filter
-    "onlyPublished": xslDir.joinpath("filterPublished.xsl"),
-    "splitLido": xslDir.joinpath("splitLido.xsl"),
-    "splitSachbegriff": xslDir.joinpath("splitNoSachbegriff.xsl"),
+    "zml2lido": xslDir / "zml2lido.xsl",
+    "lido2html": xslDir / "lido2html.xsl",
+    "Inhalt": xslDir / "dropResourceDescriptionInhaltAnsicht.xsl",  # filter
+    "Literatur": xslDir / "dropRelatedWorksLiterature.xsl",  # filter
+    "onlyPublished": xslDir / "filterPublished.xsl",
+    "splitLido": xslDir / "splitLido.xsl",
+    "splitSachbegriff": xslDir / "splitNoSachbegriff.xsl",
     "ohneLit": xslDir / "ohneLit.xsl",
 }
 
