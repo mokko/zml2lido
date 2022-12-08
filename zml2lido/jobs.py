@@ -69,7 +69,11 @@ class Jobs:
         # self.lido2html(input=linklido_fn)  # to make it easier to read lido
 
     def smb(self):
+        self.mitLit()
+
+    def mitLit(self):
         """
+        (war smb)
         (1) convert from native xml to lido
         (2) filter out records that are not published on recherche.smb
         (3) validate lido (optional)
