@@ -40,7 +40,7 @@ from zml2lido.linkChecker import LinkChecker
 from zml2lido.jobs import Jobs
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
-conf_fn = Path(__file__).parent.parent / "sdata" / "lido_conf.py"
+conf_fn = Path(__file__).parents[1] / "sdata" / "lido_conf.py"
 xslDir = Path(__file__).parent / "data/xsl"
 lidoXSD = Path(__file__).parent / "data/xsd/lido-v1.0.xsd"
 
@@ -65,7 +65,7 @@ class LidoTool(Jobs):
         self.force = force
         self.chunks = chunks
 
-        script_dir = Path(__file__).parent.parent
+        script_dir = Path(__file__).parents[1]
         print(f"SCRIPT_DIR: {script_dir}")
 
         # we run these tests now also when just using saxon
@@ -90,17 +90,17 @@ class LidoTool(Jobs):
         if re.match("\d\d\d\d\d\d", self.Input.parent.name):
             self.outdir = (
                 Path("sdata")
-                .resolve()
-                .joinpath(self.Input.parent.parent.name, self.Input.parent.name)
+                .resolve() /
+                self.Input.parents[1].name / self.Input.parent.name
             )
         else:
-            self.outdir = Path("sdata").resolve().joinpath(self.Input.parent.name)
+            self.outdir = Path("sdata").resolve() / self.Input.parent.name
 
         if not self.outdir.exists():
             print(f"Making new dir {self.outdir}")
             self.outdir.mkdir(parents=True, exist_ok=False)
         print(f" outdir {self.outdir}")
-        logfile = self.outdir.joinpath("lidoTool.log")
+        logfile = self.outdir / "lidoTool.log"
 
         # let's append to the log file so we can aggregrate results from multiple runs
         logging.basicConfig(
@@ -116,7 +116,7 @@ class LidoTool(Jobs):
             raise TypeError(f"Error: Unknown type '{Type}'")
 
         new_fn = self.Input.stem + f"-no{Type}.xml"
-        out_fn = self.outdir.joinpath(new_fn)
+        out_fn = self.outdir/new_fn
 
         self.saxon(Input=self.Input, xsl=xsl[Type], output=out_fn)
 
@@ -135,7 +135,7 @@ class LidoTool(Jobs):
 
     def lido2htmlSingle(self, *, Input):
         """Only runs if html dir doesn't exist."""
-        orig = os.getcwd()
+        orig = Path.cwd()
         os.chdir(self.outdir)
         hdir = Path("html")
         # if not any(os.scandir(str(hdir))):
@@ -165,7 +165,7 @@ class LidoTool(Jobs):
         Input = Path(Input)  # what a mess
         stem = str(Input).split(".")[0]
         ext = "".join(Input.suffixes)
-        out = self.outdir.joinpath(stem + ".onlyPub" + ext)
+        out = self.outdir / stem + ".onlyPub" + ext
 
         if not Path(out).exists() or self.force is True:
             self.saxon(Input=Input, xsl=xsl["onlyPublished"], output=out)
@@ -234,8 +234,8 @@ class LidoTool(Jobs):
         """
         Create individual files per lido record
         """
-        orig = os.getcwd()
-        splitDir = self.outdir.joinpath("split")
+        orig = Path.cwd()
+        splitDir = self.outdir / "split"
         # existance of splitDir is a bad criterion, but cant think of a better one
         if not splitDir.exists() or self.force:  # self.force is True was problematic
             print("SPLITLIDO making")
@@ -259,7 +259,7 @@ class LidoTool(Jobs):
         Writes two files to output dir
         ohneSachbegriff.xml is meant for debugging.
         """
-        orig = os.getcwd()
+        orig = Path.cwd()
         os.chdir(self.outdir)
         out = "mitSachbegriff.xml"
         if not Path(out).exists() or self.force is True:
@@ -267,7 +267,7 @@ class LidoTool(Jobs):
         else:
             print(f"{out} exist already, no overwrite")
         os.chdir(orig)
-        return xslDir.joinpath(out)
+        return xslDir / out
 
     def validate(self, *, path=None):
         """
