@@ -258,9 +258,9 @@
 				</xsl:choose>
 			</xsl:variable> 
 			
-			<xsl:message>
+			<!--xsl:message>
 				<xsl:value-of select="$license"/>
-			</xsl:message>
+			</xsl:message-->
 			
             <lido:rightsResource>
 				<xsl:choose>
@@ -283,7 +283,7 @@
 						</lido:rightsType>
 					</xsl:when>
 					<xsl:when test="$license eq 'Copyright'">
-						<xsl:message>Copyright </xsl:message>
+						<!--xsl:message>Copyright</xsl:message-->
 						<lido:rightsType>
 							<lido:conceptID lido:source="RIA"
 											lido:type="URI">http://rightsstatements.org/vocab/InC/1.0/</lido:conceptID>
@@ -291,7 +291,7 @@
 						</lido:rightsType>
 					</xsl:when>
 					<xsl:when test="$license eq 'CC BY-NC-SA 4.0'">
-						<xsl:message>CC BY-NC-SA 4.0 </xsl:message>
+						<!--xsl:message>CC BY-NC-SA 4.0</xsl:message-->
 						<lido:rightsType>
 							<lido:conceptID lido:source="RIA"
 											lido:type="URI">https://creativecommons.org/licenses/by-nc-sa/4.0/</lido:conceptID>
@@ -299,7 +299,7 @@
 						</lido:rightsType>
 					</xsl:when>
 					<xsl:when test="$license eq 'CC BY-SA 4.0'">
-						<xsl:message>CC BY-SA 4.0 </xsl:message>
+						<!--xsl:message>CC BY-SA 4.0 </xsl:message-->
 						<lido:rightsType>
 							<lido:conceptID lido:source="RIA"
 											lido:type="URI">https://creativecommons.org/licenses/by-sa/4.0/</lido:conceptID>

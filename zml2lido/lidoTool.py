@@ -86,20 +86,8 @@ class LidoTool(Jobs):
         if not Path(saxLib).is_file():
             raise SyntaxError(f"ERROR: Saxon not found, check config file at {conf_fn}")
 
-        # determine outdir
-        if re.match("\d\d\d\d\d\d", self.Input.parent.name):
-            self.outdir = (
-                Path("sdata").resolve()
-                / self.Input.parents[1].name
-                / self.Input.parent.name
-            )
-        else:
-            self.outdir = Path("sdata").resolve() / self.Input.parent.name
+        self.outdir = self._prepareOutdir()
 
-        if not self.outdir.exists():
-            print(f"Making new dir {self.outdir}")
-            self.outdir.mkdir(parents=True, exist_ok=False)
-        print(f" outdir {self.outdir}")
         logfile = self.outdir / "lidoTool.log"
 
         # let's append to the log file so we can aggregrate results from multiple runs
@@ -371,6 +359,10 @@ class LidoTool(Jobs):
             cmd, check=True  # , stderr=subprocess.STDOUT
         )  # overwrites output file without saying anything
 
+    #
+    # private helper
+    #
+
     def _analyze_chunkFn(self, *, Input):
         print(f"ENTER ANALYZE WITH {Input}")
         partsL = str(Input).split("-chunk")
@@ -385,6 +377,25 @@ class LidoTool(Jobs):
         if not Path(out).exists():
             print(f"*copying {pic} -> {out}")
             shutil.copyfile(pic, out)
+
+    def _prepareOutdir(self):
+        # determine outdir (long or short)
+        sdataP = Path("sdata").resolve()  # resolve probably not necessary
+        if re.match("\d\d\d\d\d\d", self.Input.parent.name):
+            outdir = sdataP / self.Input.parents[1].name / self.Input.parent.name
+        elif self.Input.parent.name == "sdata":
+            raise SyntaxError(
+                """ERROR: Don't use an input file inside of sdata. 
+                Use a subdirectory instead!"""
+            )
+        else:
+            outdir = sdataP / self.Input.parent.name
+
+        if not outdir.exists():
+            print(f"Making new dir {outdir}")
+            outdir.mkdir(parents=True, exist_ok=False)
+        print(f" outdir {outdir}")
+        return outdir
 
     def _resize(self, *, pic):
         out_fn = self.dir.joinpath(pic.name)
