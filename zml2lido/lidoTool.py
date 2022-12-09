@@ -89,9 +89,9 @@ class LidoTool(Jobs):
         # determine outdir
         if re.match("\d\d\d\d\d\d", self.Input.parent.name):
             self.outdir = (
-                Path("sdata")
-                .resolve() /
-                self.Input.parents[1].name / self.Input.parent.name
+                Path("sdata").resolve()
+                / self.Input.parents[1].name
+                / self.Input.parent.name
             )
         else:
             self.outdir = Path("sdata").resolve() / self.Input.parent.name
@@ -116,7 +116,7 @@ class LidoTool(Jobs):
             raise TypeError(f"Error: Unknown type '{Type}'")
 
         new_fn = self.Input.stem + f"-no{Type}.xml"
-        out_fn = self.outdir/new_fn
+        out_fn = self.outdir / new_fn
 
         self.saxon(Input=self.Input, xsl=xsl[Type], output=out_fn)
 
