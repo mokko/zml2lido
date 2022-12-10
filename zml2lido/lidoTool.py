@@ -65,35 +65,9 @@ class LidoTool(Jobs):
         self.force = force
         self.chunks = chunks
 
-        script_dir = Path(__file__).parents[1]
-        print(f"SCRIPT_DIR: {script_dir}")
-
-        # we run these tests now also when just using saxon
-        # didn't work for Frank without resolve, so not using this test atm
-        if not Path.cwd().samefile(script_dir):
-            raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
-
-        # check Input
-        if Input is None:
-            raise SyntaxError("ERROR: Input can't be None!")
-        self.Input = Path(Input)  # initial input file, e.g. 3Wege.zml.xml
-
-        if self.Input.is_dir():
-            raise SyntaxError("ERROR: Input is directory!")
-        elif not self.Input.exists():
-            raise SyntaxError("ERROR: Input does not exist!")
-
-        if not Path(saxLib).is_file():
-            raise SyntaxError(f"ERROR: Saxon not found, check config file at {conf_fn}")
-
+        self.Input = self._sanitize(Input=Input)
         self.outdir = self._prepareOutdir()
-
-        logfile = self.outdir / "lidoTool.log"
-
-        # let's append to the log file so we can aggregrate results from multiple runs
-        logging.basicConfig(
-            filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
-        )
+        self._initLog()
 
     #
     # Steps
@@ -378,6 +352,14 @@ class LidoTool(Jobs):
             print(f"*copying {pic} -> {out}")
             shutil.copyfile(pic, out)
 
+    def _initLog(self):
+        logfile = self.outdir / "lidoTool.log"
+
+        # let's append to the log file so we can aggregrate results from multiple runs
+        logging.basicConfig(
+            filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
+        )
+
     def _prepareOutdir(self):
         # determine outdir (long or short)
         sdataP = Path("sdata").resolve()  # resolve probably not necessary
@@ -419,3 +401,25 @@ class LidoTool(Jobs):
                     self._copy(pic=pic, out=out_fn)
         else:
             self._copy(pic=pic, out=out_fn)
+
+    def _sanitize(self, *, Input):
+        script_dir = Path(__file__).parents[1]
+        print(f"SCRIPT_DIR: {script_dir}")
+
+        if not Path.cwd().samefile(script_dir):
+            raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
+
+        if not Path(saxLib).is_file():
+            raise SyntaxError(f"ERROR: Saxon not found, check config file at {conf_fn}")
+
+        # check Input
+        if Input is None:
+            raise SyntaxError("ERROR: Input can't be None!")
+        Input = Path(Input)  # initial input file, e.g. 3Wege.zml.xml
+
+        if Input.is_dir():
+            raise SyntaxError("ERROR: Input is directory!")
+        elif not Input.exists():
+            raise SyntaxError("ERROR: Input does not exist!")
+
+        return Input
