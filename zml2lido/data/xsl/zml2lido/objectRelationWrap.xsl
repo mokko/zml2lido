@@ -321,13 +321,13 @@
 						</lido:term>
 					</lido:relatedWorkRelType>
 				</xsl:when>
-				<xsl:otherwise>
+				<!--xsl:otherwise>
 					<xsl:message>
 						<xsl:text>WARN: Empty relWorkRelType </xsl:text>
 						<xsl:value-of select="$moduleItemId"/>
 						<xsl:text> (objectRelWrap)</xsl:text>
 					</xsl:message>
-				</xsl:otherwise>
+				</xsl:otherwise-->
 			</xsl:choose>
         </lido:relatedWorkSet>
 	</xsl:template>

@@ -223,6 +223,13 @@
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SuffixTxt']/z:value)"/>
 			</xsl:when>
 			<!-- Walze ist unnötig; todo: in RIA korrigieren -->
+			<xsl:when test="$this eq 'Gesamtmaß'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
+			</xsl:when>
 			<xsl:when test="$this eq 'Geschwindigkeit'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SpeedNum']/z:value)"/>
 			</xsl:when>
@@ -406,15 +413,24 @@
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
 			</xsl:when>
+			<xsl:when test="$this eq 'Rahmenaußenmaß Durchmesser'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
+			</xsl:when>
 			<xsl:when test="$this eq 'Rapportmaß'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
 			</xsl:when>
+			<xsl:when test="$this eq 'Reliefhöhe'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
+			</xsl:when>
 			<xsl:when test="$this eq 'Rollenmaß'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='LengthNum']/z:value)"/>
 				<xsl:text> x </xsl:text>
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
+			</xsl:when>
+			<xsl:when test="$this eq 'Schenkelbreite'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
 			</xsl:when>
 			<xsl:when test="$this eq 'Sehnenlänge'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
@@ -434,9 +450,18 @@
 				<xsl:text>:</xsl:text>
 				<xsl:value-of select="format-number(../../../z:dataField[@name='SecondsLnu']/z:value, '00')"/>
 			</xsl:when>
-			<!-- only instance of Stichmaß has no value; todo-->
+			<xsl:when test="$this eq 'Stichhöhe'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
+			</xsl:when>
 			<xsl:when test="$this eq 'Stichmaß'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
+			</xsl:when>
+			<xsl:when test="$this eq 'Tafelmaß'">
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
+				<xsl:text> x </xsl:text>
+				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
 			</xsl:when>
 			<xsl:when test="$this eq 'Tiefe'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
@@ -470,7 +495,15 @@
 			<!-- DONT OUTPUT ANYTHING, BUT DONT DIE EITHER-->
 			<xsl:when test="$this eq 'Leer'"/>
 			<xsl:otherwise>
-				<xsl:message terminate="yes">
+				<xsl:for-each select="../../../z:dataField[
+					@name='WeightNum' and @dataType='Numeric']">
+					<xsl:comment>automatic</xsl:comment>
+					<xsl:value-of select="normalize-space(z:value)"/>
+					<xsl:if test="position() != last()">
+						<xsl:text> x </xsl:text>
+					</xsl:if>									
+				</xsl:for-each>
+				<!--xsl:message terminate="no">
 					<xsl:text>ERROR: Unknown measurement type: </xsl:text>
 					<xsl:value-of select="."/>
 					<xsl:text> (</xsl:text>
@@ -478,7 +511,7 @@
 					<xsl:text>: </xsl:text>
 					<xsl:value-of select="../../../../../@id"/>
 					<xsl:text>)</xsl:text>
-				</xsl:message>
+				</xsl:message-->
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>

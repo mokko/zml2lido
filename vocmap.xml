@@ -192,6 +192,11 @@
 			<target lang="en" name="europeana:type">audio</target>
 		</concept>
 		<concept>
+			<source lang="de">Print (SPK)</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>	
+		<concept>
 			<source lang="de">Repro</source>
 			<target lang="en" name="europeana:type">image</target>
 			<target lang="en" name="lido">image</target>
@@ -653,6 +658,7 @@
 	<voc name="verwaltendeInstitution">
 		<concept>
 			<source lang="de">Ägyptisches Museum und Papyrussammlung, Staatliche Museen zu Berlin</source>
+			<source lang="de">Ägyptisches Museum und Papyrussammlung, Staatliche Museen zu Berlin, Berlin</source>
 			<target lang="de" name="ISIL">DE-MUS-015418</target>
 			<target lang="de" name="homepage">https://www.smb.museum/aemp</target>
 		</concept>

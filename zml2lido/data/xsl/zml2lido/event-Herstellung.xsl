@@ -266,9 +266,8 @@
 		<xsl:if test="z:vocabularyReferenceItem/@name != $ignore">
 			<xsl:variable name="matVoc" select="
 				../z:vocabularyReference[
-					@name = 'MaterialVoc']/
-				z:vocabularyReferenceItem
-			"/>
+					@name = 'MaterialVoc'
+				]/z:vocabularyReferenceItem"/>
 			<xsl:variable name="matTech" select="
 				replace(
 					$matVoc/z:formattedValue, 
@@ -287,16 +286,18 @@
 						<xsl:when test="$type eq 'Technik' or $type eq 'Technik (engl.)'">
 							<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
 						</xsl:when>
+						<!-- neu 5.12.22 SBM -->
+						<xsl:when test="$type eq 'Auflage'"/>
 						<!-- neu 3.5.22 Frühe Plakate Beschreibung der Technik und Präsentationsform -->
+						<xsl:when test="$type eq 'Bemalung/Farbe'"/>
 						<xsl:when test="$type eq 'Beschreibung der Technik' or $type eq 'Präsentationsform'"/>
 						<!-- neu 3.5.22 Fotografisches Verfahren in Berlin Zeichnet Mode-->
+						<xsl:when test="$type eq 'Herstellungstechnik'"/>
 						<xsl:when test="$type eq 'Fotografisches Verfahren'"/>
 						<!-- neu 4.12.22 VAM -->
 						<xsl:when test="$type eq 'Materialfarbe'"/>
-						<xsl:when test="$type eq 'Herstellungstechnik'"/>
 						<xsl:when test="$type eq 'Oberfläche'"/>
-						<!-- neu 5.12.22 SBM -->
-						<xsl:when test="$type eq 'Auflage'"/>
+						<xsl:when test="$type eq 'Reliefhöhe'"/>						
 						<xsl:otherwise>
 							<xsl:message terminate="yes">
 								<xsl:text>ERROR: Unknown material type! </xsl:text>
