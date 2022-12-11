@@ -291,13 +291,17 @@
 						<!-- neu 3.5.22 Frühe Plakate Beschreibung der Technik und Präsentationsform -->
 						<xsl:when test="$type eq 'Bemalung/Farbe'"/>
 						<xsl:when test="$type eq 'Beschreibung der Technik' or $type eq 'Präsentationsform'"/>
-						<!-- neu 3.5.22 Fotografisches Verfahren in Berlin Zeichnet Mode-->
 						<xsl:when test="$type eq 'Herstellungstechnik'"/>
+						<!-- neu 3.5.22 Fotografisches Verfahren in Berlin Zeichnet Mode-->
 						<xsl:when test="$type eq 'Fotografisches Verfahren'"/>
-						<!-- neu 4.12.22 VAM -->
+						<xsl:when test="$type eq 'Material des Originals'"/>
 						<xsl:when test="$type eq 'Materialfarbe'"/>
+						<xsl:when test="$type eq 'Material/Technik (Rest.)'"/>
+						<xsl:when test="$type eq 'Material/Werkstoff'"/>
 						<xsl:when test="$type eq 'Oberfläche'"/>
+						<xsl:when test="$type eq 'Rahmen'"/>
 						<xsl:when test="$type eq 'Reliefhöhe'"/>						
+
 						<xsl:otherwise>
 							<xsl:message terminate="yes">
 								<xsl:text>ERROR: Unknown material type! </xsl:text>

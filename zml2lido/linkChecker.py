@@ -77,19 +77,15 @@ class LinkChecker:
         self.log(
             "fixRelatedWorks: Removing relatedWorks that are not online and getting ISILs"
         )
+
+        client2 = Client2(baseURL=baseURL, user=user, pw=pw)
+        
         relatedWorksL = self.tree.xpath(
             """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
             l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
             namespaces=NSMAP,
         )
-
-        client2 = Client2(baseURL=baseURL, user=user, pw=pw)
-
-        # Can we get the relWorks in one go (from RIA).
-        # That should speed up things A LOT!
-
-        # How do we prevent from running this query every time?
-        # Let's run it only if cache file doesn't exist yet
+        
         self.prepareRelWorksCache(client=client2, relWorksL=relatedWorksL)
 
         for ID in relatedWorksL:
@@ -203,14 +199,21 @@ class LinkChecker:
                 else:
                     print("\tsuccess")
 
-    def prepareRelWorksCache(self, *, client, relWorksL: list):
+    def prepareRelWorksCache(self, *, client, relWorksL):
+        """
+        Make a xml cache file with the relatedWorks. It only d/l something
+        the first time when the cache file doesn't work yet. For chunks, it
+        only caches items from the first chunk.
+        """    
+
         if Path(self.relWorksFn).exists():
             return
+
         print("   Preparing relWorks cache")
         q = Search(module="Object", limit=-1)
-        q.OR()
 
         aset = set()  # no duplicates
+        counter = 0
         for ID in relWorksL:
             src = ID.xpath("@l:source", namespaces=NSMAP)[0]
             if src == "OBJ.ID":
@@ -220,6 +223,7 @@ class LinkChecker:
             else:
                 raise ValueError(f"ERROR: Unknown type: {src}")
             if ID.text is not None and modType == "Object":
+                counter += 1
                 id_str = ID.text
                 if id_str not in aset:
                     q.addCriterion(
@@ -228,12 +232,16 @@ class LinkChecker:
                         value=id_str,
                     )
                 aset.add(id_str)
+        if counter > 1:
+            #add or retrospectively
+            print("xxxxxxxxxxxxx We should use an OR!")
+            #q.OR() # only if more than 1
+        q.toFile(path="debug-search.xml")
         q.validate(mode="search")
-        # q.toFile(path="debug-search.xml")
         print("\tprepopulating cache ...")
         self.relWorks = client.search(query=q)
         self.relWorks.toFile(path=self.relWorksFn)
-        # print("\tdone")
+            # print("\tdone")
 
     def rmInternalLinks(self):
         """

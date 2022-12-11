@@ -61,8 +61,16 @@
 			<target lang="en" name="mimetype">audio/mpeg</target>
 		</concept>
 		<concept>
+			<source lang="de">pcd</source>
+			<target lang="en" name="mimetype">application/pcd</target>
+		</concept>
+		<concept>
 			<source lang="de">pdf</source>
 			<target lang="en" name="mimetype">application/pdf</target>
+		</concept>
+		<concept>
+			<source lang="de">png</source>
+			<target lang="en" name="mimetype">image/png</target>
 		</concept>
 		<concept>
 			<source lang="de">tif</source>
@@ -80,6 +88,11 @@
 
 	<voc name="MulTypeVgr">
 		<!-- Analoges Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
+		<concept>
+			<source lang="de">3 D</source>
+			<target lang="en" name="lido">3D</target>
+			<target lang="en" name="europeana:type">3D</target>
+		</concept>	
 		<concept>
 			<source lang="de">3 D- Polygon</source>
 			<target lang="en" name="lido">3D</target>
@@ -119,7 +132,6 @@
 			<target lang="en" name="lido">image</target>
 			<target lang="en" name="europeana:type">image</target>
 		</concept>
-		
 		<!-- Digitales Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
 		<concept>
 			<source lang="de">Digitales Ausgangsmaterial</source>
@@ -153,7 +165,17 @@
 			<target lang="en" name="lido">image</target>
 		</concept>
 		<concept>
+			<source lang="en">Foto</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept>
 			<source lang="en">image</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+		</concept>
+		<concept>
+			<source lang="en">Karteikarte</source>
 			<target lang="en" name="europeana:type">image</target>
 			<target lang="en" name="lido">image</target>
 		</concept>
@@ -692,7 +714,11 @@
 			<target lang="de" name="ISIL">DE-MUS-700052</target>
 			<target lang="de" name="homepage">https://www.smb.museum/ifm</target>
 		</concept>
-
+		<concept>
+			<source lang="de">Hamburger Bahnhof - Nationalgalerie der Gegenwart, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-906116</target>
+			<target lang="de" name="homepage">https://www.smb.museum/museen-einrichtungen/hamburger-bahnhof/home/</target>
+		</concept>
 		<concept>
 			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-018313</target>
@@ -745,6 +771,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Neue Nationalgalerie, Staatliche Museen zu Berlin</source>
+			<source lang="de">Neue Nationalgalerie, Staatliche Museen zu Berlin, Berlin</source>
 			<target lang="de" name="ISIL">DE-MUS-019514</target>
 			<target lang="de" name="homepage">https://www.smb.museum/nng</target>
 		</concept>
