@@ -228,10 +228,10 @@ class LinkChecker:
                 aset.add(id_str)
         q.validate(mode="search")
         # q.toFile(path="debug-search.xml")
-        print("\tprepopulating relateedWorks cache")
+        print("\tprepopulating cache ...")
         self.relWorks = client.search(query=q)
         self.relWorks.toFile(path=self.relWorksFn)
-        print("\tdone")
+        # print("\tdone")
 
     def rmInternalLinks(self):
         """
