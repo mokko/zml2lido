@@ -26,36 +26,28 @@
 		<!--
 		why is the id logged in rightsWorkWrap?
 		xsl:message><xsl:value-of select="z:systemField[@name ='__id']"/></xsl:message-->
-        <lido:rightsWorkWrap>
-            <lido:rightsWorkSet>
-                <xsl:call-template name="defaultRightsHolder"/>
-                <!-- xsl:apply-templates select="credits"/ -->
-            </lido:rightsWorkSet>
-        </lido:rightsWorkWrap>
+		<!-- xsl:apply-templates select="credits"/ -->
+		<xsl:choose>
+			<xsl:when test="normalize-space(z:moduleReference[@name = 'ObjOwnerRef']) ne ''">
+				<lido:rightsWorkWrap>
+					<lido:rightsWorkSet>
+						<xsl:call-template name="defaultRightsHolder"/>
+					</lido:rightsWorkSet>
+				</lido:rightsWorkWrap>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>
+					<xsl:text>WARN: No verwaltendeInstitution, no rightsWorkWrap</xsl:text>
+				</xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
     </xsl:template>
 
     <xsl:template match="credits">
-    	<!-- objCreditLineVoc, but have to example case to test it with (in 1 Grunddaten) -->
+    	<!-- objCreditLineVoc, but have no example case to test it with (in 1 Grunddaten) -->
         <lido:creditLine>
             <xsl:value-of select="."/>
         </lido:creditLine>
     </xsl:template>
 
-    <xsl:template name="defaultRightsHolder">
-		<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name = 'ObjOwnerRef']"/>
-		<xsl:choose>
-			<xsl:when test="normalize-space($verwaltendeInstitution) ne ''">
-				<lido:rightsHolder>
-					<xsl:call-template name="legalBody">
-						<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
-					</xsl:call-template>
-				</lido:rightsHolder>
-			</xsl:when>
-			<xsl:otherwise>
-				<xsl:message>
-					<xsl:text>WARNING: No verwaltendeInstitution!</xsl:text>
-				</xsl:message>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
 </xsl:stylesheet>

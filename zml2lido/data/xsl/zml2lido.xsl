@@ -178,4 +178,22 @@
 			<xsl:attribute name="lido:sortorder" select="$sortno"/>
 		</xsl:if>
 	</xsl:template>
+	
+	 <xsl:template name="defaultRightsHolder">
+		<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name = 'ObjOwnerRef']"/>
+		<xsl:choose>
+			<xsl:when test="normalize-space($verwaltendeInstitution) ne ''">
+				<lido:rightsHolder>
+					<xsl:call-template name="legalBody">
+						<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
+					</xsl:call-template>
+				</lido:rightsHolder>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message>
+					<xsl:text>WARNING: No verwaltendeInstitution!</xsl:text>
+				</xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 </xsl:stylesheet>
