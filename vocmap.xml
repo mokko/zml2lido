@@ -683,6 +683,12 @@
 			<target lang="de" name="homepage">https://www.smb.museum/gg</target>
 		</concept>
 		<concept>
+			<source lang="de">Institut für Museumsforschung, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-700052</target>
+			<target lang="de" name="homepage">https://www.smb.museum/ifm</target>
+		</concept>
+
+		<concept>
 			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-018313</target>
 			<target lang="de" name="homepage">https://www.smb.museum/kb</target>

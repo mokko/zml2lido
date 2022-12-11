@@ -153,7 +153,7 @@ class LinkChecker:
 
         In the beginning, we die when no ISIL found, but later we might carp more gracefully.
         """
-        vm_fn = Path(__file__).parent / "data/xsl/zml2lido/vocmap.xml"
+        vm_fn = Path(__file__).parents[1] / "vocmap.xml"
         if not vm_fn.exists():
             raise SyntaxError(f"File not found {vm_fn}")
         vocMap = etree.parse(vm_fn)
@@ -168,7 +168,9 @@ class LinkChecker:
             ]"""
             )[0]
         except:
-            raise SyntaxError(f"vocMap: verwaltendeInstitution {institution} not found")
+            raise SyntaxError(
+                f"vocMap: verwaltendeInstitution '{institution}' not found"
+            )
         return ISIL.text
 
     def log(self, msg):
