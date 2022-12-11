@@ -11,9 +11,9 @@
     <xsl:strip-space elements="*" />
 
 	<xsl:template name="recordWrap">
+		<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
+		<xsl:variable name="ISIL" select="func:getISIL($verwaltendeInstitution)"/>
 		<lido:recordWrap>
-			<xsl:variable name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
-			<xsl:variable name="ISIL" select="func:getISIL($verwaltendeInstitution)"/>
 			<lido:recordID lido:type="local">
 				<xsl:attribute name="lido:source">
 					<xsl:if test="$verwaltendeInstitution ne ''">
@@ -37,35 +37,49 @@
 				<lido:term xml:lang="de">Einzelobjekt</lido:term>
 			</lido:recordType>
 			<xsl:if test="$verwaltendeInstitution ne ''">
-				<lido:recordSource lido:type="Institution">
-					<xsl:call-template name="legalBody">
-						<xsl:with-param name="verwaltendeInstitution" select="$verwaltendeInstitution"/>
-					</xsl:call-template>
-				</lido:recordSource>
+				<!-- recordSource is required!!! -->
+				<xsl:call-template name="recSource"/>
+				<xsl:call-template name="recRights"/>
+				<xsl:call-template name="recInfo"/>
+
 			</xsl:if>
-			<lido:recordRights>
-				<lido:rightsType>
-                    <lido:conceptID lido:source="CC" lido:type="URI">https://creativecommons.org/publicdomain/zero/1.0/</lido:conceptID>
-                    <lido:term xml:lang="en" lido:addedSearchTerm="no">No Copyright</lido:term>
-				</lido:rightsType>
-				<xsl:call-template name="defaultRightsHolder"/>
-			</lido:recordRights>
 			<!-- 
 				LIDO spec: Link of the metadata, e.g., to the object data sheet (not the same as link of the object).
 				 We  want a link to smb-digital.de. Old eMuseum has this format 
 				 http://smb-digital.de/eMuseumPlus?service=ExternalInterface&module=collection&objectId=255188&viewType=detailView 
 			-->
-			<lido:recordInfoSet>
-                <xsl:if test="bearbStand">
-                    <xsl:attribute name="lido:type">
-                        <xsl:value-of select="bearbStand"/>
-                    </xsl:attribute>
-                </xsl:if>
-				<lido:recordInfoLink lido:formatResource="html">				 
-					<xsl:text>https://id.smb.museum/object/</xsl:text>
-					<xsl:value-of select="@id"/>
-				</lido:recordInfoLink>
-			</lido:recordInfoSet>
 		</lido:recordWrap>
+	</xsl:template>
+	
+	<xsl:template name="recSource">
+		<lido:recordSource lido:type="Institution">
+			<xsl:call-template name="legalBody">
+				<xsl:with-param name="verwaltendeInstitution" select="z:moduleReference[@name='ObjOwnerRef']"/>
+			</xsl:call-template>
+		</lido:recordSource>	
+	</xsl:template>
+	
+	<xsl:template name="recRights">
+		<lido:recordRights>
+			<lido:rightsType>
+				<lido:conceptID lido:source="CC" lido:type="URI">https://creativecommons.org/publicdomain/zero/1.0/</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="no">No Copyright</lido:term>
+			</lido:rightsType>
+			<xsl:call-template name="defaultRightsHolder"/>
+		</lido:recordRights>
+	</xsl:template>
+
+	<xsl:template name="recInfo">	
+		<lido:recordInfoSet>
+			<xsl:if test="bearbStand">
+				<xsl:attribute name="lido:type">
+					<xsl:value-of select="bearbStand"/>
+				</xsl:attribute>
+			</xsl:if>
+			<lido:recordInfoLink lido:formatResource="html">				 
+				<xsl:text>https://id.smb.museum/object/</xsl:text>
+				<xsl:value-of select="@id"/>
+			</lido:recordInfoLink>
+		</lido:recordInfoSet>
 	</xsl:template>
 </xsl:stylesheet>

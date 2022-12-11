@@ -27,19 +27,30 @@
 		</lido:lidoWrap>
 	</xsl:template>
 
+
+
 	<xsl:template match="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem">
 		<!--xsl:message>
 			<xsl:text>D Object </xsl:text>
 			<xsl:value-of select="@id"/>
 		</xsl:message-->
+		<xsl:choose>
+			<xsl:when test=" normalize-space(z:moduleReference[@name='ObjOwnerRef']) ne ''">
+				<xsl:call-template name="mitVerwInstitution"/>
+			</xsl:when>
+			<xsl:otherwise>
+				<xsl:message terminate="no">
+					<xsl:text>WARN: record without verwaltendeInstitution is OMITTED! </xsl:text>
+					<xsl:value-of select="@id"/>
+				</xsl:message>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="mitVerwInstitution">
 		<xsl:variable name="verwaltendeInstitution" select="normalize-space(z:moduleReference[@name='ObjOwnerRef'])"/>
 		<xsl:variable name="ISIL" select="func:getISIL($verwaltendeInstitution)"/>
-		<xsl:if test="verwaltendeInstitution ne ''">
-			<xsl:message>
-				<xsl:text>WARNING: no administering institution (verwaltendeInstitution) </xsl:text>
-				<xsl:value-of select="@id"/>
-			</xsl:message>
-		</xsl:if>
+	
 		<lido:lido>
 			<lido:lidoRecID>
 				<xsl:choose>
