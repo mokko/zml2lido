@@ -34,7 +34,7 @@ class LinkChecker:
         p = Path(Input)
         ext = "".join(p.suffixes)
         stem = str(p).split(".")[0]
-        self.out_fn = stem + "-2" + ext
+        self.out_fn = stem + "-2" + ext  # name and location for python transformation
 
         self.relWorksFn = p.parent / "relWorks.cache.xml"
         self.tree = etree.parse(str(Input))
@@ -254,17 +254,23 @@ class LinkChecker:
 
         expects
         -first: the path to the first chunk (as str or Path)
+
+        TODO: Let's first pass all the relWork.IDs into the set and then make one big
+        query. That should be faster. But before we do that, we need to test
+        if current version works non-chunk version.
+
+        If the relWorksCache gets too big (~1GB xml file), split the chunks
+        into multiple dirs and process separately.
         """
 
         if Path(self.relWorksFn).exists():
             return
-        client = Client2(baseURL=baseURL, user=user, pw=pw)
 
-        aset = set()  # no duplicates
+        client = Client2(baseURL=baseURL, user=user, pw=pw)
+        cacheOne = set()  # no duplicates
         chunk_fn = Path(first)
         while chunk_fn.exists():
-            q = Search(module="Object", limit=-1)
-            q.OR()  # only if more than 1
+            print(f"\t1st cache {chunk_fn}")
             chunkET = etree.parse(str(chunk_fn))
 
             relWorksL = chunkET.xpath(
@@ -273,7 +279,6 @@ class LinkChecker:
                 namespaces=NSMAP,
             )
 
-            counter = 0
             for ID in relWorksL:
                 src = ID.xpath("@l:source", namespaces=NSMAP)[0]
                 if src == "OBJ.ID":
@@ -283,29 +288,31 @@ class LinkChecker:
                 else:
                     raise ValueError(f"ERROR: Unknown type: {src}")
                 if ID.text is not None and modType == "Object":
-                    counter += 1
-                    id_str = ID.text
-                    if id_str not in aset:
-                        q.addCriterion(
-                            operator="equalsField",
-                            field="__id",
-                            value=id_str,
-                        )
-                    aset.add(id_str)
-            if counter > 1:
-                q.validate(mode="search")
-                print(f"\tprepopulating cache {chunk_fn}")
-                newRelWorksM = client.search(query=q)
-                print(f"\tadding ...")
-                if hasattr(self, "relWorks"):
-                    self.relWorks += newRelWorksM
-                else:
-                    self.relWorks = newRelWorksM  # might be faster
-                self.relWorks.toFile(path=self.relWorksFn)
+                    cacheOne.add(ID.text)
             chunk_fn = self._nextChunk(fn=chunk_fn)
-            # if path is not from chunking we need this ugly break
-            if chunk_fn == first:
+            if chunk_fn == first:  # if it's still the original path, we need a break
                 break
+
+        if len(cacheOne) > 1:
+            q = Search(module="Object", limit=-1)
+            q.OR()  # only or if more than 1
+
+            for id_str in cacheOne:
+                q.addCriterion(
+                    operator="equalsField",
+                    field="__id",
+                    value=id_str,
+                )
+
+        q.validate(mode="search")
+        print(f"\tprepopulating 2nd lvl cache {len(cacheOne)}")
+        newRelWorksM = client.search(query=q)
+        if hasattr(self, "relWorks"):
+            print(f"\tadding ...")
+            self.relWorks += newRelWorksM
+        else:
+            self.relWorks = newRelWorksM  # might be faster
+        self.relWorks.toFile(path=self.relWorksFn)
 
     def rmInternalLinks(self):
         """
@@ -359,7 +366,14 @@ class LinkChecker:
     #
     #
 
-    def _nextChunk(self, *, fn):
+    def _nextChunk(self, *, fn: Path):
+        """
+        Returns the path/name of the next chunk if possible; if it is
+        given some other path that it doesn't expect, it returns the
+        original path it has been given initially.
+
+        Expects path/name of lvl 1 lido file that ends in ".lido.xml".
+        """
         stem = str(fn).split(".lido.xml")[0]
         m = re.search("-chunk(\d+)$", stem)
         if m:
@@ -367,11 +381,11 @@ class LinkChecker:
             new_no = no + 1
             no_no = re.sub("\d+$", "", stem)
             new_path = Path(f"{no_no}{new_no}.lido.xml")
-            print(f"D: Suggested new path: {new_path}")
+            # print(f"D: Suggested new path: {new_path}")
             return new_path
         else:
             print("D: CHUNK NOT FOUND!")
-            return Path(fn)
+            return fn
 
 
 if __name__ == "__main__":
