@@ -15,6 +15,7 @@ from mpapi.client2 import Client2
 from mpapi.module import Module
 from mpapi.search import Search
 from pathlib import Path
+import re
 from typing import Optional, Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
@@ -28,7 +29,7 @@ if Path(cred_fn).exists():  # some things like saxon should run even
 
 class LinkChecker:
     def __init__(self, *, Input):
-        self.log(f"LinkChecker is working on {Input} NEW RUN")  # not exactly an error
+        self.log(f"LinkChecker is working on {Input}")  # not exactly an error
         # determine out_fn
         p = Path(Input)
         ext = "".join(p.suffixes)
@@ -41,10 +42,10 @@ class LinkChecker:
         # new xml cache for fixRelatedWorks
         if Path(self.relWorksFn).exists():
             print(f"   About to load relWorks cache {self.relWorksFn}")
-            self.relWorks = Module(tree=etree.parse(self.relWorksFn))
-        else:
-            print("   starting new relWorks cache file")
-            self.relWorks = Module()
+            self.relWorks = Module(file=self.relWorksFn)
+        # else:
+        #    print("   starting new relWorks cache file")
+        #    self.relWorks = Module()
 
     def checkRelWorkOnline(self, *, modType: str, modItemId: int):
         """
@@ -78,7 +79,7 @@ class LinkChecker:
             "fixRelatedWorks: Removing relatedWorks that are not online and getting ISILs"
         )
 
-        client2 = Client2(baseURL=baseURL, user=user, pw=pw)
+        client = Client2(baseURL=baseURL, user=user, pw=pw)
 
         relatedWorksL = self.tree.xpath(
             """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
@@ -86,7 +87,8 @@ class LinkChecker:
             namespaces=NSMAP,
         )
 
-        self.prepareRelWorksCache(client=client2, relWorksL=relatedWorksL)
+        # old version
+        self.prepareRelWorksCache(client=client, relWorksL=relatedWorksL)
 
         for ID in relatedWorksL:
             # don't log
@@ -114,7 +116,7 @@ class LinkChecker:
                         relWorkN = self.relWorks[(modType, id_int)]
                     except:  # if not, get record and add it to cache
                         print("   getting item from online RIA")
-                        relWork = client2.getItem(modItemId=id_int, modType=modType)
+                        relWork = client.getItem(modItemId=id_int, modType=modType)
                         self.relWorks += relWork
                         # print ("   update file cache")
                         self.relWorks.toFile(path=self.relWorksFn)
@@ -211,7 +213,7 @@ class LinkChecker:
 
         print("   Preparing relWorks cache")
         q = Search(module="Object", limit=-1)
-
+        q.OR()  # only if more than 1
         aset = set()  # no duplicates
         counter = 0
         for ID in relWorksL:
@@ -232,16 +234,78 @@ class LinkChecker:
                         value=id_str,
                     )
                 aset.add(id_str)
+        # if counter is exactly 1 our query is invalid because of the or
+        # so we just discard the results
         if counter > 1:
-            # add or retrospectively
-            print("xxxxxxxxxxxxx We should use an OR!")
-            # q.OR() # only if more than 1
-        q.toFile(path="debug-search.xml")
-        q.validate(mode="search")
-        print("\tprepopulating cache ...")
-        self.relWorks = client.search(query=q)
-        self.relWorks.toFile(path=self.relWorksFn)
-        # print("\tdone")
+            # print("xxxxxxxxxxxxx We should use an OR!")
+            q.toFile(path="debug-search.xml")
+            q.validate(mode="search")
+            print("\tprepopulating cache ...")
+            self.relWorks = client.search(query=q)
+            self.relWorks.toFile(path=self.relWorksFn)
+            # print("\tdone")
+
+    def prepareRelWorksCache2(self, *, first):
+        """
+        creates relatedWorksCache from all chunks
+
+        In case, we in chunk mode, the normal preparation is inefficient, so let's see
+        if we can speed things up by offering a separate cache for chunk mode
+
+        expects
+        -first: the path to the first chunk (as str or Path)
+        """
+
+        if Path(self.relWorksFn).exists():
+            return
+        client = Client2(baseURL=baseURL, user=user, pw=pw)
+
+        aset = set()  # no duplicates
+        chunk_fn = Path(first)
+        while chunk_fn.exists():
+            q = Search(module="Object", limit=-1)
+            q.OR()  # only if more than 1
+            chunkET = etree.parse(str(chunk_fn))
+
+            relWorksL = chunkET.xpath(
+                """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
+                l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
+                namespaces=NSMAP,
+            )
+
+            counter = 0
+            for ID in relWorksL:
+                src = ID.xpath("@l:source", namespaces=NSMAP)[0]
+                if src == "OBJ.ID":
+                    modType = "Object"
+                elif src == "LIT.ID":
+                    modType = "Literature"
+                else:
+                    raise ValueError(f"ERROR: Unknown type: {src}")
+                if ID.text is not None and modType == "Object":
+                    counter += 1
+                    id_str = ID.text
+                    if id_str not in aset:
+                        q.addCriterion(
+                            operator="equalsField",
+                            field="__id",
+                            value=id_str,
+                        )
+                    aset.add(id_str)
+            if counter > 1:
+                q.validate(mode="search")
+                print(f"\tprepopulating cache {chunk_fn}")
+                newRelWorksM = client.search(query=q)
+                print(f"\tadding ...")
+                if hasattr(self, "relWorks"):
+                    self.relWorks += newRelWorksM
+                else:
+                    self.relWorks = newRelWorksM  # might be faster
+                self.relWorks.toFile(path=self.relWorksFn)
+            chunk_fn = self._nextChunk(fn=chunk_fn)
+            # if path is not from chunking we need this ugly break
+            if chunk_fn == first:
+                break
 
     def rmInternalLinks(self):
         """
@@ -290,6 +354,24 @@ class LinkChecker:
             self.out_fn, pretty_print=True, encoding="UTF-8", xml_declaration=True
         )
         return self.out_fn
+
+    #
+    #
+    #
+
+    def _nextChunk(self, *, fn):
+        stem = str(fn).split(".lido.xml")[0]
+        m = re.search("-chunk(\d+)$", stem)
+        if m:
+            no = int(m.group(1))
+            new_no = no + 1
+            no_no = re.sub("\d+$", "", stem)
+            new_path = Path(f"{no_no}{new_no}.lido.xml")
+            print(f"D: Suggested new path: {new_path}")
+            return new_path
+        else:
+            print("D: CHUNK NOT FOUND!")
+            return Path(fn)
 
 
 if __name__ == "__main__":

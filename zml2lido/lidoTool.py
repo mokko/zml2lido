@@ -127,7 +127,7 @@ class LidoTool(Jobs):
         Input = Path(Input)  # what a mess
         stem = str(Input).split(".")[0]
         ext = "".join(Input.suffixes)
-        out = self.outdir / stem + ".onlyPub" + ext
+        out = self.outdir.joinpath(stem + ".onlyPub" + ext)
 
         if not Path(out).exists() or self.force is True:
             self.saxon(Input=Input, xsl=xsl["onlyPublished"], output=out)
@@ -176,6 +176,9 @@ class LidoTool(Jobs):
             # lc.guess()  # rewrite filenames with http-links on SMB-Digital
             # currently, we dont CHECK if links work
             # lc.rmInternalLinks()  # remove resourceSets with internal links
+            if self.chunks:
+                # new chunk prepare
+                lc.prepareRelWorksCache2(first=Input)
             lc.fixRelatedWorks()
             lc.saveTree()
         else:
