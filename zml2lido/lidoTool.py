@@ -157,6 +157,10 @@ class LidoTool(Jobs):
 
     def urlLido(self, *, Input):
         # print("LINKCHECKER")
+
+        lc = LinkChecker(Input=Input)
+        lc.prepareRelWorksCache2(first=Input)  # run only once
+
         if self.chunks:
             for chunkFn in self.chunkName(Input=Input):
                 new_fn = self.urlLidoSingle(Input=chunkFn)
@@ -176,7 +180,6 @@ class LidoTool(Jobs):
             # lc.guess()  # rewrite filenames with http-links on SMB-Digital
             # currently, we dont CHECK if links work
             # lc.rmInternalLinks()  # remove resourceSets with internal links
-            lc.prepareRelWorksCache2(first=Input)
             lc.fixRelatedWorks()
             lc.saveTree()
         else:
@@ -339,13 +342,13 @@ class LidoTool(Jobs):
     #
 
     def _analyze_chunkFn(self, *, Input):
-        print(f"ENTER ANALYZE WITH {Input}")
+        # print(f"ENTER ANALYZE WITH {Input}")
         partsL = str(Input).split("-chunk")
         root = partsL[0]
         m = re.match("(\d+)[\.-]", partsL[1])
         no = int(m.group(1))
         tail = str(Input).split("-chunk" + str(no))[1]
-        print(f"_ANALYZE '{root}' '{no}' '{tail}'")
+        # print(f"_ANALYZE '{root}' '{no}' '{tail}'")
         return root, no, tail
 
     def _copy(self, *, pic, out):

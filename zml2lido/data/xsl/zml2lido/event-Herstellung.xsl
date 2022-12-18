@@ -21,13 +21,12 @@
 			'Inventor', 
 			'Künstler', 'Künstlerin','Künstler des Originals',  
 			'Maler', 'Malerin',		
-			'Zeichner', 'Zeichnerin'
-		"/>
+			'Zeichner', 'Zeichnerin'"/>
+			
 		<xsl:variable name="herstellendeKollektive" select="
 			'Ethnie',
 			'Kultur',
-			'Sprachgruppe'
-		"/>
+			'Sprachgruppe'"/>
 
 		<xsl:variable name="herstellendeOrtstypen" select="
 			'Aufnahmeort',
@@ -36,8 +35,7 @@
 			'Entstehungsort',
 			'Entstehungsort stilistisch',
 			'faktischer Entstehungsort',
-			'Herstellungsort'
-		"/>
+			'Herstellungsort'"/>
 		
 		<xsl:variable name="herstellendeRollenN" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
@@ -290,17 +288,25 @@
 						<xsl:when test="$type eq 'Auflage'"/>
 						<!-- neu 3.5.22 Frühe Plakate Beschreibung der Technik und Präsentationsform -->
 						<xsl:when test="$type eq 'Bemalung/Farbe'"/>
-						<xsl:when test="$type eq 'Beschreibung der Technik' or $type eq 'Präsentationsform'"/>
-						<xsl:when test="$type eq 'Herstellungstechnik'"/>
+						<xsl:when test="$type eq 'Beschreibung der Technik'"/>
+						<xsl:when test="$type eq 'Datum'"/>
+						
+						<xsl:when test="$type eq 'Herstellungsart'"/>
+						<xsl:when test="$type eq 'Herstellungstechnik'"/>						
 						<!-- neu 3.5.22 Fotografisches Verfahren in Berlin Zeichnet Mode-->
-						<xsl:when test="$type eq 'Fotografisches Verfahren'"/>
+						<xsl:when test="$type eq 'Fotografisches Verfahren'"/>						
+						<xsl:when test="$type eq 'Kontrollnummer'"/>
 						<xsl:when test="$type eq 'Material des Originals'"/>
 						<xsl:when test="$type eq 'Materialfarbe'"/>
 						<xsl:when test="$type eq 'Material/Technik (Rest.)'"/>
 						<xsl:when test="$type eq 'Material/Werkstoff'"/>
+						<xsl:when test="$type eq 'Nominal'"/>
 						<xsl:when test="$type eq 'Oberfläche'"/>
+						<xsl:when test="$type eq 'Präsentationsform'"/>
 						<xsl:when test="$type eq 'Rahmen'"/>
 						<xsl:when test="$type eq 'Reliefhöhe'"/>						
+						<xsl:when test="$type eq 'Stempelstellung'"/>
+						<xsl:when test="$type eq 'Wasserzeichen'"/>						
 
 						<xsl:otherwise>
 							<xsl:message terminate="yes">
