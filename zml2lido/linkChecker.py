@@ -250,16 +250,16 @@ class LinkChecker:
                     field="__id",
                     value=id_str,
                 )
+            q.validate(mode="search")
 
-        q.validate(mode="search")
-        print(f"   populating 2nd lvl cache {len(cacheOne)}")
-        newRelWorksM = client.search(query=q)
-        if hasattr(self, "relWorks"):
-            print(f"\tadding ...")
-            self.relWorks += newRelWorksM
-        else:
-            self.relWorks = newRelWorksM  # might be faster
-        self.relWorks.toFile(path=self.relWorksFn)
+            print(f"   populating 2nd lvl cache {len(cacheOne)}")
+            newRelWorksM = client.search(query=q)
+            if hasattr(self, "relWorks"):
+                print(f"\tadding ...")
+                self.relWorks += newRelWorksM
+            else:
+                self.relWorks = newRelWorksM  # might be faster
+            self.relWorks.toFile(path=self.relWorksFn)
 
     def rmInternalLinks(self):
         """
