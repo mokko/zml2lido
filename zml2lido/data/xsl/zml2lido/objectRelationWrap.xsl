@@ -4,7 +4,9 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:z="http://www.zetcom.com/ria/ws/module"
-    exclude-result-prefixes="z func"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#" 
+    exclude-result-prefixes="z func rdf skos"
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
@@ -163,11 +165,50 @@
 	</xsl:template>
 
 	<xsl:template match="z:vocabularyReference[@name = 'KeywordProjectVoc']">
-		<!-- subject is NOT repeatable, however subjectConcept is repeatable and has type --> 
-		<xsl:variable name="aat" select="func:vocmap-replace-lax(
-			'subjects', z:vocabularyReferenceItem/z:formattedValue, 'aatUri')"/>
-		<xsl:variable name="euro" select="func:vocmap-replace-lax(
-			'subjects', z:vocabularyReferenceItem/z:formattedValue, 'fashionUri')"/>
+		<!-- 
+			subject is NOT repeatable, however subjectConcept is repeatable and has type 
+			for aat first look in euro-fashion thesaurus, then in vocmap
+		--> 
+
+		<xsl:variable name="aat1" select="func:aatFromFashion-laxer(z:vocabularyReferenceItem/z:formattedValue)"/>
+
+		<xsl:variable name="aat">
+			<xsl:choose>
+				<xsl:when test="$aat1 ne ''">
+					<xsl:value-of select="$aat1"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="func:vocmap-replace-laxer(
+						'subjects', z:vocabularyReferenceItem/z:formattedValue, 'aatUri')"/>			
+				</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable> 
+
+		<!-- if still empty, issue a warning -->
+		<xsl:if test="$aat eq ''">
+			<xsl:message terminate="no">
+				<xsl:text>WARN: no aat URI for </xsl:text>
+				<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
+			</xsl:message>
+		</xsl:if>
+
+		<!-- 
+			old: xsl:variable name="euro" select="func:vocmap-replace-lax(
+			'subjects', z:vocabularyReferenceItem/z:formattedValue, 'fashionUri')"/
+
+			There can be multiple. E.g. Druck exists twice: 10305 and 10419
+			
+		-->
+		<xsl:variable name="euro" select="func:fashion-map-lax(z:vocabularyReferenceItem/z:formattedValue)"/>
+						
+		<xsl:message>
+			<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
+			<xsl:text> aat: </xsl:text>
+			<xsl:value-of select="$aat"/>
+			<xsl:text> euro: </xsl:text>
+			<xsl:value-of select="$euro"/>
+		</xsl:message>
+
 		<xsl:comment>
 			<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
 		</xsl:comment>
@@ -187,10 +228,13 @@
 					</xsl:call-template>
 				</xsl:if>
 				<xsl:if test="$euro ne ''">
-					<xsl:call-template name="subjectND">
-						<xsl:with-param name="type">europeanafashion</xsl:with-param>
-						<xsl:with-param name="uri" select="$euro"/>
-					</xsl:call-template>
+					<!-- in case of multiple URIs mention all of them. Can that be improved? -->
+					<xsl:for-each select="tokenize($euro, ' ')">
+						<xsl:call-template name="subjectND">
+							<xsl:with-param name="type">europeanafashion</xsl:with-param>
+							<xsl:with-param name="uri" select="."/>
+						</xsl:call-template>
+					</xsl:for-each>
 				</xsl:if>
 				<lido:term>
 					<xsl:attribute name="xml:lang" select="z:vocabularyReferenceItem/z:formattedValue/@language"/>

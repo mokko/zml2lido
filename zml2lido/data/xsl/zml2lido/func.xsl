@@ -6,8 +6,10 @@
 	xmlns:z="http://www.zetcom.com/ria/ws/module"
 	xmlns:fn="http://www.w3.org/2005/xpath-functions"
 	xmlns:func="http://func"
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"  
 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd"
-	exclude-result-prefixes="z func fn">
+	exclude-result-prefixes="z func fn rdf skos">
 
 	<!-- 
 		Man kann die ISIL in MuseumPlus unter der PK-DS der verwaltenden Institution im Register Normdaten nachgucken
@@ -97,16 +99,9 @@
 		<xsl:param name="src-voc"/>
 		<xsl:param name="src-term"/>
 		<xsl:param name="target"/>
+		<!-- version that dies on missing return value -->
 		<!-- used to be file:zml2lido/data/vocmap.xml -->
-		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
-		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
-		<xsl:variable name="return" select="$dict/vocmap/voc[
-				@name eq normalize-space($src-voc)
-			]/concept[
-				source = normalize-space($src-term)
-			]/target[
-				@name eq normalize-space($target)
-			]/text()"/>
+		<xsl:variable name="return" select="func:vocmap-replace-laxer($src-voc, $src-term, $target)"/>
 		<!-- die if replacement returns empty, except if source is already empty -->
 		<xsl:if test="normalize-space($return) = '' and normalize-space($src-term) != ''">
 			<xsl:message terminate="yes">
@@ -127,17 +122,9 @@
 		<xsl:param name="src-voc"/>
 		<xsl:param name="src-term"/>
 		<xsl:param name="target"/>
-		<!-- used to be file:zml2lido/data/vocmap.xml -->
-		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
-		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
-		
-		<xsl:variable name="return" select="$dict/vocmap/voc[
-				@name eq normalize-space($src-voc)
-			]/concept[
-				source = normalize-space($src-term)
-			]/target[
-				@name eq normalize-space($target)
-			]/text()"/>
+		<!-- version that WARNS on missing return value -->
+			
+		<xsl:variable name="return" select="func:vocmap-replace-laxer($src-voc, $src-term, $target)"/>
 		<xsl:if test="normalize-space($return) = '' and normalize-space($src-term) != ''">
 			<xsl:message terminate="no">
 				<xsl:text>WARNING: vocmap-replace-lax returns EMPTY ON </xsl:text>
@@ -151,6 +138,81 @@
 		</xsl:if> 
 		<xsl:value-of select="$return"/>
 	</xsl:function>
+
+	<xsl:function name="func:vocmap-replace-laxer">
+		<xsl:param name="src-voc"/>
+		<xsl:param name="src-term"/>
+		<xsl:param name="target"/>
+		<!-- version that stays silent on missing return value -->
+		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
+		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
+		
+		<xsl:variable name="return" select="$dict/vocmap/voc[
+				@name eq normalize-space($src-voc)
+			]/concept[
+				source = normalize-space($src-term)
+			]/target[
+				@name eq normalize-space($target)
+			]/text()"/>
+		<xsl:value-of select="$return"/>
+	</xsl:function>
+
+	<!-- see if we can get AAT from Fashion -->
+	<xsl:function name="func:aatFromFashion-laxer">
+		<xsl:param name="src-term"/>
+
+		<xsl:variable name="dict" select="document('file:europeanaFashion17.rdf')"/>
+		<xsl:variable name="return" select="$dict/rdf:RDF/rdf:Description[
+			skos:prefLabel[
+				@xml:lang = $src-term/@language
+			] = $src-term or 
+			skos:altLabel[
+				@xml:lang = $src-term/@language
+			] = $src-term]"/>
+
+		<xsl:value-of select="$return/skos:exactMatch/@rdf:resource"/>
+	</xsl:function>
+
+
+	<xsl:function name="func:fashion-map-lax">
+		<xsl:param name="src-term"/>
+		<!--
+		
+		returns rdf:Description for exact match in prefTerm or altTerm
+		
+		return only the url or the whole rdf:Description?
+		
+		-->
+		<xsl:variable name="dict" select="document('file:europeanaFashion17.rdf')"/>
+		<xsl:value-of select="$dict/rdf:RDF/rdf:Description[
+			skos:prefLabel[
+				@xml:lang = $src-term/@language
+			] = $src-term or 
+			skos:altLabel[
+				@xml:lang = $src-term/@language
+			] = $src-term]/@rdf:about"/>
+	</xsl:function>
+
+	<xsl:function name="func:fashion-lax">
+		<!--
+		
+		returns rdf:Description for exact match in prefTerm or altTerm
+		
+		return only the url or the whole rdf:Description?
+		
+		-->
+		<xsl:param name="src-term"/>
+		<!-- used to be file:zml2lido/data/vocmap.xml -->
+		<xsl:variable name="dict" select="document('file:europeanaFashion17.rdf')"/>
+		<xsl:value-of select="$dict/rdf:RDF/rdf:Description[
+			skos:prefLabel[
+				@xml:lang = $src-term/@language
+			] = $src-term or 
+			skos:altLabel[
+				@xml:lang = $src-term/@language
+			] = $src-term]"/>
+	</xsl:function>
+
 
 	<xsl:function name="func:weblink">
 		<xsl:param name="verwaltendeInstitution"/>
