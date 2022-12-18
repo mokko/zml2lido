@@ -233,6 +233,12 @@
 			<target lang="en" name="europeana:type">image</target>
 			<target lang="en" name="lido">image</target>
 		</concept>
+ 		<concept>
+			<source lang="de">RTI</source>
+			<target lang="en" name="europeana:type">image</target>
+			<target lang="en" name="lido">image</target>
+			<seealso>https://www.loc.gov/preservation/digital/formats/fdd/fdd000486.shtml</seealso>
+		</concept>		
 		<concept>
 			<source lang="de">Scan</source>
 			<target lang="en" name="lido">image</target>
