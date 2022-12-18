@@ -89,18 +89,23 @@ class LinkChecker:
                 modType = "Object"
             elif src == "LIT.ID":
                 modType = "Literature"
+            elif src == "ISIL/ID":  # why didnt I get this case before?
+                modType = "Object"
             else:
                 raise ValueError(f"ERROR: Unknown type: {src}")
 
             if ID.text is not None:
                 id_str = ID.text
-                id_int = int(ID.text)
+                try:
+                    id_int = int(ID.text)
+                except:  # why didnt I get this case before?
+                    id_int = int(ID.text.split("/")[-1])
                 # print (f"*****{id_str} {modType}")
                 if modType == "Literature":
                     pass
                 # print("WARN: No check for modType 'Literature'")
                 else:
-                    print(f"fixing relatedWork {modType} {id_str}")
+                    # print(f"fixing relatedWork {modType} {id_str}")
                     try:  # is the work already in the cache?
                         relWorkN = self.relWorks[(modType, id_int)]
                     except:  # if not, get record and add it to cache
@@ -130,7 +135,7 @@ class LinkChecker:
                         ID.text = f"{ISIL}/{id_str}"
                         print(f"   relWork: {id_str}:{verwInst.text} -> {ISIL}")
                     else:
-                        self.log(f"   removing unpublic relWork")
+                        # self.log(f"   removing unpublic relWork")
                         relWorkSet = ID.getparent().getparent().getparent()
                         relWorkSet.getparent().remove(relWorkSet)
 
@@ -217,7 +222,7 @@ class LinkChecker:
         cacheOne = set()  # no duplicates
         chunk_fn = Path(first)
         while chunk_fn.exists():
-            print(f"   1st cache {chunk_fn}")
+            print(f"   1st relWorks cache {chunk_fn}")
             chunkET = etree.parse(str(chunk_fn))
 
             relWorksL = chunkET.xpath(
@@ -252,7 +257,7 @@ class LinkChecker:
                 )
             q.validate(mode="search")
 
-            print(f"   populating 2nd lvl cache {len(cacheOne)}")
+            print(f"   populating 2nd lvl relWorks cache {len(cacheOne)}")
             newRelWorksM = client.search(query=q)
             if hasattr(self, "relWorks"):
                 print(f"\tadding ...")

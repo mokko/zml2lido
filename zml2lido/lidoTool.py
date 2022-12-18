@@ -89,7 +89,7 @@ class LidoTool(Jobs):
     def lido2html(self, *, Input):
         print("LIDO2HTML")
         if self.chunks:
-            for chunkFn in self.chunkName(Input=Input):
+            for chunkFn in self.loopChunks(Input=Input):
                 new_fn = self.lido2htmlSingle(Input=chunkFn)
         else:
             self.lido2htmlSingle(Input=Input)
@@ -113,9 +113,9 @@ class LidoTool(Jobs):
     def onlyPublished(self, *, Input):
         print(f"ONLYPUBLISHED")
         if self.chunks:
-            for chunkFn in self.chunkName(Input=Input):
+            for chunkFn in self.loopChunks(Input=Input):
                 new_fn = self.onlyPublishedSingle(Input=chunkFn)
-            return self.chunkNameFirst(Input=new_fn)
+            return self.firstChunkName(Input=new_fn)
         else:
             return self.onlyPublishedSingle(Input=Input)
 
@@ -157,25 +157,25 @@ class LidoTool(Jobs):
 
     def urlLido(self, *, Input):
         # print("LINKCHECKER")
-
-        lc = LinkChecker(Input=Input)
-        lc.prepareRelWorksCache2(first=Input)  # run only once
+        # lc = LinkChecker(Input=Input) # run only once to make cache
+        # lc.prepareRelWorksCache2(first=Input)
 
         if self.chunks:
-            for chunkFn in self.chunkName(Input=Input):
+            for chunkFn in self.loopChunks(Input=Input):
                 new_fn = self.urlLidoSingle(Input=chunkFn)
-            return self.chunkNameFirst(Input=new_fn)
+            return self.firstChunkName(Input=new_fn)
         else:
             return self.urlLidoSingle(Input=Input)
 
-    def urlLidoSingle(self, *, Input):
+    def urlLidoSingle(self, *, Input: str):
         """
         Using Python rewrite (fix) generic Zetcom xml, mostly working on
         links (urls)
         """
-        lc = LinkChecker(Input=Input)
-        outFn = lc.out_fn
+        lc = LinkChecker(Input=Input)  # init for each chunk required, although we will
+        outFn = lc.out_fn  # have to load a file every time.
         if not Path(outFn).exists() or self.force:
+            lc.prepareRelWorksCache2(first=Input)  # run only once to make cache
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             # lc.guess()  # rewrite filenames with http-links on SMB-Digital
             # currently, we dont CHECK if links work
@@ -190,7 +190,7 @@ class LidoTool(Jobs):
         # print("SPLITLIDO enter")
         if self.chunks:
             self.force = True  # otherwise subsequent chunks are not written
-            for chunkFn in self.chunkName(Input=Input):
+            for chunkFn in self.loopChunks(Input=Input):
                 self.splitLidoSingle(Input=chunkFn)
         else:
             self.splitLidoSingle(Input=Input)
@@ -214,9 +214,9 @@ class LidoTool(Jobs):
     def splitSachbegriff(self, *, Input):
         print("SPLITSACHBEGRIFF")
         if self.chunks:
-            for chunkFn in self.chunkName(Input=Input):
+            for chunkFn in self.loopChunks(Input=Input):
                 sachbegriffFn = self.splitSachbegriff(Input=chunkFn)
-            return self.chunkNameFirst(Input=sachbegriffFn)
+            return self.firstChunkName(Input=sachbegriffFn)
         else:
             return self.splitSachbegriffSingle(Input=Input)
 
@@ -253,7 +253,7 @@ class LidoTool(Jobs):
         print("VALIDATING LIDO")
         if self.chunks:
             print(" with chunks")
-            for chunkFn in self.chunkName(Input=to_val_fn):
+            for chunkFn in self.loopChunks(Input=to_val_fn):
                 self.validateSingle(Input=chunkFn)
         else:
             self.validateSingle(Input=to_val_fn)
@@ -273,9 +273,9 @@ class LidoTool(Jobs):
         print(f"ZML2LIDO {xslt}")
         if self.chunks:
             print(" with chunks")
-            for chunkFn in self.chunkName(Input=self.Input):
+            for chunkFn in self.loopChunks(Input=self.Input):
                 lidoFn = self.zml2lidoSingle(Input=chunkFn, xslt=xslt)
-            return self.chunkNameFirst(Input=lidoFn)
+            return self.firstChunkName(Input=lidoFn)
         else:
             return self.zml2lidoSingle(Input=Input)
 
@@ -295,7 +295,7 @@ class LidoTool(Jobs):
     # more helpers
     #
 
-    def chunkName(self, *, Input):
+    def loopChunks(self, *, Input):
         """
         returns generator with path for existing files, counting up as long
         files exist. For this to work, filename has to include
@@ -310,14 +310,14 @@ class LidoTool(Jobs):
             no += 1
             chunkFn = f"{root}-chunk{no}{tail}"
 
-    def chunkNameFirst(self, *, Input):
+    def firstChunkName(self, *, Input):
         """
         returns the chunk with no. 1
         """
         root, no, tail = self._analyze_chunkFn(Input=Input)
         firstFn = f"{root}-chunk1{tail}"
         # print(f"going in {Input}")
-        print(f"firstFn {firstFn}")
+        print(f"firstChunkName {firstFn}")
         return firstFn
 
     def saxon(self, *, Input, output, xsl):
