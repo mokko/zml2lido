@@ -89,17 +89,17 @@ class LinkChecker:
                 modType = "Object"
             elif src == "LIT.ID":
                 modType = "Literature"
-            elif src == "ISIL/ID":  # why didnt I get this case before?
-                modType = "Object"
+            elif src == "ISIL/ID":  # unless we process the same file multiple
+                modType = "Object"  # times, we dont need this
             else:
                 raise ValueError(f"ERROR: Unknown type: {src}")
 
             if ID.text is not None:
                 id_str = ID.text
-                try:
-                    id_int = int(ID.text)
-                except:  # why didnt I get this case before?
-                    id_int = int(ID.text.split("/")[-1])
+                # try:
+                id_int = int(ID.text)
+                # except:  # only recursive should get us here
+                #    id_int = int(ID.text.split("/")[-1])
                 # print (f"*****{id_str} {modType}")
                 if modType == "Literature":
                     pass
