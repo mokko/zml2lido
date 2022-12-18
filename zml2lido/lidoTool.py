@@ -176,9 +176,7 @@ class LidoTool(Jobs):
             # lc.guess()  # rewrite filenames with http-links on SMB-Digital
             # currently, we dont CHECK if links work
             # lc.rmInternalLinks()  # remove resourceSets with internal links
-            if self.chunks:
-                # new chunk prepare
-                lc.prepareRelWorksCache2(first=Input)
+            lc.prepareRelWorksCache2(first=Input)
             lc.fixRelatedWorks()
             lc.saveTree()
         else:
