@@ -89,8 +89,12 @@ class LinkChecker:
                 modType = "Object"
             elif src == "LIT.ID":
                 modType = "Literature"
-            elif src == "ISIL/ID":  # unless we process the same file multiple
-                modType = "Object"  # times, we dont need this
+            elif src == "ISIL/ID":
+                raise ValueError(
+                    "ERROR: @lido:source='ISIL/ID' indicates that an already"
+                    + "processed LIDO file is being processed again"
+                )
+                modType = "Object"
             else:
                 raise ValueError(f"ERROR: Unknown type: {src}")
 
@@ -98,7 +102,8 @@ class LinkChecker:
                 id_str = ID.text
                 # try:
                 id_int = int(ID.text)
-                # except:  # only recursive should get us here
+                # only recursive should get us here
+                # except:
                 #    id_int = int(ID.text.split("/")[-1])
                 # print (f"*****{id_str} {modType}")
                 if modType == "Literature":

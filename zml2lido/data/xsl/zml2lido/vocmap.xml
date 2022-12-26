@@ -49,6 +49,10 @@
 			<target lang="en" name="mimetype">application/vnd.ms-word</target>
 		</concept>
 		<concept>
+			<source lang="de">docx</source>
+			<target lang="en" name="mimetype">application/vnd.openxmlformats-officedocument.wordprocessingml.document</target>
+		</concept>
+		<concept>
 			<source lang="de">jpg</source>
 			<target lang="en" name="mimetype">image/jpeg</target>
 		</concept>
@@ -115,6 +119,8 @@
 		</concept>	
 		<concept>
 			<source lang="de">audio</source>
+			<source lang="de">Audio &lt;EM= nicht Typ "Audio" wählen&gt;</source>
+
 			<target lang="en" name="lido">audio</target>
 			<target lang="en" name="europeana:type">audio</target>
 		</concept>	
@@ -710,6 +716,15 @@
 			<target lang="de" name="ISIL">DE-MUS-814319</target>
 			<target lang="de" name="homepage">https://www.smb.museum/ant</target>
 		</concept>
+		<!-- 
+			Warum das EM Fotos auf smb-digital zeigt, die angeblich von einer anderen Institution 
+			verwaltet werden ist vollständig unklar. Rückfrage an BG! -->
+		<concept>
+			<source lang="de">Bildarchiv Foto Marburg (Dr. Franz Stoedtner-Archiv)</source>
+			<target lang="de" name="ISIL">x</target>
+			<target lang="de" name="homepage">x</target>
+		</concept>
+		
 		<concept>
 			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">de-MUS-019118</target>
@@ -790,6 +805,11 @@
 			<source lang="de">Skulpturensammlung und Museum für Byzantinische Kunst, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">DE-MUS-815614</target>
 			<target lang="de" name="homepage">https://www.smb.museum/sbm</target>
+		</concept>
+		<concept>
+			<source lang="de">Stiftung Humboldt Forum im Berliner Schloss, Berlin</source>
+			<target lang="de" name="ISIL">-</target>
+			<target lang="de" name="homepage">https://www.humboldtforum.org</target>
 		</concept>
 		<concept>
 			<source lang="de">Vorderasiatisches Museum, Staatliche Museen zu Berlin</source>

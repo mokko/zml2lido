@@ -36,6 +36,7 @@ import re
 import shutil
 import subprocess
 import sys
+from zipfile import ZipFile
 from zml2lido.linkChecker import LinkChecker
 from zml2lido.jobs import Jobs
 
@@ -285,8 +286,22 @@ class LidoTool(Jobs):
         # print (f"lido file:{lido_fn}")
 
         if not lidoFn.exists() or self.force is True:
-            # print("\tnew")
-            self.saxon(Input=inputP, xsl=xsl[xslt], output=lidoFn)
+            if inputP.suffix == ".zip":  # unzipping temp file
+                print("   input is zipped")
+                parent_dir = inputP.parent
+                member = Path(inputP.name).with_suffix(".xml")
+                temp_fn = parent_dir / member
+                with ZipFile(inputP, "r") as zippy:
+                    zippy.extract(str(member), path=parent_dir)
+                new_input = temp_fn
+            else:
+                new_input = inputP
+
+            self.saxon(Input=new_input, xsl=xsl[xslt], output=lidoFn)
+
+            if inputP.suffix == ".zip":
+                temp_fn.unlink()
+
         else:
             print("exists already, no overwrite")
         return lidoFn
