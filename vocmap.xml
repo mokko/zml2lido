@@ -16,29 +16,29 @@
 		-->
 		<concept>
 			<source lang="de">AKu</source>
-			<target lang="de" name="ISIL">de-MUS-019014</target>
+			<target lang="de" name="ISIL">DE-MUS-019014</target>
 			<target lang="de" name="verwaltendeInstitution">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</target>
 		</concept>
 		<concept>
 			<source lang="de">EM</source>
 			<source lang="de">EMAmArchaologie</source>
 			<source lang="de">EMAllgemein</source>
-			<target lang="de" name="ISIL">de-MUS-019118</target>
+			<target lang="de" name="ISIL">DE-MUS-019118</target>
 			<target lang="de" name="verwaltendeInstitution">Ethnologisches Museum, Staatliche Museen zu Berlin</target>
 		</concept>
 		<concept>
 			<source lang="de">KB</source>
-			<target lang="de" name="ISIL">de-MUS-018313</target>
+			<target lang="de" name="ISIL">DE-MUS-018313</target>
 			<target lang="de" name="verwaltendeInstitution">Kunstbibliothek, Staatliche Museen zu Berlin</target>
 		</concept>
 		<concept>
 			<source lang="de">KK</source>
-			<target lang="de" name="ISIL">de-MUS-018511</target>
+			<target lang="de" name="ISIL">DE-MUS-018511</target>
 			<target lang="de" name="verwaltendeInstitution">Kupferstichkabinett, Staatliche Museen zu Berlin</target>
 		</concept>
 		<concept>
 			<source lang="de">ISL</source>
-			<target lang="de" name="ISIL">de-MUS-814517</target>
+			<target lang="de" name="ISIL">DE-MUS-814517</target>
 			<target lang="de" name="verwaltendeInstitution">Museum für Islamische Kunst, Staatliche Museen zu Berlin</target>
 		</concept>
 	</voc>
@@ -708,7 +708,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Alte Nationalgalerie, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-815114</target>
+			<target lang="de" name="ISIL">DE-MUS-815114</target>
 			<target lang="de" name="homepage">https://www.smb.museum/ang</target>
 		</concept>
 		<concept>
@@ -727,7 +727,7 @@
 		
 		<concept>
 			<source lang="de">Ethnologisches Museum, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-019118</target>
+			<target lang="de" name="ISIL">DE-MUS-019118</target>
 			<target lang="de" name="homepage">https://www.smb.museum/em</target>
 		</concept>
 		<concept>
@@ -747,7 +747,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-018313</target>
+			<target lang="de" name="ISIL">DE-MUS-018313</target>
 			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
 		</concept>
 		<concept>
@@ -757,7 +757,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Kupferstichkabinett, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-018511</target>
+			<target lang="de" name="ISIL">DE-MUS-018511</target>
 			<target lang="de" name="homepage">https://www.smb.museum/kk</target>
 		</concept>
 		<concept>
@@ -777,12 +777,12 @@
 		</concept>
 		<concept>
 			<source lang="de">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-019014</target>
+			<target lang="de" name="ISIL">DE-MUS-019014</target>
 			<target lang="de" name="homepage">https://www.smb.museum/aku</target>
 		</concept>
 		<concept>
 			<source lang="de">Museum für Islamische Kunst, Staatliche Museen zu Berlin</source>
-			<target lang="de" name="ISIL">de-MUS-814517</target>
+			<target lang="de" name="ISIL">DE-MUS-814517</target>
 			<target lang="de" name="homepage">https://www.smb.museum/isl</target>
 		</concept>
 		<concept>
@@ -792,7 +792,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Musikinstrumenten-Museum, Staatliches Institut für Musikforschung</source>
-			<target lang="de" name="ISIL">de-MUS-019410</target>
+			<target lang="de" name="ISIL">DE-MUS-019410</target>
 			<target lang="de" name="homepage">https://www.simpk.de/museum</target>
 		</concept>
 		<concept>

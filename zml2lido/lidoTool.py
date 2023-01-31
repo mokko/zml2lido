@@ -122,8 +122,11 @@ class LidoTool(Jobs):
 
     def onlyPublishedSingle(self, *, Input):
         """
-        filter out lido records that are not published at recherche.smb
-        expects lido as input and outputs lido as well
+        filter out lido records that are not published at recherche.smb expects lido
+        as input and outputs lido as well
+
+        This is an old (obsolete) xslt version; currently we do that the same procedure
+        during the Python phase with the LinkChecker.
         """
         Input = Path(Input)  # what a mess
         stem = str(Input).split(".")[0]
@@ -315,6 +318,8 @@ class LidoTool(Jobs):
         returns generator with path for existing files, counting up as long
         files exist. For this to work, filename has to include
             path/to/group1234-chunk1.xml
+
+        This might belong in chunker,py to be reusable.
         """
         print(f"chunk input: {Input}")
         root, no, tail = self._analyze_chunkFn(Input=Input)
@@ -328,6 +333,8 @@ class LidoTool(Jobs):
     def firstChunkName(self, *, Input):
         """
         returns the chunk with no. 1
+
+        This might belong in chunker.py...
         """
         root, no, tail = self._analyze_chunkFn(Input=Input)
         firstFn = f"{root}-chunk1{tail}"
@@ -357,6 +364,9 @@ class LidoTool(Jobs):
     #
 
     def _analyze_chunkFn(self, *, Input):
+        """
+        This might belong in chunker.py ...
+        """
         # print(f"ENTER ANALYZE WITH {Input}")
         partsL = str(Input).split("-chunk")
         root = partsL[0]
@@ -422,6 +432,10 @@ class LidoTool(Jobs):
             self._copy(pic=pic, out=out_fn)
 
     def _sanitize(self, *, Input):
+        """
+        Some checks for convenance; mainly for our users, so they get more intelligable
+        error messages.
+        """
         script_dir = Path(__file__).parents[1]
         print(f"SCRIPT_DIR: {script_dir}")
 
