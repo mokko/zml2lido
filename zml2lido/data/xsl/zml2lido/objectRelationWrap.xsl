@@ -139,8 +139,8 @@
 	</xsl:template>
 
 	<xsl:template mode="index" match="z:dataField[@name = 'NotationTxt']/z:value">
-		<!-- todo: dynamic -->
-		<lido:term xml:lang="de">
+		<!-- https://github.com/mokko/zml2lido/issues/90 -->
+		<lido:term>
 			<xsl:value-of select="normalize-space(.)"/>
 		</lido:term>
 	</xsl:template>
