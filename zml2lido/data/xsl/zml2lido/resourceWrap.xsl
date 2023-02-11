@@ -102,12 +102,22 @@
 				<xsl:variable name="sort" select="z:composite[@name='MulReferencesCre']/z:compositeItem/z:moduleReference[
 					@name= 'MulObjectRef']/z:moduleReferenceItem/z:dataField[
 					@name='SortLnu']/z:value"/>
+				<xsl:variable name="mulId" select="@id"/>
 				<!--xsl:message> ex objId 214875
 					why I do get multiple SortLnu values sometimes; just using the first one atm
 					<xsl:text>SORT:::</xsl:text>
 					<xsl:value-of select="$sort"/>
 				</xsl:message-->
 				<xsl:choose>
+					<xsl:when test="$object/z:moduleReference[
+						@name='ObjMultimediaRef'
+					]/z:moduleReferenceItem[
+						z:dataField[
+							@name='ThumbnailBoo'
+						][z:value eq 'true']
+					]/@moduleItemId = $mulId">
+						<xsl:text>0</xsl:text>
+					</xsl:when>
 					<xsl:when test="$sort[1] ne ''">
 						<xsl:value-of select="$sort[1]"/>
 					</xsl:when>
@@ -169,7 +179,6 @@
 					<xsl:text>https://id.smb.museum/digital-asset/</xsl:text>
 					<xsl:value-of select="z:systemField[@name='__id']/z:value" />
                 </lido:linkResource>
-
             </lido:resourceRepresentation>
 			<lido:resourceType>
 				<!-- 
@@ -183,9 +192,6 @@
 				<xsl:variable name="euType" select="func:vocmap-replace('MulTypeVgr',$resType, 'europeana:type')"/>
 
 				<!-- 
-					<xsl:message>
-						resType: <xsl:value-of select="$resType"/> :: <xsl:value-of select="$euType"/>
-					</xsl:message>
 					default to image, so make sure we ALWAYS have a europeana:type
 				-->
 				<lido:term xml:lang="EN">
@@ -199,6 +205,10 @@
 					</xsl:choose>
 				</lido:term>
 			</lido:resourceType>
+			<!-- 
+				see https://github.com/mokko/zml2lido/issues/92 
+				<xsl:apply-templates select="z:vocabularyReference[@name='MulTypeVoc']/z:vocabularyReferenceItem"/>
+			-->
 			<!-- 
 				22.12.2021 
 				Frank will das Feld Inhalt/Ansicht nicht in LIDO haben, weil da teilweise Müll drin steht (?).
@@ -363,6 +373,26 @@
             </lido:rightsResource>
         </lido:resourceSet>
     </xsl:template>
+
+	<!-- 
+	11.02.2023
+	nicht benutzt-
+	Frank wollte Funktion in resourceRelType haben, aber bei dem gegenwärtigen Chaos in dem Feld
+	macht das keinen Sinn. Nach dem Aufräumen von Funktion wird man sehen, ob das Sinn macht. 
+	
+	-->
+	<xsl:template match="z:vocabularyReference[@name='MulTypeVoc']/z:vocabularyReferenceItem">
+		<lido:resourceRelType>
+			<lido:conceptID lido:type="internal">
+				<xsl:value-of select="@id"/>
+			</lido:conceptID>
+			<lido:term>
+				<xsl:attribute name="xml:lang" select="z:formattedValue/@language"/>
+				<xsl:value-of select="z:formattedValue"/>
+			</lido:term>		
+		</lido:resourceRelType>
+	</xsl:template>
+
 
 	<!-- not used anymore -->
     <xsl:template mode="U" match="z:moduleReference[@name='MulPhotographerPerRef']">
