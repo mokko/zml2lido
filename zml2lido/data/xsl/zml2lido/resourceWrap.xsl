@@ -93,6 +93,7 @@
 			</xsl:message>
 		</xsl:if>
 		<xsl:variable name="object" select="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem[@id eq $objId]"/>
+		<xsl:variable name="mulId" select="@id"/>
         <lido:resourceSet>
 			<!--
 				xsl:nummer nummeriert alle verknüpfteMM durch; das geht so nicht
@@ -102,7 +103,6 @@
 				<xsl:variable name="sort" select="z:composite[@name='MulReferencesCre']/z:compositeItem/z:moduleReference[
 					@name= 'MulObjectRef']/z:moduleReferenceItem/z:dataField[
 					@name='SortLnu']/z:value"/>
-				<xsl:variable name="mulId" select="@id"/>
 				<!--xsl:message> ex objId 214875
 					why I do get multiple SortLnu values sometimes; just using the first one atm
 					<xsl:text>SORT:::</xsl:text>
@@ -208,7 +208,21 @@
 			<!-- 
 				see https://github.com/mokko/zml2lido/issues/92 
 				<xsl:apply-templates select="z:vocabularyReference[@name='MulTypeVoc']/z:vocabularyReferenceItem"/>
+				https://www.smb.museum/fileadmin/website/Institute/Institut_fuer_Museumsforschung/Fachstelle_Museum/Handreichung_DDB-LIDO_1.0.pdf
 			-->
+			
+			<xsl:if test="$object/z:moduleReference[
+						@name='ObjMultimediaRef'
+					]/z:moduleReferenceItem[
+						z:dataField[
+							@name='ThumbnailBoo'
+						][z:value eq 'true']
+					]/@moduleItemId = $mulId">
+				<lido:resourceRelType>
+					<xsl:comment>DDB-Lido</xsl:comment>
+					<lido:term xml:lang="de">Hauptansicht</lido:term>
+				</lido:resourceRelType>
+			</xsl:if>
 			<!-- 
 				22.12.2021 
 				Frank will das Feld Inhalt/Ansicht nicht in LIDO haben, weil da teilweise Müll drin steht (?).
