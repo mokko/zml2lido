@@ -4,12 +4,14 @@ class Jobs:
         Make Lido for debug purposes
         (1) convert native xml to lido
         (2) always validate result
+        (3) if validation successful, split the result
 
         No images are processed in this flavor and no internal links checked or
         rewritten.
         """
         lido_fn = self.zml2lido(Input=self.Input)
         self.validate(path=lido_fn)
+        self.splitLido(input=lido_fn)
 
     def localLido(self):
         """
