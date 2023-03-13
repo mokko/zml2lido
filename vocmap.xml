@@ -725,8 +725,9 @@
 			verwaltet werden ist vollständig unklar. Rückfrage an BG! -->
 		<concept>
 			<source lang="de">Bildarchiv Foto Marburg (Dr. Franz Stoedtner-Archiv)</source>
-			<target lang="de" name="ISIL">x</target>
-			<target lang="de" name="homepage">x</target>
+			<comment>Deutsches Dokumentationszentrum für Kunstgeschichte - Bildarchiv Foto Marburg</comment>
+			<target lang="de" name="ISIL">DE-Mb112</target>
+			<target lang="de" name="homepage">https://www.uni-marburg.de/de/fotomarburg</target>
 		</concept>
 		
 		<concept>
