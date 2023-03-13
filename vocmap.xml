@@ -45,6 +45,10 @@
 
 	<voc name="formatResource">
 		<concept>
+			<source lang="de">bmp</source>
+			<target lang="en" name="mimetype">image/jpeg</target>
+		</concept>
+		<concept>
 			<source lang="de">doc</source>
 			<target lang="en" name="mimetype">application/vnd.ms-word</target>
 		</concept>
