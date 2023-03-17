@@ -19,9 +19,9 @@ import re
 from typing import Optional, Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
-
-
+relWorksMaxSize = 65000
 cred_fn = "sdata/credentials.py"
+
 if Path(cred_fn).exists():  # some things like saxon should run even
     with open(cred_fn) as f:  # credentials are not where expected
         exec(f.read())
@@ -115,7 +115,19 @@ class LinkChecker:
                         relWorkN = self.relWorks[(modType, id_int)]
                     except:  # if not, get record and add it to cache
                         print("   getting item from online RIA")
-                        relWork = client.getItem(modItemId=id_int, modType=modType)
+                        # we're getting whole documents here and
+                        # relWork = client.getItem(modItemId=id_int, modType=modType)
+                        q = Search(module=modType, limit=-1)
+                        q.addCriterion(
+                            operator="equalsField",
+                            field="__id",
+                            value=str(id_int),
+                        )
+                        q = self._optimize_relWorks_cache(query=q)
+                        # q.toFile(path="sdata/debug.search.xml")
+                        relWorks = client.search(query=q)
+
+                        # appending them to relWork cache
                         self.relWorks += relWork
                         # print ("   update file cache")
                         self.relWorks.toFile(path=self.relWorksFn)
@@ -244,25 +256,31 @@ class LinkChecker:
                     modType = "Literature"
                 else:
                     raise ValueError(f"ERROR: Unknown type: {src}")
+
+                # dont write more than a few thousand items in cache
+                if len(cacheOne) >= relWorksMaxSize:
+                    break
                 if ID.text is not None and modType == "Object":
                     cacheOne.add(ID.text)
             chunk_fn = self._nextChunk(fn=chunk_fn)
-            if chunk_fn == first:  # if it's still the original path, we need a break
-                break
+            if chunk_fn == first:
+                break  # if it's still the original path, we break the while
 
         if len(cacheOne) > 1:
             q = Search(module="Object", limit=-1)
             q.OR()  # only or if more than 1
 
-            for id_str in cacheOne:
+            for id_str in sorted(cacheOne):
                 q.addCriterion(
                     operator="equalsField",
                     field="__id",
                     value=id_str,
                 )
-            q.validate(mode="search")
-
-            print(f"   populating 2nd lvl relWorks cache {len(cacheOne)}")
+            q = self._optimize_relWorks_cache(query=q)
+            q.toFile(path="sdata/debug.search.xml")
+            print(
+                f"   populating relWorks cache {len(cacheOne)} (max size {relWorksMaxSize})"
+            )
             newRelWorksM = client.search(query=q)
             if hasattr(self, "relWorks"):
                 print(f"\tadding ...")
@@ -343,6 +361,22 @@ class LinkChecker:
         else:
             print("D: CHUNK NOT FOUND!")
             return fn
+
+    def _optimize_relWorks_cache(self, *, query):
+        """
+        let's shrink (optimize) the xml. We only need two fields
+        (1) ObjOwnerRef (=verwaltendeInstitution)
+        (2) ObjPublicationGrp for online status
+        """
+        query.addField(field="ObjOwnerRef")
+        query.addField(field="ObjOwnerRef.moduleReferenceItem")
+        query.addField(field="ObjOwnerRef.formattedValue")
+        query.addField(field="ObjPublicationGrp")
+        query.addField(field="ObjPublicationGrp.repeatableGroupItem")
+        query.addField(field="ObjPublicationGrp.PublicationVoc")
+        query.addField(field="ObjPublicationGrp.TypeVoc")
+        query.validate(mode="search")
+        return query
 
 
 if __name__ == "__main__":
