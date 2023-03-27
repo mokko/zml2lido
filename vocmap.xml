@@ -94,6 +94,13 @@
 		</concept>
 	</voc>
 
+	<voc name="MatTechType">
+		<concept>
+			<source lang="de">Blattmaß</source>
+			<target lang="de" name="wUnit">Blattmaß (Höhe x Breite)</target>
+		</concept>
+	</voc>
+
 	<voc name="MulTypeVgr">
 		<!-- Analoges Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
 		<concept>

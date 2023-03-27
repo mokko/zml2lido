@@ -212,12 +212,18 @@
 				]) 
 		]"/>
 		<xsl:message>
-			<xsl:text>before placesN</xsl:text>
+			<xsl:text>before placesN: </xsl:text>
 			<xsl:value-of select="$placesN"/>
 		</xsl:message>
 
 		<xsl:variable name="sorder" select="$placesN/z:dataField[@name='SortLnu']/z:value"/>
-		<xsl:if test="$placesN ne ''">
+		<!-- 
+		
+			used to be $placesN ne '', but now multiple places are possible 
+			Do we need to loop thru the results now? Now. Just Bezeichnung and Ortstyp
+		
+		-->
+		<xsl:if test="$placesN != ''">
 			<!-- 
 				<xsl:message>new eventPlace
 					<xsl:value-of select="$sorder"/>
