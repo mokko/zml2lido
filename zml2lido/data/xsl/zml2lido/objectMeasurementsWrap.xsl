@@ -56,9 +56,6 @@
 			<xsl:variable name="unit" select="z:vocabularyReference[
 					@name='UnitDdiVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue"/>
-			<xsl:variable name="unit" select="z:vocabularyReference[
-					@name='UnitDdiVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue"/>
 			<xsl:variable name="value">
 				<xsl:apply-templates select="z:moduleReference[
 					@name='TypeDimRef'
