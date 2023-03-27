@@ -136,7 +136,7 @@
 	<xsl:template name="category">
 		<!-- Not sure how to map this, perhaps introduce a new Objekttyp upstream -->
 		<lido:category>
-			<lido:conceptID lido:type="URI">http://www.cidoc-crm.org/crm-concepts/E22</lido:conceptID>
+			<lido:conceptID lido:type="URI">http://www.cidoc-crm.org/cidoc-crm/E22</lido:conceptID>
 			<lido:term xml:lang="en">Human-Made Object</lido:term>
 		</lido:category>
 	</xsl:template>
