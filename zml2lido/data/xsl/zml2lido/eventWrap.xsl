@@ -429,6 +429,7 @@
 
 		<xsl:variable name="displayDate-en">
 			<xsl:choose>
+				<!-- 20230327: dont show en if same values as in de -->
 				<xsl:when test="normalize-space(z:virtualField[@name = 'PreviewENVrt']/z:value) ne '' and 
 				normalize-space(z:virtualField[@name = 'PreviewENVrt']/z:value) != $displayDate-de
 				">
@@ -447,14 +448,13 @@
 				</xsl:when>
 				-->
 				
-				<xsl:otherwise>
+				<!-- xsl:otherwise>
 					<xsl:message terminate="no">
 						<xsl:text>INFO: No displayDate-en</xsl:text>
 						<xsl:value-of select="../../../@name"/>
 						<xsl:text>: </xsl:text>
 						<xsl:value-of select="../../@id"/>
 					</xsl:message>
-					<!--
 					If this fails ObjDateGrp exists, but no entry in the fields above;
 					it is no error if displayDate is empty.
 					-->
