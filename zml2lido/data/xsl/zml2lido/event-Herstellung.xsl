@@ -264,7 +264,8 @@
 		<xsl:if test="z:vocabularyReferenceItem/@name != $ignore">
 			<xsl:variable name="matVoc" select="
 				../z:vocabularyReference[
-					@name = 'MaterialVoc'
+					@name = 'MaterialVoc' or
+					@name = 'EgyptVoc'
 				]/z:vocabularyReferenceItem"/>
 			<xsl:variable name="matTech" select="
 				replace(
@@ -316,7 +317,9 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<lido:conceptID lido:type="internal">
+				<lido:conceptID lido:type="local">
+					<xsl:value-of select="../z:vocabularyReference[1]/@name"/>
+					<xsl:text>-</xsl:text>
 					<xsl:value-of select="$matVoc/@id"/>
 				</lido:conceptID>
 				<lido:term xml:lang="de">

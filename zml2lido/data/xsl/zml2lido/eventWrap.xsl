@@ -457,8 +457,8 @@
 					</xsl:message>
 					If this fails ObjDateGrp exists, but no entry in the fields above;
 					it is no error if displayDate is empty.
-					-->
 				</xsl:otherwise>
+				-->
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:if test="$displayDate-en ne ''">
