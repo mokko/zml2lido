@@ -259,6 +259,11 @@
 			<target lang="en" name="lido">text</target>
 			<target lang="en" name="europeana:type">text</target>
 		</concept>	
+		<concept>
+			<source lang="de">Zeichnung</source>
+			<target lang="en" name="lido">image</target>
+			<target lang="en" name="europeana:type">image</target>
+		</concept>	
 	</voc>
 
 	<voc name="Sammlung">
