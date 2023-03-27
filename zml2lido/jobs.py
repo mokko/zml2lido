@@ -11,7 +11,7 @@ class Jobs:
         """
         lido_fn = self.zml2lido(Input=self.Input)
         self.validate(path=lido_fn)
-        self.splitLido(input=lido_fn)
+        self.splitLido(Input=lido_fn)
 
     def localLido(self):
         """
@@ -40,9 +40,9 @@ class Jobs:
         lido_fn = self.zml2lido(Input=mitSachbegriffZML)
         if self.validation:
             self.validate(path=lido_fn)
-        # self.splitLido(input=lido_fn)  # individual records as files
+        # self.splitLido(Input=lido_fn)  # individual records as files
         self.pix(Input=self.Input, output=self.output)  # transforms attachments
-        # self.lido2html(input=lido_fn)  # to make it easier to read lido
+        # self.lido2html(Input=lido_fn)  # to make it easier to read lido
 
     def smbLido(self):
         """
@@ -67,7 +67,7 @@ class Jobs:
         rewrite_fn = self.urlLido(Input=lido_fn)
         if self.validation:
             self.validate(path=rewrite_fn)
-        self.splitLido(input=rewrite_fn)  # individual records as files
+        self.splitLido(Input=rewrite_fn)  # individual records as files
         # self.lido2html(input=linklido_fn)  # to make it easier to read lido
 
     def smb(self):
