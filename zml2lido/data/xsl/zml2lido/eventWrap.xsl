@@ -429,7 +429,9 @@
 
 		<xsl:variable name="displayDate-en">
 			<xsl:choose>
-				<xsl:when test="normalize-space(z:virtualField[@name = 'PreviewENVrt']/z:value) ne ''">
+				<xsl:when test="normalize-space(z:virtualField[@name = 'PreviewENVrt']/z:value) ne '' and 
+				normalize-space(z:virtualField[@name = 'PreviewENVrt']/z:value) != $displayDate-de
+				">
 					<xsl:value-of select="normalize-space(z:virtualField[@name = 'PreviewENVrt']/z:value)"/>
 				</xsl:when>
 				<!-- xsl:when test="normalize-space(z:dataField[@name = 'PreviewTxt']/z:value) ne ''">
