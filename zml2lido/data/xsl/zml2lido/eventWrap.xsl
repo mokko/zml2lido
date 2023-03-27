@@ -185,7 +185,7 @@
 	We used to chain together multiple entries in the sense of Kreuzberg, Berlin, Deutschland, but this 
 	scheme exists only sometimes, especially in the EM. And there it became obsolete in the meantime too
 	
-	So new implementaton as of 17.11.2022 treats every place as a separate place.
+	So new implementaton as of 17.11.2022 treats every entry as a separate place.
 	
 	-->
 	<xsl:template mode="eventPlace" match="z:repeatableGroup[@name = 'ObjGeograficGrp']">
@@ -193,16 +193,28 @@
 	
 	
 	<xsl:template mode="eventPlace" match="z:repeatableGroup[@name = 'ObjGeograficGrp']/z:repeatableGroupItem">
-		<!-- placesN to filter out entries in GeogrBezug that are no places -->
-		<xsl:variable name="placesN" select=".[
-			z:vocabularyReference[
-				@instanceName='ObjGeopolVgr'
-			]/z:vocabularyReferenceItem[
-					@name != 'Ethnie' and 
-					@name != 'Kultur' and 
-					@name != 'Sprachgruppe'
-				]
-			]"/>
+		<!-- 
+		placesN to filter out entries in GeogrBezug that are no places 
+		
+		20230327 
+		Unfortunately, old placesN relied on the fact that there is a ObjGeopolVgr (Geogr.Bez.), 
+		but it is not guaranteed that somebody filled in this field (qualifier). Hence, we now  
+		exclude non places such as Ethnie but also accept places without Bezeichnung
+
+		What we don't want are entries for Ethnie, Kultur und Sprachgruppe b/c they are no places! 
+		-->
+		<xsl:variable name="placesN" select="z:vocabularyReference[
+			not (@instanceName = 'ObjGeopolVgr') or
+			not (z:vocabularyReferenceItem[
+					@name = 'Ethnie' or 
+					@name = 'Kultur' or 
+					@name = 'Sprachgruppe'
+				]) 
+		]"/>
+		<xsl:message>
+			<xsl:text>before placesN</xsl:text>
+			<xsl:value-of select="$placesN"/>
+		</xsl:message>
 
 		<xsl:variable name="sorder" select="$placesN/z:dataField[@name='SortLnu']/z:value"/>
 		<xsl:if test="$placesN ne ''">
@@ -222,7 +234,7 @@
 					<xsl:when test="z:dataField[@name='DetailsTxt']/z:value ne ''">
 						<xsl:text>DetailsTxt</xsl:text>
 					</xsl:when>
-<!-- terminates if there is ObjGeograficGrp, but no PlaceVoc or PlaceILSVoc 
+					<!-- terminates if there is ObjGeograficGrp, but no PlaceVoc, PlaceILSVoc or DetailsTxt -->
 					<xsl:otherwise>
 						<xsl:message terminate="yes">
 							<xsl:text>ERROR: Geo info not found! id: </xsl:text>
@@ -230,7 +242,6 @@
 							<xsl:text> (eventWrap)</xsl:text>
 						</xsl:message>
 					</xsl:otherwise>
--->
 				</xsl:choose>
 			</xsl:variable>
 
@@ -240,11 +251,16 @@
 						or $geopicker eq 'PlaceILSVoc'">
 						<xsl:value-of select="z:vocabularyReference[@name eq $geopicker]/z:vocabularyReferenceItem/z:formattedValue"/>
 					</xsl:when>
-					<xsl:when test="$geopicker eq 'DetailsText'">
+					<xsl:when test="$geopicker eq 'DetailsTxt'">
 						<xsl:value-of select="z:dataField[@name='DetailsTxt']/z:value"/>
 					</xsl:when>
 				</xsl:choose>
 			</xsl:variable>
+			
+			<xsl:message>
+				<xsl:text>GEONAME: </xsl:text>
+				<xsl:value-of select="$geoname"/>
+			</xsl:message>
 			
 			<xsl:if test="$geoname ne ''">
 				<!-- xsl:message>
