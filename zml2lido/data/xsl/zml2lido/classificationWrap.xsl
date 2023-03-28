@@ -380,7 +380,9 @@
 		-->
 		<xsl:if test="$sammlung2 ne ''">
 			<lido:classification>
-				<lido:conceptID lido:source="Sammlung" lido:type="local"/>
+				<lido:conceptID lido:source="ObjOrgGroupVoc(*)" lido:type="local">
+					<xsl:value-of select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/@id"/>
+				</lido:conceptID>
 				<lido:term lido:addedSearchTerm="no" xml:lang="de">
 					<xsl:value-of select="$sammlung2"/>
 				</lido:term>
@@ -393,7 +395,7 @@
 	<xsl:template name="systematikArt">
 		<xsl:if test="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value) ne ''">
 			<lido:classification>
-				<xsl:comment>SystematikArt</xsl:comment>
+				<lido:conceptID lido:source="RIA:SystematikArt (ObjSystematicClb)" lido:type="local"/>
 				<lido:term xml:lang="de">
 					<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value)"/>
 				</lido:term>
