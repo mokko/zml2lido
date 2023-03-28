@@ -13,7 +13,10 @@
 		Performance: 'Darsteller', 'Dirigent', Interpret
     -->
     <xsl:template name="Aufführung">
-		<xsl:variable name="aufführendeRollen" select="'Darsteller', 'Darstellerin', 'Dirigent', 'Dirigentin', 'Interpret', 'Interpretin'"/>
+		<xsl:variable name="aufführendeRollen" select="
+			'Darsteller', 'Darstellerin', 'Darsteller*in',
+			'Dirigent', 'Dirigentin', 'Dirigent*in',
+			'Interpret', 'Interpretin', 'Interpret*in'"/>
 		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $aufführendeRollen]"/>
