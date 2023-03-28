@@ -315,7 +315,12 @@
 	</xsl:template>
 
 	<xsl:template mode="classification" match="z:dataField[@name = 'ObjTechnicalTermClb']/z:value">
-		<lido:classification lido:source="RIA:Sachbegriff">
+		<lido:classification>
+			<!-- 
+				source not allowed in classification or term
+				ObjTechnicalTermClb provides no ID
+				-->
+			<lido:conceptID lido:source="RIA:Sachbegriff" lido:type="local"/>
 			<lido:term xml:lang="de">
 				<xsl:value-of select="normalize-space(.)"/>
 			</lido:term>
@@ -366,12 +371,16 @@
 			</xsl:choose>
 		</xsl:variable> 
 		
-		<!--xsl:message>
+		<!--
+			Sammlung2 soll Bereich ohne Kürzel für Haus sein
+			xsl:message>
 			<xsl:text>Sammlung2: </xsl:text>
 			<xsl:value-of select="$sammlung2"/>
-		</xsl:message-->
+		</xsl:message
+		-->
 		<xsl:if test="$sammlung2 ne ''">
-			<lido:classification lido:source="Sammlung">
+			<lido:classification>
+				<lido:conceptID lido:source="Sammlung" lido:type="local"/>
 				<lido:term lido:addedSearchTerm="no" xml:lang="de">
 					<xsl:value-of select="$sammlung2"/>
 				</lido:term>
