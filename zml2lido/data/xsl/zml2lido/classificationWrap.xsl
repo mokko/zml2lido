@@ -229,7 +229,7 @@
 					<xsl:value-of select="@id"/>
 					<xsl:text>)</xsl:text>
 				</xsl:message-->
-				<lido:classification lido:type="RIA:Objekttyp">
+				<lido:classification lido:source="RIA:Objekttyp">
 					<lido:term xml:lang="de">
 						<xsl:value-of select="$objekttyp"/>
 					</lido:term>
@@ -315,7 +315,7 @@
 	</xsl:template>
 
 	<xsl:template mode="classification" match="z:dataField[@name = 'ObjTechnicalTermClb']/z:value">
-		<lido:classification lido:type="RIA:Sachbegriff">
+		<lido:classification lido:source="RIA:Sachbegriff">
 			<lido:term xml:lang="de">
 				<xsl:value-of select="normalize-space(.)"/>
 			</lido:term>
@@ -324,7 +324,7 @@
 
 	<xsl:template mode="classification" match="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
 		/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']">
-		<lido:classification lido:type="RIA:EM-Sachbegriff">
+		<lido:classification lido:source="RIA:EM-Sachbegriff">
 			<xsl:call-template name="conceptTerm"/>
 		</lido:classification>
 	</xsl:template>	
@@ -371,7 +371,7 @@
 			<xsl:value-of select="$sammlung2"/>
 		</xsl:message-->
 		<xsl:if test="$sammlung2 ne ''">
-			<lido:classification lido:type="Sammlung">
+			<lido:classification lido:source="Sammlung">
 				<lido:term lido:addedSearchTerm="no" xml:lang="de">
 					<xsl:value-of select="$sammlung2"/>
 				</lido:term>
