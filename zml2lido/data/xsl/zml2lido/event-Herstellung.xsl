@@ -11,17 +11,17 @@
 
 	<xsl:template name="Herstellung">
 		<xsl:variable name="herstellendeRollen" select="
-			'Autor',
-			'Bildhauer', 'Bildhauerin',
-			'Drucker',					
-			'Filmemacher', 
-			'Filmregisseur', 
-			'Fotograf', 
-			'Hersteller', 
+			'Autor', 'Autor*in',
+			'Bildhauer', 'Bildhauerin', 'Bildhauer*in',
+			'Drucker', 'Drucker*in',					
+			'Filmemacher', 'Filmemacher*in',
+			'Filmregisseur', 'Filmregisseur*in',
+			'Fotograf', 'Fotograf*in',
+			'Hersteller', 'Hersteller*in',
 			'Inventor', 
-			'Künstler', 'Künstlerin','Künstler des Originals',  
-			'Maler', 'Malerin',		
-			'Zeichner', 'Zeichnerin'"/>
+			'Künstler', 'Künstlerin','Künstler des Originals', 'Künstler*in', 
+			'Maler', 'Malerin',	'Maler*in',	
+			'Zeichner', 'Zeichnerin', 'Zeichner*in'"/>
 			
 		<xsl:variable name="herstellendeKollektive" select="
 			'Ethnie',
