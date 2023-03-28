@@ -78,29 +78,10 @@
 					z:vocabularyReference[@name='PublicationVoc']/z:vocabularyReferenceItem/@name = 'Ja' 
 					and z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem/@name = 'Daten freigegeben für SMB-digital']">
 
-					<!--sometimes identical date is repeated; not sure why, so just taking first -->
-					<xsl:variable name="pubdate" select="z:repeatableGroup[
-						@name='ObjPublicationGrp']/z:repeatableGroupItem[1]/z:dataField[@name='ModifiedDateDat']/z:value"/>
-					<lido:objectPublishedID lido:type="local">
-						<xsl:attribute name="lido:source">
-						<xsl:if test="$ISIL ne ''">
-							<xsl:text>ISIL (ISO 15511)/</xsl:text>
-						</xsl:if>
-						<xsl:text>Obj.ID</xsl:text>	
-						<xsl:if test="$pubdate">
-							<xsl:text>/publishing-timeStamp</xsl:text> 
-						</xsl:if>
-						</xsl:attribute>
-						<xsl:if test="$ISIL ne ''">
-							<xsl:value-of select="$ISIL" />
-							<xsl:text>/</xsl:text>
-						</xsl:if>
+					<lido:objectPublishedID lido:type="uri">
+						<xsl:attribute name="lido:source">SMB identifier</xsl:attribute>
+						<xsl:text>https://id.smb.museum/object/</xsl:text>
 						<xsl:value-of select="@id" />
-						<xsl:if test="$pubdate">
-							<xsl:text>/</xsl:text>
-							<xsl:value-of select="$pubdate" />
-						</xsl:if>
-						<!-- old date: z:systemField[@name='__lastModified']/z:value--> 
 					</lido:objectPublishedID>
 				</xsl:when>
 				<xsl:otherwise>
