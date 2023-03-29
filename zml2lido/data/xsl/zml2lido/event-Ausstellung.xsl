@@ -9,9 +9,6 @@
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*" />
 
-    <!-- 
-		Auftrag: Auftraggeber, Münzherr; http://terminology.lido-schema.org/lido00226
-    -->
     <xsl:template name="Ausstellung">
 
 		<!-- only if positiv-->

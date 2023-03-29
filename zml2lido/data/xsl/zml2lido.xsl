@@ -27,8 +27,6 @@
 		</lido:lidoWrap>
 	</xsl:template>
 
-
-
 	<xsl:template match="/z:application/z:modules/z:module[@name = 'Object']/z:moduleItem">
 		<!--xsl:message>
 			<xsl:text>D Object </xsl:text>
@@ -115,10 +113,21 @@
 	</xsl:template>
 
 	<xsl:template name="category">
-		<!-- Not sure how to map this, perhaps introduce a new Objekttyp upstream -->
+		<!-- 
+			introduce a new Objekttyp upstream 
+			Objekttyp: Natürliches Objekt
+		-->
 		<lido:category>
-			<lido:conceptID lido:type="URI">http://www.cidoc-crm.org/cidoc-crm/E22</lido:conceptID>
-			<lido:term xml:lang="en">Human-Made Object</lido:term>
+			<xsl:when test="z:vocabularyReference[@name='ObjCategoryVoc']/z:formattedValue eq 'Natürliches Objekt'">
+				<lido:conceptID lido:type="URI">http://vocab.getty.edu/aat/300404125</lido:conceptID>
+				<lido:term xml:lang="en">Natural Object</lido:term>
+				<lido:term xml:lang="de">Natürliches Objekt</lido:term>
+			</xsl:when>
+			<xsl:otherwise>
+				<lido:conceptID lido:type="URI">http://www.cidoc-crm.org/cidoc-crm/E22</lido:conceptID>
+				<lido:term xml:lang="de">Künstlicher Gegenstand</lido:term>
+				<lido:term xml:lang="en">Human-Made Object</lido:term>
+			</xsl:otherwise>
 		</lido:category>
 	</xsl:template>
 

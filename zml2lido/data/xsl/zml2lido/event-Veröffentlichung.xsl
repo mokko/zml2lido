@@ -13,7 +13,7 @@
 		Veröffenlichung: 'Produzent',
     -->
     <xsl:template name="Veröffentlichung">
-		<xsl:variable name="veröffentlichendeRollen" select="'Produzent'"/>
+		<xsl:variable name="veröffentlichendeRollen" select="'Produzent', 'Produzent*in'"/>
 		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $veröffentlichendeRollen]"/>

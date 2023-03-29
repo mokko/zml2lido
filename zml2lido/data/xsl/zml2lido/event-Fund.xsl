@@ -16,7 +16,7 @@
 		-> Funddatum
     -->
     <xsl:template name="Fund">
-		<xsl:variable name="findendeRollen" select="'Finder'"/>
+		<xsl:variable name="findendeRollen" select="'Finder', 'Finder*in'"/>
 		<xsl:variable name="findendeRollenN" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $findendeRollen]"/>

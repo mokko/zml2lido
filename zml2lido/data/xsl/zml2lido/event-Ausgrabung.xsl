@@ -13,7 +13,8 @@
 		Excarvation/Ausgrabung: Grabungsleiter
     -->
     <xsl:template name="Ausgrabung">
-		<xsl:variable name="grabendeRollen" select="'Grabungsleiter'"/>
+		<xsl:variable name="grabendeRollen" select="
+			'Grabungsleiter', 'Grabungsleiter*in'"/>
 		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $grabendeRollen]"/>

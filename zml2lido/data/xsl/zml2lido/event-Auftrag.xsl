@@ -13,7 +13,9 @@
 		Auftrag: Auftraggeber, Münzherr; http://terminology.lido-schema.org/lido00226
     -->
     <xsl:template name="Auftrag">
-		<xsl:variable name="beauftragendeRollen" select="'Auftraggeber', 'Münzherr'"/>
+		<xsl:variable name="beauftragendeRollen" select="
+			'Auftraggeber','Auftraggeber*in', 
+			'Münzherr', 'Münzherr*in'"/>
 		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $beauftragendeRollen]"/>
