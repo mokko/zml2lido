@@ -15,7 +15,7 @@
     <xsl:template name="Entwurf">
 		<xsl:variable name="entwerfendeRollen" select="
 			'Designer', 'Designer*in',
-			'Entwerfer', 'Entwerfer*in',
+			'Entwerfer', 'Entwerfer*in'
 		"/>
 		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
