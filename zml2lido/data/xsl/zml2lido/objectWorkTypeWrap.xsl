@@ -58,7 +58,7 @@
 					</xsl:choose>
 				</lido:objectWorkTypeWrap>
 				<xsl:message terminate="no">
-					<xsl:text>WARNING: No objektworktype! Object </xsl:text>
+					<xsl:text>WARNING: Fallback objektworktype! Object </xsl:text>
 					<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
 				</xsl:message>
 			</xsl:otherwise>
