@@ -44,9 +44,18 @@
 			</xsl:when>
 			<xsl:otherwise>
 				<lido:objectWorkTypeWrap>
-					<lido:objectWorkType lido:type="fake">
-						<lido:term>kein objektWorkType</lido:term>
-					</lido:objectWorkType>
+					<xsl:choose>
+						<xsl:when test="z:vocabularyReference[@name='ObjCategoryVoc']/z:formattedValue eq 'Natürliches Objekt'">
+							<lido:conceptID lido:source="RIA:Objekttyp" lido:type="URI">http://vocab.getty.edu/aat/300404125</lido:conceptID>
+							<lido:term xml:lang="en">Natural Object</lido:term>
+							<lido:term xml:lang="de">Natürliches Objekt</lido:term>
+						</xsl:when>
+						<xsl:otherwise>
+							<lido:conceptID lido:source="RIA:Objekttyp" lido:type="URI">http://www.cidoc-crm.org/cidoc-crm/E22</lido:conceptID>
+							<lido:term xml:lang="de">Künstlicher Gegenstand</lido:term>
+							<lido:term xml:lang="en">Human-Made Object</lido:term>
+						</xsl:otherwise>
+					</xsl:choose>
 				</lido:objectWorkTypeWrap>
 				<xsl:message terminate="no">
 					<xsl:text>WARNING: No objektworktype! Object </xsl:text>
