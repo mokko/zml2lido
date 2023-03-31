@@ -229,7 +229,8 @@
 					<xsl:value-of select="@id"/>
 					<xsl:text>)</xsl:text>
 				</xsl:message-->
-				<lido:classification lido:source="RIA:Objekttyp">
+				<lido:classification>
+					<lido:conceptID lido:source="RIA:Objekttyp" lido:type="local"/>
 					<lido:term xml:lang="de">
 						<xsl:value-of select="$objekttyp"/>
 					</lido:term>

@@ -72,13 +72,23 @@
 			<xsl:if test="normalize-space($type) ne ''
 				and normalize-space($value) ne ''
 				and normalize-space($unit) ne ''">
+				<xsl:variable name="measurementType">
+					<xsl:choose>
+						<xsl:when test="func:vocmap-replace-laxer('MatTechType', $type, 'wUnit') ne ''">
+							<xsl:value-of select="func:vocmap-replace-lax('MatTechType', $type, 'wUnit')"/>						
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$type"/>	
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
 				<lido:objectMeasurements>
 					<lido:measurementsSet>
 						<lido:measurementType>
 							<xsl:attribute name="xml:lang">
 								<xsl:value-of select="$type/@language"/>
 							</xsl:attribute>
-							<xsl:value-of select="func:vocmap-replace-lax('MatTechType', $type, 'wUnit')"/>
+							<xsl:value-of select="$measurementType"/>
 						</lido:measurementType>
 						<lido:measurementUnit>
 							<xsl:attribute name="xml:lang">
