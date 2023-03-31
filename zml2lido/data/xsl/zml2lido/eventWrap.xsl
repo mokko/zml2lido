@@ -242,7 +242,7 @@
 					</xsl:when>
 					<!-- terminates if there is ObjGeograficGrp, but no PlaceVoc, PlaceILSVoc or DetailsTxt -->
 					<xsl:otherwise>
-						<xsl:message terminate="yes">
+						<xsl:message terminate="no">
 							<xsl:text>ERROR: Geo info not found! id: </xsl:text>
 							<xsl:value-of select="../../@id"/>
 							<xsl:text> (eventWrap)</xsl:text>
@@ -263,17 +263,12 @@
 				</xsl:choose>
 			</xsl:variable>
 			
-			<xsl:message>
+			<!--xsl:message>
 				<xsl:text>GEONAME: </xsl:text>
 				<xsl:value-of select="$geoname"/>
-			</xsl:message>
+			</xsl:message-->
 			
 			<xsl:if test="$geoname ne ''">
-				<!-- xsl:message>
-					GEONAME
-					<xsl:value-of select="$geoname"/
-					</xsl:message>-->
-
 				<lido:eventPlace>
 					<xsl:if test="$sorder[1] ne ''">
 						<xsl:attribute name="lido:sortorder">
