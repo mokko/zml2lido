@@ -418,11 +418,6 @@
 			<xsl:when test="$this eq 'Rahmenaußenmaß Durchmesser'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
 			</xsl:when>
-			<xsl:when test="$this eq 'Rapportmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
 			<xsl:when test="$this eq 'Reliefhöhe'">
 				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
 			</xsl:when>
@@ -499,7 +494,7 @@
 			<xsl:otherwise>
 				<xsl:for-each select="../../../z:dataField[
 					@name='WeightNum' and @dataType='Numeric']">
-					<xsl:comment>automatic</xsl:comment>
+					<xsl:comment>automatic measurementstype</xsl:comment>
 					<xsl:value-of select="normalize-space(z:value)"/>
 					<xsl:if test="position() != last()">
 						<xsl:text> x </xsl:text>
