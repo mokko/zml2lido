@@ -211,10 +211,10 @@
 					@name = 'Sprachgruppe'
 				]) 
 		]"/>
-		<xsl:message>
+		<!--xsl:message>
 			<xsl:text>before placesN: </xsl:text>
 			<xsl:value-of select="$placesN"/>
-		</xsl:message>
+		</xsl:message>-->
 
 		<xsl:variable name="sorder" select="$placesN/z:dataField[@name='SortLnu']/z:value"/>
 		<!-- 
