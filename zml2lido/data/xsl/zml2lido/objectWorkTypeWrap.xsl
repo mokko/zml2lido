@@ -47,7 +47,10 @@
 					</lido:objectWorkType>
 				</xsl:when>
 				<!-- ist das auch Sachbegriff?-->
-				<xsl:when test="z:dataField[@name = 'ObjTechnicalTermClb']">
+				<xsl:when test="z:dataField[@name = 'ObjTechnicalTermClb'] and 
+					z:vocabularyReference[
+						@name='ObjCategoryVoc'
+					]/z:vocabularyReferenceItem/z:formattedValue eq 'Allgemein'">
 					<xsl:message>objectWorkType CASE2</xsl:message>
 					<lido:objectWorkType lido:type="ObjTechnicalTermClb">
 						<!-- hardcoded since dataField has no language qualifier in RIA! -->

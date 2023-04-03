@@ -368,7 +368,7 @@ class LinkChecker:
         (1) ObjOwnerRef (=verwaltendeInstitution)
         (2) ObjPublicationGrp for online status
         """
-        query.addField(field="__lastModified") # for mpapi.add
+        query.addField(field="__lastModified")  # for mpapi.add
         query.addField(field="ObjOwnerRef")
         query.addField(field="ObjOwnerRef.moduleReferenceItem")
         query.addField(field="ObjOwnerRef.formattedValue")
