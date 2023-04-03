@@ -31,7 +31,7 @@
 					/z:repeatableGroupItem/z:vocabularyReference[
 						@name='TechnicalTermVoc'
 					]">
-					<xsl:message>objectWorkType CASE1</xsl:message>
+					<!--xsl:message>objectWorkType CASE1</xsl:message-->
 					<lido:objectWorkType lido:type="Sachbegriff/TechnicalTermVoc">
 						<lido:conceptID lido:source="RIA:Sachbegriff" lido:type="local">
 							<xsl:value-of select="z:vocabularyReferenceItem/@id"/>
@@ -51,7 +51,7 @@
 					z:vocabularyReference[
 						@name='ObjCategoryVoc'
 					]/z:vocabularyReferenceItem/z:formattedValue eq 'Allgemein'">
-					<xsl:message>objectWorkType CASE2</xsl:message>
+					<!--xsl:message>objectWorkType CASE2</xsl:message-->
 					<lido:objectWorkType lido:type="ObjTechnicalTermClb">
 						<!-- hardcoded since dataField has no language qualifier in RIA! -->
 						<lido:term xml:lang="de">
@@ -63,7 +63,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 					]/z:vocabularyReferenceItem/z:formattedValue = $archivtypen">
-					<xsl:message>objectWorkType CASE3</xsl:message>
+					<!--xsl:message>objectWorkType CASE3</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300026685</lido:conceptID>
 						<lido:term xml:lang="de">Akte</lido:term>
@@ -73,7 +73,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue eq 'Natürliches Objekt'">
-					<xsl:message>objectWorkType CASE4</xsl:message>
+					<!--xsl:message>objectWorkType CASE4</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300404125</lido:conceptID>
 						<lido:term xml:lang="en">Natural Object</lido:term>
@@ -83,7 +83,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue eq 'Fotografie'">
-					<xsl:message>objectWorkType CASE5</xsl:message>
+					<!--xsl:message>objectWorkType CASE5</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300054225</lido:conceptID>
 						<lido:term xml:lang="en">photography</lido:term>
@@ -93,7 +93,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue eq 'Film/Video'">
-					<xsl:message>objectWorkType CASE6</xsl:message>
+					<!--xsl:message>objectWorkType CASE6</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300263857</lido:conceptID>
 						<lido:term xml:lang="en">moving images</lido:term>
@@ -103,7 +103,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue eq 'Audio'">
-					<xsl:message>objectWorkType CASE7</xsl:message>
+					<!--xsl:message>objectWorkType CASE7</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300028633</lido:conceptID>
 						<lido:term xml:lang="en">sound recordings</lido:term>
@@ -113,7 +113,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue eq 'Musikinstrument'">
-					<xsl:message>objectWorkType CASE8</xsl:message>
+					<!--xsl:message>objectWorkType CASE8</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300041620</lido:conceptID>
 						<lido:term xml:lang="en">musical instruments</lido:term>
@@ -123,7 +123,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue eq 'Grafik'">
-					<xsl:message>objectWorkType CASE9</xsl:message>
+					<!--xsl:message>objectWorkType CASE9</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300264849</lido:conceptID>
 						<lido:term xml:lang="en">graphic arts</lido:term>
@@ -133,7 +133,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue eq 'Malerei/Gemälde'">
-					<xsl:message>objectWorkType CASE10</xsl:message>
+					<!--xsl:message>objectWorkType CASE10</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300033618</lido:conceptID>
 						<lido:term xml:lang="en">paintings (visual works)</lido:term>
@@ -143,7 +143,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue = ('Bildhauerei', 'Skulptur')">
-					<xsl:message>objectWorkType CASE11</xsl:message>
+					<!--xsl:message>objectWorkType CASE11</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300047090</lido:conceptID>
 						<lido:term xml:lang="en">sculptures (visual works)</lido:term>
@@ -153,7 +153,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue = 'Collage'">
-					<xsl:message>objectWorkType CASE11</xsl:message>
+					<!--xsl:message>objectWorkType CASE11</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300033963</lido:conceptID>
 						<lido:term xml:lang="en">collages (visual works)</lido:term>
@@ -163,7 +163,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue = 'Textilkunst'">
-					<xsl:message>objectWorkType CASE12</xsl:message>
+					<!--xsl:message>objectWorkType CASE12</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300386843</lido:conceptID>
 						<lido:term xml:lang="en">textile art (visual works)</lido:term>
@@ -173,7 +173,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue = 'Zeichnung'">
-					<xsl:message>objectWorkType CASE13</xsl:message>
+					<!--xsl:message>objectWorkType CASE13</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300034698</lido:conceptID>
 						<lido:term xml:lang="en">drawings by material or technique</lido:term>
@@ -183,7 +183,7 @@
 				<xsl:when test="z:vocabularyReference[
 					@name='ObjCategoryVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue = 'Druckgraphik'">
-					<xsl:message>objectWorkType CASE14</xsl:message>
+					<!--xsl:message>objectWorkType CASE14</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300041273</lido:conceptID>
 						<lido:term xml:lang="en">prints (visual works)</lido:term>
@@ -193,7 +193,7 @@
 				
 				<xsl:otherwise>
 					<xsl:message terminate="no">
-						<xsl:text>objectWorkType CASE15</xsl:text>
+						<!--xsl:text>objectWorkType CASE15</xsl:text-->
 						<xsl:text>WARNING: Fallback objektworktype! Object </xsl:text>
 						<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
 					</xsl:message>
