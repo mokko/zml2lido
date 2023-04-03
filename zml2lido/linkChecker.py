@@ -126,11 +126,11 @@ class LinkChecker:
                         q = self._optimize_relWorks_cache(query=q)
                         # q.toFile(path="sdata/debug.search.xml")
                         relWorks = client.search(query=q)
-
-                        # appending them to relWork cache
-                        self.relWorks += relWork
-                        # print ("   update file cache")
-                        self.relWorks.toFile(path=self.relWorksFn)
+                        if relWorks: # realistic that query results are empty?
+                            # appending them to relWork cache
+                            self.relWorks += relWorks
+                            # print ("   update file cache")
+                            self.relWorks.toFile(path=self.relWorksFn)
                     else:
                         # print("   taking from cache")
                         # success message dont need logging
