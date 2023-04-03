@@ -130,10 +130,70 @@
 						<lido:term xml:lang="de">grafische Künste</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
+				<xsl:when test="z:vocabularyReference[
+					@name='ObjCategoryVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue eq 'Malerei/Gemälde'">
+					<xsl:message>objectWorkType CASE10</xsl:message>
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300033618</lido:conceptID>
+						<lido:term xml:lang="en">paintings (visual works)</lido:term>
+						<lido:term xml:lang="de">Malerei</lido:term>
+					</lido:objectWorkType>
+				</xsl:when>				
+				<xsl:when test="z:vocabularyReference[
+					@name='ObjCategoryVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue = ('Bildhauerei', 'Skulptur')">
+					<xsl:message>objectWorkType CASE11</xsl:message>
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300047090</lido:conceptID>
+						<lido:term xml:lang="en">sculptures (visual works)</lido:term>
+						<lido:term xml:lang="de">Skulptur (visuelles Werk)</lido:term>
+					</lido:objectWorkType>
+				</xsl:when>				
+				<xsl:when test="z:vocabularyReference[
+					@name='ObjCategoryVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue = 'Collage'">
+					<xsl:message>objectWorkType CASE11</xsl:message>
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300033963</lido:conceptID>
+						<lido:term xml:lang="en">collages (visual works)</lido:term>
+						<lido:term xml:lang="de">Collage (zweidimensionales Werk)</lido:term>
+					</lido:objectWorkType>
+				</xsl:when>				
+				<xsl:when test="z:vocabularyReference[
+					@name='ObjCategoryVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue = 'Textilkunst'">
+					<xsl:message>objectWorkType CASE12</xsl:message>
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300386843</lido:conceptID>
+						<lido:term xml:lang="en">textile art (visual works)</lido:term>
+						<lido:term xml:lang="de">Textilarbeit</lido:term>
+					</lido:objectWorkType>
+				</xsl:when>				
+				<xsl:when test="z:vocabularyReference[
+					@name='ObjCategoryVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue = 'Zeichnung'">
+					<xsl:message>objectWorkType CASE13</xsl:message>
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300034698</lido:conceptID>
+						<lido:term xml:lang="en">drawings by material or technique</lido:term>
+						<lido:term xml:lang="de">Zeichnung nach Material oder Technik</lido:term>
+					</lido:objectWorkType>
+				</xsl:when>				
+				<xsl:when test="z:vocabularyReference[
+					@name='ObjCategoryVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue = 'Druckgraphik'">
+					<xsl:message>objectWorkType CASE14</xsl:message>
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300041273</lido:conceptID>
+						<lido:term xml:lang="en">prints (visual works)</lido:term>
+						<lido:term xml:lang="de">Druckgrafik (visuelles Werk)</lido:term>
+					</lido:objectWorkType>
+				</xsl:when>				
+				
 				<xsl:otherwise>
 					<xsl:message terminate="no">
-						<xsl:text>objectWorkType CASE10</xsl:text>
-
+						<xsl:text>objectWorkType CASE15</xsl:text>
 						<xsl:text>WARNING: Fallback objektworktype! Object </xsl:text>
 						<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
 					</xsl:message>
