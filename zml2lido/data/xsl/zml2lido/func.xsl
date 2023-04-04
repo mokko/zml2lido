@@ -139,11 +139,11 @@
 		<xsl:value-of select="$return"/>
 	</xsl:function>
 
+	<!-- version that stays silent on missing return value -->
 	<xsl:function name="func:vocmap-replace-laxer">
 		<xsl:param name="src-voc"/>
 		<xsl:param name="src-term"/>
 		<xsl:param name="target"/>
-		<!-- version that stays silent on missing return value -->
 		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
 		<!-- used to be eq; unclear why now =. There should be only one match. With = i get schema error. -->
 		
@@ -156,6 +156,26 @@
 			]/text()"/>
 		<xsl:value-of select="$return"/>
 	</xsl:function>
+
+	<!-- like laxer but with additional attribute for lang -->
+	<xsl:function name="func:vocmap-replace-lang">
+		<xsl:param name="src-voc"/>
+		<xsl:param name="src-term"/>
+		<xsl:param name="target"/>
+		<xsl:param name="lang"/>
+
+		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
+		<xsl:variable name="return" select="$dict/vocmap/voc[
+				@name eq normalize-space($src-voc)
+			]/concept[
+				source = normalize-space($src-term)
+			]/target[
+				@name eq normalize-space($target) and
+				@lang eq normalize-space($lang)
+			]/text()"/>
+		<xsl:value-of select="$return"/>
+	</xsl:function>
+
 
 	<!-- see if we can get AAT from Fashion -->
 	<xsl:function name="func:aatFromFashion-laxer">

@@ -3,7 +3,8 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:z="http://www.zetcom.com/ria/ws/module"
-    exclude-result-prefixes="z"
+	xmlns:func="http://func"
+    exclude-result-prefixes="z func"
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*" />
@@ -80,144 +81,21 @@
 				<!-- 
 					bestimmte aussagekräftige Objekttypen, die sich gut nach AAT mappen lassen 
 				-->
-				<xsl:when test="$objekttyp eq 'Architektur'">
-					<!--xsl:message>objectWorkType CASE7</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300263552</lido:conceptID>
-						<lido:term xml:lang="en">architecture (object genre)</lido:term>
-						<lido:term xml:lang="de">Architektur (Objektgattung)</lido:term>
+				<xsl:when test="func:vocmap-replace-laxer('Objekttyp', $objekttyp, 'aat-label') ne ''">
+					<lido:objectWorkType lido:type="Objekttyp-Vocmap">
+						<lido:conceptID lido:source="AAT" lido:type="URI">
+							<xsl:value-of select="func:vocmap-replace-laxer('Objekttyp', $objekttyp, 'uri')"/>
+						</lido:conceptID>
+						<lido:term xml:lang="en">
+							<xsl:value-of select="func:vocmap-replace-lang('Objekttyp', $objekttyp, 'aat-label', 'en')"/>
+						</lido:term>
+						<lido:term xml:lang="de">
+							<xsl:value-of select="func:vocmap-replace-lang('Objekttyp', $objekttyp, 'aat-label', 'de')"/>
+						</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
-				<xsl:when test="$objekttyp eq 'Audio'">
-					<!--xsl:message>objectWorkType CASE7</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300028633</lido:conceptID>
-						<lido:term xml:lang="en">sound recordings</lido:term>
-						<lido:term xml:lang="de">Tonträger</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>
-				<xsl:when test="$objekttyp = ('Bildhauerei', 'Skulptur')">
-					<!--xsl:message>objectWorkType CASE11</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300047090</lido:conceptID>
-						<lido:term xml:lang="en">sculptures (visual works)</lido:term>
-						<lido:term xml:lang="de">Skulptur (visuelles Werk)</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>				
-				<xsl:when test="$objekttyp eq 'Buch'">
-					<!--xsl:message>objectWorkType CASE11</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300028051</lido:conceptID>
-						<lido:term xml:lang="en">books</lido:term>
-						<lido:term xml:lang="de">Buch</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>				
-				<xsl:when test="$objekttyp eq 'Collage'">
-					<!--xsl:message>objectWorkType CASE11</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300033963</lido:conceptID>
-						<lido:term xml:lang="en">collages (visual works)</lido:term>
-						<lido:term xml:lang="de">Collage (zweidimensionales Werk)</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>				
-				<xsl:when test="$objekttyp = ('Druckgraphik', 'Druckgrafik')">
-					<!--xsl:message>objectWorkType CASE14</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300041273</lido:conceptID>
-						<lido:term xml:lang="en">prints (visual works)</lido:term>
-						<lido:term xml:lang="de">Druckgrafik (visuelles Werk)</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>				
-				<xsl:when test="$objekttyp eq 'Film/Video'">
-					<!--xsl:message>objectWorkType CASE6</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300263857</lido:conceptID>
-						<lido:term xml:lang="en">moving images</lido:term>
-						<lido:term xml:lang="de">bewegtes Bild</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>
-				<xsl:when test="$objekttyp eq 'Fotografie'">
-					<!--xsl:message>objectWorkType CASE5</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300054225</lido:conceptID>
-						<lido:term xml:lang="en">photography</lido:term>
-						<lido:term xml:lang="de">Fotografie</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>
-				<xsl:when test="$objekttyp eq 'Grafik'">
-					<!--xsl:message>objectWorkType CASE9</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300264849</lido:conceptID>
-						<lido:term xml:lang="en">graphic arts</lido:term>
-						<lido:term xml:lang="de">grafische Künste</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>
-				<xsl:when test="$objekttyp = ('Malerei/Gemälde', 'Malerei')">
-					<!--xsl:message>objectWorkType CASE10</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300033618</lido:conceptID>
-						<lido:term xml:lang="en">paintings (visual works)</lido:term>
-						<lido:term xml:lang="de">Malerei</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>				
-				<xsl:when test="$objekttyp eq 'Musikinstrument'">
-					<!--xsl:message>objectWorkType CASE8</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300041620</lido:conceptID>
-						<lido:term xml:lang="en">musical instruments</lido:term>
-						<lido:term xml:lang="de">Musikinstrument</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>
-				<xsl:when test="$objekttyp eq 'Natürliches Objekt'">
-					<!--xsl:message>objectWorkType CASE4</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300404125</lido:conceptID>
-						<lido:term xml:lang="en">Natural Object</lido:term>
-						<lido:term xml:lang="de">Natürliches Objekt</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>
-				<xsl:when test="$objekttyp eq 'Numismatik'">
-					<!--xsl:message>objectWorkType CASE4</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300054419</lido:conceptID>
-						<lido:term xml:lang="en">numismatics</lido:term>
-						<lido:term xml:lang="de">Numismatik</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>
-				<xsl:when test="$objekttyp eq 'Schmuck'">
-					<!--xsl:message>objectWorkType CASE4</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300209286</lido:conceptID>
-						<lido:term xml:lang="en">jewelry</lido:term>
-						<lido:term xml:lang="de">Schmuck</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>
-				<xsl:when test="$objekttyp eq 'Textdokument'">
-					<!--xsl:message>objectWorkType CASE12</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300263751</lido:conceptID>
-						<lido:term xml:lang="en">texts (documents)</lido:term>
-						<lido:term xml:lang="de">Text (Dokument)</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>				
-				<xsl:when test="$objekttyp = ('Textilkunst', 'Textilie')">
-					<!--xsl:message>objectWorkType CASE12</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300386843</lido:conceptID>
-						<lido:term xml:lang="en">textile art (visual works)</lido:term>
-						<lido:term xml:lang="de">Textilarbeit</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>				
-				<xsl:when test="$objekttyp = 'Zeichnung'">
-					<!--xsl:message>objectWorkType CASE13</xsl:message-->
-					<lido:objectWorkType lido:type="Objekttyp">
-						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300034698</lido:conceptID>
-						<lido:term xml:lang="en">drawings by material or technique</lido:term>
-						<lido:term xml:lang="de">Zeichnung nach Material oder Technik</lido:term>
-					</lido:objectWorkType>
-				</xsl:when>				
 
-				<!-- Fallback 1: Weitere Objekttypen -->
+				<!-- Fallback 1: Weitere Objekttypen ohne AAT -->
 				<xsl:when test="$objekttyp ne '' and $objekttyp != ('Allgemein','Allgemein - ÄMP', 'Midas-Objekt')">
 					<!--xsl:message>objectWorkType CASE14</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
@@ -227,7 +105,7 @@
 						<xsl:text>WARNING: Fallback 1 objektworktype! Object </xsl:text>
 						<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
 					</xsl:message>
-				</xsl:when>				
+				</xsl:when>
 				<xsl:otherwise>
 					<xsl:message terminate="no">
 						<!--xsl:text>objectWorkType CASE15</xsl:text-->

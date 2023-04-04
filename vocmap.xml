@@ -414,6 +414,127 @@
 		</concept>	
 	</voc>
 
+
+	<voc name="Objekttyp">
+		<concept>
+			<source lang="de">Architektur</source>
+			<target lang="en" name="aat-label">architecture (object genre)</target>
+			<target lang="de" name="aat-label">Architektur (Objektgattung)</target>
+			<target name="uri">http://vocab.getty.edu/aat/300263552</target>
+		</concept>	
+		<concept>
+			<source lang="de">Archivalie - Akte</source>
+			<source lang="de">Archivalie - Einzelblatt</source>
+			<source lang="de">Archivalie - Slg.-Verzeichnis(Dokumente)</source>
+			<source lang="de">Archivalie - Sonstiges</source>
+			<source lang="de">Archivalie - Vorgang</source>
+			<target lang="en" name="aat-label">records (documents)</target>
+			<target lang="de" name="aat-label">Dokument (Akte)</target>
+			<target name="uri">http://vocab.getty.edu/aat/300026685</target>
+		</concept>	
+		<concept>
+			<source lang="de">Audio</source>
+			<target lang="en" name="aat-label">sound recordings</target>
+			<target lang="de" name="aat-label">Tonträger</target>
+			<target name="uri">http://vocab.getty.edu/aat/300028633</target>
+		</concept>	
+		<concept>
+			<source lang="de">Bildhauerei</source>
+			<source lang="de">Skulptur</source>
+			<target lang="en" name="aat-label">sculptures (visual works)</target>
+			<target lang="de" name="aat-label">Skulptur (visuelles Werk)</target>
+			<target name="uri">http://vocab.getty.edu/aat/300047090</target>
+		</concept>	
+		<concept>
+			<source lang="de">Buch</source>
+			<target lang="en" name="aat-label">sculptures (visual works)</target>
+			<target lang="de" name="aat-label">Skulptur (visuelles Werk)</target>
+			<target name="uri">http://vocab.getty.edu/aat/300028051</target>
+		</concept>	
+		<concept>
+			<source lang="de">Collage</source>
+			<target lang="en" name="aat-label">collages (visual works)</target>
+			<target lang="de" name="aat-label">Collage (zweidimensionales Werk)</target>
+			<target name="uri">http://vocab.getty.edu/aat/300033963</target>
+		</concept>	
+		<concept>
+			<source lang="de">Druckgraphik</source>
+			<source lang="de">Druckgrafik</source>
+			<target lang="en" name="aat-label">prints (visual works)</target>
+			<target lang="de" name="aat-label">Druckgrafik (visuelles Werk)</target>
+			<target name="uri">http://vocab.getty.edu/aat/300041273</target>
+		</concept>	
+		<concept>
+			<source lang="de">Film/Video</source>
+			<target lang="en" name="aat-label">moving images</target>
+			<target lang="de" name="aat-label">bewegtes Bild</target>
+			<target name="uri">http://vocab.getty.edu/aat/300263857</target>
+		</concept>	
+		<concept>
+			<source lang="de">Fotografie</source>
+			<target lang="en" name="aat-label">photography</target>
+			<target lang="de" name="aat-label">Fotografie</target>
+			<target name="uri">http://vocab.getty.edu/aat/300054225</target>
+		</concept>	
+		<concept>
+			<source lang="de">Grafik</source>
+			<target lang="en" name="aat-label">graphic arts</target>
+			<target lang="de" name="aat-label">grafische Künste</target>
+			<target name="uri">http://vocab.getty.edu/aat/300264849</target>
+		</concept>	
+		<concept>
+			<source lang="de">Malerei/Gemälde</source>
+			<source lang="de">Malerei</source>
+			<target lang="en" name="aat-label">paintings (visual works)</target>
+			<target lang="de" name="aat-label">Malerei</target>
+			<target name="uri">http://vocab.getty.edu/aat/300033618</target>
+		</concept>	
+		<concept>
+			<source lang="de">Musikinstrument</source>
+			<target lang="en" name="aat-label">musical instruments</target>
+			<target lang="de" name="aat-label">Musikinstrument</target>
+			<target name="uri">http://vocab.getty.edu/aat/300041620</target>
+		</concept>	
+		<concept>
+			<source lang="de">Natürliches Objekt</source>
+			<target lang="en" name="aat-label">Natural Object</target>
+			<target lang="de" name="aat-label">Natürliches Objekt</target>
+			<target name="uri">http://vocab.getty.edu/aat/300404125</target>
+		</concept>	
+		<concept>
+			<source lang="de">Numismatik</source>
+			<target lang="en" name="aat-label">numismatics</target>
+			<target lang="de" name="aat-label">Numismatik</target>
+			<target name="uri">http://vocab.getty.edu/aat/300054419</target>
+		</concept>	
+		<concept>
+			<source lang="de">Schmuck</source>
+			<target lang="en" name="aat-label">jewelry</target>
+			<target lang="de" name="aat-label">Schmuck</target>
+			<target name="uri">http://vocab.getty.edu/aat/300209286</target>
+		</concept>	
+		<concept>
+			<source lang="de">Textdokument</source>
+			<target lang="en" name="aat-label">texts (documents)</target>
+			<target lang="de" name="aat-label">Text (Dokument)</target>
+			<target name="uri">http://vocab.getty.edu/aat/300263751</target>
+		</concept>	
+		<concept>
+			<source lang="de">Textilkunst</source>
+			<source lang="de">Textilie</source>
+			<target lang="en" name="aat-label">textile art (visual works)</target>
+			<target lang="de" name="aat-label">Textilarbeit</target>
+			<target name="uri">http://vocab.getty.edu/aat/300386843</target>
+		</concept>	
+		<concept>
+			<source lang="de">Zeichnung</source>
+			<target lang="en" name="aat-label">drawings by material or technique</target>
+			<target lang="de" name="aat-label">Zeichnung nach Material oder Technik</target>
+			<target name="uri">http://vocab.getty.edu/aat/300034698</target>
+		</concept>	
+	</voc>
+
+
 	<voc name="Sammlung">
 		<concept>
 			<source lang="de">AKuOstasiatischeKunst</source>
