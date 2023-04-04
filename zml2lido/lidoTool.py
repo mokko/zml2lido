@@ -249,12 +249,12 @@ class LidoTool(Jobs):
         (Not tested recently for chunks...)
         """
 
-        if Path is None:
+        if path is None:
             to_val_fn = self.Input
         else:
             to_val_fn = path
 
-        print("VALIDATING LIDO")
+        print(f"VALIDATING LIDO FILE {to_val_fn}")
         if self.chunks:
             print(" with chunks")
             for chunkFn in self.loopChunks(Input=to_val_fn):
