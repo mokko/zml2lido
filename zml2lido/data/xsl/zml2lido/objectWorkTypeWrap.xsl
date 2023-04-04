@@ -25,6 +25,7 @@
 			'Archivalie - Slg.-Verzeichnis(Dokumente)', 
 			'Archivalie - Sonstiges', 
 			'Archivalie - Vorgang'"/>
+
 			<xsl:variable name="objekttyp" select="z:vocabularyReference[
 						@name='ObjCategoryVoc'
 					]/z:vocabularyReferenceItem/z:formattedValue"/>
@@ -56,7 +57,7 @@
 				Hat Vorrang als objectWorkType wenn Objekttyp nicht aussagekräftig 
 				-->
 				<xsl:when test="z:dataField[@name = 'ObjTechnicalTermClb'] and 
-					$objekttyp = ('Allgemein', 'Behälter', 'Gebrauchsgegenstände', 'Gerät')">
+					$objekttyp = ('Allgemein', 'Allgemein - ÄMP', 'Behälter', 'Gebrauchsgegenstände', 'Gerät', 'Organisches Material')">
 					<!--xsl:message>objectWorkType CASE2</xsl:message-->
 					<lido:objectWorkType lido:type="ObjTechnicalTermClb">
 						<!-- hardcoded since dataField has no language qualifier in RIA! -->
@@ -79,6 +80,14 @@
 				<!-- 
 					bestimmte aussagekräftige Objekttypen, die sich gut nach AAT mappen lassen 
 				-->
+				<xsl:when test="$objekttyp eq 'Architektur'">
+					<!--xsl:message>objectWorkType CASE7</xsl:message-->
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300263552</lido:conceptID>
+						<lido:term xml:lang="en">architecture (object genre)</lido:term>
+						<lido:term xml:lang="de">Architektur (Objektgattung)</lido:term>
+					</lido:objectWorkType>
+				</xsl:when>
 				<xsl:when test="$objekttyp eq 'Audio'">
 					<!--xsl:message>objectWorkType CASE7</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
@@ -167,7 +176,22 @@
 						<lido:term xml:lang="de">Natürliches Objekt</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
-				
+				<xsl:when test="$objekttyp eq 'Numismatik'">
+					<!--xsl:message>objectWorkType CASE4</xsl:message-->
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300054419</lido:conceptID>
+						<lido:term xml:lang="en">numismatics</lido:term>
+						<lido:term xml:lang="de">Numismatik</lido:term>
+					</lido:objectWorkType>
+				</xsl:when>
+				<xsl:when test="$objekttyp eq 'Schmuck'">
+					<!--xsl:message>objectWorkType CASE4</xsl:message-->
+					<lido:objectWorkType lido:type="Objekttyp">
+						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300209286</lido:conceptID>
+						<lido:term xml:lang="en">jewelry</lido:term>
+						<lido:term xml:lang="de">Schmuck</lido:term>
+					</lido:objectWorkType>
+				</xsl:when>
 				<xsl:when test="$objekttyp eq 'Textdokument'">
 					<!--xsl:message>objectWorkType CASE12</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
@@ -194,7 +218,7 @@
 				</xsl:when>				
 
 				<!-- Fallback 1: Weitere Objekttypen -->
-				<xsl:when test="$objekttyp ne '' and $objekttyp ne 'Allgemein'">
+				<xsl:when test="$objekttyp ne '' and $objekttyp != ('Allgemein','Allgemein - ÄMP', 'Midas-Objekt')">
 					<!--xsl:message>objectWorkType CASE14</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<xsl:value-of select="$objekttyp"/>
