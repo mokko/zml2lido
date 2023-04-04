@@ -173,6 +173,19 @@
 				@name eq normalize-space($target) and
 				@lang eq normalize-space($lang)
 			]/text()"/>
+		<xsl:if test="normalize-space($return) eq '' and normalize-space($src-term) ne ''">
+			<xsl:message terminate="yes">
+				<xsl:text>WARNING: vocmap-replace-lang returns EMPTY ON </xsl:text>
+				<xsl:value-of select="$src-term"/> 
+				<xsl:text> FROM </xsl:text>
+				<xsl:value-of select="$src-voc"/>
+				<xsl:text> (</xsl:text>
+				<xsl:value-of select="$target"/>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="$lang"/>
+				<xsl:text>)</xsl:text>
+			</xsl:message>
+		</xsl:if> 
 		<xsl:value-of select="$return"/>
 	</xsl:function>
 
