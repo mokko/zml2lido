@@ -25,6 +25,10 @@
 			'Archivalie - Slg.-Verzeichnis(Dokumente)', 
 			'Archivalie - Sonstiges', 
 			'Archivalie - Vorgang'"/>
+			<xsl:variable name="objekttyp" select="z:vocabularyReference[
+						@name='ObjCategoryVoc'
+					]/z:vocabularyReferenceItem/z:formattedValue"/>
+			
 		
 			<xsl:choose>
 				<xsl:when test="z:repeatableGroup[@name='ObjTechnicalTermGrp']
@@ -46,11 +50,13 @@
 						</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
-				<!-- ist das auch Sachbegriff?-->
+
+				<!-- 
+				Ist das auch ein Sachbegriff? Ja 
+				Hat Vorrang als objectWorkType wenn Objekttyp nicht aussagekräftig 
+				-->
 				<xsl:when test="z:dataField[@name = 'ObjTechnicalTermClb'] and 
-					z:vocabularyReference[
-						@name='ObjCategoryVoc'
-					]/z:vocabularyReferenceItem/z:formattedValue = ('Allgemein', 'Behälter', 'Gebrauchsgegenstände', 'Gerät')">
+					$objekttyp = ('Allgemein', 'Behälter', 'Gebrauchsgegenstände', 'Gerät')">
 					<!--xsl:message>objectWorkType CASE2</xsl:message-->
 					<lido:objectWorkType lido:type="ObjTechnicalTermClb">
 						<!-- hardcoded since dataField has no language qualifier in RIA! -->
@@ -59,10 +65,9 @@
 						</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
+
 				<!-- Wenn Objekttyp = "Archivalie - Vorgang" etc. -->
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-					]/z:vocabularyReferenceItem/z:formattedValue = $archivtypen">
+				<xsl:when test="$objekttyp = $archivtypen">
 					<!--xsl:message>objectWorkType CASE3</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300026685</lido:conceptID>
@@ -70,10 +75,11 @@
 						<lido:term xml:lang="en">records (documents)</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
-				
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue eq 'Audio'">
+
+				<!-- 
+					bestimmte aussagekräftige Objekttypen, die sich gut nach AAT mappen lassen 
+				-->
+				<xsl:when test="$objekttyp eq 'Audio'">
 					<!--xsl:message>objectWorkType CASE7</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300028633</lido:conceptID>
@@ -81,9 +87,7 @@
 						<lido:term xml:lang="de">Tonträger</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue = ('Bildhauerei', 'Skulptur')">
+				<xsl:when test="$objekttyp = ('Bildhauerei', 'Skulptur')">
 					<!--xsl:message>objectWorkType CASE11</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300047090</lido:conceptID>
@@ -91,9 +95,7 @@
 						<lido:term xml:lang="de">Skulptur (visuelles Werk)</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>				
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue eq 'Buch'">
+				<xsl:when test="$objekttyp eq 'Buch'">
 					<!--xsl:message>objectWorkType CASE11</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300028051</lido:conceptID>
@@ -101,9 +103,7 @@
 						<lido:term xml:lang="de">Buch</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>				
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue = 'Collage'">
+				<xsl:when test="$objekttyp eq 'Collage'">
 					<!--xsl:message>objectWorkType CASE11</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300033963</lido:conceptID>
@@ -111,9 +111,7 @@
 						<lido:term xml:lang="de">Collage (zweidimensionales Werk)</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>				
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue = 'Druckgraphik'">
+				<xsl:when test="$objekttyp = ('Druckgraphik', 'Druckgrafik')">
 					<!--xsl:message>objectWorkType CASE14</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300041273</lido:conceptID>
@@ -121,9 +119,7 @@
 						<lido:term xml:lang="de">Druckgrafik (visuelles Werk)</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>				
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue eq 'Film/Video'">
+				<xsl:when test="$objekttyp eq 'Film/Video'">
 					<!--xsl:message>objectWorkType CASE6</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300263857</lido:conceptID>
@@ -131,9 +127,7 @@
 						<lido:term xml:lang="de">bewegtes Bild</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue eq 'Fotografie'">
+				<xsl:when test="$objekttyp eq 'Fotografie'">
 					<!--xsl:message>objectWorkType CASE5</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300054225</lido:conceptID>
@@ -141,9 +135,7 @@
 						<lido:term xml:lang="de">Fotografie</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue eq 'Grafik'">
+				<xsl:when test="$objekttyp eq 'Grafik'">
 					<!--xsl:message>objectWorkType CASE9</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300264849</lido:conceptID>
@@ -151,9 +143,7 @@
 						<lido:term xml:lang="de">grafische Künste</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue = ('Malerei/Gemälde', 'Malerei')">
+				<xsl:when test="$objekttyp = ('Malerei/Gemälde', 'Malerei')">
 					<!--xsl:message>objectWorkType CASE10</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300033618</lido:conceptID>
@@ -161,9 +151,7 @@
 						<lido:term xml:lang="de">Malerei</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>				
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue eq 'Musikinstrument'">
+				<xsl:when test="$objekttyp eq 'Musikinstrument'">
 					<!--xsl:message>objectWorkType CASE8</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300041620</lido:conceptID>
@@ -171,9 +159,7 @@
 						<lido:term xml:lang="de">Musikinstrument</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue eq 'Natürliches Objekt'">
+				<xsl:when test="$objekttyp eq 'Natürliches Objekt'">
 					<!--xsl:message>objectWorkType CASE4</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300404125</lido:conceptID>
@@ -182,9 +168,7 @@
 					</lido:objectWorkType>
 				</xsl:when>
 				
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue eq 'Textdokument'">
+				<xsl:when test="$objekttyp eq 'Textdokument'">
 					<!--xsl:message>objectWorkType CASE12</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300263751</lido:conceptID>
@@ -192,9 +176,7 @@
 						<lido:term xml:lang="de">Text (Dokument)</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>				
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue = ('Textilkunst', 'Textilie')">
+				<xsl:when test="$objekttyp = ('Textilkunst', 'Textilie')">
 					<!--xsl:message>objectWorkType CASE12</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300386843</lido:conceptID>
@@ -202,9 +184,7 @@
 						<lido:term xml:lang="de">Textilarbeit</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>				
-				<xsl:when test="z:vocabularyReference[
-					@name='ObjCategoryVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue = 'Zeichnung'">
+				<xsl:when test="$objekttyp = 'Zeichnung'">
 					<!--xsl:message>objectWorkType CASE13</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
 						<lido:conceptID lido:source="AAT" lido:type="URI">http://vocab.getty.edu/aat/300034698</lido:conceptID>
@@ -212,11 +192,22 @@
 						<lido:term xml:lang="de">Zeichnung nach Material oder Technik</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>				
-				
+
+				<!-- Fallback 1: Weitere Objekttypen -->
+				<xsl:when test="$objekttyp ne '' and $objekttyp ne 'Allgemein'">
+					<!--xsl:message>objectWorkType CASE14</xsl:message-->
+					<lido:objectWorkType lido:type="Objekttyp">
+						<xsl:value-of select="$objekttyp"/>
+					</lido:objectWorkType>
+					<xsl:message terminate="no">
+						<xsl:text>WARNING: Fallback 1 objektworktype! Object </xsl:text>
+						<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
+					</xsl:message>
+				</xsl:when>				
 				<xsl:otherwise>
 					<xsl:message terminate="no">
 						<!--xsl:text>objectWorkType CASE15</xsl:text-->
-						<xsl:text>WARNING: Fallback objektworktype! Object </xsl:text>
+						<xsl:text>WARNING: Fallback 2 objektworktype! Object </xsl:text>
 						<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
 					</xsl:message>
 					<lido:objectWorkType>

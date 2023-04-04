@@ -126,7 +126,7 @@ class LinkChecker:
                         q = self._optimize_relWorks_cache(query=q)
                         # q.toFile(path="sdata/debug.search.xml")
                         relWorks = client.search(query=q)
-                        if relWorks: # realistic that query results are empty?
+                        if relWorks:  # realistic that query results are empty?
                             # appending them to relWork cache
                             self.relWorks += relWorks
                             # print ("   update file cache")
