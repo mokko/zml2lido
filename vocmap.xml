@@ -508,6 +508,12 @@
 			<target name="uri">http://vocab.getty.edu/aat/300054419</target>
 		</concept>	
 		<concept>
+			<source lang="de">Plakette/Medaille</source>
+			<target lang="en" name="aat-label">plaquettes</target>
+			<target lang="de" name="aat-label">Plakette (Relief)</target>
+			<target name="uri">http://vocab.getty.edu/aat/300190507</target>
+		</concept>	
+		<concept>
 			<source lang="de">Schmuck</source>
 			<target lang="en" name="aat-label">jewelry</target>
 			<target lang="de" name="aat-label">Schmuck</target>
@@ -1025,6 +1031,7 @@
 			<target lang="de" name="homepage">https://www.smb.museum/museen-einrichtungen/hamburger-bahnhof/home/</target>
 		</concept>
 		<concept>
+			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin, Berlin</source>
 			<source lang="de">Kunstbibliothek, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">DE-MUS-018313</target>
 			<target lang="de" name="homepage">https://www.smb.museum/kb</target>
