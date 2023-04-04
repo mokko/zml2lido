@@ -99,7 +99,9 @@
 				<xsl:when test="$objekttyp ne '' and $objekttyp != ('Allgemein','Allgemein - ÄMP', 'Midas-Objekt')">
 					<!--xsl:message>objectWorkType CASE14</xsl:message-->
 					<lido:objectWorkType lido:type="Objekttyp">
-						<xsl:value-of select="$objekttyp"/>
+						<lido:term xml:lang="de">
+							<xsl:value-of select="$objekttyp"/>
+						</lido:term>
 					</lido:objectWorkType>
 					<xsl:message terminate="no">
 						<xsl:text>WARNING: Fallback 1 objektworktype! Object </xsl:text>
