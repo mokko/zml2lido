@@ -242,7 +242,7 @@ class LidoTool(Jobs):
     def validate(self, *, path=None):
         """
         It's optionally possible to specify a path for a file that needs validatation. If
-        Path is None, the file that was specified during __init__ will be validated.
+        path is None, the file that was specified during __init__ will be validated.
 
         If the method validate doesn't die, data validates.
 

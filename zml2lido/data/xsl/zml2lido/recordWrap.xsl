@@ -59,11 +59,15 @@
 		</lido:recordSource>	
 	</xsl:template>
 	
+	<!-- 
+	20230406 FvH wants records in more restrictive license again (CC-BY-SA), instead CC0
+	-->
+
 	<xsl:template name="recRights">
 		<lido:recordRights>
 			<lido:rightsType>
-				<lido:conceptID lido:source="CC" lido:type="URI">https://creativecommons.org/publicdomain/zero/1.0/</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="no">No Copyright</lido:term>
+				<lido:conceptID lido:source="CC" lido:type="URI">https://creativecommons.org/licenses/by-sa/4.0/</lido:conceptID>
+				<lido:term xml:lang="en" lido:addedSearchTerm="no">CC BY-SA 4.0</lido:term>
 			</lido:rightsType>
 			<xsl:call-template name="defaultRightsHolder"/>
 		</lido:recordRights>
