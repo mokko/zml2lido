@@ -237,6 +237,9 @@
 					<xsl:when test="z:vocabularyReference[@name='PlaceILSVoc']/z:vocabularyReferenceItem/@id ne ''">
 						<xsl:text>PlaceILSVoc</xsl:text>
 					</xsl:when>
+					<xsl:when test="z:vocabularyReference[@name='PlaceAntiqueVoc']/z:vocabularyReferenceItem/@id ne ''">
+						<xsl:text>PlaceAntiqueVoc</xsl:text>
+					</xsl:when>
 					<xsl:when test="z:dataField[@name='DetailsTxt']/z:value ne ''">
 						<xsl:text>DetailsTxt</xsl:text>
 					</xsl:when>
@@ -254,7 +257,9 @@
 			<xsl:variable name="geoname">
 				<xsl:choose>
 					<xsl:when test="$geopicker eq 'PlaceVoc' 
-						or $geopicker eq 'PlaceILSVoc'">
+						or $geopicker eq 'PlaceILSVoc'
+						or $geopicker eq 'PlaceAntiqueVoc'
+						">
 						<xsl:value-of select="z:vocabularyReference[@name eq $geopicker]/z:vocabularyReferenceItem/z:formattedValue"/>
 					</xsl:when>
 					<xsl:when test="$geopicker eq 'DetailsTxt'">
