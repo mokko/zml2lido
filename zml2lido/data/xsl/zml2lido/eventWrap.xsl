@@ -237,6 +237,9 @@
 					<xsl:when test="z:vocabularyReference[@name='PlaceILSVoc']/z:vocabularyReferenceItem/@id ne ''">
 						<xsl:text>PlaceILSVoc</xsl:text>
 					</xsl:when>
+					<xsl:when test="z:vocabularyReference[@name='PlaceEgyptVoc']/z:vocabularyReferenceItem/@id ne ''">
+						<xsl:text>PlaceEgyptVoc</xsl:text>
+					</xsl:when>
 					<xsl:when test="z:vocabularyReference[@name='PlaceAntiqueVoc']/z:vocabularyReferenceItem/@id ne ''">
 						<xsl:text>PlaceAntiqueVoc</xsl:text>
 					</xsl:when>
@@ -259,6 +262,7 @@
 					<xsl:when test="$geopicker eq 'PlaceVoc' 
 						or $geopicker eq 'PlaceILSVoc'
 						or $geopicker eq 'PlaceAntiqueVoc'
+						or $geopicker eq 'PlaceEgyptVoc'
 						">
 						<xsl:value-of select="z:vocabularyReference[@name eq $geopicker]/z:vocabularyReferenceItem/z:formattedValue"/>
 					</xsl:when>
@@ -282,6 +286,7 @@
 					</xsl:if>
 
 					<xsl:comment>
+					<xsl:text>TypeVoc </xsl:text>
 						<xsl:value-of select="z:vocabularyReference[@name='TypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 					</xsl:comment>
 
@@ -317,21 +322,25 @@
 	</xsl:template>
 
 	<xsl:template name="placeClassification">
-		<lido:placeClassification lido:type="internal">
-			<lido:term xml:lang="de">
-				<xsl:variable name="lang" select="
-					z:vocabularyReference[
+		<xsl:if test="z:vocabularyReference[
 						@instanceName='ObjGeopolVgr'
-					]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
-				<!-- 
-					hardcoded because Info from RIA is wrong 17.11.2022
-					<xsl:attribute name="xml:lang" select="$lang"/>
-				-->
-				<xsl:value-of select="z:vocabularyReference[
-					@instanceName='ObjGeopolVgr'
-				]/z:vocabularyReferenceItem"/>
-			</lido:term>
-		</lido:placeClassification>
+					]/z:vocabularyReferenceItem ne ''">
+			<lido:placeClassification lido:type="internal">
+				<lido:term xml:lang="de">
+					<xsl:variable name="lang" select="
+						z:vocabularyReference[
+							@instanceName='ObjGeopolVgr'
+						]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
+					<!-- 
+						hardcoded because Info from RIA is wrong 17.11.2022
+						<xsl:attribute name="xml:lang" select="$lang"/>
+					-->
+					<xsl:value-of select="z:vocabularyReference[
+						@instanceName='ObjGeopolVgr'
+					]/z:vocabularyReferenceItem"/>
+				</lido:term>
+			</lido:placeClassification>
+		</xsl:if>
 	</xsl:template>
 
 	<!-- not used at the moment -->

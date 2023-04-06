@@ -66,7 +66,9 @@
 					@name = 'TypeVoc' 
 				]/z:vocabularyReferenceItem[
 					@name = $herstellendeOrtstypen
-				]
+				] or not(z:vocabularyReference[
+					@name = 'TypeVoc' 
+				])
 			]"/>
 
 
