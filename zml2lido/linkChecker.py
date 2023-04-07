@@ -234,14 +234,15 @@ class LinkChecker:
         # which is inefficient
         # and not hasattr (self, "relWorks")
         if Path(self.relWorksFn).exists():
-            if hasattr(self, "relWorks"):
-                pass
-                # print("Inline cache exists already")
-            else:
+            try:
+                self.relWorks
+            except:
                 # print("Inline cache not loaded yet")
                 print(f"   About to load existing relWorks cache {self.relWorksFn}")
                 self.relWorks = Module(file=self.relWorksFn)
-            return
+                return
+            else:
+                print("Inline cache exists already")
         else:
             print(f"   No existing relWorks cache at {self.relWorksFn}")
 
