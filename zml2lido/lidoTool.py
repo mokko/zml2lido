@@ -179,7 +179,7 @@ class LidoTool(Jobs):
         lc = LinkChecker(Input=Input)  # init for each chunk required, although we will
         outFn = lc.out_fn  # have to load a file every time.
         if not Path(outFn).exists() or self.force:
-            lc.prepareRelWorksCache2(first=Input)  # run only once to make cache
+            # lc.prepareRelWorksCache2(first=Input)  # run only once to make cache
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             # lc.guess()  # rewrite filenames with http-links on SMB-Digital
             # currently, we dont CHECK if links work

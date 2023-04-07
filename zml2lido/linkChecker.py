@@ -38,6 +38,9 @@ class LinkChecker:
 
         self.relWorksFn = p.parent / "relWorks.cache.xml"
         self.tree = etree.parse(str(Input))
+        # we used to not prepare the relWorksCache here. Why?
+        print("prepare relWorks cache")
+        self.prepareRelWorksCache2(first=Input)  # run only once to make cache
 
     def checkRelWorkOnline(self, *, modType: str, modItemId: int):
         """
@@ -79,9 +82,9 @@ class LinkChecker:
             namespaces=NSMAP,
         )
 
+        # for //relatedWork in the current LIDO document
         for ID in relatedWorksL:
-            # don't log
-            # self.log(f"fixRelatedWorks checking {ID.text}")
+            # don't log self.log(f"fixRelatedWorks checking {ID.text}")
 
             # assuming that source always exists
             src = ID.xpath("@l:source", namespaces=NSMAP)[0]
@@ -99,8 +102,6 @@ class LinkChecker:
                 raise ValueError(f"ERROR: Unknown type: {src}")
 
             if ID.text is not None:
-                id_str = ID.text
-                # try:
                 id_int = int(ID.text)
                 # only recursive should get us here
                 # except:
@@ -108,15 +109,15 @@ class LinkChecker:
                 # print (f"*****{id_str} {modType}")
                 if modType == "Literature":
                     pass
-                # print("WARN: No check for modType 'Literature'")
+                    # print("WARN: No check for modType 'Literature'")
                 else:
-                    # print(f"fixing relatedWork {modType} {id_str}")
-                    try:  # is the work already in the cache?
+                    # print(f"fixing relatedWork {modType} {id_int}")
+                    try:
+                        # is the work already in the cache?
                         relWorkN = self.relWorks[(modType, id_int)]
                     except:  # if not, get record and add it to cache
                         print("   getting item from online RIA")
-                        # we're getting whole documents here and
-                        # relWork = client.getItem(modItemId=id_int, modType=modType)
+                        # if not, get it now and add to cache
                         q = Search(module=modType, limit=-1)
                         q.addCriterion(
                             operator="equalsField",
@@ -125,15 +126,14 @@ class LinkChecker:
                         )
                         q = self._optimize_relWorks_cache(query=q)
                         # q.toFile(path="sdata/debug.search.xml")
-                        relWorks = client.search(query=q)
-                        if relWorks:  # realistic that query results are empty?
+                        relWork = client.search(query=q)
+                        if relWork:  # realistic that query results are empty?
                             # appending them to relWork cache
-                            self.relWorks += relWorks
+                            self.relWorks += relWork
                             # print ("   update file cache")
                             self.relWorks.toFile(path=self.relWorksFn)
                     else:
-                        # print("   taking from cache")
-                        # success message dont need logging
+                        # if relWork record is already in cache
                         relWork = Module()
                         relWork.addItem(itemN=relWorkN, mtype=modType)
 
@@ -149,8 +149,8 @@ class LinkChecker:
                             ]/m:moduleReferenceItem/m:formattedValue"""
                         )[0]
                         ISIL = self.ISIL_lookup(institution=verwInst.text)
-                        ID.text = f"{ISIL}/{id_str}"
-                        print(f"   relWork: {id_str}:{verwInst.text} -> {ISIL}")
+                        ID.text = f"{ISIL}/{str(id_int)}"
+                        print(f"   relWork: {id_int}:{verwInst.text} -> {ISIL}")
                     else:
                         # self.log(f"   removing unpublic relWork")
                         relWorkSet = ID.getparent().getparent().getparent()
@@ -230,16 +230,25 @@ class LinkChecker:
         into multiple dirs and process separately.
         """
 
+        # I think currently we are re-reading the file cache multiple times
+        # which is inefficient
+        # and not hasattr (self, "relWorks")
         if Path(self.relWorksFn).exists():
-            print(f"   About to load relWorks cache {self.relWorksFn}")
-            self.relWorks = Module(file=self.relWorksFn)
+            if hasattr(self, "relWorks"):
+                pass
+                # print("Inline cache exists already")
+            else:
+                # print("Inline cache not loaded yet")
+                print(f"   About to load existing relWorks cache {self.relWorksFn}")
+                self.relWorks = Module(file=self.relWorksFn)
             return
+        else:
+            print(f"   No existing relWorks cache at {self.relWorksFn}")
 
-        client = Client2(baseURL=baseURL, user=user, pw=pw)
-        cacheOne = set()  # no duplicates
+        cacheOne = set()  # set of relWork ids, no duplicates
         chunk_fn = Path(first)
         while chunk_fn.exists():
-            print(f"   1st relWorks cache {chunk_fn}")
+            print(f"   data file (may be a chunk) exists {chunk_fn}")
             chunkET = etree.parse(str(chunk_fn))
 
             relWorksL = chunkET.xpath(
@@ -247,6 +256,8 @@ class LinkChecker:
                 l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
                 namespaces=NSMAP,
             )
+
+            print(f"   chunk has {len(relWorksL)} relWorks")
 
             for ID in relWorksL:
                 src = ID.xpath("@l:source", namespaces=NSMAP)[0]
@@ -261,32 +272,40 @@ class LinkChecker:
                 if len(cacheOne) >= relWorksMaxSize:
                     break
                 if ID.text is not None and modType == "Object":
-                    cacheOne.add(ID.text)
-            chunk_fn = self._nextChunk(fn=chunk_fn)
-            if chunk_fn == first:
-                break  # if it's still the original path, we break the while
+                    cacheOne.add(int(ID.text))
+            try:
+                chunk_fn = self._nextChunk(fn=chunk_fn)
+            except:
+                # print ("   breaking the while")
+                break  # we break the while if this is the only data file or the last chunk
 
-        if len(cacheOne) > 1:
+        print(f"   Length of cacheOne: {len(cacheOne)}")
+        client = Client2(baseURL=baseURL, user=user, pw=pw)
+        if len(cacheOne) > 0:
             q = Search(module="Object", limit=-1)
-            q.OR()  # only or if more than 1
+            if len(cacheOne) > 1:
+                q.OR()  # only or if more than 1
 
-            for id_str in sorted(cacheOne):
+            for id_ in sorted(cacheOne):
                 q.addCriterion(
                     operator="equalsField",
                     field="__id",
-                    value=id_str,
+                    value=str(id_),
                 )
             q = self._optimize_relWorks_cache(query=q)
-            q.toFile(path="sdata/debug.search.xml")
+            # q.toFile(path="sdata/debug.search.xml")
             print(
                 f"   populating relWorks cache {len(cacheOne)} (max size {relWorksMaxSize})"
             )
             newRelWorksM = client.search(query=q)
+            # if the inline cache already exists
             if hasattr(self, "relWorks"):
-                print(f"\tadding ...")
+                # add to it
                 self.relWorks += newRelWorksM
             else:
+                # make a new inline cache
                 self.relWorks = newRelWorksM  # might be faster
+            # let's save the inline cache to file after processing every chunk
             self.relWorks.toFile(path=self.relWorksFn)
 
     def rmInternalLinks(self):
@@ -343,9 +362,8 @@ class LinkChecker:
 
     def _nextChunk(self, *, fn: Path):
         """
-        Returns the path/name of the next chunk if possible; if it is
-        given some other path that it doesn't expect, it returns the
-        original path it has been given initially.
+        Returns the path/name of the next chunk if it exists or errors if the input
+        is not chunkable or the next chunk does not exist.
 
         Expects path/name of lvl 1 lido file that ends in ".lido.xml".
         """
@@ -357,10 +375,12 @@ class LinkChecker:
             no_no = re.sub("\d+$", "", stem)
             new_path = Path(f"{no_no}{new_no}.lido.xml")
             # print(f"D: Suggested new path: {new_path}")
-            return new_path
+            if Path(new_path).exists():
+                return new_path
+            else:
+                raise FileNotFoundError("chunk does not exist")
         else:
-            print("D: CHUNK NOT FOUND!")
-            return fn
+            raise SyntaxError("not chunkable")
 
     def _optimize_relWorks_cache(self, *, query):
         """
