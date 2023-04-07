@@ -230,9 +230,7 @@ class LinkChecker:
         into multiple dirs and process separately.
         """
 
-        # I think currently we are re-reading the file cache multiple times
-        # which is inefficient
-        # and not hasattr (self, "relWorks")
+        # used to re-read the file cache multiple times
         if Path(self.relWorksFn).exists():
             try:
                 self.relWorks
@@ -241,6 +239,8 @@ class LinkChecker:
                 print(f"   About to load existing relWorks cache {self.relWorksFn}")
                 self.relWorks = Module(file=self.relWorksFn)
                 return
+                # if we read relWorks cache from file we dont loop thru data files (chunks)
+                # looking for all the relWorks to fill the cache as best as we can
             else:
                 print("Inline cache exists already")
         else:
@@ -300,12 +300,14 @@ class LinkChecker:
             )
             newRelWorksM = client.search(query=q)
             # if the inline cache already exists
-            if hasattr(self, "relWorks"):
-                # add to it
-                self.relWorks += newRelWorksM
+            try:
+                self.relWorks
+            except:
+                # make a new inline cache,  might be faster than adding to it
+                self.relWorks = newRelWorksM
             else:
-                # make a new inline cache
-                self.relWorks = newRelWorksM  # might be faster
+                # if relWorks exists already, add to it
+                self.relWorks += newRelWorksM
             # let's save the inline cache to file after processing every chunk
             self.relWorks.toFile(path=self.relWorksFn)
 
