@@ -153,9 +153,10 @@
 				https://recherche.smb.museum/images/525075_2500x2500.jpg
 			-->
 
+			<xsl:comment>provided image</xsl:comment>
             <lido:resourceRepresentation>
                 <xsl:attribute name="lido:type" xml:lang="en">
-					<xsl:text>Provided image</xsl:text>
+					<xsl:text>http://terminology.lido-schema.org/lido00464</xsl:text>
                 </xsl:attribute>
 				<xsl:variable name="id" select="normalize-space(z:systemField[@name='__id']/z:value)" />
                 <lido:linkResource> 

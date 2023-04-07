@@ -40,12 +40,12 @@
             <xsl:call-template name="Aufführung"/>			
 			<xsl:call-template name="Auftrag"/>
 			<xsl:call-template name="Ausgrabung"/>
-			<!--xsl:call-template name="Ausstellung"/>
+			<!--xsl:call-template name="Ausstellung"-->
 			<xsl:call-template name="Benin"/>
 			<xsl:call-template name="Entwurf"/>
 			<xsl:call-template name="Erwerb"/>
 			<xsl:call-template name="Fund"/>
-			<!--xsl:call-template name="geistigeSchöpfung"/-->
+			<!--xsl:call-template name="geistigeSchöpfung"-->
             <xsl:call-template name="Herstellung"/>			
             <xsl:call-template name="Sammeln"/>
             <xsl:call-template name="Veröffentlichung"/>			
