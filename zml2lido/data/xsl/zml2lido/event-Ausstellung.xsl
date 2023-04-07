@@ -11,7 +11,10 @@
 
     <xsl:template name="Ausstellung">
 
-		<!-- only if positiv-->
+		<!-- 
+			20230407 FvH wants Ausstellungen only for NG and only if exhibit is not in the future. 
+			This is impossible with available data, so I disable exhibits completely
+		-->
 		<xsl:for-each select="z:moduleReference[@name='ObjRegistrarRef']/z:moduleReferenceItem">
 			<!--xsl:variable name="registrarV" select="tokenize(z:formattedValue,', ')"/-->
 			<xsl:variable name="registrarV" select="z:formattedValue"/>
