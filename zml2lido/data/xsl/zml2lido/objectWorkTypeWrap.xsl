@@ -40,23 +40,29 @@
 					/z:repeatableGroupItem/z:vocabularyReference[
 						@name='TechnicalTermVoc'
 					]">
-					<xsl:if test="normalize-space($technicalTermVoc/z:formattedValue) eq ''">
-						<xsl:message terminate="yes">ERROR: NO objectWorkType</xsl:message>
-					</xsl:if>
-					<!--xsl:message>objectWorkType CASE1</xsl:message-->
-					<lido:objectWorkType lido:type="Sachbegriff/TechnicalTermVoc">
-						<lido:conceptID lido:source="RIA:Sachbegriff" lido:type="local">
-							<xsl:value-of select="$technicalTermVoc/@id"/>
-						</lido:conceptID>
-						<lido:term>
-							<xsl:if test="$technicalTermVoc//z:formattedValue/@language ne ''">
-								<xsl:attribute name="xml:lang">
-									<xsl:value-of select="$technicalTermVoc/z:formattedValue/@language"/>
-								</xsl:attribute>
-							</xsl:if>
-							<xsl:value-of select="normalize-space($technicalTermVoc/z:formattedValue)"/>
-						</lido:term>
-					</lido:objectWorkType>
+					<!-- 
+					can have multiple technicalTerms, so need = not eq, but what if there is an empty entry?
+					I hope that RIA doesn't permit that. Should not be a valid entry in the vocabulary
+					-->
+					<xsl:for-each select="$technicalTermVoc">
+						<xsl:if test="normalize-space(z:formattedValue) = ''">
+							<xsl:message terminate="yes">ERROR: NO objectWorkType</xsl:message>
+						</xsl:if>
+						<!--xsl:message>objectWorkType CASE1</xsl:message-->
+						<lido:objectWorkType lido:type="Sachbegriff/TechnicalTermVoc">
+							<lido:conceptID lido:source="RIA:Sachbegriff" lido:type="local">
+								<xsl:value-of select="@id"/>
+							</lido:conceptID>
+							<lido:term>
+								<xsl:if test="z:formattedValue/@language ne ''">
+									<xsl:attribute name="xml:lang">
+										<xsl:value-of select="z:formattedValue/@language"/>
+									</xsl:attribute>
+								</xsl:if>
+								<xsl:value-of select="normalize-space(z:formattedValue)"/>
+							</lido:term>
+						</lido:objectWorkType>
+					</xsl:for-each>
 				</xsl:when>
 
 				<!-- 
