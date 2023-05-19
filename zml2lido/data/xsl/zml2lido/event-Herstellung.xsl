@@ -11,9 +11,11 @@
 
 	<xsl:template name="Herstellung">
 		<xsl:variable name="herstellendeRollen" select="
-			'Autor', 'Autor*in',
+			'Absender', 'Absenderin', 'Absender*in',
+			'Autor', 'Autorin','Autor*in',
 			'Bildhauer', 'Bildhauerin', 'Bildhauer*in',
-			'Drucker', 'Drucker*in',					
+			'Drucker', 'Drucker*in',
+			'Empfänger', 'Empfängerin','Empfänger*in',
 			'Filmemacher', 'Filmemacher*in',
 			'Filmregisseur', 'Filmregisseur*in',
 			'Fotograf', 'Fotograf*in',
@@ -21,6 +23,7 @@
 			'Inventor', 
 			'Künstler', 'Künstlerin','Künstler des Originals', 'Künstler*in', 
 			'Maler', 'Malerin',	'Maler*in',	
+			'Stecher', 'Stecherin', 'Stecher*in',
 			'Zeichner', 'Zeichnerin', 'Zeichner*in'"/>
 			
 		<xsl:variable name="herstellendeKollektive" select="
@@ -167,6 +170,9 @@
 								]
 							"/>
 							
+							<!--
+							19.5.2023 Einträge in RIA sind nicht gut. Lieber nicht so anzeigen.
+							-->
 							<xsl:if test="$notAusgabeN">
 								<lido:materialsTech>
 									<xsl:for-each select="$notAusgabeN">
@@ -284,8 +290,11 @@
 						<xsl:when test="$type eq 'Material' or $type eq 'Material (engl.)'">
 							<xsl:text>http://terminology.lido-schema.org/lido00132</xsl:text>
 						</xsl:when>
+
 						<xsl:when test="$type eq 'Technik' or $type eq 'Technik (engl.)'">
-							<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
+							<xsl:term xml:lang="en">
+								<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
+							</xsl:term>
 						</xsl:when>
 						<!-- neu 5.12.22 SBM -->
 						<xsl:when test="$type eq 'Auflage'"/>
@@ -319,9 +328,7 @@
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:attribute>
-				<lido:conceptID lido:type="local">
-					<xsl:value-of select="../z:vocabularyReference[1]/@name"/>
-					<xsl:text>-</xsl:text>
+				<lido:conceptID lido:source="../z:vocabularyReference[1]/@name" lido:type="local">
 					<xsl:value-of select="$matVoc/@id"/>
 				</lido:conceptID>
 				<lido:term xml:lang="de">

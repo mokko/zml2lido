@@ -278,7 +278,7 @@ class LinkChecker:
                 chunk_fn = self._nextChunk(fn=chunk_fn)
             except:
                 # print ("   breaking the while")
-                break  # we break the while if this is the only data file or the last chunk
+                break  # break the while if this is the only data file or the last chunk
 
         print(f"   Length of cacheOne: {len(cacheOne)}")
         client = Client2(baseURL=baseURL, user=user, pw=pw)
@@ -303,12 +303,12 @@ class LinkChecker:
             try:
                 self.relWorks
             except:
-                # make a new inline cache,  might be faster than adding to it
+                # make a new inline cache (might be faster than adding to it)
                 self.relWorks = newRelWorksM
             else:
                 # if relWorks exists already, add to it
                 self.relWorks += newRelWorksM
-            # let's save the inline cache to file after processing every chunk
+            # save the inline cache to file after processing every chunk
             self.relWorks.toFile(path=self.relWorksFn)
 
     def rmInternalLinks(self):
