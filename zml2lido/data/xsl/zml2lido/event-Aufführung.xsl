@@ -16,7 +16,10 @@
 		<xsl:variable name="aufführendeRollen" select="
 			'Darsteller', 'Darstellerin', 'Darsteller*in',
 			'Dirigent', 'Dirigentin', 'Dirigent*in',
-			'Interpret', 'Interpretin', 'Interpret*in'"/>
+			'Interpret', 'Interpretin', 'Interpret*in',
+			'Regisseur', 'Regisseurin', 'Regisseur*in',
+			'Sänger', 'Sängerin', 'Sänger*in'
+			"/>
 		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $aufführendeRollen]"/>

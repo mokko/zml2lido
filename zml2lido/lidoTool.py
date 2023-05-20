@@ -36,6 +36,7 @@ import re
 import shutil
 import subprocess
 import sys
+from typing import Iterable, Optional
 from zipfile import ZipFile
 from zml2lido.linkChecker import LinkChecker
 from zml2lido.jobs import Jobs
@@ -61,7 +62,14 @@ xsl = {
 
 
 class LidoTool(Jobs):
-    def __init__(self, *, Input, force=False, validation=False, chunks=False):
+    def __init__(
+        self,
+        *,
+        Input: str,
+        force: bool = False,
+        validation: bool = False,
+        chunks: bool = False,
+    ) -> None:
         self.validation = validation
         self.force = force
         self.chunks = chunks
@@ -74,7 +82,7 @@ class LidoTool(Jobs):
     # Steps
     #
 
-    def lfilter(self, *, split=False, Type):
+    def lfilter(self, *, split: bool = False, Type: str) -> None:
         if not Type in xsl:
             raise TypeError(f"Error: Unknown type '{Type}'")
 
@@ -87,7 +95,7 @@ class LidoTool(Jobs):
             self.force = True
             self.splitLido(Input=out_fn)
 
-    def lido2html(self, *, Input):
+    def lido2html(self, *, Input: str) -> str:
         print("LIDO2HTML")
         if self.chunks:
             for chunkFn in self.loopChunks(Input=Input):
@@ -96,7 +104,7 @@ class LidoTool(Jobs):
             self.lido2htmlSingle(Input=Input)
         return Input  # dont act on html
 
-    def lido2htmlSingle(self, *, Input):
+    def lido2htmlSingle(self, *, Input: str) -> None:
         """Only runs if html dir doesn't exist."""
         orig = Path.cwd()
         os.chdir(self.outdir)
@@ -111,7 +119,7 @@ class LidoTool(Jobs):
             print("LIDO2HTML exists already")
         os.chdir(orig)
 
-    def onlyPublished(self, *, Input):
+    def onlyPublished(self, *, Input: str) -> str:
         print(f"ONLYPUBLISHED")
         if self.chunks:
             for chunkFn in self.loopChunks(Input=Input):
@@ -120,7 +128,7 @@ class LidoTool(Jobs):
         else:
             return self.onlyPublishedSingle(Input=Input)
 
-    def onlyPublishedSingle(self, *, Input):
+    def onlyPublishedSingle(self, *, Input: str) -> str:
         """
         filter out lido records that are not published at recherche.smb expects lido
         as input and outputs lido as well
@@ -139,7 +147,7 @@ class LidoTool(Jobs):
             print(f"{out} exist already, no overwrite")
         return out
 
-    def pix(self, *, Input, output):
+    def pix(self, *, Input: str, output: str) -> None:
         """
         input is c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml
         read from C:\m3\MpApi\sdata\3Wege\pix_*
@@ -159,7 +167,7 @@ class LidoTool(Jobs):
             # print (f"{pic_fn}")
             self._resize(pic=pic_fn)
 
-    def urlLido(self, *, Input):
+    def urlLido(self, *, Input: str) -> str:
         # print("LINKCHECKER")
         # lc = LinkChecker(Input=Input) # run only once to make cache
         # lc.prepareRelWorksCache2(first=Input)
@@ -171,7 +179,7 @@ class LidoTool(Jobs):
         else:
             return self.urlLidoSingle(Input=Input)
 
-    def urlLidoSingle(self, *, Input: str):
+    def urlLidoSingle(self, *, Input: str) -> str:
         """
         Using Python rewrite (fix) generic Zetcom xml, mostly working on
         links (urls)
@@ -190,7 +198,7 @@ class LidoTool(Jobs):
             print(f"   rewrite exists already: {outFn}, no overwrite")
         return outFn
 
-    def splitLido(self, *, Input):
+    def splitLido(self, *, Input: str) -> str:
         # print("SPLITLIDO enter")
         if self.chunks:
             self.force = True  # otherwise subsequent chunks are not written
@@ -200,7 +208,7 @@ class LidoTool(Jobs):
             self.splitLidoSingle(Input=Input)
         return Input  # dont act on split files
 
-    def splitLidoSingle(self, *, Input):
+    def splitLidoSingle(self, *, Input: str) -> None:
         """
         Create individual files per lido record
         """
@@ -215,7 +223,7 @@ class LidoTool(Jobs):
         else:
             print(f" SPLIT DIR exists already: {splitDir}")
 
-    def splitSachbegriff(self, *, Input):
+    def splitSachbegriff(self, *, Input: str) -> Path:
         print("SPLITSACHBEGRIFF")
         if self.chunks:
             for chunkFn in self.loopChunks(Input=Input):
@@ -224,7 +232,7 @@ class LidoTool(Jobs):
         else:
             return self.splitSachbegriffSingle(Input=Input)
 
-    def splitSachbegriffSingle(self, *, Input):
+    def splitSachbegriffSingle(self, *, Input: str) -> Path:
         """
         Writes two files to output dir
         ohneSachbegriff.xml is meant for debugging.
@@ -239,7 +247,7 @@ class LidoTool(Jobs):
         os.chdir(orig)
         return xslDir / out
 
-    def validate(self, *, path=None):
+    def validate(self, *, path: Optional[str] = None):
         """
         It's optionally possible to specify a path for a file that needs validatation. If
         path is None, the file that was specified during __init__ will be validated.
@@ -281,14 +289,14 @@ class LidoTool(Jobs):
                 lidoFn = self.zml2lidoSingle(Input=chunkFn, xslt=xslt)
             return self.firstChunkName(Input=lidoFn)
         else:
-            return self.zml2lidoSingle(Input=Input)
+            return self.zml2lidoSingle(Input=Input, xslt=xslt)
 
     def zml2lidoSingle(self, *, Input, xslt="zml2lido"):
         inputP = Path(Input)
         lidoFn = self.outdir.joinpath(inputP.stem + ".lido.xml")
-        # print (f"lido file:{lido_fn}")
+        print(f"zml2lidoSingle with {xsl[xslt]}")  # with file '{lidoFn}'
 
-        if not lidoFn.exists() or self.force is True:
+        if self.force is True or not lidoFn.exists():
             if inputP.suffix == ".zip":  # unzipping temp file
                 print("   input is zipped")
                 parent_dir = inputP.parent
@@ -304,16 +312,15 @@ class LidoTool(Jobs):
 
             if inputP.suffix == ".zip":
                 temp_fn.unlink()
-
         else:
-            print("exists already, no overwrite")
+            print("lidoFn exists already, no overwrite")
         return lidoFn
 
     #
     # more helpers
     #
 
-    def loopChunks(self, *, Input):
+    def loopChunks(self, *, Input: str) -> Iterable[str]:
         """
         returns generator with path for existing files, counting up as long
         files exist. For this to work, filename has to include
@@ -342,7 +349,7 @@ class LidoTool(Jobs):
         print(f"firstChunkName {firstFn}")
         return firstFn
 
-    def saxon(self, *, Input, output, xsl):
+    def saxon(self, *, Input: str, output: str, xsl: str) -> None:
         if not Path(saxLib).exists():
             raise SyntaxError(f"ERROR: saxLib {saxLib} does not exist!")
 
@@ -363,8 +370,10 @@ class LidoTool(Jobs):
     # private helper
     #
 
-    def _analyze_chunkFn(self, *, Input):
+    def _analyze_chunkFn(self, *, Input: str):
         """
+        Input could be Path or str.
+
         This might belong in chunker.py ...
         """
         # print(f"ENTER ANALYZE WITH {Input}")
@@ -376,12 +385,12 @@ class LidoTool(Jobs):
         # print(f"_ANALYZE '{root}' '{no}' '{tail}'")
         return root, no, tail
 
-    def _copy(self, *, pic, out):
+    def _copy(self, *, pic: str, out: str) -> None:
         if not Path(out).exists():
             print(f"*copying {pic} -> {out}")
             shutil.copyfile(pic, out)
 
-    def _initLog(self):
+    def _initLog(self) -> None:
         logfile = self.outdir / "lidoTool.log"
 
         # let's append to the log file so we can aggregrate results from multiple runs
@@ -389,7 +398,7 @@ class LidoTool(Jobs):
             filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
         )
 
-    def _prepareOutdir(self):
+    def _prepareOutdir(self) -> Path:
         # determine outdir (long or short)
         sdataP = Path("sdata").resolve()  # resolve probably not necessary
         if re.match("\d\d\d\d\d\d", self.Input.parent.name):
@@ -431,8 +440,10 @@ class LidoTool(Jobs):
         else:
             self._copy(pic=pic, out=out_fn)
 
-    def _sanitize(self, *, Input):
+    def _sanitize(self, *, Input: str) -> Path:
         """
+        Input could be Path or str.
+
         Some checks for convenance; mainly for our users, so they get more intelligable
         error messages.
         """

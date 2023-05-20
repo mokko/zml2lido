@@ -13,7 +13,14 @@
 		Collecting: Sammler
     -->
     <xsl:template name="Sammeln">
-		<xsl:variable name="sammelndeRollen" select="'Sammler', 'Sammlerin', 'Sammler*in'"/>
+		<xsl:variable name="sammelndeRollen" select="
+			'Expedition',
+			'Expeditionsleiter', 'Expeditionsleitung', 'Expeditionsleiterin', 'Expeditionsleiter*in',
+			'Käufer', 'Käuferin', 'Käufer*in',
+			'Sammler', 'Sammlerin', 'Sammler*in',
+			'Veräußerung', 'Veräußerer', 'Veräußerin',
+			'Verwalter*in', 'Verwalter', 'Verwalterin'
+			"/>
 		<xsl:variable name="perInRole" select="z:moduleReference[@name='ObjPerAssociationRef']/z:moduleReferenceItem[
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $sammelndeRollen]"/>

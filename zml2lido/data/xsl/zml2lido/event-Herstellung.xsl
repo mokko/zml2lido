@@ -12,18 +12,30 @@
 	<xsl:template name="Herstellung">
 		<xsl:variable name="herstellendeRollen" select="
 			'Absender', 'Absenderin', 'Absender*in',
+			'Architekt', 'Architektin', 'Architekt*in',
 			'Autor', 'Autorin','Autor*in',
 			'Bildhauer', 'Bildhauerin', 'Bildhauer*in',
+			'Designer', 'Designerin', 'Designer*in',
 			'Drucker', 'Drucker*in',
 			'Empfänger', 'Empfängerin','Empfänger*in',
+			'Filmaufnahme', 
 			'Filmemacher', 'Filmemacher*in',
 			'Filmregisseur', 'Filmregisseur*in',
-			'Fotograf', 'Fotograf*in',
+			'Fotograf', 'Fotografin', 'Fotograf*in',
 			'Hersteller', 'Hersteller*in',
-			'Inventor', 
+			'Holzschneider', 'Holzschneiderin', 'Holzschneider*in',
+			'Inventor', 'Inventor*in', 
+			'Kamera',
 			'Künstler', 'Künstlerin','Künstler des Originals', 'Künstler*in', 
-			'Maler', 'Malerin',	'Maler*in',	
+			'Maler', 'Malerin',	'Maler*in',
+			'Mäzen', 'Mäzenatin', 'Mäzen*atin',
+		    'Musikinstrumentenbauer', 'Musikinstrumentenbauerin', 'Musikinstrumentenbauer*in',
+			'Nachlasser', 'Nachlasser*in', 
+			'Produzent', 'Produzentin','Produzent*in',
+			'Radierer', 'Radiererin', 'Radierer*in',
+			'Schreiber', 'Schreiberin', 'Schreiber*in',
 			'Stecher', 'Stecherin', 'Stecher*in',
+			'Verfasser', 'Verfasserin', 'Verfasser*in',
 			'Zeichner', 'Zeichnerin', 'Zeichner*in'"/>
 			
 		<xsl:variable name="herstellendeKollektive" select="
@@ -292,9 +304,7 @@
 						</xsl:when>
 
 						<xsl:when test="$type eq 'Technik' or $type eq 'Technik (engl.)'">
-							<xsl:term xml:lang="en">
 								<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
-							</xsl:term>
 						</xsl:when>
 						<!-- neu 5.12.22 SBM -->
 						<xsl:when test="$type eq 'Auflage'"/>
