@@ -303,7 +303,7 @@
 						<!-- xsl:message>DEFAULT LICENSE </xsl:message-->
 						<lido:rightsType>
 							<lido:conceptID lido:source="CC"
-											lido:type="URI">https://creativecommons.org/licenses/by-nc-sa/4.0/</lido:conceptID>
+											lido:type="URI">https://creativecommons.org/licenses/by-sa/4.0/</lido:conceptID>
 							<lido:term lido:addedSearchTerm="no">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</lido:term>
 						</lido:rightsType>
 					</xsl:when>
