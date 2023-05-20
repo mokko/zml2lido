@@ -295,66 +295,68 @@
 				)"/>
 			
 			<xsl:variable name="type" select="z:vocabularyReferenceItem/@name"/>
-			
-			<lido:termMaterialsTech>
-				<xsl:attribute name="lido:type">
-					<xsl:choose>
-						<xsl:when test="$type eq 'Material' or $type eq 'Material (engl.)'">
-							<xsl:text>http://terminology.lido-schema.org/lido00132</xsl:text>
-						</xsl:when>
 
-						<xsl:when test="$type eq 'Technik' or $type eq 'Technik (engl.)'">
-								<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
-						</xsl:when>
-						<!-- neu 5.12.22 SBM -->
-						<xsl:when test="$type eq 'Auflage'"/>
-						<!-- neu 3.5.22 Frühe Plakate Beschreibung der Technik und Präsentationsform -->
-						<xsl:when test="$type eq 'Bemalung/Farbe'"/>
-						<xsl:when test="$type eq 'Beschreibung der Technik'"/>
-						<xsl:when test="$type eq 'Datum'"/>
-						
-						<xsl:when test="$type eq 'Herstellungsart'"/>
-						<xsl:when test="$type eq 'Herstellungstechnik'"/>						
-						<!-- neu 3.5.22 Fotografisches Verfahren in Berlin Zeichnet Mode-->
-						<xsl:when test="$type eq 'Fotografisches Verfahren'"/>						
-						<xsl:when test="$type eq 'Kontrollnummer'"/>
-						<xsl:when test="$type eq 'Material des Originals'"/>
-						<xsl:when test="$type eq 'Materialfarbe'"/>
-						<xsl:when test="$type eq 'Material/Technik (Rest.)'"/>
-						<xsl:when test="$type eq 'Material/Werkstoff'"/>
-						<xsl:when test="$type eq 'Nominal'"/>
-						<xsl:when test="$type eq 'Oberfläche'"/>
-						<xsl:when test="$type eq 'Präsentationsform'"/>
-						<xsl:when test="$type eq 'Rahmen'"/>
-						<xsl:when test="$type eq 'Reliefhöhe'"/>						
-						<xsl:when test="$type eq 'Stempelstellung'"/>
-						<xsl:when test="$type eq 'Wasserzeichen'"/>						
-
-						<xsl:otherwise>
-							<xsl:message terminate="yes">
-								<xsl:text>ERROR: Unknown material type! </xsl:text>
-								<xsl:value-of select="normalize-space(z:vocabularyReferenceItem/@name)"/>
-							</xsl:message>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:attribute>
-				<lido:conceptID lido:source="../z:vocabularyReference[1]/@name" lido:type="local">
-					<xsl:value-of select="$matVoc/@id"/>
-				</lido:conceptID>
-				<lido:term xml:lang="de">
-					<xsl:attribute name="xml:lang">
+			<xsl:if test="$matTech ne''">			
+				<lido:termMaterialsTech>
+					<xsl:attribute name="lido:type">
 						<xsl:choose>
-							<xsl:when test="$type eq 'Material (engl.)'">
-								<xsl:text>en</xsl:text>
+							<xsl:when test="$type eq 'Material' or $type eq 'Material (engl.)'">
+								<xsl:text>http://terminology.lido-schema.org/lido00132</xsl:text>
 							</xsl:when>
+
+							<xsl:when test="$type eq 'Technik' or $type eq 'Technik (engl.)'">
+									<xsl:text>http://terminology.lido-schema.org/lido00131</xsl:text>
+							</xsl:when>
+							<!-- neu 5.12.22 SBM -->
+							<xsl:when test="$type eq 'Auflage'"/>
+							<!-- neu 3.5.22 Frühe Plakate Beschreibung der Technik und Präsentationsform -->
+							<xsl:when test="$type eq 'Bemalung/Farbe'"/>
+							<xsl:when test="$type eq 'Beschreibung der Technik'"/>
+							<xsl:when test="$type eq 'Datum'"/>
+							
+							<xsl:when test="$type eq 'Herstellungsart'"/>
+							<xsl:when test="$type eq 'Herstellungstechnik'"/>						
+							<!-- neu 3.5.22 Fotografisches Verfahren in Berlin Zeichnet Mode-->
+							<xsl:when test="$type eq 'Fotografisches Verfahren'"/>						
+							<xsl:when test="$type eq 'Kontrollnummer'"/>
+							<xsl:when test="$type eq 'Material des Originals'"/>
+							<xsl:when test="$type eq 'Materialfarbe'"/>
+							<xsl:when test="$type eq 'Material/Technik (Rest.)'"/>
+							<xsl:when test="$type eq 'Material/Werkstoff'"/>
+							<xsl:when test="$type eq 'Nominal'"/>
+							<xsl:when test="$type eq 'Oberfläche'"/>
+							<xsl:when test="$type eq 'Präsentationsform'"/>
+							<xsl:when test="$type eq 'Rahmen'"/>
+							<xsl:when test="$type eq 'Reliefhöhe'"/>						
+							<xsl:when test="$type eq 'Stempelstellung'"/>
+							<xsl:when test="$type eq 'Wasserzeichen'"/>						
+
 							<xsl:otherwise>
-								<xsl:text>de</xsl:text>
+								<xsl:message terminate="yes">
+									<xsl:text>ERROR: Unknown material type! </xsl:text>
+									<xsl:value-of select="normalize-space(z:vocabularyReferenceItem/@name)"/>
+								</xsl:message>
 							</xsl:otherwise>
 						</xsl:choose>
 					</xsl:attribute>
-					<xsl:value-of select="normalize-space($matTech)"/>
-				</lido:term>
-			</lido:termMaterialsTech>
+					<lido:conceptID lido:source="ObjMaterialTechniqueGrp" lido:type="local">
+						<xsl:value-of select="$matVoc/@id"/>
+					</lido:conceptID>
+					<lido:term xml:lang="de">
+						<xsl:attribute name="xml:lang">
+							<xsl:choose>
+								<xsl:when test="$type eq 'Material (engl.)'">
+									<xsl:text>en</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>de</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:attribute>
+						<xsl:value-of select="normalize-space($matTech)"/>
+					</lido:term>
+				</lido:termMaterialsTech>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 </xsl:stylesheet>
