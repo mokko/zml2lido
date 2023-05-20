@@ -20,11 +20,21 @@ from typing import Optional, Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
 relWorksMaxSize = 65000
-cred_fn = "sdata/credentials.py"
 
-if Path(cred_fn).exists():  # some things like saxon should run even
-    with open(cred_fn) as f:  # credentials are not where expected
-        exec(f.read())
+try:
+    import tomllib  # new in Python v3.11
+except ModuleNotFoundError:
+    import tomli as tomllib  # < Python v3.11
+
+cred_fn = Path.home() / ".ria"
+if not cred_fn.exists():
+    raise SyntaxError(f"RIA Credentials not found at {cred_fn}")
+
+with open(cred_fn, "rb") as f:
+    cred = tomllib.load(f)
+user = cred["user"]
+pw = cred["pw"]
+baseURL = cred["baseURL"]
 
 
 class LinkChecker:
