@@ -39,12 +39,12 @@
 					@name='UnitDdiVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue"/>
 		
-			<xsl:message>
+			<!--xsl:message>
 				<xsl:text>DDD:</xsl:text>
 				<xsl:value-of select="$type"/>
 				<xsl:text> </xsl:text>
 				<xsl:value-of select="$unit"/>
-			</xsl:message>
+			</xsl:message-->
 
 			<lido:objectMeasurements>
 				<xsl:choose>
@@ -525,13 +525,21 @@
 				</xsl:choose>
 
 				<!-- Do we always want extentMeasurements or only sometimes?-->
-				<lido:extentMeasurements>
-					<xsl:attribute name="xml:lang">
-						<xsl:value-of select="z:moduleReference[
-							@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue/@language"/>
-					</xsl:attribute>
-						<xsl:value-of select="normalize-space($type)"/>
-				</lido:extentMeasurements>
+				<xsl:if test="$type = ('Auflagenkarton', 'Außenmaß', 'Bemalte Bildfläche', 'Bildformat (Foto)', 
+					'Bildmaß', 'Blattmaß', 'Dauer', 'Gesamtmaß', 'Glasmaß', 'Größe', 'Kartonformat (Foto)', 
+					'Kartonformat', 'Kistenmaß', 'Maßstab', 'Montage', 'Mündung',
+					'Negativformat (Foto)',  'Öffnung', 'Plattengröße (Foto)', 'Passepartout', 'Passepartoutmaß', 
+					'Passepartout Standardformat', 
+					'Rahmenmaß', 'Rahmenaußenmaß', 'Rahmenaußenmaß Durchmesser', 'Rollenmaß', 'Sockel', 
+					'Stichhöhe', 'Tafelmaß', 'Transportmaß', 'Verpackungsmaß')">
+					<lido:extentMeasurements>
+						<xsl:attribute name="xml:lang">
+							<xsl:value-of select="z:moduleReference[
+								@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue/@language"/>
+						</xsl:attribute>
+							<xsl:value-of select="normalize-space($type)"/>
+					</lido:extentMeasurements>
+				</xsl:if>
 			</lido:objectMeasurements>
 		</lido:objectMeasurementsSet>
 	</xsl:template>
