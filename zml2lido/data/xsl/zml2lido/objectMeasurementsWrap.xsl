@@ -66,10 +66,8 @@
 					</xsl:when>
 		
 					<!-- diameter -->
-					<xsl:when test="$type eq 'Durchmesser' or 
-						$type eq 'Mündung' or
-						$type eq 'Öffnung' or
-						$type eq 'Rahmenaußenmaß Durchmesser'">
+					<xsl:when test="$type = ('Durchmesser', 'Mündung', 'Öffnung',
+						'Rahmenaußenmaß Durchmesser')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Durchmesser'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -92,7 +90,7 @@
 					</xsl:when>
 
 					<!-- height -->
-					<xsl:when test="$type eq 'Höhe' or $type eq 'Reliefhöhe'">
+					<xsl:when test="$type = ('Höhe','Reliefhöhe')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Tiefe'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -101,9 +99,7 @@
 					</xsl:when>
 					
 					<!-- height, depth, width -->
-					<xsl:when test="$type eq 'Außenmaß' or
-						$type eq 'Gesamtmaß' or 
-						$type eq 'Objektmaß'">
+					<xsl:when test="$type = ('Außenmaß', 'Gesamtmaß', 'Objektmaß')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Höhe'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -136,25 +132,11 @@
 					</xsl:when>
 
 					<!-- height, weight -->
-					<xsl:when test="$type eq 'Blattmaß' or 
-						$type eq 'Auflagenkarton' or 
-						$type eq 'Bemalte Bildfläche' or
-						$type eq 'Bildformat (Foto)' or 
-						$type eq 'Bildmaß' or 
-						$type eq 'Glasmaß' or 
-						$type eq 'height x width' or
-						$type eq 'Höhe x Breite' or
-						$type eq 'Höhe x Breite (aufgeschlagen)' or
-						$type eq 'Kartonformat (Foto)' or
-						$type eq 'Kartonformat' or
-						$type eq 'Passepartout' or
-						$type eq 'Passepartoutmaß' or
-						$type eq 'Passepartout Standardformat' or
-						$type eq 'Plattengröße (Foto)' or
-						$type eq 'Rahmenmaß' or
-						$type eq 'Rahmenaußenmaß' or 
-						$type eq 'Stichhöhe' or 
-						$type eq 'Tafelmaß' ">
+					<xsl:when test="$type = ('Auflagenkarton', 'Bemalte Bildfläche', 'Bildformat (Foto)', 
+						'Bildmaß','Blattmaß', 'Glasmaß', 'height x width', 'Höhe x Breite', 'Höhe x Breite (aufgeschlagen)',
+						'Kartonformat (Foto)', 'Kartonformat', 'Passepartout', 'Passepartoutmaß', 
+						'Passepartout Standardformat', 'Plattengröße (Foto)', 'Rahmenmaß', 'Rahmenaußenmaß', 'Stichhöhe',
+						'Tafelmaß')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Höhe'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -187,9 +169,7 @@
 					</xsl:when>  
 
 					<!-- height, depth, width -->
-					<xsl:when test="$type eq 'Höhe x Breite x Stärke' or 
-						$type eq 'Maße Transport' or 
-						$type eq 'Sockel'">
+					<xsl:when test="$type = ('Höhe x Breite x Stärke', 'Maße Transport', 'Sockel')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Höhe'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -208,7 +188,7 @@
 					</xsl:when>  
 
 					<!-- hours:minuts:seconds -->
-					<xsl:when test="$type eq 'Dauer' or $type eq 'Spieldauer'">
+					<xsl:when test="$type = ('Dauer', 'Spieldauer')">
 						<xsl:variable name="HHMMSS">
 							<xsl:value-of select="format-number(../../../z:dataField[@name='HoursLnu']/z:value, '00')"/>
 							<xsl:text>:</xsl:text>
@@ -271,8 +251,7 @@
 					</xsl:when>
 
 					<!-- length, width, height -->
-					<xsl:when test="$type eq 'Kistenmaß' or 
-						$type eq 'Länge x Breite x Höhe'">
+					<xsl:when test="$type = ('Kistenmaß', 'Länge x Breite x Höhe')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Länge'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -305,8 +284,7 @@
 					</xsl:when> 
 
 					<!-- prefix, height, width, suffix -->
-					<xsl:when test="$type eq 'format' or
-									$type eq 'Format'">
+					<xsl:when test="$type = ('format', 'Format')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Prefix'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -330,10 +308,8 @@
 					</xsl:when>
 
 					<!--speed-->
-					<xsl:when test="$type eq 'Geschwindigkeit' or 
-						$type eq 'Geschwindigkeit (Band)' or 
-						$type eq 'Geschwindigkeit (Schallplatte)' or 
-						$type eq 'Geschwindigkeit (Walze)'">
+					<xsl:when test="$type = ('Geschwindigkeit', 'Geschwindigkeit (Band)', 
+						'Geschwindigkeit (Schallplatte)', 'Geschwindigkeit (Walze)')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Geschwindigkeit'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -351,12 +327,8 @@
 					</xsl:when>
 
 					<!-- thickness-->
-					<xsl:when test="$type eq 'Diaformat' or 
-						$type eq 'Dicke' or
-						$type eq 'Durchmesser (mit Dicke)' or 
-						$type eq 'Wandstärke' or 
-						$type eq 'Wandungsstärke' 
-						">
+					<xsl:when test="$type = ('Diaformat', 'Dicke', 'Durchmesser (mit Dicke)', 
+						'Wandstärke','Wandungsstärke')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Dicke'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -365,9 +337,7 @@
 					</xsl:when>
 
 					<!-- unknown1 -->
-					<xsl:when test="$type eq 'Fläche' or 
-						$type eq 'Sehnenlänge' or
-						$type eq 'Stichmaß'">
+					<xsl:when test="$type = ('Fläche', 'Sehnenlänge', 'Stichmaß')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="$type"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -390,8 +360,7 @@
 					</xsl:when>
 
 					<!-- unknown1, unknown2, unknown3 -->
-					<xsl:when test="$type eq 'Andere Maße' or 
-						$type eq 'other dimensions'">
+					<xsl:when test="$type = ('Andere Maße','other dimensions')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Andere'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -419,7 +388,7 @@
 					</xsl:when> 
 
 					<!-- weight -->
-					<xsl:when test="$type eq 'Gewicht' or $type eq 'weight'">
+					<xsl:when test="$type = ('Gewicht', 'weight')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="$type"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -428,10 +397,7 @@
 					</xsl:when> 
 
 					<!-- width -->
-					<xsl:when test="$type eq 'Länge' or 
-						$type eq 'Breite' or 
-						$type eq 'Schenkelbreite' or
-						$type eq 'Maßstab'">
+					<xsl:when test="$type = ('Länge', 'Breite', 'Schenkelbreite', 'Maßstab')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="$type"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -482,8 +448,7 @@
 					</xsl:when>
 
 					<!-- width, height, depth -->
-					<xsl:when test="$type eq 'Transportmaß' or
-						$type eq 'Verpackungsmaß'">
+					<xsl:when test="$type = ('Transportmaß', 'Verpackungsmaß')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Breite'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -502,7 +467,7 @@
 					</xsl:when>
 
 					<!-- width, length -->
-					<xsl:when test="$type eq 'Negativformat (Foto)' or $type eq 'Montage'">
+					<xsl:when test="$type = ('Negativformat (Foto)', 'Montage')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Breite'"/>
 							<xsl:with-param name="unit" select="$unit"/>
