@@ -277,7 +277,10 @@
 					</lido:objectID>
 				</lido:object>
 			</lido:relatedWork>
-			<!-- was: is related to, see #56-->
+			<!-- was: is related to, see #56
+			20230708 in Zukunft auf RIA Feld gemappt. Wenn Type="Werkverzeichnis", dann term="exemplifies"
+			with conceptID https://aat etc. Im Augenblick unklar, wie das Feld in RIA heißt.
+			-->
 			<lido:relatedWorkRelType>
 				<lido:conceptID lido:type="URI">http://terminology.lido-schema.org/lido00617</lido:conceptID>
 				<lido:term xml:lang="en">is documented in</lido:term>

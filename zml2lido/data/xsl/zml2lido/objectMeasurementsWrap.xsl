@@ -10,12 +10,8 @@
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*" />
 
-	<!-- 1.1 objectMeasurementSet
-	Contains information about the dimensions, or other measurements, of the
-	object/work in focus; implies spacial, temporal or quantitative extent.
-		measurementType
-		measurementUnit
-		measurementValue
+	<!-- 
+	20230708 - new version with atomistic values in measurementsSet
 	-->
 
 	<xsl:template name="objectMeasurementsWrap">
@@ -35,491 +31,541 @@
 				</lido:displayObjectMeasurements>
 			</xsl:if>
 
-			<xsl:if test="normalize-space(z:virtualField[@name='PreviewENVrt']/z:value) != ''">
-				<xsl:comment>
-					<xsl:text>
-						Client response includes only one language for measurementType, either 
-						English or German. So there is no English term available at the moment in RIA.
-					</xsl:text>
-				</xsl:comment>
-				<lido:displayObjectMeasurements xml:lang="en">
-					<xsl:value-of select="normalize-space(z:virtualField[@name='PreviewENVrt']/z:value)"/>
-				</lido:displayObjectMeasurements>
-			</xsl:if>
-
-			<!-- 
-				used to get en (English) values, now expects de values 
-				Let's make language attribute dynamic now
-			-->
 			<xsl:variable name="type" select="z:moduleReference[
 					@name='TypeDimRef'
 				]/z:moduleReferenceItem/z:formattedValue"/>
+
+			<xsl:variable name="unit" select="z:vocabularyReference[
+					@name='UnitDdiVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue"/>
+		
+			<xsl:message>
+				<xsl:text>DDD:</xsl:text>
+				<xsl:value-of select="$type"/>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="$unit"/>
+			</xsl:message>
+
+			<lido:objectMeasurements>
+				<xsl:choose>
+					<!-- Circumference -->
+					<xsl:when test="$type eq 'Umfang'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='CircumferenceNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- depth -->
+					<xsl:when test="$type eq 'Tiefe'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DepthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+		
+					<!-- diameter -->
+					<xsl:when test="$type eq 'Durchmesser' or 
+						$type eq 'Mündung' or
+						$type eq 'Öffnung' or
+						$type eq 'Rahmenaußenmaß Durchmesser'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Durchmesser'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DiameterNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- diameter, depth -->
+					<xsl:when test="$type eq 'Durchmesser x Tiefe'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Durchmesser'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DiameterNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Tiefe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DepthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- height -->
+					<xsl:when test="$type eq 'Höhe' or $type eq 'Reliefhöhe'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Tiefe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
 					
-			<xsl:variable name="unit" select="z:vocabularyReference[
-					@name='UnitDdiVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue"/>
-			<xsl:variable name="unit" select="z:vocabularyReference[
-					@name='UnitDdiVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue"/>
-			<xsl:variable name="value">
-				<xsl:apply-templates select="z:moduleReference[
-					@name='TypeDimRef'
-				]/z:moduleReferenceItem/z:formattedValue" mode="value"/>
-			</xsl:variable>
-			<!-- 
-			measurementSets is only valid with type, unit and value, so only records 
-			which use all three -->
-			<xsl:if test="normalize-space($type) ne ''
-				and normalize-space($value) ne ''
-				and normalize-space($unit) ne ''">
-				<xsl:variable name="measurementType">
-					<xsl:choose>
-						<xsl:when test="func:vocmap-replace-laxer('MatTechType', $type, 'wUnit') ne ''">
-							<xsl:value-of select="func:vocmap-replace-lax('MatTechType', $type, 'wUnit')"/>						
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:value-of select="$type"/>	
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:variable>
-				<lido:objectMeasurements>
-					<lido:measurementsSet>
-						<lido:measurementType>
-							<xsl:attribute name="xml:lang">
-								<xsl:value-of select="$type/@language"/>
-							</xsl:attribute>
-							<xsl:value-of select="$measurementType"/>
-						</lido:measurementType>
-						<lido:measurementUnit>
-							<xsl:attribute name="xml:lang">
-								<xsl:value-of select="$unit/@language"/>
-							</xsl:attribute>
-							<xsl:value-of select="normalize-space($unit)"/>
-						</lido:measurementUnit>
-						<lido:measurementValue>
-							<xsl:attribute name="xml:lang">
-								<xsl:value-of select="z:moduleReference[
-									@name='TypeDimRef'
-								]/z:moduleReferenceItem/z:formattedValue/@language"/>
-							</xsl:attribute>
-							<xsl:value-of select="normalize-space($value)"/>
-						</lido:measurementValue>
-					</lido:measurementsSet>
-					<!-- 
-						Let's not try to translate LIDO at the moment 
-					<lido:measurementsSet>
-						<lido:measurementType xml:lang="de">
-							<xsl:value-of select="normalize-space(z:moduleReference[
-								@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue)"/>
-						</lido:measurementType>
-						<lido:measurementUnit xml:lang="en">
-							<xsl:value-of select="normalize-space(z:vocabularyReference[
-								@name='UnitDdiVoc']/z:vocabularyReferenceItem/@name)"/>
-						</lido:measurementUnit>
-						<lido:measurementValue xml:lang="en">
-							<xsl:value-of select="$value"/>
-						</lido:measurementValue>
-					</lido:measurementsSet> -->
-				</lido:objectMeasurements>
-			</xsl:if>
+					<!-- height, depth, width -->
+					<xsl:when test="$type eq 'Außenmaß' or
+						$type eq 'Gesamtmaß' or 
+						$type eq 'Objektmaß'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Tiefe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DepthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- height, diameter -->
+					<xsl:when test="$type eq 'Höhe x Durchmesser'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Durchmesser'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DiameterNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- height, weight -->
+					<xsl:when test="$type eq 'Blattmaß' or 
+						$type eq 'Auflagenkarton' or 
+						$type eq 'Bemalte Bildfläche' or
+						$type eq 'Bildformat (Foto)' or 
+						$type eq 'Bildmaß' or 
+						$type eq 'Glasmaß' or 
+						$type eq 'height x width' or
+						$type eq 'Höhe x Breite' or
+						$type eq 'Höhe x Breite (aufgeschlagen)' or
+						$type eq 'Kartonformat (Foto)' or
+						$type eq 'Kartonformat' or
+						$type eq 'Passepartout' or
+						$type eq 'Passepartoutmaß' or
+						$type eq 'Passepartout Standardformat' or
+						$type eq 'Plattengröße (Foto)' or
+						$type eq 'Rahmenmaß' or
+						$type eq 'Rahmenaußenmaß' or 
+						$type eq 'Stichhöhe' or 
+						$type eq 'Tafelmaß' ">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- height, width, thickness -->
+					<xsl:when test="$type eq 'Höhe x Breite x Stärke'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='ThicknessNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>  
+
+					<!-- height, depth, width -->
+					<xsl:when test="$type eq 'Höhe x Breite x Stärke' or 
+						$type eq 'Maße Transport' or 
+						$type eq 'Sockel'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DepthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Stärke'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>  
+
+					<!-- hours:minuts:seconds -->
+					<xsl:when test="$type eq 'Dauer' or $type eq 'Spieldauer'">
+						<xsl:variable name="HHMMSS">
+							<xsl:value-of select="format-number(../../../z:dataField[@name='HoursLnu']/z:value, '00')"/>
+							<xsl:text>:</xsl:text>
+							<xsl:value-of select="format-number(../../../z:dataField[@name='MinutesLnu']/z:value, '00')"/>
+							<xsl:text>:</xsl:text>
+							<xsl:value-of select="format-number(../../../z:dataField[@name='SecondsLnu']/z:value, '00')"/>
+						</xsl:variable>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Durchmesser'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="$HHMMSS"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- length, diameter-->
+					<xsl:when test="$type eq 'Rollenmaß'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Länge'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='LengthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Durchmesser'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DiameterNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- length, width-->
+					<xsl:when test="$type eq 'Länge x Breite'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Länge'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='LengthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- length, width, depth-->
+					<xsl:when test="$type eq 'Länge x Breite x Tiefe'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Länge'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='LengthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Tiefe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DepthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- length, width, height -->
+					<xsl:when test="$type eq 'Kistenmaß' or 
+						$type eq 'Länge x Breite x Höhe'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Länge'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='LengthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- prefix, suffix-->
+					<xsl:when test="$type eq 'Größe'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Prefix'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='PrefixTxt']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Suffix'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='SuffixTxt']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when> 
+
+					<!-- prefix, height, width, suffix -->
+					<xsl:when test="$type eq 'format' or
+									$type eq 'Format'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Prefix'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='PrefixTxt']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Suffix'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='SuffixTxt']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!--speed-->
+					<xsl:when test="$type eq 'Geschwindigkeit' or 
+						$type eq 'Geschwindigkeit (Band)' or 
+						$type eq 'Geschwindigkeit (Schallplatte)' or 
+						$type eq 'Geschwindigkeit (Walze)'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Geschwindigkeit'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='SpeedNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- text -->
+					<xsl:when test="$type eq 'Andere'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Andere'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='TextTxt']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- thickness-->
+					<xsl:when test="$type eq 'Diaformat' or 
+						$type eq 'Dicke' or
+						$type eq 'Durchmesser (mit Dicke)' or 
+						$type eq 'Wandstärke' or 
+						$type eq 'Wandungsstärke' 
+						">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Dicke'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='ThicknessNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- unknown1 -->
+					<xsl:when test="$type eq 'Fläche' or 
+						$type eq 'Sehnenlänge' or
+						$type eq 'Stichmaß'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='Unknown1Num']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- unknown1, unknown2-->
+					<xsl:when test="$type eq 'Allgemein'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Andere'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='Unknown1Num']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Andere'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='Unknown2Num']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- unknown1, unknown2, unknown3 -->
+					<xsl:when test="$type eq 'Andere Maße' or 
+						$type eq 'other dimensions'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Andere'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='Unknown3Num']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Andere'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='Unknown1Num']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Andere'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='Unknown2Num']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- volume -->
+					<xsl:when test="$type eq 'Volumen'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='VolumeNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when> 
+
+					<!-- weight -->
+					<xsl:when test="$type eq 'Gewicht' or $type eq 'weight'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when> 
+
+					<!-- width -->
+					<xsl:when test="$type eq 'Länge' or 
+						$type eq 'Breite' or 
+						$type eq 'Schenkelbreite' or
+						$type eq 'Maßstab'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- width, depth -->
+					<xsl:when test="$type eq 'Breite x Tiefe'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Tiefe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DepthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- width, diameter-->
+					<xsl:when test="$type eq 'Länge x Durchmesser'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Länge'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DiameterNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- width, height -->
+					<xsl:when test="$type eq 'Breite x Höhe'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- width, height, depth -->
+					<xsl:when test="$type eq 'Transportmaß' or
+						$type eq 'Verpackungsmaß'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Tiefe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DepthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!-- width, length -->
+					<xsl:when test="$type eq 'Negativformat (Foto)' or $type eq 'Montage'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='LengthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<xsl:otherwise>
+						<xsl:message terminate="yes">
+							<xsl:text>ERROR: Unknown Measurement Type: </xsl:text>
+							<xsl:value-of select="$type"/>
+						</xsl:message>
+					</xsl:otherwise>
+				</xsl:choose>
+
+				<!-- Do we always want extentMeasurements or only sometimes?-->
+				<lido:extentMeasurements>
+					<xsl:attribute name="xml:lang">
+						<xsl:value-of select="z:moduleReference[
+							@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue/@language"/>
+					</xsl:attribute>
+						<xsl:value-of select="normalize-space($type)"/>
+				</lido:extentMeasurements>
+			</lido:objectMeasurements>
 		</lido:objectMeasurementsSet>
 	</xsl:template>
 
-	<xsl:template mode="value" match="z:moduleReference[@name='TypeDimRef']/z:moduleReferenceItem/z:formattedValue">
-		<xsl:variable name="this" select="normalize-space(.)"/>
-		<xsl:choose>
-			<xsl:when test="$this eq 'Andere'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='TextTxt']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Andere Maße'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown3Num']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown2Num']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Auflagekarton'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Außenmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Allgemein'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown2Num']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Bemalte Bildfläche'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Bildformat (Foto)'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Bildmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Blattmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Breite'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Breite x Höhe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Breite x Tiefe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Dauer'">
-				<xsl:value-of select="format-number(../../../z:dataField[@name='HoursLnu']/z:value, '00')"/>
-				<xsl:text>:</xsl:text>
-				<xsl:value-of select="format-number(../../../z:dataField[@name='MinutesLnu']/z:value, '00')"/>
-				<xsl:text>:</xsl:text>
-				<xsl:value-of select="format-number(../../../z:dataField[@name='SecondsLnu']/z:value, '00')"/>
-			</xsl:when>
-			<!--todo: no value; might need correction upstream in RIA -->
-			<xsl:when test="$this eq 'Diaformat'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='ThicknessNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Dicke'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='ThicknessNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Durchmesser'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Durchmesser (mit Dicke)'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='ThicknessNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Durchmesser x Tiefe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Fläche'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'format'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='PrefixTxt']/z:value)"/>
-				<xsl:text> </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SuffixTxt']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Format'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='PrefixTxt']/z:value)"/>
-				<xsl:text> </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SuffixTxt']/z:value)"/>
-			</xsl:when>
-			<!-- Walze ist unnötig; todo: in RIA korrigieren -->
-			<xsl:when test="$this eq 'Gesamtmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Geschwindigkeit'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SpeedNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Geschwindigkeit (Band)'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SpeedNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Geschwindigkeit (Schallplatte)'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SpeedNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Geschwindigkeit (Walze)'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SpeedNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Gewicht'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WeightNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Glasmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Größe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='PrefixTxt']/z:value)"/>
-				<xsl:text> </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='SuffixTxt']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'height x width'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Höhe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Höhe x Breite'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Höhe x Breite (aufgeschlagen)'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Höhe x Breite x Stärke'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='ThicknessNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Höhe x Breite x Tiefe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Höhe x Durchmesser'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Kartonformat'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Kartonformat (Foto)'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Kistenmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='LengthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Länge'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Länge x Breite'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='LengthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Länge x Breite x Höhe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='LengthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Länge x Breite x Tiefe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='LengthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Länge x Durchmesser'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Maßstab'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Mündung'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Negativformat (Foto)'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='LengthNum']/z:value)"/>
-			</xsl:when>			
-			<xsl:when test="$this eq 'Maße Transport'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Montage'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='LengthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Objektmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'other dimensions'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown3Num']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown2Num']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Öffnung'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'other measurements'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown3Num']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown2Num']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Passepartout'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Passepartoutmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Passepartout Standardformat'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>			
-			<xsl:when test="$this eq 'Plattengröße (Foto)'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Rahmenmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Rahmenaußenmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Rahmenaußenmaß Durchmesser'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Reliefhöhe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Rollenmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='LengthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Schenkelbreite'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Sehnenlänge'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Sockel'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<!-- Spieldauer is synonymous with Dauer; replace with pref in RIA-->
-			<xsl:when test="$this eq 'Spieldauer'">
-				<xsl:value-of select="format-number(../../../z:dataField[@name='HoursLnu']/z:value, '00')"/>
-				<xsl:text>:</xsl:text>
-				<xsl:value-of select="format-number(../../../z:dataField[@name='MinutesLnu']/z:value, '00')"/>
-				<xsl:text>:</xsl:text>
-				<xsl:value-of select="format-number(../../../z:dataField[@name='SecondsLnu']/z:value, '00')"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Stichhöhe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Stichmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='Unknown1Num']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Tafelmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Tiefe'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Transportmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Umfang'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='CircumferenceNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Verpackungsmaß'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WidthNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='HeightNum']/z:value)"/>
-				<xsl:text> x </xsl:text>
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DepthNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Volumen'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='VolumeNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'Wandstärke' or  . = 'Wandungsstärke'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='DiameterNum']/z:value)"/>
-			</xsl:when>
-			<xsl:when test="$this eq 'weight'">
-				<xsl:value-of select="normalize-space(../../../z:dataField[@name='WeightNum']/z:value)"/>
-			</xsl:when>
-			<!-- DONT OUTPUT ANYTHING, BUT DONT DIE EITHER-->
-			<xsl:when test="$this eq 'Leer'"/>
-			<xsl:otherwise>
-				<xsl:for-each select="../../../z:dataField[
-					@name='WeightNum' and @dataType='Numeric']">
-					<xsl:comment>automatic measurementstype</xsl:comment>
-					<xsl:value-of select="normalize-space(z:value)"/>
-					<xsl:if test="position() != last()">
-						<xsl:text> x </xsl:text>
-					</xsl:if>									
-				</xsl:for-each>
-				<!--xsl:message terminate="no">
-					<xsl:text>ERROR: Unknown measurement type: </xsl:text>
-					<xsl:value-of select="."/>
-					<xsl:text> (</xsl:text>
-					<xsl:value-of select="../../../../../../@name"/>
-					<xsl:text>: </xsl:text>
-					<xsl:value-of select="../../../../../@id"/>
-					<xsl:text>)</xsl:text>
-				</xsl:message-->
-			</xsl:otherwise>
-		</xsl:choose>
+	<xsl:template name="measurementsSet">
+		<xsl:param name="type"/>
+		<xsl:param name="unit"/>
+		<xsl:param name="value"/>
+		<xsl:variable name="lang" select="z:moduleReference[
+			@name='TypeDimRef'
+		]/z:moduleReferenceItem/z:formattedValue/@language[1]"/>
+		<!--xsl:message>
+			<xsl:text>DDDDD:</xsl:text>
+			<xsl:value-of select="$lang"/>
+		</xsl:message-->
+		<lido:measurementsSet>
+			<lido:measurementType>
+				<xsl:attribute name="xml:lang">
+					<xsl:value-of select="$lang"/>
+				</xsl:attribute>
+				<xsl:value-of select="$type"/>
+			</lido:measurementType>
+			<lido:measurementUnit>
+				<xsl:attribute name="xml:lang">
+					<xsl:value-of select="$lang"/>
+				</xsl:attribute>
+				<xsl:value-of select="$unit"/>
+			</lido:measurementUnit>
+			<lido:measurementValue>
+				<xsl:attribute name="xml:lang">
+					<xsl:value-of select="$lang"/>
+				</xsl:attribute>
+				<xsl:value-of select="$value"/>
+			</lido:measurementValue>
+		</lido:measurementsSet>
 	</xsl:template>
 </xsl:stylesheet>
