@@ -427,7 +427,7 @@
 							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
 						</xsl:call-template>
 						<xsl:call-template name="measurementsSet">
-							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="type" select="'Durchmesser'"/>
 							<xsl:with-param name="unit" select="$unit"/>
 							<xsl:with-param name="value" select="z:dataField[@name='DiameterNum']/z:formattedValue"/>
 						</xsl:call-template>
