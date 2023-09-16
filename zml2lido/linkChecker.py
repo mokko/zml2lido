@@ -11,7 +11,7 @@
 import json
 import logging
 from lxml import etree
-from mpapi.client2 import Client2
+from mpapi.client import MpApi
 from mpapi.module import Module
 from mpapi.search import Search
 from pathlib import Path
@@ -84,7 +84,7 @@ class LinkChecker:
             "fixRelatedWorks: Removing relatedWorks that are not online and getting ISILs"
         )
 
-        client = Client2(baseURL=baseURL, user=user, pw=pw)
+        client = MpApi(baseURL=baseURL, user=user, pw=pw)
 
         relatedWorksL = self.tree.xpath(
             """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
@@ -291,7 +291,7 @@ class LinkChecker:
                 break  # break the while if this is the only data file or the last chunk
 
         print(f"   Length of cacheOne: {len(cacheOne)}")
-        client = Client2(baseURL=baseURL, user=user, pw=pw)
+        client = MpApi(baseURL=baseURL, user=user, pw=pw)
         if len(cacheOne) > 0:
             q = Search(module="Object", limit=-1)
             if len(cacheOne) > 1:
@@ -308,7 +308,7 @@ class LinkChecker:
             print(
                 f"   populating relWorks cache {len(cacheOne)} (max size {relWorksMaxSize})"
             )
-            newRelWorksM = client.search(query=q)
+            newRelWorksM = client.search2(query=q)
             # if the inline cache already exists
             try:
                 self.relWorks
