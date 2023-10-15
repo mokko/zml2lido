@@ -152,11 +152,12 @@
 					</xsl:when>
 
 					<!-- height, weight -->
-					<xsl:when test="$type = ('Auflagenkarton', 'Bemalte Bildfläche', 'Bildformat (Foto)', 
-						'Bildmaß','Blattmaß', 'Glasmaß', 'height x width', 'Höhe x Breite', 
-						'Höhe x Breite (aufgeschlagen)', 'Kartonformat (Foto)', 'Kartonformat', 'Papiermaß', 
-						'Passepartout', 'Passepartoutmaß', 'Passepartout Standardformat', 'Plattenrand', 
-						'Plattengröße (Foto)', 'Rahmenmaß', 'Rahmenaußenmaß', 'Stichhöhe', 'Tafelmaß', 
+					<xsl:when test="$type = ('Auflagenkarton', 'Auflagekarton', 'Bedruckte Bildfläche', 'Bemalte Bildfläche', 
+						'Bildformat (Foto)', 'Bildmaß','Blattmaß', 'Glasmaß', 'height x width', 'Höhe x Breite', 
+						'Höhe x Breite (aufgeschlagen)', 'Innenmaß', 'Lichtmaß', 'Kartonformat (Foto)', 
+						'Kartonformat', 'Papiermaß', 'Passepartout', 'Passepartoutmaß', 
+						'Passepartout Standardformat', 'Plattenrand', 'Plattengröße (Foto)', 'Rapportmaß',
+						'Rahmenmaß', 'Rahmenaußenmaß', 'Stichhöhe', 'Tafelmaß', 
 						'Wasserzeichenmaß', 'Zwischenkarton')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Höhe'"/>
@@ -167,6 +168,24 @@
 							<xsl:with-param name="type" select="'Breite'"/>
 							<xsl:with-param name="unit" select="$unit"/>
 							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!--Prefix only-->
+					<xsl:when test="$type = ('Buchformat')">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<!--xsl:with-param name="unit" select=""/-->
+							<xsl:with-param name="value" select="z:dataField[@name='PrefixTxt']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+					
+					<!--Text only-->
+					<xsl:when test="$type = ('Auflagekarton Standardformat')">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<!--xsl:with-param name="unit" select=""/-->
+							<xsl:with-param name="value" select="z:dataField[@name='TextTxt']/z:formattedValue"/>
 						</xsl:call-template>
 					</xsl:when>
 
