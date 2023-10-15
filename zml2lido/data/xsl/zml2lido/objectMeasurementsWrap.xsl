@@ -118,7 +118,7 @@
 					</xsl:when>
 
 					<!-- height, width, depth -->
-					<xsl:when test="$type = ('Höhe x Breite x Tiefe')">
+					<xsl:when test="$type = ('Höhe x Breite x Tiefe', 'Installationsmaß')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Höhe'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -153,10 +153,11 @@
 
 					<!-- height, weight -->
 					<xsl:when test="$type = ('Auflagenkarton', 'Bemalte Bildfläche', 'Bildformat (Foto)', 
-						'Bildmaß','Blattmaß', 'Glasmaß', 'height x width', 'Höhe x Breite', 'Höhe x Breite (aufgeschlagen)',
-						'Kartonformat (Foto)', 'Kartonformat', 'Passepartout', 'Passepartoutmaß', 
-						'Passepartout Standardformat', 'Plattengröße (Foto)', 'Rahmenmaß', 'Rahmenaußenmaß', 'Stichhöhe',
-						'Tafelmaß')">
+						'Bildmaß','Blattmaß', 'Glasmaß', 'height x width', 'Höhe x Breite', 
+						'Höhe x Breite (aufgeschlagen)', 'Kartonformat (Foto)', 'Kartonformat', 'Papiermaß', 
+						'Passepartout', 'Passepartoutmaß', 'Passepartout Standardformat', 'Plattenrand', 
+						'Plattengröße (Foto)', 'Rahmenmaß', 'Rahmenaußenmaß', 'Stichhöhe', 'Tafelmaß', 
+						'Wasserzeichenmaß', 'Zwischenkarton')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Höhe'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -499,9 +500,16 @@
 							<xsl:with-param name="value" select="z:dataField[@name='LengthNum']/z:formattedValue"/>
 						</xsl:call-template>
 					</xsl:when>
-					<xsl:when test="not(z:moduleReference[@name='TypeDimRef'])">
-						<xsl:message>WARNING: empty measurement type IGNORING</xsl:message>
+					<xsl:when test="$type = ('Kartierung Wasserzeichen')">
+						<xsl:message>WARNING: empty measurement type IGNORING </xsl:message>
+						<xsl:value-of select="$type"/>
 						<xsl:text> </xsl:text>
+						<xsl:value-of select="../../../@name"/>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="../../@id"/>
+					</xsl:when>
+					<xsl:when test="not(z:moduleReference[@name='TypeDimRef'])">
+						<xsl:message>WARNING: empty measurement type IGNORING </xsl:message>
 						<xsl:value-of select="../../../@name"/>
 						<xsl:text> </xsl:text>
 						<xsl:value-of select="../../@id"/>
