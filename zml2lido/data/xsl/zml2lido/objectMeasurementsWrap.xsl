@@ -117,6 +117,26 @@
 						</xsl:call-template>
 					</xsl:when>
 
+					<!-- height, width, depth -->
+					<xsl:when test="$type = ('Höhe x Breite x Tiefe')">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Höhe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='HeightNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Breite'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='WidthNum']/z:formattedValue"/>
+						</xsl:call-template>
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Tiefe'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='DepthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+
 					<!-- height, diameter -->
 					<xsl:when test="$type eq 'Höhe x Durchmesser'">
 						<xsl:call-template name="measurementsSet">
@@ -479,11 +499,21 @@
 							<xsl:with-param name="value" select="z:dataField[@name='LengthNum']/z:formattedValue"/>
 						</xsl:call-template>
 					</xsl:when>
-
+					<xsl:when test="not(z:moduleReference[@name='TypeDimRef'])">
+						<xsl:message>WARNING: empty measurement type IGNORING</xsl:message>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="../../../@name"/>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="../../@id"/>
+					</xsl:when>
 					<xsl:otherwise>
 						<xsl:message terminate="yes">
 							<xsl:text>ERROR: Unknown Measurement Type: </xsl:text>
 							<xsl:value-of select="$type"/>
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="../../../@name"/>
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="../../@id"/>
 						</xsl:message>
 					</xsl:otherwise>
 				</xsl:choose>

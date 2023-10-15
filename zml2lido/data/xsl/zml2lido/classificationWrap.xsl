@@ -330,7 +330,7 @@
 
 	<xsl:template mode="classification" match="z:repeatableGroup[@name ='ObjTechnicalTermGrp']
 		/z:repeatableGroupItem/z:vocabularyReference[@name='TechnicalTermEthnologicalVoc']">
-		<lido:classification lido:source="RIA:EM-Sachbegriff">
+		<lido:classification>
 			<xsl:call-template name="conceptTerm"/>
 		</lido:classification>
 	</xsl:template>	

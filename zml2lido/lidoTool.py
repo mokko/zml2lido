@@ -379,7 +379,7 @@ class LidoTool(Jobs):
         # print(f"ENTER ANALYZE WITH {Input}")
         partsL = str(Input).split("-chunk")
         root = partsL[0]
-        m = re.match("(\d+)[\.-]", partsL[1])
+        m = re.match(r"(\d+)[\.-]", partsL[1])
         no = int(m.group(1))
         tail = str(Input).split("-chunk" + str(no))[1]
         # print(f"_ANALYZE '{root}' '{no}' '{tail}'")
@@ -401,7 +401,7 @@ class LidoTool(Jobs):
     def _prepareOutdir(self) -> Path:
         # determine outdir (long or short)
         sdataP = Path("sdata").resolve()  # resolve probably not necessary
-        if re.match("\d\d\d\d\d\d", self.Input.parent.name):
+        if re.match(r"\d\d\d\d\d\d", self.Input.parent.name):
             outdir = sdataP / self.Input.parents[1].name / self.Input.parent.name
         elif self.Input.parent.name == "sdata":
             raise SyntaxError(
