@@ -103,6 +103,9 @@ def validate():
     parser = argparse.ArgumentParser()
     parser.add_argument("-i", "--input", required=True)
     args = parser.parse_args()
+    # can we have an option to validate consecutively numbered files?
+    # query570068-chunk283.lido.xml
+    # query570068-chunk284.lido.xml
     m = LidoTool(Input=args.input)
     m.validate()
 

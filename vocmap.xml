@@ -919,6 +919,11 @@
 			<target lang="de" name="homepage">https://www.smb.museum/aku</target>
 		</concept>
 		<concept>
+			<source lang="de">Museum für Fotografie, Kunstbibliothek, Staatliche Museen zu Berlin</source>
+			<target lang="de" name="ISIL">DE-MUS-787217</target>
+			<target lang="de" name="homepage">http://www.smb.museum/mf</target>
+		</concept>
+		<concept>
 			<source lang="de">Museum für Islamische Kunst, Staatliche Museen zu Berlin</source>
 			<target lang="de" name="ISIL">DE-MUS-814517</target>
 			<target lang="de" name="homepage">https://www.smb.museum/isl</target>

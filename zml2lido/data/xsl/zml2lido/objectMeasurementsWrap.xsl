@@ -46,6 +46,11 @@
 			</xsl:message-->
 
 			<lido:objectMeasurements>
+				<xsl:if test="z:dataField[@name='PrefixTxt']/z:formattedValue ne '' and $type ne 'Buchformat'">
+					<lido:qualifierMeasurements>
+						<xsl:value-of select="z:dataField[@name='PrefixTxt']/z:formattedValue"/>
+					</lido:qualifierMeasurements>
+				</xsl:if>
 				<xsl:choose>
 					<!-- Circumference -->
 					<xsl:when test="$type eq 'Umfang'">
@@ -53,6 +58,15 @@
 							<xsl:with-param name="type" select="$type"/>
 							<xsl:with-param name="unit" select="$unit"/>
 							<xsl:with-param name="value" select="z:dataField[@name='CircumferenceNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
+
+					<!--ConfectionSizeLnu-->
+					<xsl:when test="$type eq 'Konfektionsgröße'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='ConfectionSizeLnu']/z:formattedValue"/>
 						</xsl:call-template>
 					</xsl:when>
 
@@ -99,7 +113,7 @@
 					</xsl:when>
 					
 					<!-- height, depth, width -->
-					<xsl:when test="$type = ('Außenmaß', 'Gesamtmaß', 'Objektmaß')">
+					<xsl:when test="$type = ('Außenmaß', 'Gesamtmaß', 'Objektmaß', 'Kartierung')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Höhe'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -151,13 +165,14 @@
 						</xsl:call-template>
 					</xsl:when>
 
-					<!-- height, weight -->
-					<xsl:when test="$type = ('Auflagenkarton', 'Auflagekarton', 'Bedruckte Bildfläche', 'Bemalte Bildfläche', 
-						'Bildformat (Foto)', 'Bildmaß','Blattmaß', 'Glasmaß', 'height x width', 'Höhe x Breite', 
-						'Höhe x Breite (aufgeschlagen)', 'Innenmaß', 'Lichtmaß', 'Kartonformat (Foto)', 
-						'Kartonformat', 'Papiermaß', 'Passepartout', 'Passepartoutmaß', 
-						'Passepartout Standardformat', 'Plattenrand', 'Plattengröße (Foto)', 'Rapportmaß',
-						'Rahmenmaß', 'Rahmenaußenmaß', 'Stichhöhe', 'Tafelmaß', 
+					<!-- height, weight Höhe x Breite -->
+					<xsl:when test="$type = ('Auflagenkarton', 'Auflagekarton', 'Bedruckte Bildfläche', 
+						'Bemalte Bildfläche', 'Bildformat (Foto)', 'Bildmaß','Blattmaß', 'Bruttomaß', 
+						'Glasmaß', 'height x width', 'Höhe x Breite', 'Höhe x Breite (aufgeschlagen)', 
+						'Innenmaß', 'Lichtmaß', 'Kartonformat (Foto)', 'Kartonformat', 
+						'Montagekarton', 'Papiermaß', 'Passepartout', 'Passepartoutmaß', 
+						'Passepartout Standardformat', 'Plattenrand', 'Plattengröße (Foto)', 
+						'Rapportmaß', 'Rahmenmaß', 'Rahmenaußenmaß', 'Stichhöhe', 'Tafelmaß', 
 						'Wasserzeichenmaß', 'Zwischenkarton')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Höhe'"/>
@@ -242,6 +257,15 @@
 							<xsl:with-param name="value" select="$HHMMSS"/>
 						</xsl:call-template>
 					</xsl:when>
+ 
+					<!-- length-->
+					<xsl:when test="$type eq 'Länge'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="'Länge'"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='LengthNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when>
 
 					<!-- length, diameter-->
 					<xsl:when test="$type eq 'Rollenmaß'">
@@ -309,7 +333,7 @@
 						</xsl:call-template>
 					</xsl:when>
 
-					<!-- prefix, suffix-->
+					<!-- prefix, suffix THIS cant be right-->
 					<xsl:when test="$type eq 'Größe'">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Prefix'"/>
@@ -346,6 +370,15 @@
 							<xsl:with-param name="value" select="z:dataField[@name='SuffixTxt']/z:formattedValue"/>
 						</xsl:call-template>
 					</xsl:when>
+
+					<!-- Radius -->
+					<xsl:when test="$type eq 'Radius'">
+						<xsl:call-template name="measurementsSet">
+							<xsl:with-param name="type" select="$type"/>
+							<xsl:with-param name="unit" select="$unit"/>
+							<xsl:with-param name="value" select="z:dataField[@name='RadiusNum']/z:formattedValue"/>
+						</xsl:call-template>
+					</xsl:when> 
 
 					<!--speed-->
 					<xsl:when test="$type = ('Geschwindigkeit', 'Geschwindigkeit (Band)', 
@@ -386,7 +419,7 @@
 					</xsl:when>
 
 					<!-- unknown1, unknown2-->
-					<xsl:when test="$type eq 'Allgemein'">
+					<xsl:when test="$type = ('Allgemein', 'Plattenmaß')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="'Andere'"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -437,7 +470,7 @@
 					</xsl:when> 
 
 					<!-- width -->
-					<xsl:when test="$type = ('Länge', 'Breite', 'Schenkelbreite', 'Maßstab')">
+					<xsl:when test="$type = ('Breite', 'Schenkelbreite', 'Maßstab')">
 						<xsl:call-template name="measurementsSet">
 							<xsl:with-param name="type" select="$type"/>
 							<xsl:with-param name="unit" select="$unit"/>
@@ -565,6 +598,16 @@
 		</lido:objectMeasurementsSet>
 	</xsl:template>
 
+	<xsl:template name="attribute">
+		<xsl:param name="lang"/>
+		<xsl:if test="$lang ne ''">
+			<xsl:attribute name="xml:lang">
+				<xsl:value-of select="$lang"/>
+			</xsl:attribute>
+		</xsl:if>
+	</xsl:template>
+
+
 	<xsl:template name="measurementsSet">
 		<xsl:param name="type"/>
 		<xsl:param name="unit"/>
@@ -575,24 +618,28 @@
 		<!--xsl:message>
 			<xsl:text>DDDDD:</xsl:text>
 			<xsl:value-of select="$lang"/>
-		</xsl:message-->
+		</xsl:message
+
+		SPEC: The subelements "measurementUnit", "measurementValue" and
+		"measurementType" are mandatory.		
+		-->
 		<lido:measurementsSet>
 			<lido:measurementType>
-				<xsl:attribute name="xml:lang">
-					<xsl:value-of select="$lang"/>
-				</xsl:attribute>
+				<xsl:call-template name="attribute">
+					<xsl:with-param name="lang" select="$lang"/>
+				</xsl:call-template>
 				<xsl:value-of select="$type"/>
 			</lido:measurementType>
 			<lido:measurementUnit>
-				<xsl:attribute name="xml:lang">
-					<xsl:value-of select="$lang"/>
-				</xsl:attribute>
+				<xsl:call-template name="attribute">
+					<xsl:with-param name="lang" select="$lang"/>
+				</xsl:call-template>
 				<xsl:value-of select="$unit"/>
 			</lido:measurementUnit>
 			<lido:measurementValue>
-				<xsl:attribute name="xml:lang">
-					<xsl:value-of select="$lang"/>
-				</xsl:attribute>
+				<xsl:call-template name="attribute">
+					<xsl:with-param name="lang" select="$lang"/>
+				</xsl:call-template>
 				<xsl:value-of select="$value"/>
 			</lido:measurementValue>
 		</lido:measurementsSet>
