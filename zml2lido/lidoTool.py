@@ -46,6 +46,8 @@ conf_fn = Path(__file__).parents[1] / "sdata" / "lido_conf.py"
 xslDir = Path(__file__).parent / "data/xsl"
 lidoXSD = Path(__file__).parent / "data/xsd/lido-v1.0.xsd"
 
+
+# should we move over to environment variable?
 with open(conf_fn) as f:
     exec(f.read())  # saxLib, lidoXSD
 

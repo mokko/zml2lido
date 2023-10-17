@@ -553,18 +553,22 @@
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:when test="$type = ('Kartierung Wasserzeichen')">
-						<xsl:message>WARNING: empty measurement type IGNORING </xsl:message>
-						<xsl:value-of select="$type"/>
-						<xsl:text> </xsl:text>
-						<xsl:value-of select="../../../@name"/>
-						<xsl:text> </xsl:text>
-						<xsl:value-of select="../../@id"/>
+						<xsl:message>
+							<xsl:text>WARNING: empty measurement type IGNORING </xsl:text>
+							<xsl:value-of select="$type"/>
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="../../../@name"/>
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="../../@id"/>
+						</xsl:message>
 					</xsl:when>
 					<xsl:when test="not(z:moduleReference[@name='TypeDimRef'])">
-						<xsl:message>WARNING: empty measurement type IGNORING </xsl:message>
-						<xsl:value-of select="../../../@name"/>
-						<xsl:text> </xsl:text>
-						<xsl:value-of select="../../@id"/>
+						<xsl:message>
+							<xsl:text>WARNING: empty measurement type IGNORING </xsl:text>
+							<xsl:value-of select="../../../@name"/>
+							<xsl:text> </xsl:text>
+							<xsl:value-of select="../../@id"/>
+						</xsl:message>
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:message terminate="yes">
