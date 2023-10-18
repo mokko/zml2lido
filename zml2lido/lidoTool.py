@@ -132,8 +132,8 @@ class LidoTool(Jobs):
 
     def onlyPublishedSingle(self, *, Input: str) -> str:
         """
-        filter out lido records that are not published at recherche.smb expects lido
-        as input and outputs lido as well
+        filter out lido records that are not published at recherche.smb
+        expects lido as input and outputs lido as well
 
         This is an old (obsolete) xslt version; currently we do that the same procedure
         during the Python phase with the LinkChecker.
@@ -446,7 +446,7 @@ class LidoTool(Jobs):
         """
         Input could be Path or str.
 
-        Some checks for convenance; mainly for our users, so they get more intelligable
+        Some checks for convenience; mainly for our users, so they get more intelligable
         error messages.
         """
         script_dir = Path(__file__).parents[1]

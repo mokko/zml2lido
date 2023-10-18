@@ -20,7 +20,7 @@ import re
 from typing import Optional, Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
-relWorksMaxSize = 65000
+relWorksMaxSize = 40000
 user, pw, baseURL = get_credentials()
 
 
@@ -123,7 +123,7 @@ class LinkChecker:
                         )
                         q = self._optimize_relWorks_cache(query=q)
                         # q.toFile(path="sdata/debug.search.xml")
-                        relWork = client.search(query=q)
+                        relWork = client.search2(query=q)
                         if relWork:  # realistic that query results are empty?
                             # appending them to relWork cache
                             self.relWorks += relWork
@@ -343,7 +343,7 @@ class LinkChecker:
             recID = recordN.xpath("l:lidoRecID", namespaces=NSMAP)[0]
             self.log(f"rm unpublishedRecords: {recID}")
             recordN.getparent().remove(recordN)
-        # self.log("rmUnpublishedRecords: done!")
+        self.log("rmUnpublishedRecords: done!")
 
     def saveTree(self):
         """
@@ -368,11 +368,11 @@ class LinkChecker:
         Expects path/name of lvl 1 lido file that ends in ".lido.xml".
         """
         stem = str(fn).split(".lido.xml")[0]
-        m = re.search("-chunk(\d+)$", stem)
+        m = re.search(r"-chunk(\d+)$", stem)
         if m:
             no = int(m.group(1))
             new_no = no + 1
-            no_no = re.sub("\d+$", "", stem)
+            no_no = re.sub(r"\d+$", "", stem)
             new_path = Path(f"{no_no}{new_no}.lido.xml")
             # print(f"D: Suggested new path: {new_path}")
             if Path(new_path).exists():
