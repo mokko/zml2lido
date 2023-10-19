@@ -19,3 +19,5 @@ parser = argparse.ArgumentParser(description="Quality control for LIDO files")
     )
     args = parser.parse_args()
 
+class QualityControl:
+    def __init__(self, *, input_fn):

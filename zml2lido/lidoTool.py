@@ -339,16 +339,30 @@ class LidoTool(Jobs):
             no += 1
             chunkFn = f"{root}-chunk{no}{tail}"
 
-    def firstChunkName(self, *, Input):
+    def firstChunkName(self, *, Input: str | Path):
         """
         returns the chunk with no. 1
 
         This might belong in chunker.py...
+
+        Can we get the first file instead of forcing people to
+        start with chunk1?
+        List glob root* and take the first item?
         """
         root, no, tail = self._analyze_chunkFn(Input=Input)
-        firstFn = f"{root}-chunk1{tail}"
+        Input = Path(Input)
+        parent = Input.parent
+        folder = {}
+        for each in parent.iterdir():
+            if str(each).startswith(root):
+                root, no, tail = self._analyze_chunkFn(Input=each)
+                folder[no] = each
+        no = min(folder.keys())
+        firstFn = folder[no]
+        #
+        # firstFn = f"{root}-chunk65{tail}"
         # print(f"going in {Input}")
-        print(f"firstChunkName {firstFn}")
+        print(f"***firstChunkName {firstFn}")
         return firstFn
 
     def saxon(self, *, Input: str, output: str, xsl: str) -> None:
