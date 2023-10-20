@@ -73,10 +73,10 @@ def lido():
 
     print(f"JOB: {args.job}")
 
-    m = LidoTool(
+    lt = LidoTool(
         Input=args.input, force=args.force, validation=args.validate, chunks=args.chunks
     )
-    getattr(m, args.job)()
+    lt.execute(args.job)
 
 
 def linkChecker():

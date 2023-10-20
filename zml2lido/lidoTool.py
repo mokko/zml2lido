@@ -4,16 +4,16 @@
     lido Command Line Tool
     Execute lido from the command line in the project dir. That is the 
     dir above sdata. In my case that is 
-        C:\M3\zml2lido
+        C:/M3/zml2lido
     You need to specify three parameters 
         -j/--job: which flavor (job) of the transformation you want to use 
         -i/--input: where the input xml file is
         -o/--output: will be used as output directory; in my case 
-            C:\m3\zml2lido\sdata\{output}
+            C:/m3/zml2lido/sdata/{output}
 
-        cd C:\m3\zml2lido 
-        lido -j smb -i c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml -o 3Wege
-        # writes lido to file C:\m3\zml2lido\sdata\3Wege\20210904.lido.xml
+        cd C:/m3/zml2lido 
+        lido -j smb -i c:/m3/MpApi/sdata/3Wege/3Wege20210904.xml -o 3Wege
+        # writes lido to file C:/m3/zml2lido/sdata/3Wege/20210904.lido.xml
 
 	Flavors (aka jobs):
     FvH wants links in the Internet instead of image files, but we still give 
@@ -37,31 +37,22 @@ import sys
 from typing import Iterable, Optional
 from zipfile import ZipFile
 from zml2lido.linkChecker import LinkChecker
-from zml2lido.jobs import Jobs
 
-ImageFile.LOAD_TRUNCATED_IMAGES = True
-conf_fn = Path(__file__).parents[1] / "sdata" / "lido_conf.py"
 xslDir = Path(__file__).parent / "data/xsl"
 lidoXSD = Path(__file__).parent / "data/xsd/lido-v1.0.xsd"
 
-
-# should we move over to environment variable?
-with open(conf_fn) as f:
-    exec(f.read())  # saxLib, lidoXSD
+saxLib = os.environ["saxLib"]
 
 xsl = {
     "zml2lido": xslDir / "zml2lido.xsl",
-    "lido2html": xslDir / "lido2html.xsl",
     "Inhalt": xslDir / "dropResourceDescriptionInhaltAnsicht.xsl",  # filter
     "Literatur": xslDir / "dropRelatedWorksLiterature.xsl",  # filter
-    "onlyPublished": xslDir / "filterPublished.xsl",
     "splitLido": xslDir / "splitLido.xsl",
-    "splitSachbegriff": xslDir / "splitNoSachbegriff.xsl",
     "ohneLit": xslDir / "ohneLit.xsl",
 }
 
 
-class LidoTool(Jobs):
+class LidoTool:
     def __init__(
         self,
         *,
@@ -70,6 +61,13 @@ class LidoTool(Jobs):
         validation: bool = False,
         chunks: bool = False,
     ) -> None:
+        """
+        Input: lido file or first chunk
+        force: overwrites files
+        validation: validate lido files?
+        chunks: expect consecutively numbered and zipped lido files as input
+        """
+
         self.validation = validation
         self.force = force
         self.chunks = chunks
@@ -81,6 +79,24 @@ class LidoTool(Jobs):
     #
     # Steps
     #
+
+    def execute(self, job: str) -> None:
+        if job == "dd":
+            # debug. Only lvl1
+            lido_fn = self.zml2lido(Input=self.Input)
+            self._valsplit(lido_fn)
+        elif job == "ohneLit":
+            # use different xslt for lvl1 conversion
+            lido_fn = self.zml2lido(Input=self.Input, xslt="ohneLit")
+            lvl2_fn = self.urlLido(Input=lido_fn)
+            self._valsplit(lvl2_fn)
+        elif job == "mitLit":
+            # lvl2
+            lido_fn = self.zml2lido(Input=self.Input)
+            lvl2_fn = self.urlLido(Input=lido_fn)
+            self._valsplit(lvl2_fn)
+        else:
+            raise SyntaxError("ERROR: Unknown job name!")
 
     def lfilter(self, *, split: bool = False, Type: str) -> None:
         if not Type in xsl:
@@ -95,11 +111,7 @@ class LidoTool(Jobs):
             self.force = True
             self.splitLido(Input=out_fn)
 
-    def urlLido(self, *, Input: str) -> str:
-        # print("LINKCHECKER")
-        # lc = LinkChecker(Input=Input) # run only once to make cache
-        # lc.prepareRelWorksCache2(first=Input)
-
+    def urlLido(self, *, Input: str) -> Path:
         if self.chunks:
             for chunkFn in self.loopChunks(Input=Input):
                 new_fn = self.urlLidoSingle(Input=chunkFn)
@@ -107,24 +119,24 @@ class LidoTool(Jobs):
         else:
             return self.urlLidoSingle(Input=Input)
 
-    def urlLidoSingle(self, *, Input: str) -> str:
+    def urlLidoSingle(self, *, Input: str) -> Path:
         """
         Using Python rewrite (fix) generic Zetcom xml, mostly working on
         links (urls)
         """
-        lc = LinkChecker(Input=Input)  # init for each chunk required, although we will
-        outFn = lc.out_fn  # have to load a file every time.
-        if not Path(outFn).exists() or self.force:
+        out_fn = self._lvl2_path(Input)
+
+        # init for each chunk required, although we will
+        lc = LinkChecker(Input=Input, out_fn=out_fn)
+        if not out_fn.exists() or self.force:
             # lc.prepareRelWorksCache2(first=Input)  # run only once to make cache
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
-            # lc.guess()  # rewrite filenames with http-links on SMB-Digital
-            # currently, we dont CHECK if links work
             # lc.rmInternalLinks()  # remove resourceSets with internal links
             lc.fixRelatedWorks()
             lc.saveTree()
         else:
-            print(f"   rewrite exists already: {outFn}, no overwrite")
-        return outFn
+            print(f"   rewrite exists already: {out_fn}, no overwrite")
+        return out_fn
 
     def splitLido(self, *, Input: str) -> str:
         # print("SPLITLIDO enter")
@@ -285,10 +297,7 @@ class LidoTool(Jobs):
                 folder[no] = each
         no = min(folder.keys())
         firstFn = folder[no]
-        #
-        # firstFn = f"{root}-chunk65{tail}"
-        # print(f"going in {Input}")
-        print(f"***firstChunkName {firstFn}")
+        # print(f"***firstChunkName {firstFn}")
         return firstFn
 
     def saxon(self, *, Input: str, output: str, xsl: str) -> None:
@@ -334,6 +343,17 @@ class LidoTool(Jobs):
         logging.basicConfig(
             filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
         )
+
+    def _lvl2_path(self, p: str | Path) -> Path:
+        """
+        Given a lvl1 lido path, determine the lvl2 path
+        """
+        p = Path(p)
+        suffixes = "".join(p.suffixes)
+        stem = str(p).split(".")[0]
+        new_dir = p.parent / "lvl2"
+        new_dir.mkdir(exist_ok=True)
+        return new_dir.joinpath(stem + "-2" + suffixes)
 
     def _prepareOutdir(self) -> Path:
         # determine outdir (long or short)
@@ -381,3 +401,8 @@ class LidoTool(Jobs):
             raise SyntaxError("ERROR: Input does not exist!")
 
         return Input
+
+    def _valsplit(self, fn):
+        if self.validation:
+            self.validate(path=fn)
+        self.splitLido(Input=fn)

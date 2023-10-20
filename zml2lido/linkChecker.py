@@ -25,15 +25,11 @@ user, pw, baseURL = get_credentials()
 
 
 class LinkChecker:
-    def __init__(self, *, Input):
-        self.log(f"LinkChecker is working on {Input}")  # not exactly an error
-        # determine out_fn
-        p = Path(Input)
-        ext = "".join(p.suffixes)
-        stem = str(p).split(".")[0]
-        self.out_fn = stem + "-2" + ext  # name and location for python transformation
-
-        self.relWorksFn = p.parent / "relWorks.cache.xml"
+    def __init__(self, *, Input: str | Path, out_fn: str | Path):
+        self.log(f"STATUS: LinkChecker is working on {Input}")  # not exactly an error
+        self.Input = Path(Input)
+        self.out_fn = out_fn
+        self.relWorksFn = self.Input.parent / "relWorks.cache.xml"
         self.tree = etree.parse(str(Input))
         # we used to not prepare the relWorksCache here. Why?
         print("prepare relWorks cache")
