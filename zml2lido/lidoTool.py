@@ -95,30 +95,6 @@ class LidoTool(Jobs):
             self.force = True
             self.splitLido(Input=out_fn)
 
-    def lido2html(self, *, Input: str) -> str:
-        print("LIDO2HTML")
-        if self.chunks:
-            for chunkFn in self.loopChunks(Input=Input):
-                new_fn = self.lido2htmlSingle(Input=chunkFn)
-        else:
-            self.lido2htmlSingle(Input=Input)
-        return Input  # dont act on html
-
-    def lido2htmlSingle(self, *, Input: str) -> None:
-        """Only runs if html dir doesn't exist."""
-        orig = Path.cwd()
-        os.chdir(self.outdir)
-        hdir = Path("html")
-        # if not any(os.scandir(str(hdir))):
-        if not hdir.exists() or self.force is True:
-            print("making LIDO2HTML")
-            hdir.mkdir(exist_ok=True)
-            os.chdir(str(hdir))
-            self.saxon(Input=Input, xsl=xsl["lido2html"], output="o.xml")
-        else:
-            print("LIDO2HTML exists already")
-        os.chdir(orig)
-
     def urlLido(self, *, Input: str) -> str:
         # print("LINKCHECKER")
         # lc = LinkChecker(Input=Input) # run only once to make cache
