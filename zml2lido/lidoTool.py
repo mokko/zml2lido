@@ -86,14 +86,14 @@ class LidoTool:
             lido_fn = self.zml2lido(Input=self.Input)
             self._valsplit(lido_fn)
         elif job == "ohneLit":
-            # use different xslt for lvl1 conversion
+            # use different xslt for lvl1 conversion plus lvl2
             lido_fn = self.zml2lido(Input=self.Input, xslt="ohneLit")
-            lvl2_fn = self.urlLido(Input=lido_fn)
+            lvl2_fn = self.to_lvl2(Input=lido_fn)
             self._valsplit(lvl2_fn)
         elif job == "mitLit":
-            # lvl2
+            # regular xslt, lvl2
             lido_fn = self.zml2lido(Input=self.Input)
-            lvl2_fn = self.urlLido(Input=lido_fn)
+            lvl2_fn = self.to_lvl2(Input=lido_fn)
             self._valsplit(lvl2_fn)
         else:
             raise SyntaxError("ERROR: Unknown job name!")
@@ -111,15 +111,15 @@ class LidoTool:
             self.force = True
             self.splitLido(Input=out_fn)
 
-    def urlLido(self, *, Input: str) -> Path:
+    def to_lvl2(self, *, Input: str) -> Path:
         if self.chunks:
             for chunkFn in self.loopChunks(Input=Input):
-                new_fn = self.urlLidoSingle(Input=chunkFn)
+                new_fn = self.to_lvl2Single(Input=chunkFn)
             return self.firstChunkName(Input=new_fn)
         else:
-            return self.urlLidoSingle(Input=Input)
+            return self.to_lvl2Single(Input=Input)
 
-    def urlLidoSingle(self, *, Input: str) -> Path:
+    def to_lvl2Single(self, *, Input: str) -> Path:
         """
         Using Python rewrite (fix) generic Zetcom xml, mostly working on
         links (urls)
@@ -133,7 +133,7 @@ class LidoTool:
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             # lc.rmInternalLinks()  # remove resourceSets with internal links
             lc.fixRelatedWorks()
-            lc.saveTree()
+            lc.saveTree()  # save at out_fn
         else:
             print(f"   rewrite exists already: {out_fn}, no overwrite")
         return out_fn
