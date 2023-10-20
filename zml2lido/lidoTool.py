@@ -125,15 +125,15 @@ class LidoTool:
         links (urls)
         """
         out_fn = self._lvl2_path(Input)
-
+        print()
         # init for each chunk required, although we will
-        lc = LinkChecker(Input=Input, out_fn=out_fn)
+        lc = LinkChecker(Input=Input)
         if not out_fn.exists() or self.force:
             # lc.prepareRelWorksCache2(first=Input)  # run only once to make cache
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             # lc.rmInternalLinks()  # remove resourceSets with internal links
             lc.fixRelatedWorks()
-            lc.saveTree()  # save at out_fn
+            lc.saveTree(out_fn)
         else:
             print(f"   rewrite exists already: {out_fn}, no overwrite")
         return out_fn

@@ -25,10 +25,9 @@ user, pw, baseURL = get_credentials()
 
 
 class LinkChecker:
-    def __init__(self, *, Input: str | Path, out_fn: str | Path):
+    def __init__(self, *, Input: str | Path):
         self.log(f"STATUS: LinkChecker is working on {Input}")  # not exactly an error
         self.Input = Path(Input)
-        self.out_fn = out_fn
         self.relWorksFn = self.Input.parent / "relWorks.cache.xml"
         self.tree = etree.parse(str(Input))
         # we used to not prepare the relWorksCache here. Why?
@@ -347,16 +346,16 @@ class LinkChecker:
             recordN.getparent().remove(recordN)
         self.log("rmUnpublishedRecords: done!")
 
-    def saveTree(self):
+    def saveTree(self, out_fn) -> str:
         """
         During __init__ we loaded a LIDO file, with this function we write it back to the
         out file location as set during __init__.
         """
-        self.log(f"Writing back to {self.out_fn}")
+        self.log(f"Writing back to {out_fn}")
         self.tree.write(
-            self.out_fn, pretty_print=True, encoding="UTF-8", xml_declaration=True
+            str(out_fn), pretty_print=True, encoding="UTF-8", xml_declaration=True
         )
-        return self.out_fn
+        return out_fn
 
     #
     #
