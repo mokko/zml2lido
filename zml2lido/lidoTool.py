@@ -119,34 +119,6 @@ class LidoTool(Jobs):
             print("LIDO2HTML exists already")
         os.chdir(orig)
 
-    def onlyPublished(self, *, Input: str) -> str:
-        print(f"ONLYPUBLISHED")
-        if self.chunks:
-            for chunkFn in self.loopChunks(Input=Input):
-                new_fn = self.onlyPublishedSingle(Input=chunkFn)
-            return self.firstChunkName(Input=new_fn)
-        else:
-            return self.onlyPublishedSingle(Input=Input)
-
-    def onlyPublishedSingle(self, *, Input: str) -> str:
-        """
-        filter out lido records that are not published at recherche.smb
-        expects lido as input and outputs lido as well
-
-        This is an old (obsolete) xslt version; currently we do that the same procedure
-        during the Python phase with the LinkChecker.
-        """
-        Input = Path(Input)  # what a mess
-        stem = str(Input).split(".")[0]
-        ext = "".join(Input.suffixes)
-        out = self.outdir.joinpath(stem + ".onlyPub" + ext)
-
-        if not Path(out).exists() or self.force is True:
-            self.saxon(Input=Input, xsl=xsl["onlyPublished"], output=out)
-        else:
-            print(f"{out} exist already, no overwrite")
-        return out
-
     def urlLido(self, *, Input: str) -> str:
         # print("LINKCHECKER")
         # lc = LinkChecker(Input=Input) # run only once to make cache
