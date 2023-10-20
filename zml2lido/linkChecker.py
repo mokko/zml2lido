@@ -113,7 +113,7 @@ class LinkChecker:
                         # is the work already in the cache?
                         relWorkN = self.relWorks[(modType, id_int)]
                     except:  # if not, get record and add it to cache
-                        print("   getting item from online RIA")
+                        print(f"   getting item from online RIA {modType} {id_int}")
                         # if not, get it now and add to cache
                         q = Search(module=modType, limit=-1)
                         q.addCriterion(
@@ -140,14 +140,20 @@ class LinkChecker:
                         # self.log(f"   looking up ISIL for relWork")
                         ID.attrib["{http://www.lido-schema.org}source"] = "ISIL/ID"
                         # we're assuming there is always a verwaltendeInstitution, but that is not enforced by RIA!
-                        verwInst = relWork.xpath(
-                            """//m:moduleReference[
-                                @name='ObjOwnerRef'
-                            ]/m:moduleReferenceItem/m:formattedValue"""
-                        )[0]
-                        ISIL = self.ISIL_lookup(institution=verwInst.text)
-                        ID.text = f"{ISIL}/{str(id_int)}"
-                        print(f"   relWork: {id_int}:{verwInst.text} -> {ISIL}")
+                        try:
+                            verwInst = relWork.xpath(
+                                """//m:moduleReference[
+                                    @name='ObjOwnerRef'
+                                ]/m:moduleReferenceItem/m:formattedValue"""
+                            )[0]
+                        except:
+                            self.log(
+                                f"WARNING: verwaltendeInstitution empty! {modType} {id_int}"
+                            )
+                        else:
+                            ISIL = self.ISIL_lookup(institution=verwInst.text)
+                            ID.text = f"{ISIL}/{str(id_int)}"
+                            print(f"   relWork: {id_int}:{verwInst.text} -> {ISIL}")
                     else:
                         # self.log(f"   removing unpublic relWork")
                         relWorkSet = ID.getparent().getparent().getparent()

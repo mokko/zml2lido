@@ -29,11 +29,9 @@
 
 from lxml import etree
 from pathlib import Path
-from PIL import Image, ImageFile
 import logging
 import os
 import re
-import shutil
 import subprocess
 import sys
 from typing import Iterable, Optional
@@ -148,26 +146,6 @@ class LidoTool(Jobs):
         else:
             print(f"{out} exist already, no overwrite")
         return out
-
-    def pix(self, *, Input: str, output: str) -> None:
-        """
-        input is c:\m3\MpApi\sdata\3Wege\3Wege20210904.xml
-        read from C:\m3\MpApi\sdata\3Wege\pix_*
-        write to C:\m3\zml2lido\sdata\3Wege\*
-        resize so that biggest side is 1848px
-
-        CAVEAT: it works on all pix from source dir; there are situations where
-        records may have been filtered out, eg. from splitSachbegriff and pix
-        may end up in target that are no longer included
-
-        TODO: fix. Let's only work on pix that are referenced in a lido file
-        """
-        print("WORKING ON PIX")
-        in_dir = Path(Input).parent
-        # print (f"*input {in_dir}")
-        for pic_fn in Path(in_dir).rglob(f"**/pix_*/*"):
-            # print (f"{pic_fn}")
-            self._resize(pic=pic_fn)
 
     def urlLido(self, *, Input: str) -> str:
         # print("LINKCHECKER")
@@ -401,11 +379,6 @@ class LidoTool(Jobs):
         # print(f"_ANALYZE '{root}' '{no}' '{tail}'")
         return root, no, tail
 
-    def _copy(self, *, pic: str, out: str) -> None:
-        if not Path(out).exists():
-            print(f"*copying {pic} -> {out}")
-            shutil.copyfile(pic, out)
-
     def _initLog(self) -> None:
         logfile = self.outdir / "lidoTool.log"
 
@@ -432,29 +405,6 @@ class LidoTool(Jobs):
             outdir.mkdir(parents=True, exist_ok=False)
         print(f" outdir {outdir}")
         return outdir
-
-    def _resize(self, *, pic):
-        out_fn = self.dir.joinpath(pic.name)
-        if pic.suffix != ".mp3" and pic.suffix != ".pdf":  # pil croaks over mp3
-            im = Image.open(pic)
-            if not out_fn.exists():
-                print(f"{pic} -> {out_fn}")
-                width, height = im.size
-                if width > 1848 or height > 1848:
-                    logging.info(f"{pic} exceeds size: {width} x {height}")
-                    if width > height:
-                        factor = 1848 / width
-                    else:  # height > width or both equal
-                        factor = 1848 / height
-                    new_size = (int(width * factor), int(height * factor))
-                    print(f"*resizing {factor} {new_size}")
-                    im = im.convert("RGB")
-                    out = im.resize(new_size, Image.LANCZOS)
-                    out.save(out_fn)
-                else:
-                    self._copy(pic=pic, out=out_fn)
-        else:
-            self._copy(pic=pic, out=out_fn)
 
     def _sanitize(self, *, Input: str) -> Path:
         """

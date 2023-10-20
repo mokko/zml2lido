@@ -201,13 +201,13 @@
 		-->
 		<xsl:variable name="euro" select="func:fashion-map-lax(z:vocabularyReferenceItem/z:formattedValue)"/>
 						
-		<xsl:message>
+		<!--xsl:message>
 			<xsl:value-of select="z:vocabularyReferenceItem/z:formattedValue"/>
 			<xsl:text> aat: </xsl:text>
 			<xsl:value-of select="$aat"/>
 			<xsl:text> euro: </xsl:text>
 			<xsl:value-of select="$euro"/>
-		</xsl:message>
+		</xsl:message-->
 
 		<xsl:comment>
 			<xsl:value-of select="z:vocabularyReferenceItem/@name"/>
