@@ -30,7 +30,7 @@
 			<xsl:call-template name="europeanaType"/>
 			<xsl:call-template name="objekttyp3"/>
 			<xsl:call-template name="sachbegriff"/>
-			<xsl:call-template name="sammlung2"/>
+			<xsl:call-template name="bereich3"/>
 			<xsl:call-template name="systematikArt"/>
         </lido:classificationWrap>
 	</xsl:template>
@@ -60,7 +60,7 @@
 		<xsl:if test="normalize-space(substring-before($bereich, '-')) = $kunstmuseen">
 			<lido:classification>
 				<!-- art; better than art work? -->
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
+				<lido:conceptID lido:encoodinganalog="RIA:Bereichskürzel" lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
 			</lido:classification>
 		</xsl:if>
@@ -69,70 +69,22 @@
 		<xsl:if test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/@moduleItemId = '67676' "> 
 			<lido:classification>
 				<!-- art; better than art work? -->
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
+				<lido:conceptID lido:encoodinganalog="RIA:verwaltendeInstitution" lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
 			</lido:classification>
 		</xsl:if>
 		
 		<xsl:if test="$bereich = $archäologischeBereiche">
 			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234110</lido:conceptID>
+				<lido:conceptID lido:encoodinganalog="RIA:Bereich" lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234110</lido:conceptID>
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">archaeologic object</lido:term>
 			</lido:classification>
 		</xsl:if>
 
 		<xsl:if test="$bereich = $ethnologischeBereiche">
 			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234108</lido:conceptID>
+				<lido:conceptID lido:encoodinganalog="RIA" lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234108</lido:conceptID>
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">ethnographic object</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<!-- einzelne Bereiche -->
-		<xsl:if test="$bereich = 'EM-Afrika'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300015647</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">African</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$bereich = 'EM-Ost- und Nordasien' or $bereich = 'EM-Süd- und Süstostasien'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300018279</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">Asian</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$bereich = 'EM-Ozeanien'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300021854</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">Oceanic</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$bereich = 'EM-Musikethnologie'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300054146</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">music (performing arts genre)</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$bereich = 'EM-Phonogramm-Archiv'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300028633</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">sound recordings</lido:term>
-			</lido:classification>
-
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300265798</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">cylinder phonographs (phonographs)</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$bereich = 'EM-Medienarchiv'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300429823</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">recordings</lido:term>
 			</lido:classification>
 		</xsl:if>
 	</xsl:template>
@@ -220,7 +172,7 @@
 						<xsl:value-of select="$aaturi"/>
 				</lido:conceptID>
 				<xsl:if test="$aatlabel ne ''">		
-					<lido:term xml:lang="en">
+					<lido:term lido:addedSearchTerm="yes" xml:lang="en">
 						<xsl:value-of select="$aatlabel"/>
 					</lido:term>
 				</xsl:if>
@@ -262,13 +214,12 @@
 		</lido:classification>
 	</xsl:template>	
 
-
 	<!-- 
 		classification from RIA:Bereich
 		New version which uses z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue
 		Sammlung is Bereich without the Verwaltende Institution
 	-->
-	<xsl:template name="sammlung2">
+	<xsl:template name="bereich3">
 		<xsl:variable name="bereich" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 		<xsl:variable name="bereichControl" select="func:vocmap-control('Bereich',$bereich)"/>
 		<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Bereich',$bereich, 'aaturi')"/>
@@ -293,7 +244,7 @@
 						<xsl:value-of select="$aaturi"/>
 				</lido:conceptID>
 				<xsl:if test="$aatlabel ne ''">		
-					<lido:term xml:lang="en">
+					<lido:term lido:addedSearchTerm="yes" xml:lang="en">
 						<xsl:value-of select="$aatlabel"/>
 					</lido:term>
 				</xsl:if>

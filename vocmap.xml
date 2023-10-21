@@ -13,26 +13,42 @@
 		<concept>
 			<source lang="de">EM-Afrika</source>
 			<target lang="de" name="extern">Afrika</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300015647</target>
+			<target lang="en" name="aatlabel">African</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Amerika</source>
 			<target lang="de" name="extern">Amerika</target>
 		</concept>
 		<concept>
+			<source lang="de">EM-Medienarchiv</source>
+			<target lang="de" name="extern">Musikethnologie</target>
+			<target name="aaturi">http://vocab.getty.edu/page/aat/300429823</target>
+			<target lang="en" name="aatlabel">recordings</target>
+		</concept>
+		<concept>
 			<source lang="de">EM-Musikethnologie</source>
 			<target lang="de" name="extern">Musikethnologie</target>
+			<target name="aaturi">http://vocab.getty.edu/page/aat/300054146</target>
+			<target lang="en" name="aatlabel">music (performing arts genre)</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Phonogramm-Archiv</source>
 			<target lang="de" name="extern">Berliner Phonogramm-Archiv</target>
+			<target name="aaturi">http://vocab.getty.edu/page/aat/300028633</target>
+			<target lang="en" name="aatlabel">sound recordings</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Phonogramm-Archiv</source>
 			<target lang="de" name="extern">Berliner Phonogramm-Archiv</target>
+			<target name="aaturi">http://vocab.getty.edu/page/aat/300265798</target>
+			<target lang="en" name="aatlabel">cylinder phonographs (phonographs)</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Süd- und Südostasien</source>
 			<target lang="de" name="extern">Süd- und Südostasien</target>
+			<target name="aaturi">http://vocab.getty.edu/page/aat/300018279</target>
+			<target lang="en" name="aatlabel">Asian</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Am Archäologie</source>
@@ -49,8 +65,9 @@
 		<concept>
 			<source lang="de">EM-Ozeanien</source>
 			<target lang="de" name="extern">Ozeanien</target>
-		</concept>
-		
+			<target name="aaturi">http://vocab.getty.edu/page/aat/300021854</target>
+			<target lang="en" name="aatlabel">Oceanic</target>
+		</concept>		
 	</voc>
 
 	<voc name="formatResource">
