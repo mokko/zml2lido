@@ -189,6 +189,44 @@
 		<xsl:value-of select="$return"/>
 	</xsl:function>
 
+	<xsl:function name="func:vocmap-replace-lax-lang">
+		<xsl:param name="src-voc"/>
+		<xsl:param name="src-term"/>
+		<xsl:param name="target"/>
+		<xsl:param name="lang"/>
+
+		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
+		<xsl:variable name="return" select="$dict/vocmap/voc[
+				@name eq normalize-space($src-voc)
+			]/concept[
+				source = normalize-space($src-term)
+			]/target[
+				@name eq normalize-space($target) and
+				@lang eq normalize-space($lang)
+			]/text()"/>
+		<xsl:if test="normalize-space($src-term) ne ''">
+			<xsl:message terminate="yes">
+				<xsl:text>ERROR: src-term empty! </xsl:text>
+				<xsl:value-of select="$src-voc"/>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="$target"/>
+			</xsl:message>		
+		</xsl:if>
+		<!--xsl:if test="normalize-space($return) eq '' and normalize-space($src-term) ne ''">
+			<xsl:message terminate="yes">
+				<xsl:text>WARNING: vocmap-replace-lang returns EMPTY ON </xsl:text>
+				<xsl:value-of select="$src-term"/> 
+				<xsl:text> FROM </xsl:text>
+				<xsl:value-of select="$src-voc"/>
+				<xsl:text> (</xsl:text>
+				<xsl:value-of select="$target"/>
+				<xsl:text> </xsl:text>
+				<xsl:value-of select="$lang"/>
+				<xsl:text>)</xsl:text>
+			</xsl:message>
+		</xsl:if--> 
+		<xsl:value-of select="$return"/>
+	</xsl:function>
 
 	<!-- see if we can get AAT from Fashion -->
 	<xsl:function name="func:aatFromFashion-laxer">
@@ -267,7 +305,7 @@
 						<xsl:value-of select="$source/target[@name eq 'extern']"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="$source"/>
+						<xsl:value-of select="$source/source"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>

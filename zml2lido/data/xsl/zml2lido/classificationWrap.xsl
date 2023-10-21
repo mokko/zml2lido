@@ -28,8 +28,7 @@
 			<xsl:call-template name="bereich2aat"/>
 			<xsl:call-template name="dreiWege"/>
 			<xsl:call-template name="europeanaType"/>
-			<xsl:call-template name="objekttyp"/>
-			<xsl:call-template name="objekttyp2aat"/>
+			<xsl:call-template name="objekttyp3"/>
 			<xsl:call-template name="sachbegriff"/>
 			<xsl:call-template name="sammlung2"/>
 			<xsl:call-template name="systematikArt"/>
@@ -184,7 +183,6 @@
 		</xsl:if>
 	</xsl:template>
 
-
 	<!-- europeanaType-->
 	<xsl:template name="europeanaType">
 		<!-- 2nd classification for ontologically wrong europeana:type-->
@@ -195,109 +193,37 @@
 		</lido:classification>
 	</xsl:template>
 
-
-	<!-- objekttyp-->
-	<xsl:template name="objekttyp">
-		<xsl:variable name="klassifizierendeTypen" select="
-			'Druckgrafik',
-			'Malerei/Gemälde',
-			'Fotografie',
-			'Installation',
-			'Musikinstrument',
-			'Skulptur/Plastik/Objektkunst',
-			'Textilie',
-			'Zeichnung'
-		"/>
-		<xsl:variable name="objekttyp" select="z:vocabularyReference[
-			@name = 'ObjCategoryVoc']/z:vocabularyReferenceItem[
-			z:formattedValue]"/>
-		<!-- this will not select specialized sachbegriffe like EM-Sachbegriff TODO FIX! -->
-		<xsl:variable name="sachbegriffe" select="z:dataField[@name = 'ObjTechnicalTermClb']/z:value"/>
-		<!--xsl:message>
-			<xsl:text>Sachbegriffe: </xsl:text>
-			<xsl:value-of select="$sachbegriffe"/>
-		</xsl:message-->
-
-		<xsl:if test="$objekttyp = $klassifizierendeTypen">
-			<!-- only add classification from Objekttyp, if Objekttyp is not already in Sachbegriff-->
-			<xsl:if test="not($sachbegriffe = $objekttyp)">
-				<!--xsl:message>
-					<xsl:text>INFO classification from Objekttyp: </xsl:text>
-					<xsl:value-of select="$objekttyp"/>
-					<xsl:text> (</xsl:text>
-					<xsl:value-of select="../@name"/>
-					<xsl:text>: </xsl:text>
-					<xsl:value-of select="@id"/>
-					<xsl:text>)</xsl:text>
-				</xsl:message-->
-				<lido:classification>
-					<lido:conceptID lido:source="RIA:Objekttyp" lido:type="local"/>
-					<lido:term xml:lang="de">
-						<xsl:value-of select="$objekttyp"/>
+	<xsl:template name="objekttyp3">
+		<!-- i had trouble extracting objekttyp-->
+		<xsl:variable name="objekttyp" select="z:vocabularyReference[@name = 'ObjCategoryVoc']/text()"/>
+		<xsl:variable name="objekttypControl" select="func:vocmap-control('Objekttyp',$objekttyp)"/>
+		<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Objekttyp',$objekttyp, 'aaturi')"/>
+		<xsl:variable name="aatlabel" select="func:vocmap-replace-lax-lang('Objekttyp',$objekttyp, 'aatlabel', 'en')"/>
+			
+		<xsl:if test="$objekttypControl ne ''">		
+			<xsl:message>
+				<xsl:text>classification from Objekttyp </xsl:text>
+				<xsl:value-of select="@id"/>
+			</xsl:message>
+			<lido:classification>
+				<lido:conceptID lido:encodinganalog="RIA:Objekttyp" lido:source="ObjCategoryVoc" lido:type="local"/>
+				<lido:term xml:lang="de">
+					<xsl:value-of select="$objekttypControl"/>
+				</lido:term>
+			</lido:classification>
+		</xsl:if>
+		<xsl:if test="$aaturi ne ''">		
+			<lido:classification>
+				<lido:conceptID lido:encodinganalog="RIA:Objekttyp" 
+					lido:source="Art &amp; Architecture Thesaurus" 
+					lido:type="uri">
+						<xsl:value-of select="$aaturi"/>
+				</lido:conceptID>
+				<xsl:if test="$aatlabel ne ''">		
+					<lido:term xml:lang="en">
+						<xsl:value-of select="$aatlabel"/>
 					</lido:term>
-				</lido:classification>
-			</xsl:if>
-		</xsl:if>
-	</xsl:template>
-
-	<xsl:template name="objekttyp2aat">
-		<xsl:variable name="objekttyp" select="z:vocabularyReference[
-		@name = 'ObjCategoryVoc']/z:vocabularyReferenceItem[
-		z:formattedValue]"/>
-
-		<xsl:if test="$objekttyp eq 'Druckgrafik'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300131119</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">printmaking</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$objekttyp eq 'Malerei/Gemälde'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300033618</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">paintings (visual works)</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$objekttyp eq 'Fotografie'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300054225</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">photography (process)</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$objekttyp eq 'Installation'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300047896</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">installations (visual works)</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$objekttyp eq 'Musikinstrument'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300041620</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">musical instruments</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$objekttyp eq 'Skulptur/Plastik/Objektkunst'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300047090</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">sculpture (visual works)</lido:term>
-			</lido:classification>
-		</xsl:if>
-
-		<xsl:if test="$objekttyp eq 'Textilie'">
-			<!-- lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300041620</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">musical instruments</lido:term>
-			</lido:classification-->
-		</xsl:if>
-
-		<xsl:if test="$objekttyp eq 'Zeichnung'">
-			<lido:classification>
-				<lido:conceptID lido:source="AAT" lido:type="uri">http://vocab.getty.edu/page/aat/300033973</lido:conceptID>
-				<lido:term xml:lang="en" lido:addedSearchTerm="yes">drawings (visual works)</lido:term>
+				</xsl:if>
 			</lido:classification>
 		</xsl:if>
 	</xsl:template>
@@ -322,7 +248,7 @@
 				source not allowed in classification or term
 				ObjTechnicalTermClb provides no ID
 				-->
-			<lido:conceptID lido:source="RIA:Sachbegriff" lido:type="local"/>
+			<lido:conceptID lido:encodinganalog="RIA:Sachbegriff" lido:source="RIA:Sachbegriff" lido:type="local"/>
 			<lido:term xml:lang="de">
 				<xsl:value-of select="normalize-space(.)"/>
 			</lido:term>
@@ -343,56 +269,37 @@
 		Sammlung is Bereich without the Verwaltende Institution
 	-->
 	<xsl:template name="sammlung2">
-		<xsl:variable name="sammlung" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-		<xsl:variable name="sammlung2">
-			<xsl:choose>
-				<xsl:when test="$sammlung ne ''">
-					<xsl:value-of select="normalize-space(replace($sammlung, '^[a-zA-Z]+-',''))"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<!-- 
-						I dont know why ISL-Fotos has no ObjOrgGroupVoc. Let's investigate...
-					-->
-					<xsl:choose>
-						<!-- ISL -->
-						<xsl:when test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/@moduleItemId = '67676'">
-							<xsl:value-of select="normalize-space(replace(z:systemField[@name='__orgUnit'], '^ISL',''))"/>
-						</xsl:when>
-						<!-- KB -->
-						<xsl:when test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/@moduleItemId = '73768'">
-							<xsl:value-of select="normalize-space(replace(z:systemField[@name='__orgUnit'], '^KB',''))"/>
-						</xsl:when>
-						<xsl:otherwise>
-							<xsl:message terminate="no">
-								<xsl:text>WARNING: No subject from Bereich (classificationWrap)</xsl:text>
-								<!--xsl:value-of select="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/z:value"/-->
-							</xsl:message>
-						</xsl:otherwise>
-					</xsl:choose>
-				</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable> 
-		
-		<!--
-			Sammlung2 soll Bereich ohne Kürzel für Haus sein
-			xsl:message>
-			<xsl:text>Sammlung2: </xsl:text>
-			<xsl:value-of select="$sammlung2"/>
-		</xsl:message
-		-->
-		<xsl:if test="$sammlung2 ne ''">
+		<xsl:variable name="bereich" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+		<xsl:variable name="bereichControl" select="func:vocmap-control('Bereich',$bereich)"/>
+		<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Bereich',$bereich, 'aaturi')"/>
+		<xsl:variable name="aatlabel" select="func:vocmap-replace-laxer('Bereich',$bereich, 'aatlabel')"/>
+		<xsl:if test="$bereichControl ne ''">		
+			<xsl:message>
+				<xsl:text>classification from Bereich </xsl:text>
+				<xsl:value-of select="@id"/>
+			</xsl:message>
 			<lido:classification>
-				<lido:conceptID lido:source="ObjOrgGroupVoc(*)" lido:type="local">
-					<xsl:value-of select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/@id"/>
-				</lido:conceptID>
-				<lido:term lido:addedSearchTerm="no" xml:lang="de">
-					<xsl:value-of select="$sammlung2"/>
+				<lido:conceptID lido:encodinganalog="RIA:Bereich" lido:source="ObjOrgGroupVoc" lido:type="local"/>
+				<lido:term xml:lang="de">
+					<xsl:value-of select="$bereichControl"/>
 				</lido:term>
 			</lido:classification>
-		</xsl:if>	
+		</xsl:if>
+		<xsl:if test="$aaturi ne ''">		
+			<lido:classification>
+				<lido:conceptID lido:encodinganalog="RIA:SystematikArt(ObjSystematicClb)" 
+					lido:source="Art &amp; Architecture Thesaurus" 
+					lido:type="uri">
+						<xsl:value-of select="$aaturi"/>
+				</lido:conceptID>
+				<xsl:if test="$aatlabel ne ''">		
+					<lido:term xml:lang="en">
+						<xsl:value-of select="$aatlabel"/>
+					</lido:term>
+				</xsl:if>
+			</lido:classification>
+		</xsl:if>
 	</xsl:template>
-
-
 	<!-- 
 	
 	systematikArt 
@@ -407,9 +314,12 @@
 		<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('systematikArt',$sysArt, 'aaturi')"/>
 		<xsl:variable name="aatlabel" select="func:vocmap-replace-laxer('systematikArt',$sysArt, 'aatlabel')"/>
 		<xsl:if test="$sysArtControl ne ''">		
-			<xsl:message>classification from systematikArt</xsl:message>
+			<xsl:message>
+				<xsl:text>classification from systematikArt </xsl:text>
+				<xsl:value-of select="@id"/>
+			</xsl:message>
 			<lido:classification>
-				<lido:conceptID lido:source="RIA:SystematikArt (ObjSystematicClb)" lido:type="local"/>
+				<lido:conceptID lido:encodinganalog="RIA:SystematikArt" lido:source="ObjSystematicClb" lido:type="local"/>
 				<lido:term xml:lang="de">
 					<xsl:value-of select="$sysArt"/>
 				</lido:term>
@@ -417,11 +327,13 @@
 		</xsl:if>
 		<xsl:if test="$aaturi ne ''">		
 			<lido:classification>
-				<lido:conceptID lido:source="RIA:SystematikArt (ObjSystematicClb)" lido:type="uri">
-					<xsl:value-of select="$aaturi"/>
+				<lido:conceptID lido:encodinganalog="RIA:SystematikArt(ObjSystematicClb)" 
+					lido:source="Art &amp; Architecture Thesaurus" 
+					lido:type="uri">
+						<xsl:value-of select="$aaturi"/>
 				</lido:conceptID>
 				<xsl:if test="$aatlabel ne ''">		
-					<lido:term xml:lang="de">
+					<lido:term xml:lang="en">
 						<xsl:value-of select="$aatlabel"/>
 					</lido:term>
 				</xsl:if>

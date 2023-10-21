@@ -8,39 +8,49 @@
 <vocmap>
 	<voc name="Bereich"> 
 		<!-- 
-			NOT USED AT THE MOMENT, BUT WORKS!
-			Bereich = __orgUnit
-			I am sure that I can have multiple targets, but I am not sure that I can have multiple sources
-			todo: check
-			
+		we could make a positive list of Bereiche which maps to classification terms
 		-->
 		<concept>
-			<source lang="de">AKu</source>
-			<target lang="de" name="ISIL">DE-MUS-019014</target>
-			<target lang="de" name="verwaltendeInstitution">Museum für Asiatische Kunst, Staatliche Museen zu Berlin</target>
+			<source lang="de">EM-Afrika</source>
+			<target lang="de" name="extern">Afrika</target>
 		</concept>
 		<concept>
-			<source lang="de">EM</source>
-			<source lang="de">EMAmArchaologie</source>
-			<source lang="de">EMAllgemein</source>
-			<target lang="de" name="ISIL">DE-MUS-019118</target>
-			<target lang="de" name="verwaltendeInstitution">Ethnologisches Museum, Staatliche Museen zu Berlin</target>
+			<source lang="de">EM-Amerika</source>
+			<target lang="de" name="extern">Amerika</target>
 		</concept>
 		<concept>
-			<source lang="de">KB</source>
-			<target lang="de" name="ISIL">DE-MUS-018313</target>
-			<target lang="de" name="verwaltendeInstitution">Kunstbibliothek, Staatliche Museen zu Berlin</target>
+			<source lang="de">EM-Musikethnologie</source>
+			<target lang="de" name="extern">Musikethnologie</target>
 		</concept>
 		<concept>
-			<source lang="de">KK</source>
-			<target lang="de" name="ISIL">DE-MUS-018511</target>
-			<target lang="de" name="verwaltendeInstitution">Kupferstichkabinett, Staatliche Museen zu Berlin</target>
+			<source lang="de">EM-Phonogramm-Archiv</source>
+			<target lang="de" name="extern">Berliner Phonogramm-Archiv</target>
 		</concept>
 		<concept>
-			<source lang="de">ISL</source>
-			<target lang="de" name="ISIL">DE-MUS-814517</target>
-			<target lang="de" name="verwaltendeInstitution">Museum für Islamische Kunst, Staatliche Museen zu Berlin</target>
+			<source lang="de">EM-Phonogramm-Archiv</source>
+			<target lang="de" name="extern">Berliner Phonogramm-Archiv</target>
 		</concept>
+		<concept>
+			<source lang="de">EM-Süd- und Südostasien</source>
+			<target lang="de" name="extern">Süd- und Südostasien</target>
+		</concept>
+		<concept>
+			<source lang="de">EM-Am Archäologie</source>
+			<target lang="de" name="extern">Amerikanische Archäologie</target>
+		</concept>
+		<concept>
+			<source lang="de">EM-Am Ethnologie</source>
+			<target lang="de" name="extern">Amerikanische Ethnologie</target>
+		</concept>
+		<concept>
+			<source lang="de">EM-Ost- und Nordasien</source>
+			<target lang="de" name="extern">Ost- und Nordasien</target>
+		</concept>
+		<concept>
+			<source lang="de">EM-Ozeanien</source>
+			<target lang="de" name="extern">Ozeanien</target>
+		</concept>
+		
 	</voc>
 
 	<voc name="formatResource">
@@ -270,9 +280,9 @@
 	<voc name="Objekttyp">
 		<concept>
 			<source lang="de">Architektur</source>
-			<target lang="en" name="aat-label">architecture (object genre)</target>
-			<target lang="de" name="aat-label">Architektur (Objektgattung)</target>
-			<target name="uri">http://vocab.getty.edu/aat/300263552</target>
+			<target lang="en" name="aatlabel">architecture (object genre)</target>
+			<target lang="de" name="aatlabel">Architektur (Objektgattung)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300263552</target>
 		</concept>	
 		<concept>
 			<source lang="de">Archivalie - Akte</source>
@@ -280,115 +290,125 @@
 			<source lang="de">Archivalie - Slg.-Verzeichnis(Dokumente)</source>
 			<source lang="de">Archivalie - Sonstiges</source>
 			<source lang="de">Archivalie - Vorgang</source>
-			<target lang="en" name="aat-label">records (documents)</target>
-			<target lang="de" name="aat-label">Dokument (Akte)</target>
-			<target name="uri">http://vocab.getty.edu/aat/300026685</target>
+			<target lang="en" name="aatlabel">records (documents)</target>
+			<target lang="de" name="aatlabel">Dokument (Akte)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300026685</target>
 		</concept>	
 		<concept>
 			<source lang="de">Audio</source>
-			<target lang="en" name="aat-label">sound recordings</target>
-			<target lang="de" name="aat-label">Tonträger</target>
-			<target name="uri">http://vocab.getty.edu/aat/300028633</target>
+			<target lang="en" name="aatlabel">sound recordings</target>
+			<target lang="de" name="aatlabel">Tonträger</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300028633</target>
 		</concept>	
 		<concept>
 			<source lang="de">Bildhauerei</source>
 			<source lang="de">Skulptur</source>
-			<target lang="en" name="aat-label">sculptures (visual works)</target>
-			<target lang="de" name="aat-label">Skulptur (visuelles Werk)</target>
-			<target name="uri">http://vocab.getty.edu/aat/300047090</target>
+			<target lang="en" name="aatlabel">sculptures (visual works)</target>
+			<target lang="de" name="aatlabel">Skulptur (visuelles Werk)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300047090</target>
 		</concept>	
 		<concept>
 			<source lang="de">Buch</source>
-			<target lang="en" name="aat-label">sculptures (visual works)</target>
-			<target lang="de" name="aat-label">Skulptur (visuelles Werk)</target>
-			<target name="uri">http://vocab.getty.edu/aat/300028051</target>
+			<target lang="en" name="aatlabel">sculptures (visual works)</target>
+			<target lang="de" name="aatlabel">Skulptur (visuelles Werk)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300028051</target>
 		</concept>	
 		<concept>
 			<source lang="de">Collage</source>
-			<target lang="en" name="aat-label">collages (visual works)</target>
-			<target lang="de" name="aat-label">Collage (zweidimensionales Werk)</target>
-			<target name="uri">http://vocab.getty.edu/aat/300033963</target>
+			<target lang="en" name="aatlabel">collages (visual works)</target>
+			<target lang="de" name="aatlabel">Collage (zweidimensionales Werk)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300033963</target>
 		</concept>	
 		<concept>
 			<source lang="de">Druckgraphik</source>
 			<source lang="de">Druckgrafik</source>
-			<target lang="en" name="aat-label">prints (visual works)</target>
-			<target lang="de" name="aat-label">Druckgrafik (visuelles Werk)</target>
-			<target name="uri">http://vocab.getty.edu/aat/300041273</target>
+			<target lang="en" name="aatlabel">prints (visual works)</target>
+			<target lang="de" name="aatlabel">Druckgrafik (visuelles Werk)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300041273</target>
 		</concept>	
 		<concept>
 			<source lang="de">Film/Video</source>
-			<target lang="en" name="aat-label">moving images</target>
-			<target lang="de" name="aat-label">bewegtes Bild</target>
-			<target name="uri">http://vocab.getty.edu/aat/300263857</target>
+			<target lang="en" name="aatlabel">moving images</target>
+			<target lang="de" name="aatlabel">bewegtes Bild</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300263857</target>
 		</concept>	
 		<concept>
 			<source lang="de">Fotografie</source>
-			<target lang="en" name="aat-label">photography</target>
-			<target lang="de" name="aat-label">Fotografie</target>
-			<target name="uri">http://vocab.getty.edu/aat/300054225</target>
+			<target lang="en" name="aatlabel">photography</target>
+			<target lang="de" name="aatlabel">Fotografie</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300054225</target>
 		</concept>	
 		<concept>
 			<source lang="de">Grafik</source>
-			<target lang="en" name="aat-label">graphic arts</target>
-			<target lang="de" name="aat-label">grafische Künste</target>
-			<target name="uri">http://vocab.getty.edu/aat/300264849</target>
+			<target lang="en" name="aatlabel">graphic arts</target>
+			<target lang="de" name="aatlabel">grafische Künste</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300264849</target>
+		</concept>	
+		<concept>
+			<source lang="de">Installation</source>
+			<target lang="en" name="aatlabel">installations (visual works)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300047896</target>
 		</concept>	
 		<concept>
 			<source lang="de">Malerei/Gemälde</source>
 			<source lang="de">Malerei</source>
-			<target lang="en" name="aat-label">paintings (visual works)</target>
-			<target lang="de" name="aat-label">Malerei</target>
-			<target name="uri">http://vocab.getty.edu/aat/300033618</target>
+			<target lang="en" name="aatlabel">paintings (visual works)</target>
+			<target lang="de" name="aatlabel">Malerei</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300033618</target>
 		</concept>	
 		<concept>
 			<source lang="de">Musikinstrument</source>
-			<target lang="en" name="aat-label">musical instruments</target>
-			<target lang="de" name="aat-label">Musikinstrument</target>
-			<target name="uri">http://vocab.getty.edu/aat/300041620</target>
+			<target lang="en" name="aatlabel">musical instruments</target>
+			<target lang="de" name="aatlabel">Musikinstrument</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300041620</target>
 		</concept>	
 		<concept>
 			<source lang="de">Natürliches Objekt</source>
-			<target lang="en" name="aat-label">Natural Object</target>
-			<target lang="de" name="aat-label">Natürliches Objekt</target>
-			<target name="uri">http://vocab.getty.edu/aat/300404125</target>
+			<target lang="en" name="aatlabel">Natural Object</target>
+			<target lang="de" name="aatlabel">Natürliches Objekt</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300404125</target>
 		</concept>	
 		<concept>
 			<source lang="de">Numismatik</source>
-			<target lang="en" name="aat-label">numismatics</target>
-			<target lang="de" name="aat-label">Numismatik</target>
-			<target name="uri">http://vocab.getty.edu/aat/300054419</target>
+			<target lang="en" name="aatlabel">numismatics</target>
+			<target lang="de" name="aatlabel">Numismatik</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300054419</target>
 		</concept>	
 		<concept>
 			<source lang="de">Plakette/Medaille</source>
-			<target lang="en" name="aat-label">plaquettes</target>
-			<target lang="de" name="aat-label">Plakette (Relief)</target>
-			<target name="uri">http://vocab.getty.edu/aat/300190507</target>
+			<target lang="en" name="aatlabel">plaquettes</target>
+			<target lang="de" name="aatlabel">Plakette (Relief)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300190507</target>
 		</concept>	
 		<concept>
 			<source lang="de">Schmuck</source>
-			<target lang="en" name="aat-label">jewelry</target>
-			<target lang="de" name="aat-label">Schmuck</target>
-			<target name="uri">http://vocab.getty.edu/aat/300209286</target>
+			<target lang="en" name="aatlabel">jewelry</target>
+			<target lang="de" name="aatlabel">Schmuck</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300209286</target>
+		</concept>	
+		<concept>
+			<source lang="de">Skulptur/Plastik/Objektkunst</source>
+			<target lang="en" name="aatlabel">sculpture (visual works)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300047090</target>
 		</concept>	
 		<concept>
 			<source lang="de">Textdokument</source>
-			<target lang="en" name="aat-label">texts (documents)</target>
-			<target lang="de" name="aat-label">Text (Dokument)</target>
-			<target name="uri">http://vocab.getty.edu/aat/300263751</target>
+			<target lang="en" name="aatlabel">texts (documents)</target>
+			<target lang="de" name="aatlabel">Text (Dokument)</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300263751</target>
 		</concept>	
 		<concept>
 			<source lang="de">Textilkunst</source>
 			<source lang="de">Textilie</source>
-			<target lang="en" name="aat-label">textile art (visual works)</target>
-			<target lang="de" name="aat-label">Textilarbeit</target>
-			<target name="uri">http://vocab.getty.edu/aat/300386843</target>
+			<target lang="en" name="aatlabel">textile art (visual works)</target>
+			<target lang="de" name="aatlabel">Textilarbeit</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300386843</target>
 		</concept>	
 		<concept>
 			<source lang="de">Zeichnung</source>
-			<target lang="en" name="aat-label">drawings by material or technique</target>
-			<target lang="de" name="aat-label">Zeichnung nach Material oder Technik</target>
-			<target name="uri">http://vocab.getty.edu/aat/300034698</target>
+			<target lang="en" name="aatlabel">drawings by material or technique</target>
+			<target lang="de" name="aatlabel">Zeichnung nach Material oder Technik</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300034698</target>
 		</concept>	
 	</voc>
 
