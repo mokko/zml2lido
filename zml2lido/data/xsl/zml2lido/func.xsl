@@ -246,6 +246,38 @@
 			] = $src-term]"/>
 	</xsl:function>
 
+	<!--
+	if source term exists, return extern source or source
+	if source does not exist, return empty string
+	-->
+
+	<xsl:function name="func:vocmap-control">
+		<xsl:param name="src-voc"/>
+		<xsl:param name="src-term"/>
+		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
+		<xsl:variable name="source" select="$dict/vocmap/voc[
+				@name = normalize-space($src-voc)
+			]/concept[
+				source = normalize-space($src-term)
+			]"/>
+		<xsl:choose>
+			<xsl:when test="$source">
+				<xsl:choose>
+					<xsl:when test="$source/target[@name eq 'extern']">
+						<xsl:value-of select="$source/target[@name eq 'extern']"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$source"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			</xsl:when>
+			<xsl:otherwise>
+				<!-- source term doesn't exist-->
+				<xsl:value-of select="''"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:function>
+
 
 	<xsl:function name="func:weblink">
 		<xsl:param name="verwaltendeInstitution"/>

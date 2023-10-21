@@ -3,7 +3,8 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:z="http://www.zetcom.com/ria/ws/module"
-    exclude-result-prefixes="z"	
+	xmlns:func="http://func"
+    exclude-result-prefixes="z func"	
     xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
     <xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
     <xsl:strip-space elements="*" />
@@ -392,14 +393,38 @@
 	</xsl:template>
 
 
-	<!-- systematikArt -->
+	<!-- 
+	
+	systematikArt 
+	The terms in this RIA field often don't make sense, e.g. "31 A - Christusfiguren" so we switch
+	to a positive list of the most often used terms
+	
+	 mpxvok
+	-->
 	<xsl:template name="systematikArt">
-		<xsl:if test="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value) ne ''">
+		<xsl:variable name="sysArt" select="z:dataField[@name = 'ObjSystematicClb']/z:value"/>
+		<xsl:variable name="sysArtControl" select="func:vocmap-control('systematikArt',$sysArt)"/>
+		<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('systematikArt',$sysArt, 'aaturi')"/>
+		<xsl:variable name="aatlabel" select="func:vocmap-replace-laxer('systematikArt',$sysArt, 'aatlabel')"/>
+		<xsl:if test="$sysArtControl ne ''">		
+			<xsl:message>classification from systematikArt</xsl:message>
 			<lido:classification>
 				<lido:conceptID lido:source="RIA:SystematikArt (ObjSystematicClb)" lido:type="local"/>
 				<lido:term xml:lang="de">
-					<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjSystematicClb']/z:value)"/>
+					<xsl:value-of select="$sysArt"/>
 				</lido:term>
+			</lido:classification>
+		</xsl:if>
+		<xsl:if test="$aaturi ne ''">		
+			<lido:classification>
+				<lido:conceptID lido:source="RIA:SystematikArt (ObjSystematicClb)" lido:type="uri">
+					<xsl:value-of select="$aaturi"/>
+				</lido:conceptID>
+				<xsl:if test="$aatlabel ne ''">		
+					<lido:term xml:lang="de">
+						<xsl:value-of select="$aatlabel"/>
+					</lido:term>
+				</xsl:if>
 			</lido:classification>
 		</xsl:if>
 	</xsl:template>

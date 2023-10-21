@@ -965,4 +965,179 @@
 			<target lang="de" name="homepage">https://www.smb.museum/za</target>
 		</concept>
 	</voc>
+	
+	<!-- If source term exists, return 
+		a) extern target; 
+		b) if extern target doesn't exist, return the source term
+	-->
+	<voc name="systematikArt">
+		<!-- sort source alphabetically please -->
+		<concept>
+			<source lang="de">Architekturfotografie</source>
+		</concept>
+		<concept>
+			<source lang="de">Architekturzeichnung</source>
+			<target lang="en" name="aatlabel">architectural drawings (visual works)</target>
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300034787</target>
+		</concept>
+		<concept>
+			<source lang="de">Baukeramik (Keramik)</source>
+			<target lang="de" name="extern">Baukeramik</target>
+		</concept>
+		<concept>
+			<source lang="de">Dokumentarfotografie</source>
+			<target lang="de" name="extern">Dokumentarfotografie (visuelles Werk)</target>
+			<target lang="en" name="aatlabel">documentary photographs</target>
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300264341</target>
+		</concept>
+		<concept>
+			<source lang="de">Buchkunst</source>
+			<target lang="en" name="aatlabel">book art (bookworks)</target>
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300178842</target>
+		</concept>
+		<concept>
+			<source lang="de">Buchmalerei</source>
+			<target lang="de" name="extern">Buchmalerei (visuelles Werk)</target>
+			<target lang="en" name="aatlabel">illuminations (visual works)</target>
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300264522</target>
+		</concept>
+		<concept>
+			<source lang="de">Druckgrafik</source>
+			<source lang="de">Druckgraphik</source>
+			<target lang="en" name="aatlabel">prints</target>
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/</target>
+		</concept>
+		<concept>
+			<source lang="de">Einblattdruck</source>
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300041337</target>
+		</concept>
+		<concept>
+			<source lang="de">Ethnographie</source>		 
+			<target lang="en" name="aatlabel">ethnography</target>
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300054319</target>
+		</concept>
+		<concept>
+			<source lang="de">Ethnologische Fotografie</source>
+		</concept>
+		<concept>
+			<source lang="de">Feldaufnahme</source>
+			<target lang="en" name="aatlabel">field recordings</target>
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300265794</target>
+		</concept>
+		<concept>
+			<source lang="de">Feldfotografie</source>
+		</concept>
+		<concept>
+			<source lang="de">Form</source>
+		</concept>
+		<concept>
+			<source lang="de">Fotografie und Moderne Kunst</source>
+			<source lang="de">Photographie</source>
+			<source lang="de">Fotografie</source>
+			<target lang="en" name="aatlabel">photography</target>			
+			<target lang="en" name="aaturi">http://vocab.getty.edu/aat/300054225</target>
+		</concept>
+		<concept>
+			<source lang="de">Gefäßkeramik (Keramik)</source>
+			<source lang="de">Gefäßkeramik</source>
+			<target lang="de" target="extern">Gefäßkeramik</target>
+		</concept>		
+		<concept>
+			<source lang="de">Gruppenaufnahme (Personen)</source>
+			<target lang="de" name="extern">Aufnahme einer Gruppe von Personen</target>
+		</concept>
+		<concept>
+			<source lang="de">Gipsabguss</source>
+			<target lang="de" name="extern">Abguss</target>
+			<!--Verallgemeinerung-->			
+			<target lang="en" name="aatlabel">casts (sculpture)</target>			
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300047806</target>
+		</concept>
+		<concept>
+			<source lang="de">Glas</source>
+			<target lang="de" name="extern">Glas (Material)</target>			
+			<target lang="en" name="aatlabel">glass (material)</target>			
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300010797</target>
+		</concept>
+		<concept>
+			<source lang="de">Glaskunst</source>
+			<!--Verallgemeinerung-->
+			<target lang="en" name="aatlabel">glass (material)</target>			
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300010797</target>
+		</concept>
+		<concept>
+			<source lang="de">Keramik</source>
+			<target lang="en" name="aatlabel">ceramics (objects)</target>			
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300151343</target>
+		</concept>
+		<concept>
+			<source lang="de">Klangerzeugung</source>
+		</concept>
+		<concept>
+			<source lang="de">Kunstgewerbe</source>
+			<target lang="en" name="aatlabel">decorative arts</target>			
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300054168</target>
+		</concept>
+		<concept>
+			<source lang="de">Malmodell</source>
+		</concept>
+		<concept>
+			<source lang="de">Numismatik</source>
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/</target>
+		</concept>
+		<concept>
+			<source lang="de">33 R - Profangraphik</source>
+			<target lang="de" name="extern">Profangrafik</target>
+			<!--Verallgemeinerung-->
+			<target lang="en" name="aatlabel">Grafik (grafische Darstellung)</target>						
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300026848</target>
+		</concept>
+		<concept>
+			<source lang="de">Person (Einzelaufnahme)</source>
+			<target lang="de" name="extern">Person</target>			
+			<!--Verallgemeinerung-->
+			<target lang="en" name="aatlabel">people (agents)</target>						
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300024979</target>
+		</concept>
+		<concept>
+			<source lang="de">Kunstgewerbe &amp; Reliefplastik</source>
+			<!--Verallgemeinerung-->
+			<target lang="de" name="extern">Reliefplastik</target>
+		</concept>
+		<concept>
+			<source lang="de">Schmuck</source>			
+			<target lang="en" name="aatlabel">jewelry</target>						
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300209286</target>
+		</concept>
+		<concept>
+			<source lang="de">Skulptur</source>
+			<target lang="en" name="aatlabel">sculpture (visual work)</target>						
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300047090</target>
+		</concept>
+		<concept>
+			<source lang="de">Stein</source>
+			<target lang="en" name="aatlabel">stone (rock)</target>						
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300011176</target>
+		</concept>
+		<concept>
+			<source lang="de">Tafelmalerei</source>
+			<target lang="de" name="extern">Tafelmalerei (Gemälde)</target>
+			<target lang="en" name="aatlabel">panel paintings (painting by form)</target>						
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300033656</target>
+		</concept>
+		<concept>
+			<source lang="de">Textilie</source>
+		</concept>
+		<concept>
+			<source lang="de">Werkstattmodell</source>
+		</concept>
+		<concept>
+			<source lang="de">Zeichnung</source>
+			<target lang="en" name="aatlabel">drawings (visual works)</target>						
+			<target lang="de" name="aaturi">http://vocab.getty.edu/aat/300033973</target>
+		</concept>
+		<concept>
+			<source lang="de">Zeichenkunst</source>
+		</concept>
+	</voc>	
 </vocmap>

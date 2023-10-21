@@ -84,6 +84,9 @@ class LidoTool:
         if job == "dd":
             # debug. Only lvl1
             lido_fn = self.zml2lido(Input=self.Input)
+        elif job == "ddd":
+            # debug. Only lvl1
+            lido_fn = self.zml2lido(Input=self.Input)
             self._valsplit(lido_fn)
         elif job == "ohneLit":
             # use different xslt for lvl1 conversion plus lvl2
@@ -231,7 +234,11 @@ class LidoTool:
         else:
             return self.zml2lidoSingle(Input=Input, xslt=xslt)
 
-    def zml2lidoSingle(self, *, Input, xslt="zml2lido"):
+    def zml2lidoSingle(self, *, Input:str|Path, xslt="zml2lido") -> Path:
+        """
+        Convert a single file from zml to lido using the specified xslt.
+        Input is a full path.
+        """
         inputP = Path(Input)
         lidoFn = self.outdir.joinpath(inputP.stem + ".lido.xml")
         print(f"zml2lidoSingle with {xsl[xslt]}")  # with file '{lidoFn}'
