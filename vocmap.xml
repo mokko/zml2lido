@@ -21,6 +21,14 @@
 			<target lang="de" name="extern">Amerika</target>
 		</concept>
 		<concept>
+			<source lang="de">EM-Am Archäologie</source>
+			<target lang="de" name="extern">Amerikanische Archäologie</target>
+		</concept>
+		<concept>
+			<source lang="de">EM-Am Ethnologie</source>
+			<target lang="de" name="extern">Amerikanische Ethnologie</target>
+		</concept>
+		<concept>
 			<source lang="de">EM-Medienarchiv</source>
 			<target lang="de" name="extern">Musikethnologie</target>
 			<target name="aaturi">http://vocab.getty.edu/page/aat/300429823</target>
@@ -32,6 +40,18 @@
 			<target name="aaturi">http://vocab.getty.edu/page/aat/300054146</target>
 			<target lang="en" name="aatlabel">music (performing arts genre)</target>
 		</concept>
+		<concept>
+			<source lang="de">EM-Ost- und Nordasien</source>
+			<target lang="de" name="extern">Ost- und Nordasien</target>
+			<target name="aaturi">http://vocab.getty.edu/page/aat/300018279</target>
+			<target lang="en" name="aatlabel">Asian</target>
+		</concept>
+		<concept>
+			<source lang="de">EM-Ozeanien</source>
+			<target lang="de" name="extern">Ozeanien</target>
+			<target name="aaturi">http://vocab.getty.edu/page/aat/300021854</target>
+			<target lang="en" name="aatlabel">Oceanic</target>
+		</concept>		
 		<concept>
 			<source lang="de">EM-Phonogramm-Archiv</source>
 			<target lang="de" name="extern">Berliner Phonogramm-Archiv</target>
@@ -50,24 +70,6 @@
 			<target name="aaturi">http://vocab.getty.edu/page/aat/300018279</target>
 			<target lang="en" name="aatlabel">Asian</target>
 		</concept>
-		<concept>
-			<source lang="de">EM-Am Archäologie</source>
-			<target lang="de" name="extern">Amerikanische Archäologie</target>
-		</concept>
-		<concept>
-			<source lang="de">EM-Am Ethnologie</source>
-			<target lang="de" name="extern">Amerikanische Ethnologie</target>
-		</concept>
-		<concept>
-			<source lang="de">EM-Ost- und Nordasien</source>
-			<target lang="de" name="extern">Ost- und Nordasien</target>
-		</concept>
-		<concept>
-			<source lang="de">EM-Ozeanien</source>
-			<target lang="de" name="extern">Ozeanien</target>
-			<target name="aaturi">http://vocab.getty.edu/page/aat/300021854</target>
-			<target lang="en" name="aatlabel">Oceanic</target>
-		</concept>		
 	</voc>
 
 	<voc name="formatResource">

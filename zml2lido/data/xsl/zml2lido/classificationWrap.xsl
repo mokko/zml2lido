@@ -26,12 +26,12 @@
 		<!--unlikely that all of them are empty-->
         <lido:classificationWrap>
 			<xsl:call-template name="bereich2aat"/>
-			<xsl:call-template name="dreiWege"/>
-			<xsl:call-template name="europeanaType"/>
+			<xsl:call-template name="bereich3"/>
 			<xsl:call-template name="objekttyp3"/>
 			<xsl:call-template name="sachbegriff"/>
-			<xsl:call-template name="bereich3"/>
 			<xsl:call-template name="systematikArt"/>
+			<xsl:call-template name="dreiWege"/>
+			<xsl:call-template name="europeanaType"/>
         </lido:classificationWrap>
 	</xsl:template>
 
@@ -225,10 +225,10 @@
 		<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Bereich',$bereich, 'aaturi')"/>
 		<xsl:variable name="aatlabel" select="func:vocmap-replace-laxer('Bereich',$bereich, 'aatlabel')"/>
 		<xsl:if test="$bereichControl ne ''">		
-			<xsl:message>
+			<!--xsl:message>
 				<xsl:text>classification from Bereich </xsl:text>
 				<xsl:value-of select="@id"/>
-			</xsl:message>
+			</xsl:message-->
 			<lido:classification>
 				<lido:conceptID lido:encodinganalog="RIA:Bereich" lido:source="ObjOrgGroupVoc" lido:type="local"/>
 				<lido:term xml:lang="de">

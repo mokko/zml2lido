@@ -128,11 +128,10 @@ class LidoTool:
         links (urls)
         """
         out_fn = self._lvl2_path(Input)
-        print()
+        # print(f"lvl2: {out_fn}")
         # init for each chunk required, although we will
-        lc = LinkChecker(Input=Input)
         if not out_fn.exists() or self.force:
-            # lc.prepareRelWorksCache2(first=Input)  # run only once to make cache
+            lc = LinkChecker(Input=Input)
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             # lc.rmInternalLinks()  # remove resourceSets with internal links
             lc.fixRelatedWorks()
@@ -234,7 +233,7 @@ class LidoTool:
         else:
             return self.zml2lidoSingle(Input=Input, xslt=xslt)
 
-    def zml2lidoSingle(self, *, Input:str|Path, xslt="zml2lido") -> Path:
+    def zml2lidoSingle(self, *, Input: str | Path, xslt="zml2lido") -> Path:
         """
         Convert a single file from zml to lido using the specified xslt.
         Input is a full path.
@@ -260,7 +259,7 @@ class LidoTool:
             if inputP.suffix == ".zip":
                 temp_fn.unlink()
         else:
-            print("lidoFn exists already, no overwrite")
+            print(f"lidoFn exists {lidoFn}")
         return lidoFn
 
     #
@@ -357,10 +356,11 @@ class LidoTool:
         """
         p = Path(p)
         suffixes = "".join(p.suffixes)
-        stem = str(p).split(".")[0]
+        stem = str(p.name).split(".")[0]  # splits off multiple suffixes
         new_dir = p.parent / "lvl2"
         new_dir.mkdir(exist_ok=True)
-        return new_dir.joinpath(stem + "-2" + suffixes)
+        new_p = new_dir.joinpath(stem + "-2" + suffixes)
+        return new_p
 
     def _prepareOutdir(self) -> Path:
         # determine outdir (long or short)
