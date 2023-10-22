@@ -20,19 +20,21 @@ import re
 from typing import Optional, Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
-relWorksMaxSize = 50000  # 40000 works pretty well
+relWorks_maxSize = 20000  # more lasts forever
 user, pw, baseURL = get_credentials()
 
 
 class LinkChecker:
-    def __init__(self, *, Input: str | Path):
+    def __init__(self, *, Input: str | Path, chunks: bool = False):
         self.log(f"STATUS: LinkChecker is working on {Input}")  # not exactly an error
         self.Input = Path(Input)
+        # self.chunk = chunk
         self.relWorksFn = self.Input.parent / "relWorks.cache.xml"
         self.tree = etree.parse(str(Input))
         # we used to not prepare the relWorksCache here. Why?
-        print("prepare relWorks cache")
-        self.prepareRelWorksCache2(first=Input)  # run only once to make cache
+        if chunks:
+            print("prepare relWorks cache (chunks, many)")
+            self._relWorks_cache_many(first=Input)  # run only once to make cache
 
     def checkRelWorkOnline(self, *, modType: str, modItemId: int):
         """
@@ -210,104 +212,16 @@ class LinkChecker:
                 else:
                     print("\tsuccess")
 
-    def prepareRelWorksCache2(self, *, first):
+    def relWorks_cache_single(self, *, fn):
         """
-        creates relatedWorksCache from all chunks
-
-        In case, we in chunk mode, the normal preparation is inefficient, so let's see
-        if we can speed things up by offering a separate cache for chunk mode
-
-        expects
-        -first: the path to the first chunk (as str or Path)
-
-        TODO: Let's first pass all the relWork.IDs into the set and then make one big
-        query. That should be faster. But before we do that, we need to test
-        if current version works non-chunk version.
-
-        If the relWorksCache gets too big (~1GB xml file), split the chunks
-        into multiple dirs and process separately.
+        Extracts IDs from one file (fn), queriess RIA for those IDs and adds new info to
+        self.relWorks
         """
-
-        # used to re-read the file cache multiple times
-        if Path(self.relWorksFn).exists():
-            try:
-                self.relWorks
-            except:
-                # print("Inline cache not loaded yet")
-                print(f"   About to load existing relWorks cache {self.relWorksFn}")
-                self.relWorks = Module(file=self.relWorksFn)
-                return
-                # if we read relWorks cache from file we dont loop thru data files (chunks)
-                # looking for all the relWorks to fill the cache as best as we can
-            else:
-                print("Inline cache exists already")
-        else:
-            print(f"   No existing relWorks cache at {self.relWorksFn}")
-
-        cacheOne = set()  # set of relWork ids, no duplicates
-        chunk_fn = Path(first)
-        while chunk_fn.exists():
-            print(f"   data file (may be a chunk) exists {chunk_fn}")
-            chunkET = etree.parse(str(chunk_fn))
-
-            relWorksL = chunkET.xpath(
-                """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
-                l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
-                namespaces=NSMAP,
-            )
-
-            print(f"   chunk has {len(relWorksL)} relWorks")
-
-            for ID in relWorksL:
-                src = ID.xpath("@l:source", namespaces=NSMAP)[0]
-                if src == "OBJ.ID":
-                    modType = "Object"
-                elif src == "LIT.ID":
-                    modType = "Literature"
-                else:
-                    raise ValueError(f"ERROR: Unknown type: {src}")
-
-                # dont write more than a few thousand items in cache
-                if len(cacheOne) >= relWorksMaxSize:
-                    break
-                if ID.text is not None and modType == "Object":
-                    cacheOne.add(int(ID.text))
-            try:
-                chunk_fn = self._nextChunk(fn=chunk_fn)
-            except:
-                # print ("   breaking the while")
-                break  # break the while if this is the only data file or the last chunk
-
-        print(f"   Length of cacheOne: {len(cacheOne)}")
-        client = MpApi(baseURL=baseURL, user=user, pw=pw)
-        if len(cacheOne) > 0:
-            q = Search(module="Object", limit=-1)
-            if len(cacheOne) > 1:
-                q.OR()  # only or if more than 1
-
-            for id_ in sorted(cacheOne):
-                q.addCriterion(
-                    operator="equalsField",
-                    field="__id",
-                    value=str(id_),
-                )
-            q = self._optimize_relWorks_cache(query=q)
-            # q.toFile(path="sdata/debug.search.xml")
-            print(
-                f"   populating relWorks cache {len(cacheOne)} (max size {relWorksMaxSize})"
-            )
-            newRelWorksM = client.search2(query=q)
-            # if the inline cache already exists
-            try:
-                self.relWorks
-            except:
-                # make a new inline cache (might be faster than adding to it)
-                self.relWorks = newRelWorksM
-            else:
-                # if relWorks exists already, add to it
-                self.relWorks += newRelWorksM
-            # save the inline cache to file after processing every chunk
-            self.relWorks.toFile(path=self.relWorksFn)
+        fn = Path(fn)
+        ID_cache = set()  # set of relWork ids, no duplicates
+        ID_cache = self._file_to_ID_cache(fn, ID_cache)
+        print(f"growing relWorks with ids from {fn}")
+        self._grow_relWorks_cache(ID_cache)
 
     def rmInternalLinks(self):
         """
@@ -360,6 +274,90 @@ class LinkChecker:
     #
     #
 
+    def _file_to_ID_cache(self, chunk_fn: Path, ID_cache: set) -> set:
+        print(f"   data file (may be a chunk) exists {chunk_fn}")
+        self._init_relWorks_cache()
+        chunkET = etree.parse(str(chunk_fn))
+
+        relWorksL = chunkET.xpath(
+            """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
+            l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
+            namespaces=NSMAP,
+        )
+
+        print(f"   chunk has {len(relWorksL)} relWorks")
+
+        for ID in relWorksL:
+            src = ID.xpath("@l:source", namespaces=NSMAP)[0]
+            if src == "OBJ.ID":
+                mType = "Object"
+            elif src == "LIT.ID":
+                mType = "Literature"
+            else:
+                raise ValueError(f"ERROR: Unknown type: {src}")
+
+            # dont write more than a few thousand items in cache
+            if len(ID_cache) >= relWorks_maxSize:
+                break
+            if ID.text is not None and mType == "Object":
+                # only add this to ID_cache if not yet in relWorks cache
+                if not self.relWorks.item_exists(mtype="Object", ID=int(ID.text)):
+                    ID_cache.add(int(ID.text))
+        return ID_cache
+
+    def _grow_relWorks_cache(self, ID_cache: set) -> None:
+        """
+        Make one query with all the IDs from ID_cache, execute the query and save the results
+        to self.relWorks, also write to disk
+        """
+        print(f"   Length of ID_cache: {len(ID_cache)}")
+        client = MpApi(baseURL=baseURL, user=user, pw=pw)
+        if len(ID_cache) > 0:
+            q = Search(module="Object", limit=-1)
+            if len(ID_cache) > 1:
+                q.OR()  # only or if more than 1
+
+            for id_ in sorted(ID_cache):
+                q.addCriterion(
+                    operator="equalsField",
+                    field="__id",
+                    value=str(id_),
+                )
+            q = self._optimize_relWorks_cache(query=q)
+            # q.toFile(path="sdata/debug.search.xml")
+            print(
+                f"   populating relWorks cache {len(ID_cache)} (max size {relWorks_maxSize})"
+            )
+            newRelWorksM = client.search2(query=q)
+            try:
+                self.relWorks
+            except:
+                # make a new cache (might be faster than adding to it)
+                self.relWorks = newRelWorksM
+            else:
+                # if relWorks exists already, add to it
+                self.relWorks += newRelWorksM
+            # save the cache to file after processing every chunk
+            # no max_size limitation
+            self.relWorks.toFile(path=self.relWorksFn)
+
+    def _init_relWorks_cache(self):
+        if Path(self.relWorksFn).exists():
+            try:
+                self.relWorks
+            except:
+                # print("Inline cache not loaded yet")
+                print(f"   About to load existing relWorks cache {self.relWorksFn}")
+                self.relWorks = Module(file=self.relWorksFn)
+                return
+                # if we read relWorks cache from file we dont loop thru data files (chunks)
+                # looking for all the relWorks to fill the cache as best as we can
+            # else:
+            # print("Inline cache exists already")
+        else:
+            print(f"   No relWorks file to load at {self.relWorksFn}")
+            self.relWorks = Module()
+
     def _nextChunk(self, *, fn: Path):
         """
         Returns the path/name of the next chunk if it exists or errors if the input
@@ -398,6 +396,34 @@ class LinkChecker:
         query.addField(field="ObjPublicationGrp.TypeVoc")
         query.validate(mode="search")
         return query
+
+    def _relWorks_cache_many(self, *, first):
+        """
+        creates relatedWorksCache from all chunks
+
+        In case, we in chunk mode, the normal preparation is inefficient, so let's see
+        if we can speed things up by offering a separate cache for chunk mode
+
+        expects
+        -first: the path to the first chunk (as str or Path)
+
+        TODO: Let's first pass all the relWork.IDs into the set and then make one big
+        query. That should be faster. But before we do that, we need to test
+        if current version works non-chunk version.
+
+        If the relWorksCache gets too big (~1GB xml file), split the chunks
+        into multiple dirs and process separately.
+        """
+        ID_cache = set()  # set of relWork ids, no duplicates
+        chunk_fn = Path(first)
+        while chunk_fn.exists():
+            ID_cache = self._file_to_ID_cache(chunk_fn, ID_cache)
+            try:
+                chunk_fn = self._nextChunk(fn=chunk_fn)
+            except:
+                # print ("   breaking the while")
+                break  # break the while if this is the only data file or the last chunk
+        self._grow_relWorks_cache(ID_cache)
 
 
 if __name__ == "__main__":

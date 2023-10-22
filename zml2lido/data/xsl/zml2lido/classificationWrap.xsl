@@ -60,7 +60,10 @@
 		<xsl:if test="normalize-space(substring-before($bereich, '-')) = $kunstmuseen">
 			<lido:classification>
 				<!-- art; better than art work? -->
-				<lido:conceptID lido:encoodinganalog="RIA:Bereichskürzel" lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
+				<lido:conceptID 
+					lido:encodinganalog="RIA:Bereichskürzel" 
+					lido:source="Art &amp; Architecture Thesaurus" 
+					lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
 			</lido:classification>
 		</xsl:if>
@@ -69,21 +72,27 @@
 		<xsl:if test="z:moduleReference[@name = 'ObjOwnerRef']/z:moduleReferenceItem/@moduleItemId = '67676' "> 
 			<lido:classification>
 				<!-- art; better than art work? -->
-				<lido:conceptID lido:encoodinganalog="RIA:verwaltendeInstitution" lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
+				<lido:conceptID lido:encodinganalog="RIA:verwaltendeInstitution" lido:source="Art &amp; Architecture Thesaurus" lido:type="uri">http://vocab.getty.edu/aat/300417586</lido:conceptID>
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">art</lido:term>
 			</lido:classification>
 		</xsl:if>
 		
 		<xsl:if test="$bereich = $archäologischeBereiche">
 			<lido:classification>
-				<lido:conceptID lido:encoodinganalog="RIA:Bereich" lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234110</lido:conceptID>
+				<lido:conceptID 
+					lido:encodinganalog="RIA:Bereich" 
+					lido:source="Art &amp; Architecture Thesaurus" 
+					lido:type="uri">http://vocab.getty.edu/aat/300234110</lido:conceptID>
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">archaeologic object</lido:term>
 			</lido:classification>
 		</xsl:if>
 
 		<xsl:if test="$bereich = $ethnologischeBereiche">
 			<lido:classification>
-				<lido:conceptID lido:encoodinganalog="RIA" lido:source="AAT" lido:type="uri">http://vocab.getty.edu/aat/300234108</lido:conceptID>
+				<lido:conceptID 
+					lido:encodinganalog="RIA" 
+					lido:source="Art &amp; Architecture Thesaurus" 
+					lido:type="uri">http://vocab.getty.edu/aat/300234108</lido:conceptID>
 				<lido:term xml:lang="en" lido:addedSearchTerm="yes">ethnographic object</lido:term>
 			</lido:classification>
 		</xsl:if>

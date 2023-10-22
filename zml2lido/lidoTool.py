@@ -130,8 +130,9 @@ class LidoTool:
         out_fn = self._lvl2_path(Input)
         # print(f"lvl2: {out_fn}")
         # init for each chunk required, although we will
+        lc = LinkChecker(Input=Input, chunks=self.chunks)  # reads cache
         if not out_fn.exists() or self.force:
-            lc = LinkChecker(Input=Input)
+            lc.relWorks_cache_single(fn=Input)
             lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             # lc.rmInternalLinks()  # remove resourceSets with internal links
             lc.fixRelatedWorks()
