@@ -20,7 +20,7 @@ import re
 from typing import Optional, Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
-relWorksMaxSize = 40000
+relWorksMaxSize = 50000  # 40000 works pretty well
 user, pw, baseURL = get_credentials()
 
 
@@ -148,9 +148,9 @@ class LinkChecker:
                         else:
                             ISIL = self.ISIL_lookup(institution=verwInst.text)
                             ID.text = f"{ISIL}/{str(id_int)}"
-                            print(f"   relWork: {id_int}:{verwInst.text} -> {ISIL}")
+                            print(f"   relWork {id_int}: {verwInst.text} -> {ISIL}")
                     else:
-                        # self.log(f"   removing unpublic relWork")
+                        self.log(f"   removing unpublic relWork")
                         relWorkSet = ID.getparent().getparent().getparent()
                         relWorkSet.getparent().remove(relWorkSet)
 
@@ -313,8 +313,7 @@ class LinkChecker:
         """
         SEEMS TO BE NO LONGER NEEDED!
 
-        Remove resourceSet whose linkResource point to internal links (i.e.
-        don't beginn with http).
+        Remove resourceSet whose linkResource point to internal links;
         links are internal if they dont begin with "http", e.g.
         """
         self.log("resourceSet: Removing sets with remaining internal links")
