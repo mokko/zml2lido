@@ -74,7 +74,7 @@ def lido():
     print(f"JOB: {args.job}")
 
     lt = LidoTool(
-        Input=args.input, force=args.force, validation=args.validate, chunks=args.chunks
+        src=args.input, force=args.force, validation=args.validate, chunks=args.chunks
     )
     lt.execute(args.job)
 

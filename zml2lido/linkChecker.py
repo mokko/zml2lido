@@ -1,8 +1,8 @@
 """
-    parse a LIDO file for linkResources and work on linkResources that don't start with http 
+    parse a LIDO file for g and work on linkResources that don't start with http 
     for those guess the URL based on heuristics indicated by the examples path below
-    write result to lido file in same dir as input
-    input and output are lido
+    write result to lido file in same dir as src
+    src and output are lido
     
     https://recherche.smb.museum/images/5403567_2500x2500.jpg
     lidoWrap/lido/administrativeMetadata/resourceWrap/resourceSet/resourceRepresentation/linkResource
@@ -17,7 +17,7 @@ from mpapi.module import Module
 from mpapi.search import Search
 from pathlib import Path
 import re
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 NSMAP = {"l": "http://www.lido-schema.org"}
 relWorks_maxSize = 20000  # more lasts forever
@@ -25,46 +25,26 @@ user, pw, baseURL = get_credentials()
 
 
 class LinkChecker:
-    def __init__(self, *, Input: str | Path, chunks: bool = False):
-        self.log(f"STATUS: LinkChecker is working on {Input}")  # not exactly an error
-        self.Input = Path(Input)
+    def __init__(self, *, src: str | Path, chunks: bool = False) -> None:
+        self._log(f"STATUS: LinkChecker is working on {src}")  # not exactly an error
+        self.src = Path(src)
         # self.chunk = chunk
-        self.relWorksFn = self.Input.parent / "relWorks.cache.xml"
-        self.tree = etree.parse(str(Input))
+        self.relWorksFn = self.src.parent / "relWorks.cache.xml"
+        self.tree = etree.parse(str(src))
         # we used to not prepare the relWorksCache here. Why?
+        self._init_relWorks_cache()
         if chunks:
             print("prepare relWorks cache (chunks, many)")
-            self._relWorks_cache_many(first=Input)  # run only once to make cache
+            self._relWorks_cache_many(first=src)  # run only once to make cache
 
-    def checkRelWorkOnline(self, *, modType: str, modItemId: int):
-        """
-        Checks if a specific relWork is online. No urlrequest, just examins if
-        SMB-Freigabe = Ja.
-
-        Expects modItemId as int; but str should work as well.
-        """
-        r = self.relWorks.xpath(
-            f"""/m:application/m:modules/m:module[
-                @name = '{modType}']/m:moduleItem[
-                @id = {str(modItemId)}]/m:repeatableGroup[
-                @name = 'ObjPublicationGrp']/m:repeatableGroupItem[
-                    m:vocabularyReference[@name='PublicationVoc']/m:vocabularyReferenceItem[@name='Ja'] 
-                    and m:vocabularyReference[@name='TypeVoc']/m:vocabularyReferenceItem[@id = 2600647]
-                ]"""
-        )
-        if len(r) > 0:
-            return True
-        else:
-            return False
-
-    def fixRelatedWorks(self):
+    def fixRelatedWorks(self) -> None:
         """
         Frank doesn't want dead links in relatedWorks. So we loop thru them, check
         if they are SMB-approved (using MpApi) and, if not, we remove them. We're
         also include ISILs in the same step.
         """
 
-        self.log(
+        self._log(
             "fixRelatedWorks: Removing relatedWorks that are not online and getting ISILs"
         )
 
@@ -77,118 +57,40 @@ class LinkChecker:
         )
 
         # for //relatedWork in the current LIDO document
-        for ID in relatedWorksL:
-            # don't log self.log(f"fixRelatedWorks checking {ID.text}")
+        for objectID in relatedWorksL:
+            # don't _log self._log(f"fixRelatedWorks checking {objectID.text}")
 
             # assuming that source always exists
-            src = ID.xpath("@l:source", namespaces=NSMAP)[0]
+            src = objectID.xpath("@l:source", namespaces=NSMAP)[0]
             if src == "OBJ.ID":
                 modType = "Object"
             elif src == "LIT.ID":
                 modType = "Literature"
             elif src == "ISIL/ID":
                 raise ValueError(
-                    "ERROR: @lido:source='ISIL/ID' indicates that an already"
+                    "ERROR: @lido:source='ISIL/ID' indicates that an already "
                     + "processed LIDO file is being processed again"
                 )
                 modType = "Object"
             else:
                 raise ValueError(f"ERROR: Unknown type: {src}")
 
-            if ID.text is not None:
-                id_int = int(ID.text)
-                # only recursive should get us here
-                # except:
-                #    id_int = int(ID.text.split("/")[-1])
-                # print (f"*****{id_str} {modType}")
+            if objectID.text is not None:
+                id_int = int(objectID.text)
                 if modType == "Literature":
                     pass
                     # print("WARN: No check for modType 'Literature'")
                 else:
                     # print(f"fixing relatedWork {modType} {id_int}")
-                    try:
-                        # is the work already in the cache?
-                        relWorkN = self.relWorks[(modType, id_int)]
-                    except:  # if not, get record and add it to cache
-                        print(f"   getting item from online RIA {modType} {id_int}")
-                        # if not, get it now and add to cache
-                        q = Search(module=modType, limit=-1)
-                        q.addCriterion(
-                            operator="equalsField",
-                            field="__id",
-                            value=str(id_int),
-                        )
-                        q = self._optimize_relWorks_cache(query=q)
-                        # q.toFile(path="sdata/debug.search.xml")
-                        relWork = client.search2(query=q)
-                        if relWork:  # realistic that query results are empty?
-                            # appending them to relWork cache
-                            self.relWorks += relWork
-                            # print ("   update file cache")
-                            self.relWorks.toFile(path=self.relWorksFn)
-                    else:
-                        # if relWork record is already in cache
-                        relWork = Module()
-                        relWork.addItem(itemN=relWorkN, mtype=modType)
+                    if not self.relWorks.item_exists(mtype=modType, ID=id_int):
+                        self._add_to_relWorks_cache(mtype=modType, ID=id_int)
+                    # at this point we can rely on item being in relWorks cache
+                    self._rewrite_relWork(mtype=modType, objectID=objectID)
 
-                    if self.checkRelWorkOnline(modType=modType, modItemId=id_int):
-                        # rewrite ISIL, should look like this:
-                        # <lido:objectID lido:type="local" lido:source="ISIL/ID">de-MUS-018313/744501</lido:objectID>
-                        # self.log(f"   looking up ISIL for relWork")
-                        ID.attrib["{http://www.lido-schema.org}source"] = "ISIL/ID"
-                        # we're assuming there is always a verwaltendeInstitution, but that is not enforced by RIA!
-                        try:
-                            verwInst = relWork.xpath(
-                                """//m:moduleReference[
-                                    @name='ObjOwnerRef'
-                                ]/m:moduleReferenceItem/m:formattedValue"""
-                            )[0]
-                        except:
-                            self.log(
-                                f"WARNING: verwaltendeInstitution empty! {modType} {id_int}"
-                            )
-                        else:
-                            ISIL = self.ISIL_lookup(institution=verwInst.text)
-                            ID.text = f"{ISIL}/{str(id_int)}"
-                            print(f"   relWork {id_int}: {verwInst.text} -> {ISIL}")
-                    else:
-                        self.log(f"   removing unpublic relWork")
-                        relWorkSet = ID.getparent().getparent().getparent()
-                        relWorkSet.getparent().remove(relWorkSet)
-
-    def ISIL_lookup(self, *, institution):
+    def linkResource_online_http(self) -> None:
         """
-        Load vocmap.xml and lookup ISIL for name of institution.
-
-        In the beginning, we die when no ISIL found, but later we might carp more gracefully.
-        """
-        vm_fn = Path(__file__).parents[1] / "vocmap.xml"
-        if not vm_fn.exists():
-            raise SyntaxError(f"File not found {vm_fn}")
-        vocMap = etree.parse(vm_fn)
-        try:
-            ISIL = vocMap.xpath(
-                f"""/vocmap/voc[
-                @name='verwaltendeInstitution'
-            ]/concept[
-                source = '{institution}'
-            ]/target[
-                @name = 'ISIL'
-            ]"""
-            )[0]
-        except:
-            raise SyntaxError(
-                f"vocMap: verwaltendeInstitution '{institution}' not found"
-            )
-        return ISIL.text
-
-    def log(self, msg):
-        print(msg)
-        logging.info(msg)
-
-    def new_check(self):
-        """
-        For all linkResources, check if url responds ok
+        For all linkResources in self.tree, check if url responds ok using http.
+        Prints the result (which is a bit awkward).
         """
         linkResourceL = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
@@ -212,10 +114,12 @@ class LinkChecker:
                 else:
                     print("\tsuccess")
 
-    def relWorks_cache_single(self, *, fn):
+    def relWorks_cache_single(self, *, fn: str | Path) -> None:
         """
         Extracts IDs from one file (fn), queriess RIA for those IDs and adds new info to
-        self.relWorks
+        self.relWorks.
+
+        This function currently seems to be so slow that it's useless.
         """
         fn = Path(fn)
         ID_cache = set()  # set of relWork ids, no duplicates
@@ -223,14 +127,14 @@ class LinkChecker:
         print(f"growing relWorks with ids from {fn}")
         self._grow_relWorks_cache(ID_cache)
 
-    def rmInternalLinks(self):
+    def rmInternalLinks(self) -> None:
         """
-        SEEMS TO BE NO LONGER NEEDED!
-
         Remove resourceSet whose linkResource point to internal links;
         links are internal if they dont begin with "http", e.g.
+
+        Not currently used.
         """
-        self.log("resourceSet: Removing sets with remaining internal links")
+        self._log("resourceSet: Removing sets with remaining internal links")
         linkResourceL = self.tree.xpath(
             "/l:lidoWrap/l:lido/l:administrativeMetadata/l:resourceWrap/l:resourceSet/l:resourceRepresentation/l:linkResource",
             namespaces=NSMAP,
@@ -241,13 +145,13 @@ class LinkChecker:
                     resourceSet = link.getparent().getparent()
                     resourceSet.getparent().remove(resourceSet)
 
-    def rmUnpublishedRecords(self):
+    def rmUnpublishedRecords(self) -> None:
         """
         Remove lido records which are not published on SMB Digital.
 
         Assumes that only records which have SMBFreigabe=Ja have objectPublishedID
         """
-        # self.log(
+        # self._log(
         #    "   LinkChecker: Removing lido records that are not published on recherche.smb"
         # )
         recordsL = self.tree.xpath(
@@ -255,28 +159,65 @@ class LinkChecker:
         )
         for recordN in recordsL:
             recID = recordN.xpath("l:lidoRecID", namespaces=NSMAP)[0]
-            self.log(f"rm unpublishedRecords: {recID}")
+            self._log(f"rm unpublishedRecords: {recID}")
             recordN.getparent().remove(recordN)
-        self.log("rmUnpublishedRecords: done!")
+        self._log("rmUnpublishedRecords: done!")
 
-    def saveTree(self, out_fn) -> str:
+    def saveTree(self, out_fn: str | Path) -> str:
         """
         During __init__ we loaded a LIDO file, with this function we write it back to the
         out file location as set during __init__.
         """
-        self.log(f"Writing back to {out_fn}")
+        self._log(f"Writing back to {out_fn}")
         self.tree.write(
             str(out_fn), pretty_print=True, encoding="UTF-8", xml_declaration=True
         )
         return out_fn
 
     #
-    #
+    # PRIVATE
     #
 
+    def _add_to_relWorks_cache(self, *, mtype: str, ID: int) -> None:
+        """
+        Get item from RIA, add to relWorks cache and write cache to disk.
+
+        Caution: Does not include a check if relWork is already in cache.
+        """
+        print(f"   getting item from online RIA {modType} {id_int}")
+        # if not, get it now and add to cache
+        q = Search(module=mType, limit=-1)
+        q.addCriterion(
+            operator="equalsField",
+            field="__id",
+            value=str(id_int),
+        )
+        q = self._optimize_relWorks_cache(query=q)
+        # q.toFile(path="sdata/debug.search.xml")
+        relWork = client.search2(query=q)
+        if relWork:  # realistic that query results are empty?
+            # appending them to relWork cache
+            self.relWorks += relWork
+            # print ("   update file cache")
+            self.relWorks.toFile(path=self.relWorksFn)
+
+    def _del_relWork(self, *, ID) -> None:
+        """
+        delete a relWork from self.etree.
+        ID is a lxml node
+        """
+        self._log(f"   removing unpublic relWork {ID.text}")
+        relWorkSet = ID.getparent().getparent().getparent()
+        relWorkSet.getparent().remove(relWorkSet)
+
     def _file_to_ID_cache(self, chunk_fn: Path, ID_cache: set) -> set:
-        print(f"   data file (may be a chunk) exists {chunk_fn}")
-        self._init_relWorks_cache()
+        """
+        Given the path to a lido file, scan it for relWorks and produce a set with the
+        objIds.
+
+        ID is a lxml node
+        """
+        print(f"   _file_to_ID_cache exists {chunk_fn}")
         chunkET = etree.parse(str(chunk_fn))
 
         relWorksL = chunkET.xpath(
@@ -285,7 +226,7 @@ class LinkChecker:
             namespaces=NSMAP,
         )
 
-        print(f"   chunk has {len(relWorksL)} relWorks")
+        print(f"   _file_to_ID_cache {len(relWorksL)} relWorks")
 
         for ID in relWorksL:
             src = ID.xpath("@l:source", namespaces=NSMAP)[0]
@@ -297,12 +238,14 @@ class LinkChecker:
                 raise ValueError(f"ERROR: Unknown type: {src}")
 
             # dont write more than a few thousand items in cache
-            if len(ID_cache) >= relWorks_maxSize:
-                break
+            # if len(ID_cache) >= relWorks_maxSize:
+            #    print("break here")
+            #    break
             if ID.text is not None and mType == "Object":
                 # only add this to ID_cache if not yet in relWorks cache
                 if not self.relWorks.item_exists(mtype="Object", ID=int(ID.text)):
                     ID_cache.add(int(ID.text))
+        print(f"   adding {len(ID_cache)} IDs")
         return ID_cache
 
     def _grow_relWorks_cache(self, ID_cache: set) -> None:
@@ -310,7 +253,9 @@ class LinkChecker:
         Make one query with all the IDs from ID_cache, execute the query and save the results
         to self.relWorks, also write to disk
         """
-        print(f"   Length of ID_cache: {len(ID_cache)}")
+        print(
+            f"   _grow_relWorks_cache: new IDs: {len(ID_cache)} relWorks:{len(self.relWorks)}"
+        )
         client = MpApi(baseURL=baseURL, user=user, pw=pw)
         if len(ID_cache) > 0:
             q = Search(module="Object", limit=-1)
@@ -336,20 +281,24 @@ class LinkChecker:
                 self.relWorks = newRelWorksM
             else:
                 # if relWorks exists already, add to it
+                print("   adding")
                 self.relWorks += newRelWorksM
             # save the cache to file after processing every chunk
             # no max_size limitation
             self.relWorks.toFile(path=self.relWorksFn)
 
     def _init_relWorks_cache(self):
+        """
+        Initializes self.refWorks cache. If cache file exists, load it. May
+        also initialize empty self.refWorks.
+        """
         if Path(self.relWorksFn).exists():
             try:
                 self.relWorks
             except:
                 # print("Inline cache not loaded yet")
-                print(f"   About to load existing relWorks cache {self.relWorksFn}")
+                print(f"   Loading existing relWorks cache {self.relWorksFn}")
                 self.relWorks = Module(file=self.relWorksFn)
-                return
                 # if we read relWorks cache from file we dont loop thru data files (chunks)
                 # looking for all the relWorks to fill the cache as best as we can
             # else:
@@ -358,9 +307,39 @@ class LinkChecker:
             print(f"   No relWorks file to load at {self.relWorksFn}")
             self.relWorks = Module()
 
+    def _log(self, msg):
+        print(msg)
+        logging.info(msg)
+
+    def _lookup_ISIL(self, *, institution):
+        """
+        Load vocmap.xml and lookup ISIL for name of institution.
+
+        In the beginning, we die when no ISIL found, but later we might carp more gracefully.
+        """
+        vm_fn = Path(__file__).parents[1] / "vocmap.xml"
+        if not vm_fn.exists():
+            raise SyntaxError(f"File not found {vm_fn}")
+        vocMap = etree.parse(vm_fn)
+        try:
+            ISIL = vocMap.xpath(
+                f"""/vocmap/voc[
+                @name='verwaltendeInstitution'
+            ]/concept[
+                source = '{institution}'
+            ]/target[
+                @name = 'ISIL'
+            ]"""
+            )[0]
+        except:
+            raise SyntaxError(
+                f"vocMap: verwaltendeInstitution '{institution}' not found"
+            )
+        return ISIL.text
+
     def _nextChunk(self, *, fn: Path):
         """
-        Returns the path/name of the next chunk if it exists or errors if the input
+        Returns the path/name of the next chunk if it exists or errors if the src
         is not chunkable or the next chunk does not exist.
 
         Expects path/name of lvl 1 lido file that ends in ".lido.xml".
@@ -397,6 +376,27 @@ class LinkChecker:
         query.validate(mode="search")
         return query
 
+    def _relWork_online(self, *, modType: str, modItemId: int):
+        """
+        Checks if a specific relWork is online. No urlrequest, just examins if
+        SMB-Freigabe = Ja.
+
+        Expects modItemId as int; but str should work as well.
+        """
+        r = self.relWorks.xpath(
+            f"""/m:application/m:modules/m:module[
+                @name = '{modType}']/m:moduleItem[
+                @id = {str(modItemId)}]/m:repeatableGroup[
+                @name = 'ObjPublicationGrp']/m:repeatableGroupItem[
+                    m:vocabularyReference[@name='PublicationVoc']/m:vocabularyReferenceItem[@name='Ja'] 
+                    and m:vocabularyReference[@name='TypeVoc']/m:vocabularyReferenceItem[@id = 2600647]
+                ]"""
+        )
+        if len(r) > 0:
+            return True
+        else:
+            return False
+
     def _relWorks_cache_many(self, *, first):
         """
         creates relatedWorksCache from all chunks
@@ -416,6 +416,9 @@ class LinkChecker:
         """
         ID_cache = set()  # set of relWork ids, no duplicates
         chunk_fn = Path(first)
+        # if the cache is already at max_size, we dont need this step
+        if len(self.relWorks) >= relWorks_maxSize:
+            return None
         while chunk_fn.exists():
             ID_cache = self._file_to_ID_cache(chunk_fn, ID_cache)
             try:
@@ -423,7 +426,36 @@ class LinkChecker:
             except:
                 # print ("   breaking the while")
                 break  # break the while if this is the only data file or the last chunk
+            if len(ID_cache) + len(self.refWorks) >= relWorks_maxSize:
+                break
         self._grow_relWorks_cache(ID_cache)
+
+    def _rewrite_relWork(self, *, mtype: str, objectID: Any) -> None:
+        """
+        if relWork unpublic delete; otherwise rewrite
+        """
+        id_int = int(ID.text)
+
+        if self._relWork_online(modType=modType, modItemId=id_int):
+            # rewrite ISIL, should look like this:
+            # <lido:objectID lido:type="local" lido:source="ISIL/ID">de-MUS-018313/744501</lido:objectID>
+            # self._log(f"   looking up ISIL for relWork")
+            objectID.attrib["{http://www.lido-schema.org}source"] = "ISIL/ID"
+            # we're assuming there is always a verwaltendeInstitution, but that is not enforced by RIA!
+            try:
+                verwInst = relWork.xpath(
+                    """//m:moduleReference[
+                        @name='ObjOwnerRef'
+                    ]/m:moduleReferenceItem/m:formattedValue"""
+                )[0]
+            except:
+                self._log(f"WARNING: verwaltendeInstitution empty! {modType} {id_int}")
+            else:
+                ISIL = self._lookup_ISIL(institution=verwInst.text)
+                objectID.text = f"{ISIL}/{str(id_int)}"
+                print(f"   relWork {id_int}: {verwInst.text} -> {ISIL}")
+        else:
+            self._del_relWork(objectID=objectID)
 
 
 if __name__ == "__main__":
@@ -432,7 +464,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Simple linkResource checker")
     parser.add_argument(
         "-i",
-        "--input",
+        "--src",
         help="point to LIDO file",
         required=True,
     )
@@ -441,6 +473,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     m = LinkChecker(
-        Input=args.input,
+        src=args.src,
     )
-    m.new_check()
+    m.linkResource_online_http()

@@ -9,15 +9,18 @@ Should we use a test framework like pytest? Probably not.
 """
 
 import argparse
-import pathlib from Path
+from pathlib import Path
+
 parser = argparse.ArgumentParser(description="Quality control for LIDO files")
-    parser.add_argument(
-        "-i",
-        "--input",
-        help="specify an input file",
-        required=True,
-    )
-    args = parser.parse_args()
+parser.add_argument(
+    "-i",
+    "--input",
+    help="specify an input file",
+    required=True,
+)
+args = parser.parse_args()
+
 
 class QualityControl:
     def __init__(self, *, input_fn):
+        pass

@@ -7,7 +7,7 @@
         C:/M3/zml2lido
     You need to specify three parameters 
         -j/--job: which flavor (job) of the transformation you want to use 
-        -i/--input: where the input xml file is
+        -i/--src: where the src xml file is
         -o/--output: will be used as output directory; in my case 
             C:/m3/zml2lido/sdata/{output}
 
@@ -56,23 +56,23 @@ class LidoTool:
     def __init__(
         self,
         *,
-        Input: str,
+        src: str,
         force: bool = False,
         validation: bool = False,
         chunks: bool = False,
     ) -> None:
         """
-        Input: lido file or first chunk
+        src: lido file or first chunk
         force: overwrites files
         validation: validate lido files?
-        chunks: expect consecutively numbered and zipped lido files as input
+        chunks: expect consecutively numbered and zipped lido files as src
         """
 
         self.validation = validation
         self.force = force
         self.chunks = chunks
 
-        self.Input = self._sanitize(Input=Input)
+        self.src = self._sanitize(src=src)
         self.outdir = self._prepareOutdir()
         self._initLog()
 
@@ -83,20 +83,20 @@ class LidoTool:
     def execute(self, job: str) -> None:
         if job == "dd":
             # debug. Only lvl1
-            lido_fn = self.zml2lido(Input=self.Input)
+            lido_fn = self.zml2lido(src=self.src)
         elif job == "ddd":
             # debug. Only lvl1
-            lido_fn = self.zml2lido(Input=self.Input)
+            lido_fn = self.zml2lido(src=self.src)
             self._valsplit(lido_fn)
         elif job == "ohneLit":
             # use different xslt for lvl1 conversion plus lvl2
-            lido_fn = self.zml2lido(Input=self.Input, xslt="ohneLit")
-            lvl2_fn = self.to_lvl2(Input=lido_fn)
+            lido_fn = self.zml2lido(src=self.src, xslt="ohneLit")
+            lvl2_fn = self.to_lvl2(src=lido_fn)
             self._valsplit(lvl2_fn)
         elif job == "mitLit":
             # regular xslt, lvl2
-            lido_fn = self.zml2lido(Input=self.Input)
-            lvl2_fn = self.to_lvl2(Input=lido_fn)
+            lido_fn = self.zml2lido(src=self.src)
+            lvl2_fn = self.to_lvl2(src=lido_fn)
             self._valsplit(lvl2_fn)
         else:
             raise SyntaxError("ERROR: Unknown job name!")
@@ -105,53 +105,53 @@ class LidoTool:
         if not Type in xsl:
             raise TypeError(f"Error: Unknown type '{Type}'")
 
-        new_fn = self.Input.stem + f"-no{Type}.xml"
+        new_fn = self.src.stem + f"-no{Type}.xml"
         out_fn = self.outdir / new_fn
 
-        self.saxon(Input=self.Input, xsl=xsl[Type], output=out_fn)
+        self.saxon(src=self.src, xsl=xsl[Type], output=out_fn)
 
         if split:
             self.force = True
-            self.splitLido(Input=out_fn)
+            self.splitLido(src=out_fn)
 
-    def to_lvl2(self, *, Input: str) -> Path:
+    def to_lvl2(self, *, src: str) -> Path:
         if self.chunks:
-            for chunkFn in self.loopChunks(Input=Input):
-                new_fn = self.to_lvl2Single(Input=chunkFn)
-            return self.firstChunkName(Input=new_fn)
+            for chunkFn in self.loopChunks(src=src):
+                new_fn = self.to_lvl2Single(src=chunkFn)
+            return self.firstChunkName(src=new_fn)
         else:
-            return self.to_lvl2Single(Input=Input)
+            return self.to_lvl2Single(src=src)
 
-    def to_lvl2Single(self, *, Input: str) -> Path:
+    def to_lvl2Single(self, *, src: str | Path) -> Path:
         """
-        Using Python rewrite (fix) generic Zetcom xml, mostly working on
-        links (urls)
+        Using Python rewrite (fix) generic Zetcom xml, mostly working on links (urls)
         """
-        out_fn = self._lvl2_path(Input)
+        out_fn = self._lvl2_path(src)
         # print(f"lvl2: {out_fn}")
-        # init for each chunk required, although we will
-        lc = LinkChecker(Input=Input, chunks=self.chunks)  # reads cache
+        try:  # only load the first time
+            self.lc: LinkChecker
+        except:
+            self.lc = LinkChecker(src=src, chunks=self.chunks)  # reads cache
         if not out_fn.exists() or self.force:
-            lc.relWorks_cache_single(fn=Input)
-            lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
-            # lc.rmInternalLinks()  # remove resourceSets with internal links
-            lc.fixRelatedWorks()
-            lc.saveTree(out_fn)
+            # self.lc.relWorks_cache_single(fn=src)
+            self.lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
+            self.lc.fixRelatedWorks()
+            self.lc.saveTree(out_fn)
         else:
-            print(f"   rewrite exists already: {out_fn}, no overwrite")
+            print(f"   lvl2 already exists: {out_fn}")
         return out_fn
 
-    def splitLido(self, *, Input: str) -> str:
+    def splitLido(self, *, src: str | Path) -> str | Path:
         # print("SPLITLIDO enter")
         if self.chunks:
             self.force = True  # otherwise subsequent chunks are not written
-            for chunkFn in self.loopChunks(Input=Input):
-                self.splitLidoSingle(Input=chunkFn)
+            for chunkFn in self.loopChunks(src=src):
+                self.splitLidoSingle(src=chunkFn)
         else:
-            self.splitLidoSingle(Input=Input)
-        return Input  # dont act on split files
+            self.splitLidoSingle(src=src)
+        return src  # dont act on split files
 
-    def splitLidoSingle(self, *, Input: str) -> None:
+    def splitLidoSingle(self, *, src: str | Path) -> None:
         """
         Create individual files per lido record
         """
@@ -161,21 +161,21 @@ class LidoTool:
         if not splitDir.exists() or self.force:  # self.force is True was problematic
             print("SPLITLIDO making")
             os.chdir(self.outdir)
-            self.saxon(Input=Input, xsl=xsl["splitLido"], output="o.xml")
+            self.saxon(src=src, xsl=xsl["splitLido"], output="o.xml")
             os.chdir(orig)
         else:
             print(f" SPLIT DIR exists already: {splitDir}")
 
-    def splitSachbegriff(self, *, Input: str) -> Path:
+    def splitSachbegriff(self, *, src: str) -> Path:
         print("SPLITSACHBEGRIFF")
         if self.chunks:
-            for chunkFn in self.loopChunks(Input=Input):
-                sachbegriffFn = self.splitSachbegriff(Input=chunkFn)
-            return self.firstChunkName(Input=sachbegriffFn)
+            for chunkFn in self.loopChunks(src=src):
+                sachbegriffFn = self.splitSachbegriff(src=chunkFn)
+            return self.firstChunkName(src=sachbegriffFn)
         else:
-            return self.splitSachbegriffSingle(Input=Input)
+            return self.splitSachbegriffSingle(src=src)
 
-    def splitSachbegriffSingle(self, *, Input: str) -> Path:
+    def splitSachbegriffSingle(self, *, src: str) -> Path:
         """
         Writes two files to output dir
         ohneSachbegriff.xml is meant for debugging.
@@ -184,13 +184,13 @@ class LidoTool:
         os.chdir(self.outdir)
         out = "mitSachbegriff.xml"
         if not Path(out).exists() or self.force is True:
-            self.saxon(Input=Input, xsl=xsl["splitSachbegriff"], output=out)
+            self.saxon(src=src, xsl=xsl["splitSachbegriff"], output=out)
         else:
             print(f"{out} exist already, no overwrite")
         os.chdir(orig)
         return xslDir / out
 
-    def validate(self, *, path: Optional[str] = None):
+    def validate(self, *, p: str | Path | None = None):
         """
         It's optionally possible to specify a path for a file that needs validatation. If
         path is None, the file that was specified during __init__ will be validated.
@@ -200,74 +200,74 @@ class LidoTool:
         (Not tested recently for chunks...)
         """
 
-        if path is None:
-            to_val_fn = self.Input
+        if p is None:
+            to_val_fn = self.src
         else:
-            to_val_fn = path
+            to_val_fn: Path = Path(p)
 
         print(f"VALIDATING LIDO FILE {to_val_fn}")
         if self.chunks:
             print(" with chunks")
-            for chunkFn in self.loopChunks(Input=to_val_fn):
-                self.validateSingle(Input=chunkFn)
+            for chunkFn in self.loopChunks(src=to_val_fn):
+                self.validateSingle(src=chunkFn)
         else:
-            self.validateSingle(Input=to_val_fn)
+            self.validateSingle(src=to_val_fn)
 
-    def validateSingle(self, *, Input):
+    def validateSingle(self, *, src):
         if not hasattr(self, "schema"):
             print(f" loading schema {lidoXSD}")
             schemaDoc = etree.parse(lidoXSD)
             self.schema = etree.XMLSchema(schemaDoc)
 
-        print(f" validating {Input}")
-        doc = etree.parse(str(Input))
+        print(f" validating {src}")
+        doc = etree.parse(str(src))
         self.schema.assert_(doc)  # raises error when not valid
-        return Input
+        return src
 
-    def zml2lido(self, *, Input, xslt="zml2lido"):
+    def zml2lido(self, *, src, xslt="zml2lido"):
         print(f"ZML2LIDO {xslt}")
         if self.chunks:
             print(" with chunks")
-            for chunkFn in self.loopChunks(Input=self.Input):
-                lidoFn = self.zml2lidoSingle(Input=chunkFn, xslt=xslt)
-            return self.firstChunkName(Input=lidoFn)
+            for chunkFn in self.loopChunks(src=self.src):
+                lidoFn = self.zml2lidoSingle(src=chunkFn, xslt=xslt)
+            return self.firstChunkName(src=lidoFn)
         else:
-            return self.zml2lidoSingle(Input=Input, xslt=xslt)
+            return self.zml2lidoSingle(src=src, xslt=xslt)
 
-    def zml2lidoSingle(self, *, Input: str | Path, xslt="zml2lido") -> Path:
+    def zml2lidoSingle(self, *, src: str | Path, xslt="zml2lido") -> Path:
         """
         Convert a single file from zml to lido using the specified xslt.
-        Input is a full path.
+        src is a full path.
         """
-        inputP = Path(Input)
-        lidoFn = self.outdir.joinpath(inputP.stem + ".lido.xml")
+        srcP = Path(src)
+        lidoFn = self.outdir.joinpath(srcP.stem + ".lido.xml")
         print(f"zml2lidoSingle with {xsl[xslt]}")  # with file '{lidoFn}'
 
         if self.force is True or not lidoFn.exists():
-            if inputP.suffix == ".zip":  # unzipping temp file
-                print("   input is zipped")
-                parent_dir = inputP.parent
-                member = Path(inputP.name).with_suffix(".xml")
+            if srcP.suffix == ".zip":  # unzipping temp file
+                print("   src is zipped")
+                parent_dir = srcP.parent
+                member = Path(srcP.name).with_suffix(".xml")
                 temp_fn = parent_dir / member
-                with ZipFile(inputP, "r") as zippy:
+                with ZipFile(srcP, "r") as zippy:
                     zippy.extract(str(member), path=parent_dir)
-                new_input = temp_fn
+                new_src = temp_fn
             else:
-                new_input = inputP
+                new_src = srcP
 
-            self.saxon(Input=new_input, xsl=xsl[xslt], output=lidoFn)
+            self.saxon(src=new_src, xsl=xsl[xslt], output=lidoFn)
 
-            if inputP.suffix == ".zip":
+            if srcP.suffix == ".zip":
                 temp_fn.unlink()
         else:
-            print(f"lidoFn exists {lidoFn}")
+            print(f"exists {lidoFn}")
         return lidoFn
 
     #
     # more helpers
     #
 
-    def loopChunks(self, *, Input: str) -> Iterable[str]:
+    def loopChunks(self, *, src: str | Path) -> Iterable[str | Path]:
         """
         returns generator with path for existing files, counting up as long
         files exist. For this to work, filename has to include
@@ -275,16 +275,16 @@ class LidoTool:
 
         This might belong in chunker,py to be reusable.
         """
-        print(f"chunk input: {Input}")
-        root, no, tail = self._analyze_chunkFn(Input=Input)
-        chunkFn = Input
+        print(f"chunk src: {src}")
+        root, no, tail = self._analyze_chunkFn(src=src)
+        chunkFn = src
         while Path(chunkFn).exists():
             yield chunkFn
             # print(f"{chunkFn} exists")
             no += 1
             chunkFn = f"{root}-chunk{no}{tail}"
 
-    def firstChunkName(self, *, Input: str | Path):
+    def firstChunkName(self, *, src: str | Path):
         """
         returns the chunk with no. 1
 
@@ -294,30 +294,30 @@ class LidoTool:
         start with chunk1?
         List glob root* and take the first item?
         """
-        root, no, tail = self._analyze_chunkFn(Input=Input)
-        Input = Path(Input)
-        parent = Input.parent
+        root, no, tail = self._analyze_chunkFn(src=src)
+        src = Path(src)
+        parent = src.parent
         folder = {}
         for each in parent.iterdir():
             if str(each).startswith(root):
-                root, no, tail = self._analyze_chunkFn(Input=each)
+                root, no, tail = self._analyze_chunkFn(src=each)
                 folder[no] = each
         no = min(folder.keys())
         firstFn = folder[no]
         # print(f"***firstChunkName {firstFn}")
         return firstFn
 
-    def saxon(self, *, Input: str, output: str, xsl: str) -> None:
+    def saxon(self, *, src: str | Path, output: str | Path, xsl: str | Path) -> None:
         if not Path(saxLib).exists():
             raise SyntaxError(f"ERROR: saxLib {saxLib} does not exist!")
 
-        if not Path(Input).exists():
-            raise SyntaxError(f"ERROR: input {Input} does not exist!")
+        if not Path(src).exists():
+            raise SyntaxError(f"ERROR: src {src} does not exist!")
 
         if not Path(xsl).exists():
             raise SyntaxError(f"ERROR: xsl file does not exist!")
 
-        cmd = f"java -Xmx1450m -jar {saxLib} -s:{Input} -xsl:{xsl} -o:{output}"
+        cmd = f"java -Xmx1450m -jar {saxLib} -s:{src} -xsl:{xsl} -o:{output}"
         print(cmd)
 
         subprocess.run(
@@ -328,18 +328,19 @@ class LidoTool:
     # private helper
     #
 
-    def _analyze_chunkFn(self, *, Input: str):
+    def _analyze_chunkFn(self, *, src: str | Path) -> tuple[str, int, str]:
         """
-        Input could be Path or str.
+        src could be Path or str.
 
         This might belong in chunker.py ...
         """
-        # print(f"ENTER ANALYZE WITH {Input}")
-        partsL = str(Input).split("-chunk")
+        # print(f"ENTER ANALYZE WITH {src}")
+        partsL = str(src).split("-chunk")
         root = partsL[0]
         m = re.match(r"(\d+)[\.-]", partsL[1])
-        no = int(m.group(1))
-        tail = str(Input).split("-chunk" + str(no))[1]
+        if m is not None:
+            no = int(m.group(1))
+        tail = str(src).split("-chunk" + str(no))[1]
         # print(f"_ANALYZE '{root}' '{no}' '{tail}'")
         return root, no, tail
 
@@ -366,15 +367,15 @@ class LidoTool:
     def _prepareOutdir(self) -> Path:
         # determine outdir (long or short)
         sdataP = Path("sdata").resolve()  # resolve probably not necessary
-        if re.match(r"\d\d\d\d\d\d", self.Input.parent.name):
-            outdir = sdataP / self.Input.parents[1].name / self.Input.parent.name
-        elif self.Input.parent.name == "sdata":
+        if re.match(r"\d\d\d\d\d\d", self.src.parent.name):
+            outdir = sdataP / self.src.parents[1].name / self.src.parent.name
+        elif self.src.parent.name == "sdata":
             raise SyntaxError(
-                """ERROR: Don't use an input file inside of sdata. 
+                """ERROR: Don't use an src file inside of sdata. 
                 Use a subdirectory instead!"""
             )
         else:
-            outdir = sdataP / self.Input.parent.name
+            outdir = sdataP / self.src.parent.name
 
         if not outdir.exists():
             print(f"Making new dir {outdir}")
@@ -382,9 +383,9 @@ class LidoTool:
         print(f" outdir {outdir}")
         return outdir
 
-    def _sanitize(self, *, Input: str) -> Path:
+    def _sanitize(self, *, src: str | Path) -> Path:
         """
-        Input could be Path or str.
+        src could be Path or str.
 
         Some checks for convenience; mainly for our users, so they get more intelligable
         error messages.
@@ -396,21 +397,23 @@ class LidoTool:
             raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
 
         if not Path(saxLib).is_file():
-            raise SyntaxError(f"ERROR: Saxon not found, check config file at {conf_fn}")
+            raise SyntaxError(
+                f"ERROR: Saxon not found, check environment variable saxLib"
+            )
 
-        # check Input
-        if Input is None:
-            raise SyntaxError("ERROR: Input can't be None!")
-        Input = Path(Input)  # initial input file, e.g. 3Wege.zml.xml
+        # check src
+        if src is None:
+            raise SyntaxError("ERROR: src can't be None!")
+        src = Path(src)  # initial src file, e.g. 3Wege.zml.xml
 
-        if Input.is_dir():
-            raise SyntaxError("ERROR: Input is directory!")
-        elif not Input.exists():
-            raise SyntaxError("ERROR: Input does not exist!")
+        if src.is_dir():
+            raise SyntaxError("ERROR: src is directory!")
+        elif not src.exists():
+            raise SyntaxError("ERROR: src does not exist!")
 
-        return Input
+        return src
 
     def _valsplit(self, fn):
         if self.validation:
             self.validate(path=fn)
-        self.splitLido(Input=fn)
+        self.splitLido(src=fn)
