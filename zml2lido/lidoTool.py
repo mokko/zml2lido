@@ -128,10 +128,10 @@ class LidoTool:
         """
         out_fn = self._lvl2_path(src)
         # print(f"lvl2: {out_fn}")
-        try:  # only load the first time
-            self.lc: LinkChecker
-        except:
-            self.lc = LinkChecker(src=src, chunks=self.chunks)  # reads cache
+        # try:  # only load the first time
+        #    self.lc: LinkChecker
+        # except:
+        self.lc = LinkChecker(src=src, chunks=self.chunks)  # reads cache
         if not out_fn.exists() or self.force:
             # self.lc.relWorks_cache_single(fn=src)
             self.lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
@@ -321,7 +321,8 @@ class LidoTool:
         print(cmd)
 
         subprocess.run(
-            cmd, check=True  # , stderr=subprocess.STDOUT
+            cmd,
+            check=True,  # , stderr=subprocess.STDOUT
         )  # overwrites output file without saying anything
 
     #

@@ -33,6 +33,8 @@ class LinkChecker:
         self.tree = etree.parse(str(src))
         # we used to not prepare the relWorksCache here. Why?
         self._init_relWorks_cache()
+        self.client = MpApi(baseURL=baseURL, user=user, pw=pw)
+
         if chunks:
             print("prepare relWorks cache (chunks, many)")
             self._relWorks_cache_many(first=src)  # run only once to make cache
@@ -43,12 +45,9 @@ class LinkChecker:
         if they are SMB-approved (using MpApi) and, if not, we remove them. We're
         also include ISILs in the same step.
         """
-
         self._log(
             "fixRelatedWorks: Removing relatedWorks that are not online and getting ISILs"
         )
-
-        client = MpApi(baseURL=baseURL, user=user, pw=pw)
 
         relatedWorksL = self.tree.xpath(
             """/l:lidoWrap/l:lido/l:descriptiveMetadata/l:objectRelationWrap/
@@ -184,17 +183,17 @@ class LinkChecker:
 
         Caution: Does not include a check if relWork is already in cache.
         """
-        print(f"   getting item from online RIA {modType} {id_int}")
+        print(f"   getting item from online RIA {mtype} {ID}")
         # if not, get it now and add to cache
-        q = Search(module=mType, limit=-1)
+        q = Search(module=mtype, limit=-1)
         q.addCriterion(
             operator="equalsField",
             field="__id",
-            value=str(id_int),
+            value=str(ID),
         )
         q = self._optimize_relWorks_cache(query=q)
         # q.toFile(path="sdata/debug.search.xml")
-        relWork = client.search2(query=q)
+        relWork = self.client.search2(query=q)
         if relWork:  # realistic that query results are empty?
             # appending them to relWork cache
             self.relWorks += relWork
@@ -256,7 +255,6 @@ class LinkChecker:
         print(
             f"   _grow_relWorks_cache: new IDs: {len(ID_cache)} relWorks:{len(self.relWorks)}"
         )
-        client = MpApi(baseURL=baseURL, user=user, pw=pw)
         if len(ID_cache) > 0:
             q = Search(module="Object", limit=-1)
             if len(ID_cache) > 1:
@@ -273,7 +271,7 @@ class LinkChecker:
             print(
                 f"   populating relWorks cache {len(ID_cache)} (max size {relWorks_maxSize})"
             )
-            newRelWorksM = client.search2(query=q)
+            newRelWorksM = self.client.search2(query=q)
             try:
                 self.relWorks
             except:
@@ -289,20 +287,20 @@ class LinkChecker:
 
     def _init_relWorks_cache(self):
         """
-        Initializes self.refWorks cache. If cache file exists, load it. May
-        also initialize empty self.refWorks.
+        Initializes self.refWorks cache. If cache file already exists, load it. Else
+        initialize empty self.refWorks.
         """
         if Path(self.relWorksFn).exists():
-            try:
-                self.relWorks
-            except:
-                # print("Inline cache not loaded yet")
-                print(f"   Loading existing relWorks cache {self.relWorksFn}")
-                self.relWorks = Module(file=self.relWorksFn)
-                # if we read relWorks cache from file we dont loop thru data files (chunks)
-                # looking for all the relWorks to fill the cache as best as we can
+            # try:
+            #    self.relWorks
+            # except NameError:
+            # print("Inline cache not loaded yet")
+            print(f"   Loading existing relWorks cache {self.relWorksFn}")
+            self.relWorks = Module(file=self.relWorksFn)
             # else:
             # print("Inline cache exists already")
+        # if we read relWorks cache from file we dont loop thru data files (chunks)
+        # looking for all the relWorks to fill the cache as best as we can
         else:
             print(f"   No relWorks file to load at {self.relWorksFn}")
             self.relWorks = Module()
@@ -401,8 +399,8 @@ class LinkChecker:
         """
         creates relatedWorksCache from all chunks
 
-        In case, we in chunk mode, the normal preparation is inefficient, so let's see
-        if we can speed things up by offering a separate cache for chunk mode
+        In case we're in chunk mode, the normal preparation is inefficient, so let's see
+        if we can speed things up by offering a separate cache for chunk mode.
 
         expects
         -first: the path to the first chunk (as str or Path)
@@ -434,9 +432,9 @@ class LinkChecker:
         """
         if relWork unpublic delete; otherwise rewrite
         """
-        id_int = int(ID.text)
+        id_int = int(objectID.text)
 
-        if self._relWork_online(modType=modType, modItemId=id_int):
+        if self._relWork_online(modType=mtype, modItemId=id_int):
             # rewrite ISIL, should look like this:
             # <lido:objectID lido:type="local" lido:source="ISIL/ID">de-MUS-018313/744501</lido:objectID>
             # self._log(f"   looking up ISIL for relWork")
@@ -449,13 +447,13 @@ class LinkChecker:
                     ]/m:moduleReferenceItem/m:formattedValue"""
                 )[0]
             except:
-                self._log(f"WARNING: verwaltendeInstitution empty! {modType} {id_int}")
+                self._log(f"WARNING: verwaltendeInstitution empty! {mtype} {id_int}")
             else:
                 ISIL = self._lookup_ISIL(institution=verwInst.text)
                 objectID.text = f"{ISIL}/{str(id_int)}"
                 print(f"   relWork {id_int}: {verwInst.text} -> {ISIL}")
         else:
-            self._del_relWork(objectID=objectID)
+            self._del_relWork(ID=objectID)
 
 
 if __name__ == "__main__":

@@ -94,7 +94,7 @@ def saxon():
         "-x", "--xsl", help="(xslt) transformation filename", required=True
     )
     args = parser.parse_args()
-    m = LidoTool(Input=args.source)  # just to run saxon
+    m = LidoTool(src=args.source)  # just to run saxon...
 
     m.saxon(Input=args.source, xsl=args.xsl, output=args.output)
 
