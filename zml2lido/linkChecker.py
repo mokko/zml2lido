@@ -1,14 +1,24 @@
 """
-    parse a LIDO file for g and work on linkResources that don't start with http 
+    parse a LIDO file and work on linkResources that don't start with http 
     for those guess the URL based on heuristics indicated by the examples path below
     write result to lido file in same dir as src
     src and output are lido
     
-    https://recherche.smb.museum/images/5403567_2500x2500.jpg
-    lidoWrap/lido/administrativeMetadata/resourceWrap/resourceSet/resourceRepresentation/linkResource
+    This step produces lvl2 lido.
+
+    USAGE:
+    lc = LinkChecker(src="path/to/file.lido.xml")
+
+    lc.fixRelatedWorks() # removes dead links in relatedWorks, also adds ISIL
+    lc.linkResource_online_http() # for all linkResources print online status
+    lc.relWorks_cache_single(fn="path/to/file.lido.xml") # parse fn for relWorks and populate cache
+    lc.rmInternalLinks() # remove linkResource with internal links, not used atm
+    lc.rmUnpublishedRecords() # removes objects without objectPublishedID
+
+    lc.saveTree(out_fn="path/to/lido.lvl2.xml")
+
 """
 
-import json
 import logging
 from lxml import etree
 from mpapi.constants import get_credentials
@@ -17,10 +27,11 @@ from mpapi.module import Module
 from mpapi.search import Search
 from pathlib import Path
 import re
-from typing import Any, Optional, Union
+from typing import Any
+import urllib.request
 
 NSMAP = {"l": "http://www.lido-schema.org"}
-relWorks_maxSize = 20000  # more lasts forever
+relWorks_maxSize = 20_000  # more lasts forever
 user, pw, baseURL = get_credentials()
 
 
@@ -56,35 +67,35 @@ class LinkChecker:
         )
 
         # for //relatedWork in the current LIDO document
-        for objectID in relatedWorksL:
-            # don't _log self._log(f"fixRelatedWorks checking {objectID.text}")
+        for objectID_N in relatedWorksL:
+            # don't _log self._log(f"fixRelatedWorks checking {objectID_N.text}")
 
             # assuming that source always exists
-            src = objectID.xpath("@l:source", namespaces=NSMAP)[0]
+            src = objectID_N.xpath("@l:source", namespaces=NSMAP)[0]
             if src == "OBJ.ID":
-                modType = "Object"
+                mtype = "Object"
             elif src == "LIT.ID":
-                modType = "Literature"
+                mtype = "Literature"
             elif src == "ISIL/ID":
                 raise ValueError(
                     "ERROR: @lido:source='ISIL/ID' indicates that an already "
                     + "processed LIDO file is being processed again"
                 )
-                modType = "Object"
+                mtype = "Object"
             else:
                 raise ValueError(f"ERROR: Unknown type: {src}")
 
-            if objectID.text is not None:
-                id_int = int(objectID.text)
-                if modType == "Literature":
+            if objectID_N.text is not None:
+                id_int = int(objectID_N.text)
+                if mtype == "Literature":
                     pass
-                    # print("WARN: No check for modType 'Literature'")
+                    # print("WARN: No check for mtype 'Literature'")
                 else:
-                    # print(f"fixing relatedWork {modType} {id_int}")
-                    if not self.relWorks.item_exists(mtype=modType, ID=id_int):
-                        self._add_to_relWorks_cache(mtype=modType, ID=id_int)
+                    # print(f"fixing relatedWork {mtype} {id_int}")
+                    if not self.relWorks.item_exists(mtype=mtype, ID=id_int):
+                        self._add_to_relWorks_cache(mtype=mtype, ID=id_int)
                     # at this point we can rely on item being in relWorks cache
-                    self._rewrite_relWork(mtype=modType, objectID=objectID)
+                    self._rewrite_relWork(mtype=mtype, objectID=objectID_N)
 
     def linkResource_online_http(self) -> None:
         """
@@ -97,17 +108,17 @@ class LinkChecker:
         )
 
         print("NEW CHECKER")
-        for link in linkResourceL:
-            if link.text is not None:
-                print(link.text)
-                # req = urlrequest.Request(link.text)
+        for linkN in linkResourceL:
+            if linkN.text is not None:
+                print(linkN.text)
+                # req = urlrequest.Request(linkN.text)
                 # req.set_proxy(
                 #    "http-proxy-2.sbb.spk-berlin.de:3128", "http"
                 # )  # http-proxy-1.sbb.spk-berlin.de:3128
 
                 try:
                     # urlrequest.urlopen(req)
-                    urllib.request.urlopen(link.text)
+                    urllib.request.urlopen(linkN.text)
                 except:
                     print("\tfailed")
                 else:
@@ -242,8 +253,9 @@ class LinkChecker:
             #    break
             if ID.text is not None and mType == "Object":
                 # only add this to ID_cache if not yet in relWorks cache
-                if not self.relWorks.item_exists(mtype="Object", ID=int(ID.text)):
-                    ID_cache.add(int(ID.text))
+                objId = int(ID.text)
+                if not self.relWorks.item_exists(mtype="Object", ID=objId):
+                    ID_cache.add(objId)
         print(f"   adding {len(ID_cache)} IDs")
         return ID_cache
 
@@ -359,9 +371,7 @@ class LinkChecker:
 
     def _optimize_relWorks_cache(self, *, query):
         """
-        let's shrink (optimize) the xml. We only need two fields
-        (1) ObjOwnerRef (=verwaltendeInstitution)
-        (2) ObjPublicationGrp for online status
+        let's shrink (optimize) the xml. We only need a couple fields
         """
         query.addField(field="__lastModified")  # for mpapi.add
         query.addField(field="ObjOwnerRef")
