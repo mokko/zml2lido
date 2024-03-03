@@ -136,7 +136,7 @@ class LidoTool:
             # self.lc.relWorks_cache_single(fn=src)
             self.lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             self.lc.fixRelatedWorks()
-            self.lc.saveTree(out_fn)
+            self.lc.save(out_fn)
         else:
             print(f"   lvl2 already exists: {out_fn}")
         return out_fn
@@ -190,7 +190,7 @@ class LidoTool:
         os.chdir(orig)
         return xslDir / out
 
-    def validate(self, *, p: str | Path | None = None):
+    def validate(self, *, path: Path | None = None):
         """
         It's optionally possible to specify a path for a file that needs validatation. If
         path is None, the file that was specified during __init__ will be validated.
@@ -200,12 +200,12 @@ class LidoTool:
         (Not tested recently for chunks...)
         """
 
-        if p is None:
-            to_val_fn = self.src
+        if path is None:
+            to_val_fn = Path(self.src)
         else:
-            to_val_fn: Path = Path(p)
+            to_val_fn = path
 
-        print(f"VALIDATING LIDO FILE {to_val_fn}")
+        print(f"VALIDATING LIDO FILE '{to_val_fn}'")
         if self.chunks:
             print(" with chunks")
             for chunkFn in self.loopChunks(src=to_val_fn):
@@ -213,7 +213,7 @@ class LidoTool:
         else:
             self.validateSingle(src=to_val_fn)
 
-    def validateSingle(self, *, src):
+    def validateSingle(self, *, src: Path):
         if not hasattr(self, "schema"):
             print(f" loading schema {lidoXSD}")
             schemaDoc = etree.parse(lidoXSD)
