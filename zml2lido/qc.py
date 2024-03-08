@@ -9,7 +9,6 @@ Should we use a test framework like pytest? Probably not.
 """
 
 import argparse
-from pathlib import Path
 
 parser = argparse.ArgumentParser(description="Quality control for LIDO files")
 parser.add_argument(

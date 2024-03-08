@@ -33,8 +33,7 @@ import logging
 import os
 import re
 import subprocess
-import sys
-from typing import Iterable, Optional
+from typing import Iterable
 from zipfile import ZipFile
 from zml2lido.linkChecker import LinkChecker
 
@@ -102,7 +101,7 @@ class LidoTool:
             raise SyntaxError("ERROR: Unknown job name!")
 
     def lfilter(self, *, split: bool = False, Type: str) -> None:
-        if not Type in xsl:
+        if Type not in xsl:
             raise TypeError(f"Error: Unknown type '{Type}'")
 
         new_fn = self.src.stem + f"-no{Type}.xml"
@@ -315,7 +314,7 @@ class LidoTool:
             raise SyntaxError(f"ERROR: src {src} does not exist!")
 
         if not Path(xsl).exists():
-            raise SyntaxError(f"ERROR: xsl file does not exist!")
+            raise SyntaxError("ERROR: xsl file does not exist!")
 
         cmd = f"java -Xmx1450m -jar {saxLib} -s:{src} -xsl:{xsl} -o:{output}"
         print(cmd)
@@ -399,7 +398,7 @@ class LidoTool:
 
         if not Path(saxLib).is_file():
             raise SyntaxError(
-                f"ERROR: Saxon not found, check environment variable saxLib"
+                "ERROR: Saxon not found, check environment variable saxLib"
             )
 
         # check src

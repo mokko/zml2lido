@@ -22,10 +22,7 @@ import logging
 from lxml import etree
 from mpapi.constants import get_credentials
 from mpapi.client import MpApi
-from mpapi.module import Module
-from mpapi.search import Search
 from pathlib import Path
-import re
 from typing import Any
 import urllib.request
 from zml2lido.relWorksCache import RelWorksCache

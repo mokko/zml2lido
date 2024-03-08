@@ -8,7 +8,6 @@ __version__ = "0.0.7"
 
 
 import argparse
-import sys
 from zml2lido.lidoTool import LidoTool
 from zml2lido.linkChecker import LinkChecker
 from zml2lido.vocmap import Vocmap

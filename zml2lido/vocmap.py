@@ -7,7 +7,7 @@ vocmap -i in.xml -o out.xslx
 
 """
 from lxml import etree
-from openpyxl import Workbook, load_workbook
+from openpyxl import Workbook
 from openpyxl.styles import Font
 from pathlib import Path
 
