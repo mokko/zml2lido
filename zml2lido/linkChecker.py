@@ -21,6 +21,14 @@
 
     lc.save(out_fn="path/to/lido.lvl2.xml")
 
+    composition over inheritance
+    #relWorksCache is a Module() with limited fields    
+    rw = relWorks(maxSize=20_000) # load cache file or nothing
+    rw.add(mtype, ID)? # add a single item to cache. Do we respect max_size? was: _add_to_relWorks_cache 
+    rw.add_from_lido_file(fn=path) # grow cache by new items from a single file; respects max_size
+    rw.add_from_lido_chunks(first=path) # grow cache by new items from a single file; respects max_size
+    rw.exists(mtype="Object", ID=1234) # true if item exists in cache 
+
 """
 
 import logging
@@ -42,17 +50,16 @@ user, pw, baseURL = get_credentials()
 class LinkChecker:
     def __init__(self, *, src: str | Path, chunks: bool = False) -> None:
         self._log(f"STATUS: LinkChecker is working on {src}")  # not exactly an error
-        self.src = Path(src)
         # self.chunk = chunk
-        self.relWorks_fn = self.src.parent / "relWorks.cache.xml"
         self.data = etree.parse(str(src))
         self.client = MpApi(baseURL=baseURL, user=user, pw=pw)
+        self.relWorks_fn = Path(src).parent / "relWorks.cache.xml"
         self.relWorks_cache = self.init_relWorks_cache()  # load file if it exists
 
+        # why wouldnt I load the first file into the cache?
         if chunks:
             print("prepare relWorks cache (chunks, many)")
             self.relWorks_cache_many(first=src)  # run only once to make cache
-        # why wouldnt I load the first file into the cache?
         else:
             self.relWorks_cache_single(fn=src)
 
@@ -61,6 +68,8 @@ class LinkChecker:
         Frank doesn't want dead links in relatedWorks. So we loop thru them, check
         if they are SMB-approved (using MpApi) and, if not, we remove them. We're
         also include ISILs in the same step.
+
+        relWork's objectID is at relWork/object/objectID
         """
         self._log(
             "fixRelatedWorks: Removing relatedWorks that are not online and getting ISILs"
@@ -101,7 +110,7 @@ class LinkChecker:
                     if not self.relWorks_cache.item_exists(mtype=mtype, ID=id_int):
                         self._add_to_relWorks_cache(mtype=mtype, ID=id_int)
                     # at this point we can rely on item being in relWorks cache
-                    self._rewrite_relWork(mtype=mtype, objectID=objectID_N)
+                    self._rewrite_relWork(mtype=mtype, objectID_N=objectID_N)
 
     def init_relWorks_cache(self) -> Module:
         """
@@ -109,16 +118,8 @@ class LinkChecker:
         initialize empty self.refWorks.
         """
         if Path(self.relWorks_fn).exists():
-            # try:
-            #    self.relWorks
-            # except NameError:
-            # print("Inline cache not loaded yet")
             print(f"   Loading existing relWorks cache {self.relWorks_fn}")
             return Module(file=self.relWorks_fn)
-            # else:
-            # print("Inline cache exists already")
-        # if we read relWorks cache from file we dont loop thru data files (chunks)
-        # looking for all the relWorks to fill the cache as best as we can
         else:
             print(f"   No relWorks file to load at {self.relWorks_fn}")
             return Module()
@@ -171,7 +172,7 @@ class LinkChecker:
         chunk_fn = Path(first)
         # if the cache is already at max_size, we dont do anything
         # else we keep loading more chunks
-        if len(self.relWorks) >= relWorks_maxSize:
+        if len(self.relWorks_cache) >= relWorks_maxSize:
             return None
         while chunk_fn.exists():
             ID_cache = self._file_to_ID_cache(chunk_fn, ID_cache)
@@ -180,7 +181,7 @@ class LinkChecker:
             except:
                 # print ("   breaking the while")
                 break  # break the while if this is the only data file or the last chunk
-            if len(ID_cache) + len(self.refWorks) >= relWorks_maxSize:
+            if len(ID_cache) + len(self.relWorks_cache) >= relWorks_maxSize:
                 break
         self._grow_relWorks_cache(ID_cache)
 
@@ -191,9 +192,8 @@ class LinkChecker:
 
         This function currently seems to be so slow that it's useless.
         """
-        fn = Path(fn)
         ID_cache = set()  # set of relWork ids, no duplicates
-        ID_cache = self._file_to_ID_cache(fn, ID_cache)
+        ID_cache = self._file_to_ID_cache(Path(fn), ID_cache)
         print(f"growing relWorks with ids from {fn}")
         self._grow_relWorks_cache(ID_cache)
 
@@ -271,13 +271,13 @@ class LinkChecker:
             # print ("   update file cache")
             self.relWorks_cache.toFile(path=self.relWorks_fn)
 
-    def _del_relWork(self, *, ID) -> None:
+    def _del_relWork(self, *, ID_N: Any) -> None:
         """
         delete a relWork from self.etree.
         ID is a lxml node
         """
-        self._log(f"   removing unpublic relWork {ID.text}")
-        relWorkSet = ID.getparent().getparent().getparent()
+        self._log(f"   removing unpublic relWork {ID_N.text}")
+        relWorkSet = ID_N.getparent().getparent().getparent()
         relWorkSet.getparent().remove(relWorkSet)
 
     def _file_to_ID_cache(self, chunk_fn: Path, ID_cache: set) -> set:
@@ -298,8 +298,8 @@ class LinkChecker:
 
         print(f"   _file_to_ID_cache {len(relWorksL)} relWorks")
 
-        for ID in relWorksL:
-            src = ID.xpath("@l:source", namespaces=NSMAP)[0]
+        for ID_N in relWorksL:
+            src = ID_N.xpath("@l:source", namespaces=NSMAP)[0]
             if src == "OBJ.ID":
                 mType = "Object"
             elif src == "LIT.ID":
@@ -311,9 +311,9 @@ class LinkChecker:
             # if len(ID_cache) >= relWorks_maxSize:
             #    print("break here")
             #    break
-            if ID.text is not None and mType == "Object":
+            if ID_N.text is not None and mType == "Object":
                 # only add this to ID_cache if not yet in relWorks cache
-                objId = int(ID.text)
+                objId = int(ID_N.text)
                 if not self.relWorks_cache.item_exists(mtype="Object", ID=objId):
                     ID_cache.add(objId)
         print(f"   adding {len(ID_cache)} IDs")
@@ -321,8 +321,12 @@ class LinkChecker:
 
     def _grow_relWorks_cache(self, ID_cache: set) -> None:
         """
-        Make one query with all the IDs from ID_cache, execute the query and save the results
-        to self.relWorks, also write to disk
+        Make a query with the IDs from ID_cache, execute the query and save the results
+        to self.relWorks_cache, also write to disk.
+
+        Do we need a check if IDs are already in relWorks_cache? This should speed up
+        the procedure. Without it existing results should not get added to the cache,
+        but in the new version we dont need to download them.
         """
         print(
             f"   _grow_relWorks_cache: new IDs: {len(ID_cache)} relWorks:{len(self.relWorks_cache)}"
@@ -332,30 +336,29 @@ class LinkChecker:
             if len(ID_cache) > 1:
                 q.OR()  # only or if more than 1
 
-            for id_ in sorted(ID_cache):
-                q.addCriterion(
-                    operator="equalsField",
-                    field="__id",
-                    value=str(id_),
+            changed = False
+            for id_int in sorted(ID_cache):
+                if not self.relWorks_cache.item_exists(mtype="Object", ID=id_int):
+                    changed = True
+                    q.addCriterion(
+                        operator="equalsField",
+                        field="__id",
+                        value=str(id_int),
+                    )
+            if changed:
+                q = self._optimize_relWorks_cache(query=q)
+                # q.toFile(path="sdata/debug.search.xml")
+                print(
+                    f"   populating relWorks cache {len(ID_cache)} (max size {relWorks_maxSize})"
                 )
-            q = self._optimize_relWorks_cache(query=q)
-            # q.toFile(path="sdata/debug.search.xml")
-            print(
-                f"   populating relWorks cache {len(ID_cache)} (max size {relWorks_maxSize})"
-            )
-            newRelWorksM = self.client.search2(query=q)
-            try:
-                self.relWorks
-            except:
+                newRelWorksM = self.client.search2(query=q)
                 # make a new cache (might be faster than adding to it)
-                self.relWorks = newRelWorksM
-            else:
-                # if relWorks exists already, add to it
+                self.relWorks_cache = newRelWorksM
                 print("   adding")
-                self.relWorks += newRelWorksM
-            # save the cache to file after processing every chunk
-            # no max_size limitation
-            self.relWorks.toFile(path=self.relWorks_fn)
+                self.relWorks_cache += newRelWorksM
+                # save the cache to file after processing every chunk
+                # no max_size limitation
+                self.relWorks_cache.toFile(path=self.relWorks_fn)
 
     def _log(self, msg: str) -> None:
         print(msg)
@@ -445,11 +448,11 @@ class LinkChecker:
         else:
             return False
 
-    def _rewrite_relWork(self, *, mtype: str, objectID: Any) -> None:
+    def _rewrite_relWork(self, *, mtype: str, objectID_N: Any) -> None:
         """
         if relWork unpublic, delete it from lvl2 lido file; otherwise rewrite relWork using ISIL
         """
-        id_int = int(objectID.text)
+        id_int = int(objectID_N.text)
 
         # we can rely on item being in cache, says I
         try:
@@ -461,7 +464,7 @@ class LinkChecker:
             # rewrite ISIL, should look like this:
             # <lido:objectID lido:type="local" lido:source="ISIL/ID">de-MUS-018313/744501</lido:objectID>
             # self._log(f"   looking up ISIL for relWork")
-            objectID.attrib["{http://www.lido-schema.org}source"] = "ISIL/ID"
+            objectID_N.attrib["{http://www.lido-schema.org}source"] = "ISIL/ID"
             # we're assuming there is always a verwaltendeInstitution, but that is not enforced by RIA!
             try:
                 verwInst = relWorkM.xpath(
@@ -473,10 +476,10 @@ class LinkChecker:
                 self._log(f"WARNING: verwaltendeInstitution empty! {mtype} {id_int}")
             else:
                 ISIL = self._lookup_ISIL(institution=verwInst.text)
-                objectID.text = f"{ISIL}/{str(id_int)}"
+                objectID_N.text = f"{ISIL}/{str(id_int)}"
                 print(f"   relWork {id_int}: {verwInst.text} -> {ISIL}")
         else:
-            self._del_relWork(ID=objectID)  # rm from lido lvl2
+            self._del_relWork(ID_N=objectID_N)  # rm from lido lvl2
 
 
 if __name__ == "__main__":

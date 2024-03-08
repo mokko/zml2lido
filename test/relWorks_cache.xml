@@ -1,0 +1,31 @@
+<application xmlns="http://www.zetcom.com/ria/ws/module">
+  <modules>
+    <module name="Object" totalSize="1">
+      <moduleItem hasAttachments="true" id="2268694" uuid="2268694">
+        <systemField dataType="Timestamp" name="__lastModified">
+          <value>2024-02-20 12:44:39.884</value>
+          <formattedValue language="de">20.02.2024 12:44</formattedValue>
+        </systemField>
+        <repeatableGroup name="ObjPublicationGrp" size="1">
+          <repeatableGroupItem id="56748382" uuid="a833945d-a46a-4e5c-9047-d3b76fe0f30f">
+            <vocabularyReference name="PublicationVoc" id="62649" instanceName="ObjPublicationVgr">
+              <vocabularyReferenceItem id="1810139" name="Ja">
+                <formattedValue language="de">Ja</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+            <vocabularyReference name="TypeVoc" id="62650" instanceName="ObjPublicationTypeVgr">
+              <vocabularyReferenceItem id="2600647" name="Daten freigegeben für SMB-digital">
+                <formattedValue language="de">Daten freigegeben für SMB-digital</formattedValue>
+              </vocabularyReferenceItem>
+            </vocabularyReference>
+          </repeatableGroupItem>
+        </repeatableGroup>
+        <moduleReference name="ObjOwnerRef" targetModule="Address" multiplicity="N:1" size="1">
+          <moduleReferenceItem moduleItemId="67678" uuid="67678">
+            <formattedValue language="de">Ethnologisches Museum, Staatliche Museen zu Berlin</formattedValue>
+          </moduleReferenceItem>
+        </moduleReference>
+      </moduleItem>
+    </module>
+  </modules>
+</application>
