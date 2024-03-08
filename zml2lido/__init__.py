@@ -1,12 +1,19 @@
-"""lido.py - A quick and dirty toolbox for turning zml files into LIDO"""
+"""lido.py - A quick and dirty toolbox for turning zml files into LIDO
 
-__version__ = "0.0.6"
+Version 0.0.7 introduces relWorksCache
+
+"""
+
+__version__ = "0.0.7"
+
 
 import argparse
 import sys
 from zml2lido.lidoTool import LidoTool
 from zml2lido.linkChecker import LinkChecker
 from zml2lido.vocmap import Vocmap
+
+NSMAP = {"l": "http://www.lido-schema.org"}
 
 
 def lfilter():

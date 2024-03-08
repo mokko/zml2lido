@@ -5,14 +5,22 @@
     RIA and save the information (SMB-Freigabe) in a Module object and potentially the disk.
 
     rw = relWorks(maxSize=20_000) # 
-    rw.cache is a Module()
     rw.load_cache_file(path=Path("cache.xml")) # load cache file or nothing
-    rw.add_relWork(mtype, ID)? # add a single item to cache. Do we respect max_size? was: _add_to_relWorks_cache 
-    rw.add_from_lido_file(fn=path) # grow cache by new items from a single file; respects max_size
-    rw.add_from_lido_chunks(first=path) # grow cache by new items from a single file; respects max_size
-    rw.exists(mtype="Object", ID=1234) # true if item exists in cache 
 
-How do we delete items from cache if the maxSize is reached.
+    rw.lookup_relWork(mtype, ID)? # lookup a single item in RIA and add it to cache.  
+    rw.lookup_from_lido_file(path=path) # grow cache by new items from a single file
+    rw.lookup_from_lido_chunks(path=path) # grow cache by new items from a single file
+
+    rw.item_exists(mtype="Object", ID=1234) # true if item exists in cache 
+    rw.item_is_online(mtype="Object", ID=1234) # true if item in cache indicates it's online
+
+    rw.save() # save in-memory cache to disk
+
+Currently: we NOT respect max_size?
+
+How do we delete items from cache if the maxSize is reached?
+
+
 
 """
 from lxml import etree
@@ -22,9 +30,11 @@ from mpapi.module import Module
 from mpapi.search import Search
 from pathlib import Path
 from zml2lido.file import per_chunk
-from zml2lido import NSMAP
 
-# NSMAP = {"l": "http://www.lido-schema.org"}
+# from zml2lido import NSMAP
+NSMAP = {"l": "http://www.lido-schema.org"}
+
+cache_path = Path("relWorks_cache.xml")
 
 
 class RelWorksCache:
@@ -35,15 +45,15 @@ class RelWorksCache:
         user, pw, baseURL = get_credentials()
         self.client = MpApi(baseURL=baseURL, user=user, pw=pw)
 
-    def add_from_lido_chunks(self, *, path: Path) -> None:
+    def lookup_from_lido_chunks(self, *, path: Path) -> None:
         """
-        Like 'add_from_lido_file', except that multiple chunks are processed;
+        Like 'lookup_from_lido_file', except that multiple chunks are processed;
         this requires the chunks to be named appropriately.
         """
         for p in per_chunk(path=path):
-            self.add_from_lido_file(path=p)
+            self.lookup_from_lido_file(path=p)
 
-    def add_from_lido_file(self, *, path: Path) -> None:
+    def lookup_from_lido_file(self, *, path: Path) -> None:
         """
         Parse a lido (lvl1) file for relWorks, query RIA and add the results to
         the cache.
@@ -53,9 +63,9 @@ class RelWorksCache:
         """
         IDs = self._lido_to_ids(path=path)
         for mtype, id_int in IDs:
-            self.add_relWork(mtype=mtype, ID=id_int)
+            self.lookup_relWork(mtype=mtype, ID=id_int)
 
-    def add_relWork(self, *, mtype: str, ID: int) -> None:
+    def lookup_relWork(self, *, mtype: str, ID: int) -> None:
         """
         Lookup a single relatedWork (relWork) in RIA and write it to in-memory cache.
         Even if it exceeds the cache size.
@@ -72,27 +82,60 @@ class RelWorksCache:
             self.cache += relWorkM  # appending them to relWork cache
         # what to do if nothing is found?
 
+    def item_exists(self, *, mtype: str, ID: int) -> bool:
+        """
+        Just providing a more direct access to the cache.
+        """
+        return self.cache.item_exists(mtype=mtype, ID=ID)
+
+    def item_is_online(self, *, mtype: str, ID: int) -> bool:
+        """
+        Report if, according to info in cache, the item has SMB-Freigabe.
+        """
+        if not self.item_exists(mtype=mtype, ID=ID):
+            raise KeyError("ERROR: Item not in Cache")
+
+        r = self.cache.xpath(
+            f"""/m:application/m:modules/m:module[
+                @name = '{mtype}']/m:moduleItem[
+                @id = {str(ID)}]/m:repeatableGroup[
+                @name = 'ObjPublicationGrp']/m:repeatableGroupItem[
+                    m:vocabularyReference[@name='PublicationVoc']/m:vocabularyReferenceItem[@name='Ja'] 
+                    and m:vocabularyReference[@name='TypeVoc']/m:vocabularyReferenceItem[@id = 2600647]
+                ]"""
+        )
+        if len(r) > 0:
+            return True
+        else:
+            return False
+
     def length(self) -> int:
         """
         Return the length of the cache (number of items in cache) as interger.
         """
         return len(self.cache)
 
-    def load_cache_file(self, *, path: Path) -> None:
+    def load_cache_file(self, *, path: Path = cache_path) -> Path:
         """
         Load a cache file. If it doesn't exist, do nothing.
         The content of file is added to the existing in-memory cache.
+
+        Returns the path used for the cache file.
         """
         if path.exists():
             newM = Module(file=path)
             self.cache += newM
+        return path
 
-    def save(self, *, path: Path = Path("relWorks_cache.xml")):
+    def save(self, *, path: Path = cache_path) -> Path:
         """
         Save current in-memory cache with relWork information to disk. Supply a path
         if you want a non-default file path.
+
+        Returns the path used for the cache file.
         """
         self.cache.toFile(path=path)
+        return path
 
     #
     # private
