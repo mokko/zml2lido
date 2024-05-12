@@ -311,7 +311,17 @@ class LidoTool:
         # print(f"***firstChunkName {firstFn}")
         return firstFn
 
-    def saxon(self, *, src: str | Path, output: str | Path, xsl: str | Path) -> None:
+    def saxon(self, *, output: str | Path, xsl: str | Path, src: str | Path | None = None) -> None:
+        """
+        New: src is optional.
+        
+        lc = LidoTool(src="ere.xml")
+        lc.saxon(xsl="test.xsl", output="out.xml")
+        lc.saxon(src="other.xml", xsl="test.xsl", output="out.xml")
+        """
+        if src is None:
+            src = self.src
+
         if not Path(src).exists():
             raise SyntaxError(f"ERROR: src {src} does not exist!")
 
@@ -384,10 +394,11 @@ class LidoTool:
         if re.match(r"\d\d\d\d\d\d", self.src.parent.name):
             outdir = sdataP / self.src.parents[1].name / self.src.parent.name
         elif self.src.parent.name == "sdata":
-            raise SyntaxError(
-                """ERROR: Don't use an src file inside of sdata. 
-                Use a subdirectory instead!"""
-            )
+            outdir = sdataP
+            #raise SyntaxError(
+            #    """ERROR: Don't use an src file inside of sdata. 
+            #    Use a subdirectory instead!"""
+            #)
         else:
             outdir = sdataP / self.src.parent.name
 
