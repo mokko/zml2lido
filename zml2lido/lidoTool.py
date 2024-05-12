@@ -226,8 +226,10 @@ class LidoTool:
         self.schema.assert_(doc)  # raises error when not valid
         return src
 
-    def zml2lido(self, *, src, xslt="zml2lido"):
-        print(f"ZML2LIDO {xslt}")
+    def zml2lido(self, *, src:str|Path|None=None, xslt="zml2lido") -> Path:
+        if src is None:
+            src = self.src
+        #print(f"ZML2LIDO {xslt}")
         if self.chunks:
             print(" with chunks")
             for chunkFn in self.loopChunks(src=self.src):
@@ -316,11 +318,14 @@ class LidoTool:
         if not Path(xsl).exists():
             raise SyntaxError("ERROR: xsl file does not exist!")
 
+        # https://stackoverflow.com/questions/78468764
+        xml_file_name=Path(src).absolute().as_uri()
+
         orig = Path.cwd()
         with PySaxonProcessor(license=False) as proc:
             xsltproc = proc.new_xslt30_processor()
             executable = xsltproc.compile_stylesheet(stylesheet_file=str(xsl))
-            xml = proc.parse_xml(xml_file_name=str(src))
+            xml = proc.parse_xml(xml_file_name=xml_file_name)
             os.chdir(self.script_dir)
             result_tree = executable.apply_templates_returning_file(
                 xdm_node=xml, output_file=str(output)
@@ -389,7 +394,7 @@ class LidoTool:
         if not outdir.exists():
             print(f"Making new dir {outdir}")
             outdir.mkdir(parents=True, exist_ok=False)
-        print(f" outdir {outdir}")
+        #print(f" outdir {outdir}")
         return outdir
 
     def _sanitize(self, *, src: str | Path) -> Path:

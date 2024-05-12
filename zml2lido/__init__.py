@@ -1,10 +1,10 @@
 """lido.py - A quick and dirty toolbox for turning zml files into LIDO
 
 Version 0.0.7 introduces relWorksCache
-
+Version 0.0.8 switches to saxonche
 """
 
-__version__ = "0.0.7"
+__version__ = "0.0.8"
 
 
 import argparse
@@ -103,6 +103,7 @@ def saxon():
     m = LidoTool(src=args.source)  # just to run saxon...
 
     m.saxon(Input=args.source, xsl=args.xsl, output=args.output)
+    m.saxon(Input=args.source, xsl=args.xsl, output=args.output)
 
 
 def validate():
@@ -112,11 +113,14 @@ def validate():
     # can we have an option to validate consecutively numbered files?
     # query570068-chunk283.lido.xml
     # query570068-chunk284.lido.xml
-    m = LidoTool(Input=args.input)
-    m.validate()
+    m = LidoTool(src=args.input)
+    m.validate() # raises if does not validate
 
 
 def vocmap():
+    """
+    Work in progress. Unfinished.
+    """
     parser = argparse.ArgumentParser(description="vocmap convertor")
     parser.add_argument(
         "-i",
@@ -133,5 +137,4 @@ def vocmap():
     )
 
     args = parser.parse_args()
-
     vm = Vocmap(Input=args.Input, output=args.output)

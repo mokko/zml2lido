@@ -8,10 +8,10 @@ from pathlib import Path
 
 
 def test_saxon() -> None:
-    lt = LidoTool(src="query516074-chunk1.xml")
+    lt = LidoTool(src="group416397-chunk1.lido.xml")
 
     # print(f"{lt.src=}")
-    assert str(lt.src == "query516074-chunk1.xml")
+    assert str(lt.src == "group416397-chunk1.lido.xml")
 
     # print(f"{lt.outdir=}")
     script_dir = Path(__file__).parents[1]
@@ -24,3 +24,9 @@ def test_saxon() -> None:
 
     # print(xsl["zml2lido"])
     lt.saxon(src=lt.src, xsl=xsl["zml2lido"], output="test.lido.xml")
+
+def test_saxon_umlaut() -> None:
+    lt = LidoTool(src="ä.xml")
+    assert str(lt.src == "ä.xml")
+    lido_fn = lt.zml2lido()
+    print(f"{lido_fn=}")
