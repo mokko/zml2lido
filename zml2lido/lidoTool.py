@@ -1,10 +1,14 @@
 """
 	Little script that converts native Zetcom xml to lido
 	
+    NEW
+    This is a new version that does not require java subprocess anymore
+    and uses saxon in c (saxonche) directory (installed with pip).
+
+    This version also does no longer need to be executed from script 
+    directory like C:/m3/zml2lido anymore.
+    
     lido Command Line Tool
-    Execute lido from the command line in the project dir. That is the 
-    dir above sdata. In my case that is 
-        C:/M3/zml2lido
     You need to specify three parameters 
         -j/--job: which flavor (job) of the transformation you want to use 
         -i/--src: where the src xml file is
@@ -32,15 +36,13 @@ from pathlib import Path
 import logging
 import os
 import re
-import subprocess
+from saxonche import PySaxonProcessor
 from typing import Iterable
 from zipfile import ZipFile
 from zml2lido.linkChecker import LinkChecker
 
 xslDir = Path(__file__).parent / "data/xsl"
 lidoXSD = Path(__file__).parent / "data/xsd/lido-v1.0.xsd"
-
-saxLib = os.environ["saxLib"]
 
 xsl = {
     "zml2lido": xslDir / "zml2lido.xsl",
@@ -70,6 +72,7 @@ class LidoTool:
         self.validation = validation
         self.force = force
         self.chunks = chunks
+        self.script_dir = Path(__file__).parents[1]
 
         self.src = self._sanitize(src=src)
         self.outdir = self._prepareOutdir()
@@ -154,14 +157,14 @@ class LidoTool:
         """
         Create individual files per lido record
         """
-        orig = Path.cwd()
+        # orig = Path.cwd()
         splitDir = self.outdir / "split"
         # existance of splitDir is a bad criterion, but cant think of a better one
         if not splitDir.exists() or self.force:  # self.force is True was problematic
             print("SPLITLIDO making")
-            os.chdir(self.outdir)
+            # os.chdir(self.script_dir)
             self.saxon(src=src, xsl=xsl["splitLido"], output="o.xml")
-            os.chdir(orig)
+            # os.chdir(orig)
         else:
             print(f" SPLIT DIR exists already: {splitDir}")
 
@@ -180,13 +183,13 @@ class LidoTool:
         ohneSachbegriff.xml is meant for debugging.
         """
         orig = Path.cwd()
-        os.chdir(self.outdir)
+        # os.chdir(self.outdir)
         out = "mitSachbegriff.xml"
         if not Path(out).exists() or self.force is True:
             self.saxon(src=src, xsl=xsl["splitSachbegriff"], output=out)
         else:
             print(f"{out} exist already, no overwrite")
-        os.chdir(orig)
+        # os.chdir(orig)
         return xslDir / out
 
     def validate(self, *, path: Path | None = None):
@@ -307,22 +310,23 @@ class LidoTool:
         return firstFn
 
     def saxon(self, *, src: str | Path, output: str | Path, xsl: str | Path) -> None:
-        if not Path(saxLib).exists():
-            raise SyntaxError(f"ERROR: saxLib {saxLib} does not exist!")
-
         if not Path(src).exists():
             raise SyntaxError(f"ERROR: src {src} does not exist!")
 
         if not Path(xsl).exists():
             raise SyntaxError("ERROR: xsl file does not exist!")
 
-        cmd = f"java -Xmx1450m -jar {saxLib} -s:{src} -xsl:{xsl} -o:{output}"
-        print(cmd)
-
-        subprocess.run(
-            cmd,
-            check=True,  # , stderr=subprocess.STDOUT
-        )  # overwrites output file without saying anything
+        orig = Path.cwd()
+        with PySaxonProcessor(license=False) as proc:
+            xsltproc = proc.new_xslt30_processor()
+            executable = xsltproc.compile_stylesheet(stylesheet_file=str(xsl))
+            xml = proc.parse_xml(xml_file_name=str(src))
+            os.chdir(self.script_dir)
+            result_tree = executable.apply_templates_returning_file(
+                xdm_node=xml, output_file=str(output)
+            )
+            os.chdir(orig)
+        # print(result_tree) # None
 
     #
     # private helper
@@ -365,8 +369,13 @@ class LidoTool:
         return new_p
 
     def _prepareOutdir(self) -> Path:
-        # determine outdir (long or short)
-        sdataP = Path("sdata").resolve()  # resolve probably not necessary
+        """
+        Determining outdir based on self.src and its parent directories.
+        We want to save outputs in {script_dir}/sdata.
+
+        Tests write to zml2lido/sdata
+        """
+        sdataP = self.script_dir / "sdata"
         if re.match(r"\d\d\d\d\d\d", self.src.parent.name):
             outdir = sdataP / self.src.parents[1].name / self.src.parent.name
         elif self.src.parent.name == "sdata":
@@ -390,16 +399,14 @@ class LidoTool:
         Some checks for convenience; mainly for our users, so they get more intelligable
         error messages.
         """
-        script_dir = Path(__file__).parents[1]
-        print(f"SCRIPT_DIR: {script_dir}")
+        # script_dir = Path(__file__).parents[1]
+        # print(f"SCRIPT_DIR: {script_dir}")
 
-        if not Path.cwd().samefile(script_dir):
-            raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
-
-        if not Path(saxLib).is_file():
-            raise SyntaxError(
-                "ERROR: Saxon not found, check environment variable saxLib"
-            )
+        # Let's lift this requirement, which means that we have to generate proper
+        # paths so that data is saved into sdata directory independent of pwd
+        # we also have to provide the proper path for vocmap in saxon
+        # if not Path.cwd().samefile(script_dir):
+        #    raise SyntaxError(f"ERROR: Call me from directory '{script_dir}', please!")
 
         # check src
         if src is None:

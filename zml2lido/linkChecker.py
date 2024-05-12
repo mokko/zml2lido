@@ -26,7 +26,9 @@ from pathlib import Path
 from typing import Any
 import urllib.request
 from zml2lido.relWorksCache import RelWorksCache
+
 # from zml2lido import NSMAP
+NSMAP = {"l": "http://www.lido-schema.org"}
 
 
 class LinkChecker:

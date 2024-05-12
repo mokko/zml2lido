@@ -7,7 +7,8 @@
 
 Requires
 * Saxon to run xslt newer than version 1: //http://saxon.sourceforge.net/
-* Pillow, the friendly PIL fork (barely used in this version)
+  We used to use a java subprocess to run saxon, now we're using saxonche
+  from pypi.org.
 
 The mapping is partly specific to the RIA installation of the SPK, but might 
 inspire others.
@@ -19,7 +20,6 @@ Includes the following scripts
 
 #lido
 
-> cd m3/zml2lido # run me from the right directory; i call this the script_dir
 > lido -j smb -i path/to/generic_xml # writes output to script_dir/sdata/20221023/label 
 
 use -f to force overwrite existing files
