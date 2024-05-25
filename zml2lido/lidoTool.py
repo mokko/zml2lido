@@ -382,9 +382,9 @@ class LidoTool:
         p = Path(p)
         suffixes = "".join(p.suffixes)
         stem = str(p.name).split(".")[0]  # splits off multiple suffixes
-        new_dir = p.parent / "lvl2"
-        new_dir.mkdir(exist_ok=True)
-        new_p = new_dir.joinpath(stem + "-2" + suffixes)
+        new_dir = p.parent  # / "lvl2"
+        # new_dir.mkdir(exist_ok=True)
+        new_p = new_dir.joinpath(stem + "-lvl2" + suffixes)
         return new_p
 
     def _prepareOutdir(self) -> Path:
@@ -398,7 +398,7 @@ class LidoTool:
         if re.match(r"\d\d\d\d\d\d", self.src.parent.name):
             outdir = sdataP / self.src.parents[1].name / self.src.parent.name
         elif self.src.parent.name == "sdata":
-            print("_outdir:Case2")
+            # print("_outdir:Case2")
             outdir = sdataP
             # raise SyntaxError(
             #    """ERROR: Don't use an src file inside of sdata.
@@ -406,8 +406,8 @@ class LidoTool:
             # )
         else:
             # should write in sdata/ccc for example, which may be pwd
-            print(f"_outdir:Case3 {self.src.parent.resolve().name}")
             outdir = sdataP / self.src.parent.resolve().name
+            print(f"Case3: {outdir=}")
 
         if not outdir.exists():
             print(f"Making new dir {outdir}")

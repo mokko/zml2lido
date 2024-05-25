@@ -61,8 +61,11 @@
 			z:repeatableGroup[
 				@name = 'ObjGeograficGrp']/
 			z:repeatableGroupItem[
-				z:vocabularyReference/@name = 'GeopolVoc' 
-				and z:vocabularyReferenceItem/@name = $herstellendeKollektive
+				z:vocabularyReference[
+					@name = 'GeopolVoc'
+				]/z:vocabularyReferenceItem[
+					z:formattedValue = $herstellendeKollektive
+				]
 			]"/>
 
 		<!-- 
@@ -82,9 +85,15 @@
 					@name = 'TypeVoc' 
 				]/z:vocabularyReferenceItem[
 					@name = $herstellendeOrtstypen
-				] or not(z:vocabularyReference[
+				] 
+				or not(z:vocabularyReference[
 					@name = 'TypeVoc' 
 				])
+				and not(z:vocabularyReference[
+					@name = 'GeopolVoc' 
+				]/z:vocabularyReferenceItem[
+					@name = $herstellendeKollektive
+				]) 
 			]"/>
 
 
@@ -105,11 +114,13 @@
 				or not (z:vocabularyReference[@name = 'TypeVoc'])
 		]"/>
 
+		<!-- Write event-Herstellung if any of the following -->
         <xsl:if test="$herstellendeRollenN 
 			or $herstellendeKollektiveN 
 			or $herstellendeOrteNN 
 			or $herstellendeDatenTypenN
 			or z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']
+			or z:repeatableGroup[@name = 'ObjCulturalContextGrp']
 		">
 			<lido:eventSet>
 				<lido:displayEvent xml:lang="de">Herstellung</lido:displayEvent>
@@ -124,9 +135,17 @@
 
 					<!-- Ethnien und andere Kollektive aus GeoBezug-->
 					<xsl:apply-templates mode="eventActor" select="$herstellendeKollektiveN"/>
-					<!-- lido:culture-->
-					<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjCulturalContextGrp']"/>
 
+					<!-- lido:culture
+					Do we only want that ObjCulturalContextGrp if Ortstyp = Herstellung 
+					-->
+					<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjCulturalContextGrp']"/>
+					<xsl:apply-templates mode="culture" select="$herstellendeKollektiveN"/>
+					<!--xsl:message>
+						<xsl:text>herstellendeKollektiveN</xsl:text>
+						<xsl:value-of select="$herstellendeKollektiveN"/>
+					</xsl:message-->
+		
 					<!-- eventDate 
 					SPEC allows repeated displayDates only for language variants; 
 					according to spec event dates cannot be repeated. 
@@ -205,8 +224,9 @@
 	</xsl:template>
 
 
+	<!-- create lido:culture from mpx:Kul.Bezug-->
 	<xsl:template match="z:repeatableGroup[@name = 'ObjCulturalContextGrp']">
-		<xsl:message>yyyyyyyyyyyyyyyyyy yyyyyyyyyyyyyyyyyyyy yyyyyyyyyyyyyyyyyy</xsl:message>
+		<!--xsl:message>yyyyyyyyyyyyyyyyyy yyyyyyyyyyyyyyyyyyyy yyyyyyyyyyyyyyyyyy</xsl:message-->
 		<xsl:for-each select="z:repeatableGroupItem">
 			<lido:culture>
 				<lido:conceptID lido:type="local" lido:source="ObjCulturalContextGrp">
@@ -233,6 +253,33 @@
 	</xsl:template>
 
 
+	<!-- create lido:culture from old-fashioned herstellendenKollektiven in mpx:geogr.Bezug-->
+	<xsl:template mode="culture" match="z:repeatableGroup[
+				@name = 'ObjGeograficGrp']/
+			z:repeatableGroupItem">
+		<!--xsl:message>xxxxxxxxxxxxxxxxxxxxxxxxxxx mode=culture for herstellendesKollektiv</xsl:message-->
+		<lido:culture>
+			<lido:conceptID lido:type="local" lido:source="ObjGeograficGrp">
+				<xsl:value-of select="z:vocabularyReference[
+					@name = 'PlaceVoc'
+				]/z:vocabularyReferenceItem/@id"/>
+			</lido:conceptID>
+			<lido:term>
+				<xsl:if test="z:vocabularyReference[
+						@name = 'PlaceVoc'
+					]/z:vocabularyReferenceItem/z:formattedValue/@language ne ''">
+					<xsl:attribute name="xml:lang">
+					<xsl:value-of select="z:vocabularyReference[
+						@name = 'PlaceVoc'
+					]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
+					</xsl:attribute>
+				</xsl:if>
+				<xsl:value-of select="z:vocabularyReference[
+					@name = 'PlaceVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue"/>
+			</lido:term>
+		</lido:culture>
+	</xsl:template>
 				
 	<!-- 
 		m3: Kultur auf Actor gemappt entsprechend Vorschlag FvH; 
