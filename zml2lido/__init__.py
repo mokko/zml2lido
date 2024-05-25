@@ -100,7 +100,7 @@ def saxon():
         "-x", "--xsl", help="(xslt) transformation filename", required=True
     )
     args = parser.parse_args()
-    m = LidoTool(src=args.source)  
+    m = LidoTool(src=args.source)
     m.saxon(xsl=args.xsl, output=args.output)
 
 
@@ -112,7 +112,7 @@ def validate():
     # query570068-chunk283.lido.xml
     # query570068-chunk284.lido.xml
     m = LidoTool(src=args.input)
-    m.validate() # raises if does not validate
+    m.validate()  # raises if does not validate
 
 
 def vocmap():

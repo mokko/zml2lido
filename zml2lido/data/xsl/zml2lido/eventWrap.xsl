@@ -89,7 +89,7 @@
 				<!-- http://xtree-public.digicult-verbund.de/vocnet/?uriVocItem=http://terminology.lido-schema.org/&startNode=lido00409&lang=en&d=n -->
 				<lido:actor>
 					<xsl:attribute name="lido:type" select="$kue/z:vocabularyReference[@name = 'PerTypeVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-					<lido:actorID lido:type="local" lido:source="RIA/SMB">
+					<lido:actorID lido:type="local" lido:source="ObjPerAssociationRef">
 						<xsl:value-of select="$kueId"/>
 					</lido:actorID>
 					<xsl:if test="$gnd">

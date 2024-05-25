@@ -37,7 +37,8 @@
 			'Stecher', 'Stecherin', 'Stecher*in',
 			'Verfasser', 'Verfasserin', 'Verfasser*in',
 			'Zeichner', 'Zeichnerin', 'Zeichner*in'"/>
-			
+
+		<!-- TODO: -->
 		<xsl:variable name="herstellendeKollektive" select="
 			'Ethnie',
 			'Kultur',
@@ -123,6 +124,8 @@
 
 					<!-- Ethnien und andere Kollektive aus GeoBezug-->
 					<xsl:apply-templates mode="eventActor" select="$herstellendeKollektiveN"/>
+					<!-- lido:culture-->
+					<xsl:apply-templates select="z:repeatableGroup[@name = 'ObjCulturalContextGrp']"/>
 
 					<!-- eventDate 
 					SPEC allows repeated displayDates only for language variants; 
@@ -200,6 +203,35 @@
 			</lido:eventSet>
 		</xsl:if>
 	</xsl:template>
+
+
+	<xsl:template match="z:repeatableGroup[@name = 'ObjCulturalContextGrp']">
+		<xsl:message>yyyyyyyyyyyyyyyyyy yyyyyyyyyyyyyyyyyyyy yyyyyyyyyyyyyyyyyy</xsl:message>
+		<xsl:for-each select="z:repeatableGroupItem">
+			<lido:culture>
+				<lido:conceptID lido:type="local" lido:source="ObjCulturalContextGrp">
+					<xsl:value-of select="z:vocabularyReference[
+						@name = 'NameVoc'
+					]/z:vocabularyReferenceItem/@id"/>
+				</lido:conceptID>
+				<lido:term>
+					<xsl:if test="z:vocabularyReference[
+							@name = 'NameVoc'
+						]/z:vocabularyReferenceItem/z:formattedValue/@language ne ''">
+						<xsl:attribute name="xml:lang">
+						<xsl:value-of select="z:vocabularyReference[
+							@name = 'NameVoc'
+						]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
+						</xsl:attribute>
+					</xsl:if>
+					<xsl:value-of select="z:vocabularyReference[
+						@name = 'NameVoc'
+					]/z:vocabularyReferenceItem/z:formattedValue"/>
+				</lido:term>
+			</lido:culture>
+		</xsl:for-each>
+	</xsl:template>
+
 
 				
 	<!-- 

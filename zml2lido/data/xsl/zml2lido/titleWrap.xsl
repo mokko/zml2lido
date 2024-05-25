@@ -10,6 +10,7 @@
 
 	<xsl:template name="titleWrap">
         <lido:titleWrap>
+			<!-- Wenn ein Titel, dann nutze ihn, sonst Sachbegriff--> 
 			<xsl:choose>
 				<xsl:when test="z:repeatableGroup[@name='ObjObjectTitleGrp']/z:repeatableGroupItem">
 					<xsl:apply-templates select="z:repeatableGroup[@name='ObjObjectTitleGrp']/z:repeatableGroupItem"/>
@@ -29,8 +30,35 @@
 					</lido:titleSet>
 				</xsl:otherwise>
 			</xsl:choose>
+			<!-- Wenn es einheimische Bezeichnung im Sachbegriff gibt, dann schreibe sie in title\@type="titleLanguageOrigin" -->
+			<xsl:apply-templates select="z:repeatableGroup[
+				@name = 'ObjTechnicalTermGrp'
+				]/z:repeatableGroupItem[
+					z:vocabularyReference/z:vocabularyReferenceItem/@id = '4402610'
+				]"/>
 		</lido:titleWrap>
     </xsl:template>
+
+	<!-- einheimische Bezeichnung aus mpx:Sachbegriff in lido:title-->
+	<xsl:template match="z:repeatableGroup[
+		@name = 'ObjTechnicalTermGrp'
+		]/z:repeatableGroupItem[
+			z:vocabularyReference/z:vocabularyReferenceItem/@id = '4402610'
+		]">
+		<xsl:if test="z:dataField[@name = 'TechnicalTermTxt'] ne ''">
+			<xsl:comment>titleLanguageOrigin ist vom CCC-Portal definierter Wert</xsl:comment>
+			<lido:titleSet>
+				<xsl:attribute name="lido:type">
+					<xsl:text>titleLanguageOrigin</xsl:text>
+				</xsl:attribute>
+				<lido:appellationValue>
+					<!-- Sprache wird in RIA nicht qualifiziert -->
+					<xsl:value-of select="z:dataField[@name = 'TechnicalTermTxt']"/>
+				</lido:appellationValue>
+			</lido:titleSet>
+		</xsl:if>
+	</xsl:template>
+
 
 	<xsl:template match="/z:application/z:modules/z:module[@name = 'Object']/
 		z:moduleItem/z:repeatableGroup[@name='ObjObjectTitleGrp']/z:repeatableGroupItem">

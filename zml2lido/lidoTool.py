@@ -226,10 +226,10 @@ class LidoTool:
         self.schema.assert_(doc)  # raises error when not valid
         return src
 
-    def zml2lido(self, *, src:str|Path|None=None, xslt="zml2lido") -> Path:
+    def zml2lido(self, *, src: str | Path | None = None, xslt="zml2lido") -> Path:
         if src is None:
             src = self.src
-        #print(f"ZML2LIDO {xslt}")
+        # print(f"ZML2LIDO {xslt}")
         if self.chunks:
             print(" with chunks")
             for chunkFn in self.loopChunks(src=self.src):
@@ -311,10 +311,14 @@ class LidoTool:
         # print(f"***firstChunkName {firstFn}")
         return firstFn
 
-    def saxon(self, *, output: str | Path, xsl: str | Path, src: str | Path | None = None) -> None:
+    def saxon(
+        self, *, output: str | Path, xsl: str | Path, src: str | Path | None = None
+    ) -> None:
         """
-        New: src is optional.
-        
+        New: src is optional (for the LidoTool's method).
+
+        saxon could also be a function outside of this class.
+
         lc = LidoTool(src="ere.xml")
         lc.saxon(xsl="test.xsl", output="out.xml")
         lc.saxon(src="other.xml", xsl="test.xsl", output="out.xml")
@@ -329,14 +333,14 @@ class LidoTool:
             raise SyntaxError("ERROR: xsl file does not exist!")
 
         # https://stackoverflow.com/questions/78468764
-        xml_file_name=Path(src).absolute().as_uri()
+        xml_file_name = Path(src).absolute().as_uri()
 
         orig = Path.cwd()
         with PySaxonProcessor(license=False) as proc:
             xsltproc = proc.new_xslt30_processor()
             executable = xsltproc.compile_stylesheet(stylesheet_file=str(xsl))
             xml = proc.parse_xml(xml_file_name=xml_file_name)
-            os.chdir(self.script_dir)
+            os.chdir(self.script_dir)  # so that saxon finds vocmap.xml
             result_tree = executable.apply_templates_returning_file(
                 xdm_node=xml, output_file=str(output)
             )
@@ -394,18 +398,21 @@ class LidoTool:
         if re.match(r"\d\d\d\d\d\d", self.src.parent.name):
             outdir = sdataP / self.src.parents[1].name / self.src.parent.name
         elif self.src.parent.name == "sdata":
+            print("_outdir:Case2")
             outdir = sdataP
-            #raise SyntaxError(
-            #    """ERROR: Don't use an src file inside of sdata. 
+            # raise SyntaxError(
+            #    """ERROR: Don't use an src file inside of sdata.
             #    Use a subdirectory instead!"""
-            #)
+            # )
         else:
-            outdir = sdataP / self.src.parent.name
+            # should write in sdata/ccc for example, which may be pwd
+            print(f"_outdir:Case3 {self.src.parent.resolve().name}")
+            outdir = sdataP / self.src.parent.resolve().name
 
         if not outdir.exists():
             print(f"Making new dir {outdir}")
             outdir.mkdir(parents=True, exist_ok=False)
-        #print(f" outdir {outdir}")
+        # print(f" outdir {outdir}")
         return outdir
 
     def _sanitize(self, *, src: str | Path) -> Path:

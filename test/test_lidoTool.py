@@ -25,6 +25,7 @@ def test_saxon() -> None:
     # print(xsl["zml2lido"])
     lt.saxon(src=lt.src, xsl=xsl["zml2lido"], output="test.lido.xml")
 
+
 def test_saxon_umlaut() -> None:
     lt = LidoTool(src="ä.xml")
     assert str(lt.src == "ä.xml")
