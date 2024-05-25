@@ -34,7 +34,7 @@
 			<xsl:apply-templates select="z:repeatableGroup[
 				@name = 'ObjTechnicalTermGrp'
 				]/z:repeatableGroupItem[
-					z:vocabularyReference/z:vocabularyReferenceItem/@id = '4402610'
+					z:vocabularyReference/z:vocabularyReferenceItem/@id = ('4402610', '4406157')
 				]"/>
 		</lido:titleWrap>
     </xsl:template>
@@ -43,10 +43,10 @@
 	<xsl:template match="z:repeatableGroup[
 		@name = 'ObjTechnicalTermGrp'
 		]/z:repeatableGroupItem[
-			z:vocabularyReference/z:vocabularyReferenceItem/@id = '4402610'
+			z:vocabularyReference/z:vocabularyReferenceItem/@id = ('4402610', '4406157')
 		]">
 		<xsl:if test="z:dataField[@name = 'TechnicalTermTxt'] ne ''">
-			<xsl:comment>titleLanguageOrigin ist vom CCC-Portal definierter Wert</xsl:comment>
+			<xsl:comment>titleLanguageOrigin ist ein vom CCC-Portal definierter Wert</xsl:comment>
 			<lido:titleSet>
 				<xsl:attribute name="lido:type">
 					<xsl:text>titleLanguageOrigin</xsl:text>
