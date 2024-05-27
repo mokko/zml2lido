@@ -40,9 +40,12 @@
 
 		<!-- TODO: -->
 		<xsl:variable name="herstellendeKollektive" select="
-			'Ethnie',
+			'Bevölkerungsgruppe',
+			'Ethnie', 'Ethnie (Untergruppe)',
+			'Glaubensgemeinschaft',
+			'Kaste',
 			'Kultur',
-			'Sprachgruppe'"/>
+			'Sprachgruppe', 'Stamm'"/>
 
 		<xsl:variable name="herstellendeOrtstypen" select="
 			'Aufnahmeort',
