@@ -30,7 +30,6 @@
 			<xsl:call-template name="objekttyp3"/>
 			<xsl:call-template name="sachbegriff"/>
 			<xsl:call-template name="systematikArt"/>
-			<xsl:call-template name="dreiWege"/>
 			<xsl:call-template name="europeanaType"/>
         </lido:classificationWrap>
 	</xsl:template>
@@ -111,38 +110,11 @@
 			getPack group 163396 AfrikaSM
 			pack
 	-->
-	<xsl:template name="dreiWege">
-		<!-- 
-			Daten für die DDB sollen getrennt werden, je nachdem ob sie bei 3 Wege benutzt werden 
-			oder nicht. Um dies zu ermöglichen, sind Daten für 3 Wege hier als solche ausgezeichnet.
-		-->
-		<xsl:variable name="grpIds" select="
-			'101396',
-			'106400',
-			'117396', 
-			'163396',
-			'162397'
-		"/>
-		<xsl:apply-templates select="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem[@moduleItemId = $grpIds]"/>
-		<xsl:apply-templates mode="DDB" select="z:repeatableGroup[@name = 'ObjPublicationGrp']
-			/z:repeatableGroupItem[z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']"/>
-	</xsl:template>
 
-	<xsl:template match="z:moduleReference[@name = 'ObjObjectGroupsRef']/z:moduleReferenceItem">
-		<lido:classification lido:type="DDB">
-			<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
-		</lido:classification>
-	</xsl:template>
 
-	<!-- Im Augenblick gibt es nur eine ApprovalGrp, die für 3 Wege freigegeben ist -->
-	<xsl:template mode="DDB" match="z:repeatableGroup[@name = 'ObjPublicationGrp']/z:repeatableGroupItem[
-		z:vocabularyReference/z:vocabularyReferenceItem/@name = 'DatenFreigegebenfürEMBeninProjekt']">
-		<xsl:if test="z:vocabularyReference[@name = 'PublicationVoc']/z:vocabularyReferenceItem/z:formattedValue">
-			<lido:classification lido:type="DDB">
-				<lido:term lido:addedSearchTerm="no">3 Wege</lido:term>
-			</lido:classification>
-		</xsl:if>
-	</xsl:template>
+	<!-- 
+		Marker für 3Wege bzw. CCC-Portal. Derzeit benutzen wir keinen Marker
+	-->
 
 	<!-- europeanaType-->
 	<xsl:template name="europeanaType">
@@ -208,7 +180,7 @@
 			<!-- 
 				source not allowed in classification or term
 				ObjTechnicalTermClb provides no ID
-				-->
+			-->
 			<lido:conceptID lido:encodinganalog="RIA:Sachbegriff" lido:source="RIA:Sachbegriff" lido:type="local"/>
 			<lido:term xml:lang="de">
 				<xsl:value-of select="normalize-space(.)"/>
