@@ -162,9 +162,9 @@ class LidoTool:
         # existance of splitDir is a bad criterion, but cant think of a better one
         if not splitDir.exists() or self.force:  # self.force is True was problematic
             print("SPLITLIDO making")
-            # os.chdir(self.script_dir)
+            os.chdir(self.script_dir)
             self.saxon(src=src, xsl=xsl["splitLido"], output="o.xml")
-            # os.chdir(orig)
+            os.chdir(orig)
         else:
             print(f" SPLIT DIR exists already: {splitDir}")
 
