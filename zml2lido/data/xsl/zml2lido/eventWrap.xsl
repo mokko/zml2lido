@@ -22,6 +22,7 @@
     <xsl:import href="event-Sammeln.xsl" />
     <xsl:import href="event-Veröffentlichung.xsl" />
     <xsl:import href="event-unknown.xsl" />
+    <xsl:import href="event-Zuordnung.xsl" />
 
 	<!-- 
 		http://terminology-view.lido-schema.org/vocnet/?startNode=lido00409&lang=en&uriVocItem=http://terminology.lido-schema.org/lido00228
@@ -49,6 +50,7 @@
             <xsl:call-template name="Herstellung"/>			
             <xsl:call-template name="Sammeln"/>
             <xsl:call-template name="Veröffentlichung"/>			
+            <xsl:call-template name="Zuordnung"/>			
             <!--xsl:call-template name="unknown"/ doesn't work yet-->			
         </lido:eventWrap>
     </xsl:template>

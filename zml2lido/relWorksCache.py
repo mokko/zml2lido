@@ -4,14 +4,14 @@
     Most importantly, we want to know whether relWorks are online or not. So we query
     RIA and save the information (SMB-Freigabe) in a Module object and potentially the disk.
 
-    rw = relWorks(maxSize=20_000) # 
+    rw = relWorks(maxSize=20_000) #
     rw.load_cache_file(path=Path("cache.xml")) # load cache file or nothing
 
-    rw.lookup_relWork(mtype, ID)? # lookup a single item in RIA and add it to cache.  
+    rw.lookup_relWork(mtype, ID)? # lookup a single item in RIA and add it to cache.
     rw.lookup_from_lido_file(path=path) # grow cache by new items from a single file
     rw.lookup_from_lido_chunks(path=path) # grow cache by new items from a single file
 
-    rw.item_exists(mtype="Object", ID=1234) # true if item exists in cache 
+    rw.item_exists(mtype="Object", ID=1234) # true if item exists in cache
     rw.item_is_online(mtype="Object", ID=1234) # true if item in cache indicates it's online
 
     rw.save() # save in-memory cache to disk
@@ -23,6 +23,7 @@ How do we delete items from cache if the maxSize is reached?
 
 
 """
+
 from lxml import etree
 from mpapi.constants import get_credentials
 from mpapi.client import MpApi

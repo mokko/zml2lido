@@ -3,12 +3,13 @@ WORK IN PROGRESS - File helpers for zml2lido
 
 We're currently only zipping zml files, not lido files automatically
 
-unpacked_path = unzip(Path("group1234-chunk1.zip") 
+unpacked_path = unzip(Path("group1234-chunk1.zip")
 
 for chunk in per_chunk(chunk_path):
-	do_something_with(chunk)
+        do_something_with(chunk)
 
 """
+
 from zipfile import ZipFile
 from pathlib import Path
 import re

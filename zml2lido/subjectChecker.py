@@ -4,16 +4,16 @@ subject checker - write an excel file for subjects that dont have URL
 
 We walk thru a set of chunk files in generic ZML
 For each chunk
-	lookup subjects and see if they are vocmap.xml
-	if not write that term into a Excel file
-	making a new file if no excel exists and appending an existing one
+        lookup subjects and see if they are vocmap.xml
+        if not write that term into a Excel file
+        making a new file if no excel exists and appending an existing one
 
 NOTES
 
 
 QUESTIONS
-1. 
-Looping thru chunk files is something I tend to need from multiple scrits. Where should that 
+1.
+Looping thru chunk files is something I tend to need from multiple scrits. Where should that
 code live?
 2.
 I have similar functionality in the xslt; now I re-implement that in the Python.

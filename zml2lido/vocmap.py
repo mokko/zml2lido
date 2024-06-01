@@ -6,6 +6,7 @@ vocmap -i in.xslx -o out.xml
 vocmap -i in.xml -o out.xslx
 
 """
+
 from lxml import etree
 from openpyxl import Workbook
 from openpyxl.styles import Font

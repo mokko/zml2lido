@@ -1,20 +1,20 @@
 """
-    parse a LIDO file and work on linkResources that don't start with http 
-    for those guess the URL based on heuristics indicated by the examples path below
-    write result to lido file in same dir as src
-    src and output are lido
-    
-    This step produces lvl2 lido.
+parse a LIDO file and work on linkResources that don't start with http
+for those guess the URL based on heuristics indicated by the examples path below
+write result to lido file in same dir as src
+src and output are lido
 
-    USAGE:
-    lc = LinkChecker(src="path/to/file.lido.xml")
+This step produces lvl2 lido.
 
-    lc.fixRelatedWorks()          # removes dead links in relatedWorks, also adds ISIL
-    lc.linkResource_online_http() # for all linkResources print online status
-    lc.rmInternalLinks()          # remove linkResource with internal links, not used atm
-    lc.rmUnpublishedRecords()     # removes objects without objectPublishedID
+USAGE:
+lc = LinkChecker(src="path/to/file.lido.xml")
 
-    lc.save(out_fn="path/to/lido.lvl2.xml")
+lc.fixRelatedWorks()          # removes dead links in relatedWorks, also adds ISIL
+lc.linkResource_online_http() # for all linkResources print online status
+lc.rmInternalLinks()          # remove linkResource with internal links, not used atm
+lc.rmUnpublishedRecords()     # removes objects without objectPublishedID
+
+lc.save(out_fn="path/to/lido.lvl2.xml")
 
 """
 

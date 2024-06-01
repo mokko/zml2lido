@@ -1,6 +1,6 @@
 """
 A command line tool that reads in LIDO files and executes checks. Eventually, we want to
-become modular, so that we can de/activate tests. Perhaps using a config file. That 
+become modular, so that we can de/activate tests. Perhaps using a config file. That
 would be a toml file.
 
 We already have a validation tool, so we don't need to start with validation

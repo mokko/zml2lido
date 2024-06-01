@@ -1,34 +1,34 @@
 """
-	Little script that converts native Zetcom xml to lido
-	
-    NEW
-    This is a new version that does not require java subprocess anymore
-    and uses saxon in c (saxonche) directory (installed with pip).
+    Little script that converts native Zetcom xml to lido
 
-    This version also does no longer need to be executed from script 
-    directory like C:/m3/zml2lido anymore.
-    
-    lido Command Line Tool
-    You need to specify three parameters 
-        -j/--job: which flavor (job) of the transformation you want to use 
-        -i/--src: where the src xml file is
-        -o/--output: will be used as output directory; in my case 
-            C:/m3/zml2lido/sdata/{output}
+NEW
+This is a new version that does not require java subprocess anymore
+and uses saxon in c (saxonche) directory (installed with pip).
 
-        cd C:/m3/zml2lido 
-        lido -j smb -i c:/m3/MpApi/sdata/3Wege/3Wege20210904.xml -o 3Wege
-        # writes lido to file C:/m3/zml2lido/sdata/3Wege/20210904.lido.xml
+This version also does no longer need to be executed from script
+directory like C:/m3/zml2lido anymore.
 
-	Flavors (aka jobs):
-    FvH wants links in the Internet instead of image files, but we still give 
-    images to the rst project. So we have different flavors or chains of steps 
-    for these purposes. See jobs.py for details
-    - smb: for FvH
-    - dd: for debug
-    - localLido: for rst
-    
-    In an old version it did also image processing, but that function is
-    currently not used/tested. 
+lido Command Line Tool
+You need to specify three parameters
+    -j/--job: which flavor (job) of the transformation you want to use
+    -i/--src: where the src xml file is
+    -o/--output: will be used as output directory; in my case
+        C:/m3/zml2lido/sdata/{output}
+
+    cd C:/m3/zml2lido
+    lido -j smb -i c:/m3/MpApi/sdata/3Wege/3Wege20210904.xml -o 3Wege
+    # writes lido to file C:/m3/zml2lido/sdata/3Wege/20210904.lido.xml
+
+    Flavors (aka jobs):
+FvH wants links in the Internet instead of image files, but we still give
+images to the rst project. So we have different flavors or chains of steps
+for these purposes. See jobs.py for details
+- smb: for FvH
+- dd: for debug
+- localLido: for rst
+
+In an old version it did also image processing, but that function is
+currently not used/tested.
 """
 
 from lxml import etree
@@ -76,6 +76,7 @@ class LidoTool:
 
         self.src = self._sanitize(src=src)
         self.outdir = self._prepareOutdir()
+        print(f" outdir {self.outdir}")
         self._initLog()
 
     #
@@ -412,7 +413,6 @@ class LidoTool:
         if not outdir.exists():
             print(f"Making new dir {outdir}")
             outdir.mkdir(parents=True, exist_ok=False)
-        # print(f" outdir {outdir}")
         return outdir
 
     def _sanitize(self, *, src: str | Path) -> Path:

@@ -202,21 +202,24 @@
 	-->
 	<xsl:template name="bereich3">
 		<xsl:variable name="bereich" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
-		<xsl:variable name="bereichControl" select="func:vocmap-control('Bereich',$bereich)"/>
 		<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Bereich',$bereich, 'aaturi')"/>
 		<xsl:variable name="aatlabel" select="func:vocmap-replace-laxer('Bereich',$bereich, 'aatlabel')"/>
-		<xsl:if test="$bereichControl ne ''">		
-			<!--xsl:message>
+		<!--
+		1.6.2024 Sammlung soll nicht classification sein.
+		<xsl:variable name="sammlung" select="func:vocmap-control('Bereich',$bereich)"/>
+		<xsl:if test="$sammlung ne ''">		
+			xsl:message>
 				<xsl:text>classification from Bereich </xsl:text>
 				<xsl:value-of select="@id"/>
-			</xsl:message-->
+			</xsl:message
 			<lido:classification>
 				<lido:conceptID lido:encodinganalog="RIA:Bereich" lido:source="ObjOrgGroupVoc" lido:type="local"/>
 				<lido:term xml:lang="de">
-					<xsl:value-of select="$bereichControl"/>
+					<xsl:value-of select="$sammlung"/>
 				</lido:term>
 			</lido:classification>
 		</xsl:if>
+		-->
 		<xsl:if test="$aaturi ne ''">		
 			<lido:classification>
 				<lido:conceptID lido:encodinganalog="RIA:SystematikArt(ObjSystematicClb)" 
