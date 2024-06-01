@@ -19,7 +19,7 @@
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $veröffentlichendeRollen]"/>
 
         <xsl:if test="$perInRole">
-			<lido:eventSet>
+			<lido:eventSet lido:sortorder="10">
 				<lido:displayEvent xml:lang="de">Veröffentlichung</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>

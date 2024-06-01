@@ -125,7 +125,7 @@
 			or z:repeatableGroup[@name = 'ObjMaterialTechniqueGrp']
 			or z:repeatableGroup[@name = 'ObjCulturalContextGrp']
 		">
-			<lido:eventSet>
+			<lido:eventSet lido:sortorder="5">
 				<lido:displayEvent xml:lang="de">Herstellung</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>

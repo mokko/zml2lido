@@ -17,7 +17,7 @@
 			z:vocabularyReference[@name = 'PublicationVoc' and z:vocabularyReferenceItem/@id = '1810139']
 			]">
 			<!--xsl:message>BENIN OBJECT</xsl:message-->
-			<lido:eventSet>
+			<lido:eventSet lido:sortorder="5">
 				<xsl:comment>This is an "artificial" event to identify all Benin objects for 3 Wege Projekt</xsl:comment>
 				<lido:displayEvent xml:lang="de">Herstellung</lido:displayEvent>
 				<lido:event>

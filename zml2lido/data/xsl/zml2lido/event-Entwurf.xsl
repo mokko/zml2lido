@@ -22,7 +22,7 @@
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $entwerfendeRollen]"/>
 
         <xsl:if test="$perInRole">
-			<lido:eventSet>
+			<lido:eventSet lido:sortorder="1">
 				<lido:displayEvent xml:lang="de">Entwerfen</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>

@@ -22,7 +22,7 @@
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $schöpfendeRollen]"/>
 
         <xsl:if test="$perInRole">
-			<lido:eventSet>
+			<lido:eventSet sortorder="3">
 				<lido:displayEvent xml:lang="de">geistige Schöpfung</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>

@@ -38,7 +38,8 @@ class LinkChecker:
         self.data = etree.parse(str(src))
         user, pw, baseURL = get_credentials()
         self.client = MpApi(baseURL=baseURL, user=user, pw=pw)
-        self.rwc = RelWorksCache(maxSize=20_000)
+        cache_dir = Path(src).parent
+        self.rwc = RelWorksCache(maxSize=20_000, cache_dir=cache_dir)
         self.rwc.load_cache_file()  # load file if it exists
 
         if chunks:

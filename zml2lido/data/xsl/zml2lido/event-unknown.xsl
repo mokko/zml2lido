@@ -33,7 +33,7 @@
 			z:vocabularyReference/@name = 'RoleVoc' 
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $zugeordnet]"/>
         <xsl:if test="$nichtZugeordnet">
-			<lido:eventSet>
+			<lido:eventSet lidosort="100">
 				<lido:displayEvent xml:lang="de">Unbekanntes Ereignis</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>

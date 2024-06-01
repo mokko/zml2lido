@@ -20,7 +20,7 @@
 			<xsl:variable name="registrarV" select="z:formattedValue"/>
 			<xsl:choose>
 				<xsl:when test="substring-after($registrarV, 'Positiv, ')"> 
-					<lido:eventSet>
+					<lido:eventSet lido:sortorder="35">
 						<lido:displayEvent xml:lang="de">
 							<xsl:text>Ausstellung</xsl:text>
 						</lido:displayEvent>

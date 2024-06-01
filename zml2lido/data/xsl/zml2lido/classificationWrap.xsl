@@ -128,36 +128,41 @@
 
 	<xsl:template name="objekttyp3">
 		<!-- i had trouble extracting objekttyp-->
-		<xsl:variable name="objekttyp" select="z:vocabularyReference[@name = 'ObjCategoryVoc']/text()"/>
-		<xsl:variable name="objekttypControl" select="func:vocmap-control('Objekttyp',$objekttyp)"/>
-		<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Objekttyp',$objekttyp, 'aaturi')"/>
-		<xsl:variable name="aatlabel" select="func:vocmap-replace-lax-lang('Objekttyp',$objekttyp, 'aatlabel', 'en')"/>
-			
-		<xsl:if test="$objekttypControl ne ''">		
-			<xsl:message>
-				<xsl:text>classification from Objekttyp </xsl:text>
-				<xsl:value-of select="@id"/>
-			</xsl:message>
-			<lido:classification>
-				<lido:conceptID lido:encodinganalog="RIA:Objekttyp" lido:source="ObjCategoryVoc" lido:type="local"/>
-				<lido:term xml:lang="de">
-					<xsl:value-of select="$objekttypControl"/>
-				</lido:term>
-			</lido:classification>
-		</xsl:if>
-		<xsl:if test="$aaturi ne ''">		
-			<lido:classification>
-				<lido:conceptID lido:encodinganalog="RIA:Objekttyp" 
-					lido:source="Art &amp; Architecture Thesaurus" 
-					lido:type="uri">
-						<xsl:value-of select="$aaturi"/>
-				</lido:conceptID>
-				<xsl:if test="$aatlabel ne ''">		
-					<lido:term lido:addedSearchTerm="yes" xml:lang="en">
-						<xsl:value-of select="$aatlabel"/>
+		<xsl:variable name="objekttyp" select="z:vocabularyReference[@name = 'ObjCategoryVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+		<xsl:if test="$objekttyp ne ''">
+			<xsl:variable name="objekttypControl" select="func:vocmap-control('Objekttyp',$objekttyp)"/>
+			<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Objekttyp',$objekttyp, 'aaturi')"/>
+			<xsl:variable name="aatlabel" select="func:vocmap-replace-lax-lang('Objekttyp',$objekttyp, 'aatlabel', 'en')"/>
+				
+			<xsl:if test="$objekttypControl ne ''">		
+				<!--xsl:message>
+					<xsl:text>classification from Objekttyp </xsl:text>
+					<xsl:value-of select="$objekttyp"/>
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="@id"/>
+				</xsl:message-->
+				<xsl:comment>Objekttyp für CCC-Portal</xsl:comment>
+				<lido:classification type="Objekttyp">
+					<lido:conceptID lido:encodinganalog="RIA:Objekttyp" lido:source="ObjCategoryVoc" lido:type="local"/>
+					<lido:term xml:lang="de">
+						<xsl:value-of select="$objekttypControl"/>
 					</lido:term>
-				</xsl:if>
-			</lido:classification>
+				</lido:classification>
+			</xsl:if>
+			<xsl:if test="$aaturi ne ''">		
+				<lido:classification>
+					<lido:conceptID lido:encodinganalog="RIA:Objekttyp" 
+						lido:source="Art &amp; Architecture Thesaurus" 
+						lido:type="uri">
+							<xsl:value-of select="$aaturi"/>
+					</lido:conceptID>
+					<xsl:if test="$aatlabel ne ''">		
+						<lido:term lido:addedSearchTerm="yes" xml:lang="en">
+							<xsl:value-of select="$aatlabel"/>
+						</lido:term>
+					</xsl:if>
+				</lido:classification>
+			</xsl:if>
 		</xsl:if>
 	</xsl:template>
 
@@ -249,10 +254,10 @@
 		<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('systematikArt',$sysArt, 'aaturi')"/>
 		<xsl:variable name="aatlabel" select="func:vocmap-replace-laxer('systematikArt',$sysArt, 'aatlabel')"/>
 		<xsl:if test="$sysArtControl ne ''">		
-			<xsl:message>
+			<!--xsl:message>
 				<xsl:text>classification from systematikArt </xsl:text>
 				<xsl:value-of select="@id"/>
-			</xsl:message>
+			</xsl:message-->
 			<lido:classification>
 				<lido:conceptID lido:encodinganalog="RIA:SystematikArt" lido:source="ObjSystematicClb" lido:type="local"/>
 				<lido:term xml:lang="de">

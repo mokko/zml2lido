@@ -35,13 +35,12 @@ from zml2lido.file import per_chunk
 # from zml2lido import NSMAP
 NSMAP = {"l": "http://www.lido-schema.org"}
 
-cache_path = Path("relWorks_cache.xml")
-
 
 class RelWorksCache:
-    def __init__(self, *, maxSize: int = 20_000) -> None:
+    def __init__(self, *, maxSize: int = 20_000, cache_dir: Path) -> None:
         self.cache = Module()
         self.maxSize = maxSize
+        self.cache_path = cache_dir / "relWorks_cache.xml"
 
         user, pw, baseURL = get_credentials()
         self.client = MpApi(baseURL=baseURL, user=user, pw=pw)
@@ -116,25 +115,27 @@ class RelWorksCache:
         """
         return len(self.cache)
 
-    def load_cache_file(self, *, path: Path = cache_path) -> Path:
+    def load_cache_file(self) -> Path:
         """
         Load a cache file. If it doesn't exist, do nothing.
         The content of file is added to the existing in-memory cache.
 
         Returns the path used for the cache file.
         """
+        path: Path = self.cache_path
         if path.exists():
             newM = Module(file=path)
             self.cache += newM
         return path
 
-    def save(self, *, path: Path = cache_path) -> Path:
+    def save(self) -> Path:
         """
         Save current in-memory cache with relWork information to disk. Supply a path
         if you want a non-default file path.
 
         Returns the path used for the cache file.
         """
+        path: Path = self.cache_path
         self.cache.toFile(path=path)
         return path
 

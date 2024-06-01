@@ -26,7 +26,7 @@
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $sammelndeRollen]"/>
 
         <xsl:if test="$perInRole">
-			<lido:eventSet>
+			<lido:eventSet lido:sortorder="15">
 				<lido:displayEvent xml:lang="de">Sammeln</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>

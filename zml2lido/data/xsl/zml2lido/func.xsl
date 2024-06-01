@@ -204,7 +204,7 @@
 				@name eq normalize-space($target) and
 				@lang eq normalize-space($lang)
 			]/text()"/>
-		<xsl:if test="normalize-space($src-term) ne ''">
+		<xsl:if test="normalize-space($src-term) eq ''">
 			<xsl:message terminate="yes">
 				<xsl:text>ERROR: src-term empty! </xsl:text>
 				<xsl:value-of select="$src-voc"/>

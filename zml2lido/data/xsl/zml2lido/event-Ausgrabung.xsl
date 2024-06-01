@@ -20,7 +20,7 @@
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $grabendeRollen]"/>
 					
         <xsl:if test="$perInRole">
-			<lido:eventSet>
+			<lido:eventSet lido:sortorder="10">
 				<lido:displayEvent xml:lang="de">Ausgrabung</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>

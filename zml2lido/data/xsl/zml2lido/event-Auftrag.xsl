@@ -24,7 +24,7 @@
 			and z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue = $beauftragendeRollen]"/>
 
         <xsl:if test="personenKörperschaften[@funktion = $beauftragendeRollen]">
-			<lido:eventSet>
+			<lido:eventSet lido:sortorder="5">
 				<lido:displayEvent xml:lang="de">Auftrag</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>

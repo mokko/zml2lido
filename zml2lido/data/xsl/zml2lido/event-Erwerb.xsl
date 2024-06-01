@@ -30,7 +30,7 @@
 		<xsl:if test="z:repeatableGroup[
 			@name = 'ObjAcquisitionNotesGrp']/z:repeatableGroupItem[
 			z:vocabularyReference/z:vocabularyReferenceItem/@name='Ausgabe']">
-			<lido:eventSet>
+			<lido:eventSet lido:sortorder="25">
 				<lido:displayEvent xml:lang="de">Erwerb</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>

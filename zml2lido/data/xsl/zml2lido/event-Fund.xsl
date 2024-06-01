@@ -52,7 +52,7 @@
 			]"/>
 
         <xsl:if test="$findendeRollenN or $fundorteN">
-			<lido:eventSet>
+			<lido:eventSet lido:sortorder="20">
 				<lido:displayEvent xml:lang="de">Fund (Aktivität)</lido:displayEvent>
 				<lido:event>
 					<lido:eventType>
