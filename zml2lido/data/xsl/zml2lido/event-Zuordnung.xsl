@@ -17,7 +17,7 @@
 		<xsl:variable name="bereich" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 		<xsl:variable name="sammlung" select="func:vocmap-control('Bereich',$bereich)"/>
 
-		<lido:eventSet lido:sortOrder="30">
+		<lido:eventSet lido:sortorder="30">
 			<lido:event>
 				<lido:eventType>
 					<lido:conceptID lido:source="LIDO-Terminologie"

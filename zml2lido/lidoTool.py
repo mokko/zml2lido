@@ -158,12 +158,13 @@ class LidoTool:
         """
         Create individual files per lido record
         """
-        # orig = Path.cwd()
+        orig = Path.cwd()
         splitDir = self.outdir / "split"
+        print(f"split's parent: {self.outdir=}")
         # existance of splitDir is a bad criterion, but cant think of a better one
         if not splitDir.exists() or self.force:  # self.force is True was problematic
             print("SPLITLIDO making")
-            os.chdir(self.script_dir)
+            os.chdir(self.outdir)
             self.saxon(src=src, xsl=xsl["splitLido"], output="o.xml")
             os.chdir(orig)
         else:

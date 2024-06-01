@@ -142,7 +142,7 @@
 					<xsl:value-of select="@id"/>
 				</xsl:message-->
 				<xsl:comment>Objekttyp für CCC-Portal</xsl:comment>
-				<lido:classification type="Objekttyp">
+				<lido:classification lido:type="Objekttyp">
 					<lido:conceptID lido:encodinganalog="RIA:Objekttyp" lido:source="ObjCategoryVoc" lido:type="local"/>
 					<lido:term xml:lang="de">
 						<xsl:value-of select="$objekttypControl"/>
