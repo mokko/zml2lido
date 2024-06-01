@@ -31,43 +31,43 @@
 		<concept>
 			<source lang="de">EM-Medienarchiv</source>
 			<target lang="de" name="extern">Musikethnologie</target>
-			<target name="aaturi">http://vocab.getty.edu/page/aat/300429823</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300429823</target>
 			<target lang="en" name="aatlabel">recordings</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Musikethnologie</source>
 			<target lang="de" name="extern">Musikethnologie</target>
-			<target name="aaturi">http://vocab.getty.edu/page/aat/300054146</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300054146</target>
 			<target lang="en" name="aatlabel">music (performing arts genre)</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Ost- und Nordasien</source>
 			<target lang="de" name="extern">Ost- und Nordasien</target>
-			<target name="aaturi">http://vocab.getty.edu/page/aat/300018279</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300018279</target>
 			<target lang="en" name="aatlabel">Asian</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Ozeanien</source>
 			<target lang="de" name="extern">Ozeanien</target>
-			<target name="aaturi">http://vocab.getty.edu/page/aat/300021854</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300021854</target>
 			<target lang="en" name="aatlabel">Oceanic</target>
 		</concept>		
 		<concept>
 			<source lang="de">EM-Phonogramm-Archiv</source>
 			<target lang="de" name="extern">Berliner Phonogramm-Archiv</target>
-			<target name="aaturi">http://vocab.getty.edu/page/aat/300028633</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300028633</target>
 			<target lang="en" name="aatlabel">sound recordings</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Phonogramm-Archiv</source>
 			<target lang="de" name="extern">Berliner Phonogramm-Archiv</target>
-			<target name="aaturi">http://vocab.getty.edu/page/aat/300265798</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300265798</target>
 			<target lang="en" name="aatlabel">cylinder phonographs (phonographs)</target>
 		</concept>
 		<concept>
 			<source lang="de">EM-Süd- und Südostasien</source>
 			<target lang="de" name="extern">Süd- und Südostasien</target>
-			<target name="aaturi">http://vocab.getty.edu/page/aat/300018279</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300018279</target>
 			<target lang="en" name="aatlabel">Asian</target>
 		</concept>
 	</voc>
@@ -476,7 +476,7 @@
 		<!-- sort source alphabetically please -->
 		<concept>
 			<source lang="de">Anzug</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300209863</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209863</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10015</target>
 		</concept>
 		<concept>
@@ -486,22 +486,22 @@
 		</concept>
 		<concept>
 			<source lang="de">Ärmel</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300210530</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300210530</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10052</target>
 		</concept>
 		<concept>
 			<source lang="de">Bade- und Strandkleidung</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300221470</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300221470</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10123</target>
 		</concept>
 		<concept>
 			<source lang="de">Badeanzug</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300129420</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300129420</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10624</target>
 		</concept>
 		<concept>
 			<source lang="de">Badekappe</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300046095</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046095</target>
 		</concept>
 		<concept>
 			<source lang="de">Band</source>
@@ -520,7 +520,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Büstenhalter</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300210538</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300210538</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10081</target>
 		</concept>
 		<concept>
@@ -570,7 +570,7 @@
 		</concept>
 		<concept>
 			<source lang="de">Feder</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300011809</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300011809</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10643</target>
 		</concept>
 		<concept>
@@ -580,7 +580,7 @@
 		<concept>
 			<source lang="de">Fuchspelz</source>
 			<!-- fur stole -->
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300375744</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300375744</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10541</target>
 		</concept>
 		<concept>
@@ -780,12 +780,12 @@
 		</concept>
 		<concept>
 			<source lang="de">Schärpe</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300216864</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300216864</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10514</target>
 		</concept>
 		<concept>
 			<source lang="de">Schmuck</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300209286</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300209286</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10152</target>
 		</concept>
 		<concept>
@@ -819,12 +819,12 @@
 		</concept>
 		<concept>
 			<source lang="de">Sport- und Freizeitkleidung</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300221269</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300221269</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10121</target>
 		</concept>
 		<concept>
 			<source lang="de">Stiefel</source>
-			<target name="aatUri">http://vocab.getty.edu/page/aat/300046057</target>
+			<target name="aatUri">http://vocab.getty.edu/aat/300046057</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10261</target>
 		</concept>
 		<concept>
