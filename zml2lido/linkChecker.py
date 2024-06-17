@@ -98,7 +98,7 @@ class LinkChecker:
                         self.rwc.lookup_relWork(mtype=mtype, ID=id_int)
                     # at this point we can rely on item being in relWorks cache
                     self._rewrite_relWork(mtype=mtype, objectID_N=objectID_N)
-            if idx % 10:
+            if idx % 100:
                 print("Saving relWorks cache")
                 self.rwc.save()
 

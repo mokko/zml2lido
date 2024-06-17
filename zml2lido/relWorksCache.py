@@ -54,11 +54,8 @@ class RelWorksCache:
         for p in per_chunk(path=path):
             self.lookup_from_lido_file(path=p)
             print(f"Cache size: {len(self.cache)}")
-            self.save()
-            if len(self.cache) > self.maxSize:
-                print("Cache is big enough. Let's go {len(self.cache)}")
-                self.save()
-                break
+            if len(self.cache) >= self.maxSize:
+                break  # dont continue to loop, if cache is already at maxSize
 
     def lookup_from_lido_file(self, *, path: Path) -> None:
         """
@@ -69,12 +66,15 @@ class RelWorksCache:
         been processed?
         """
         print(f"relWorksCache: lookup_from_lido_file {path}")
-        IDs = self._lido_to_ids(path=path)
+        # all ids from a single lido file that are not yet in cache
+        IDs = self._lido_to_ids_not_in_cache(path=path)
         for mtype, id_int in IDs:
             self.lookup_relWork(mtype=mtype, ID=id_int)
             if len(self.cache) > self.maxSize:
                 print("relWorksCache has reached maxSize")
+                self.save()
                 break
+        self.save()
 
     def lookup_relWork(self, *, mtype: str, ID: int) -> None:
         """
@@ -88,6 +88,7 @@ class RelWorksCache:
             value=str(ID),
         )
         q = self._optimize_query(query=q)
+        print(f"{len(self.cache)} looking up relWork {mtype} {ID}")
         relWorkM = self.client.search2(query=q)
         if relWorkM:  # realistic that query results are empty?
             self.cache += relWorkM  # appending them to relWork cache
@@ -153,7 +154,7 @@ class RelWorksCache:
             self.cache.toFile(path=path)
         except KeyboardInterrupt:
             print(
-                "Catching keyboard interrupt while saving of relWorksCache; try again..."
+                "Catching keyboard interrupt while saving relWorksCache; try again..."
             )
         return path
 
@@ -161,7 +162,7 @@ class RelWorksCache:
     # private
     #
 
-    def _lido_to_ids(self, path: Path) -> set[tuple[str, int]]:
+    def _lido_to_ids_not_in_cache(self, path: Path) -> set[tuple[str, int]]:
         """
         Given the path to lido file, we return a (distinct) set of items that
         are not yet in relWorks cache.
@@ -177,6 +178,7 @@ class RelWorksCache:
             l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
             namespaces=NSMAP,
         )
+        print("lido to ids...")
 
         id_cache = set()
         for ID_N in relWorksL:
@@ -193,6 +195,7 @@ class RelWorksCache:
                 id_cache.add((mtype, id_int))
             # else:
             #    print(f"item {mtype} {id_int} already in relWorks cache")
+        print("done")
         return id_cache
 
     def _optimize_query(self, *, query: Search) -> Search:
