@@ -69,7 +69,7 @@ class LinkChecker:
         )
 
         # for //relatedWork in the current LIDO document
-        for objectID_N in relatedWorksL:
+        for idx, objectID_N in enumerate(relatedWorksL):
             # don't _log self._log(f"fixRelatedWorks checking {objectID_N.text}")
 
             # assuming that source always exists
@@ -98,6 +98,9 @@ class LinkChecker:
                         self.rwc.lookup_relWork(mtype=mtype, ID=id_int)
                     # at this point we can rely on item being in relWorks cache
                     self._rewrite_relWork(mtype=mtype, objectID_N=objectID_N)
+            if idx % 10:
+                print("Saving relWorks cache")
+                self.rwc.save()
 
     def linkResource_online_http(self) -> None:
         """

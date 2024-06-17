@@ -41,6 +41,7 @@ class RelWorksCache:
         self.cache = Module()
         self.maxSize = maxSize
         self.cache_path = cache_dir / "relWorks_cache.xml"
+        print(f"{self.cache_path=}")
 
         user, pw, baseURL = get_credentials()
         self.client = MpApi(baseURL=baseURL, user=user, pw=pw)
@@ -52,6 +53,12 @@ class RelWorksCache:
         """
         for p in per_chunk(path=path):
             self.lookup_from_lido_file(path=p)
+            print(f"Cache size: {len(self.cache)}")
+            self.save()
+            if len(self.cache) > self.maxSize:
+                print("Cache is big enough. Let's go {len(self.cache)}")
+                self.save()
+                break
 
     def lookup_from_lido_file(self, *, path: Path) -> None:
         """
@@ -65,6 +72,9 @@ class RelWorksCache:
         IDs = self._lido_to_ids(path=path)
         for mtype, id_int in IDs:
             self.lookup_relWork(mtype=mtype, ID=id_int)
+            if len(self.cache) > self.maxSize:
+                print("relWorksCache has reached maxSize")
+                break
 
     def lookup_relWork(self, *, mtype: str, ID: int) -> None:
         """
@@ -139,7 +149,12 @@ class RelWorksCache:
         """
         path: Path = self.cache_path
         print(f"Saving file cache {self.cache_path}")
-        self.cache.toFile(path=path)
+        try:
+            self.cache.toFile(path=path)
+        except KeyboardInterrupt:
+            print(
+                "Catching keyboard interrupt while saving of relWorksCache; try again..."
+            )
         return path
 
     #

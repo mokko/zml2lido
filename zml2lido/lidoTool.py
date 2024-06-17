@@ -248,11 +248,11 @@ class LidoTool:
         """
         srcP = Path(src)
         lidoFn = self.outdir.joinpath(srcP.stem + ".lido.xml")
-        print(f"zml2lidoSingle with {xsl[xslt]}")  # with file '{lidoFn}'
+        # print(f"zml2lidoSingle with {xsl[xslt]}")  # with file '{lidoFn}'
 
         if self.force is True or not lidoFn.exists():
             if srcP.suffix == ".zip":  # unzipping temp file
-                print("   src is zipped")
+                print(f"   src is zipped {srcP}")
                 parent_dir = srcP.parent
                 member = Path(srcP.name).with_suffix(".xml")
                 temp_fn = parent_dir / member
