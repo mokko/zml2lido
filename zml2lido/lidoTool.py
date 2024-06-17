@@ -383,7 +383,8 @@ class LidoTool:
             level=logging.DEBUG,
             format="%(asctime)s: %(message)s",
         )
-
+        log = logging.getLogger()
+        log.addHandler(logging.StreamHandler(sys.stdout))
     def _lvl2_path(self, p: str | Path) -> Path:
         """
         Given a lvl1 lido path, determine the lvl2 path
