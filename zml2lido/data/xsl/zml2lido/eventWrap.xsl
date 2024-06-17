@@ -423,7 +423,6 @@
 				<xsl:when test="normalize-space(z:dataField[@name = 'NotesClb']/z:value) ne ''">
 					<xsl:value-of select="normalize-space(z:dataField[@name = 'NotesClb']/z:value)"/>
 				</xsl:when>
-				-->
 				
 				<xsl:otherwise>
 					<xsl:message terminate="no">
@@ -432,11 +431,10 @@
 						<xsl:text>: </xsl:text>
 						<xsl:value-of select="../../@id"/>
 					</xsl:message>
-					<!--
 					If this fails ObjDateGrp exists, but no entry in the fields above;
 					it is no error if displayDate is empty.
-					-->
 				</xsl:otherwise>
+				-->
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:if test="$displayDate-de ne ''">

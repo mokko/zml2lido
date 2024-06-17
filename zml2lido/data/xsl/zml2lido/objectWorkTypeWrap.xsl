@@ -115,10 +115,10 @@
 							<xsl:value-of select="$objekttyp"/>
 						</lido:term>
 					</lido:objectWorkType>
-					<xsl:message terminate="no">
+					<!--xsl:message terminate="no">
 						<xsl:text>WARNING: Fallback 1 objektworktype! Object </xsl:text>
 						<xsl:value-of select="z:systemField[@name='__id']/z:value"/>
-					</xsl:message>
+					</xsl:message-->
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:message terminate="no">
