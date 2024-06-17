@@ -67,10 +67,10 @@
 				</xsl:choose>
 			</xsl:attribute>
 			<xsl:variable name="type" select="z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue"/>
-			<xsl:message>
+			<!--xsl:message>
 				<xsl:text>Aufschriftstyp: </xsl:text>
 				<xsl:value-of select="$type"/>				
-			</xsl:message>
+			</xsl:message-->
 			<xsl:attribute name="lido:type">
 				<xsl:value-of select="$type"/>
 			</xsl:attribute>
@@ -240,10 +240,10 @@
 
 	<xsl:template match="z:dataField[@name='TransliterationClb']/z:value">
 		<xsl:variable name="sortorder" select="../../z:dataField[@name='SortLnu']/z:value"/>
-		<xsl:message>
+		<!--xsl:message>
 			<xsl:text>sorttest2: </xsl:text>
 			<xsl:value-of select="$sortorder"/>
-		</xsl:message>
+		</xsl:message-->
 		<lido:inscriptions lido:label="Transliteration">
 			<xsl:if test="$sortorder ne ''">
 				<xsl:attribute name="lido:sortorder">
@@ -258,10 +258,10 @@
 
 	<xsl:template match="z:dataField[@name='TranslationClb']/z:value">
 		<xsl:variable name="sortorder" select="../../z:dataField[@name='SortLnu']/z:value"/>
-		<xsl:message>
+		<!--xsl:message>
 			<xsl:text>sorttest3: </xsl:text>
 			<xsl:value-of select="$sortorder"/>
-		</xsl:message>
+		</xsl:message-->
 		<lido:inscriptions lido:type="Übersetzung">
 			<xsl:if test="$sortorder ne ''">
 				<xsl:attribute name="lido:sortorder">
