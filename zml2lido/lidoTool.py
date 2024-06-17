@@ -31,9 +31,10 @@ In an old version it did also image processing, but that function is
 currently not used/tested.
 """
 
+import datetime
+import logging
 from lxml import etree
 from pathlib import Path
-import logging
 import os
 import re
 from saxonche import PySaxonProcessor
@@ -370,11 +371,17 @@ class LidoTool:
         return root, no, tail
 
     def _initLog(self) -> None:
-        logfile = self.outdir / "lidoTool.log"
+        now = datetime.datetime.now()
+        date = now.strftime("%Y%m%d")
+        log_fn = self.outdir / f"lidoTool{date}.log"
 
-        # let's append to the log file so we can aggregrate results from multiple runs
         logging.basicConfig(
-            filename=logfile, filemode="a", encoding="utf-8", level=logging.INFO
+            datefmt="%Y%m%d %I:%M:%S %p",
+            filename=log_fn,
+            filemode="a",  # append now since we're starting a new folder
+            encoding="utf-8",
+            level=logging.DEBUG,
+            format="%(asctime)s: %(message)s",
         )
 
     def _lvl2_path(self, p: str | Path) -> Path:

@@ -61,7 +61,7 @@ class RelWorksCache:
         Should we check that we don't process a lido lvl2 file that has already
         been processed?
         """
-        print(f"relWorksCache: lookup_from_lido_file")
+        print(f"relWorksCache: lookup_from_lido_file {path}")
         IDs = self._lido_to_ids(path=path)
         for mtype, id_int in IDs:
             self.lookup_relWork(mtype=mtype, ID=id_int)

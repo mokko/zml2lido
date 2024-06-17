@@ -74,6 +74,7 @@
 			<xsl:attribute name="lido:type">
 				<xsl:value-of select="$type"/>
 			</xsl:attribute>
+
 			<xsl:comment>
 			For SMB, inscriptions can be external or internal to the object as determined
 			by type.
@@ -211,9 +212,6 @@
 	-->
 	<xsl:template match="z:dataField[@name='LabelClb']/z:value">
 		<lido:inscriptionTranscription lido:label="Aufschrift">
-			<xsl:variable name="type" select="../../z:vocabularyReference[
-				@name='TypeVoc'
-			]/z:vocabularyReferenceItem/z:formattedValue"/>
 			<xsl:variable name="lang" select="../../z:vocabularyReference[
 				@name='LanguageVoc'
 			]/z:vocabularyReferenceItem/z:formattedValue"/>
@@ -228,12 +226,6 @@
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:attribute> 
-			<xsl:if test="$type ne ''">
-				<xsl:attribute name="lido:type">
-					<!-- Allg. Angabe Beschriftung -->
-					<xsl:value-of select="$type"/>				
-				</xsl:attribute>
-			</xsl:if>
 			<xsl:value-of select="."/>
 		</lido:inscriptionTranscription>
 	</xsl:template>
@@ -244,7 +236,7 @@
 			<xsl:text>sorttest2: </xsl:text>
 			<xsl:value-of select="$sortorder"/>
 		</xsl:message-->
-		<lido:inscriptions lido:label="Transliteration">
+		<lido:inscriptions lido:type="Transliteration">
 			<xsl:if test="$sortorder ne ''">
 				<xsl:attribute name="lido:sortorder">
 					<xsl:value-of select="$sortorder"/>
