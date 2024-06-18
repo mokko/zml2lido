@@ -2,7 +2,7 @@
 Testing the saxonche to avoid java and subprocess
 """
 
-import shutil
+# import shutil
 from zml2lido.lidoTool import LidoTool, xsl
 from pathlib import Path
 

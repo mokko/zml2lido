@@ -38,6 +38,7 @@ from pathlib import Path
 import os
 import re
 from saxonche import PySaxonProcessor
+import sys
 from typing import Iterable
 from zipfile import ZipFile
 from zml2lido.linkChecker import LinkChecker
@@ -85,25 +86,27 @@ class LidoTool:
     #
 
     def execute(self, job: str) -> None:
-        if job == "dd":
-            # debug. Only lvl1
-            lido_fn = self.zml2lido(src=self.src)
-        elif job == "ddd":
-            # debug. Only lvl1
-            lido_fn = self.zml2lido(src=self.src)
-            self._valsplit(lido_fn)
-        elif job == "ohneLit":
-            # use different xslt for lvl1 conversion plus lvl2
-            lido_fn = self.zml2lido(src=self.src, xslt="ohneLit")
-            lvl2_fn = self.to_lvl2(src=lido_fn)
-            self._valsplit(lvl2_fn)
-        elif job == "mitLit":
-            # regular xslt, lvl2
-            lido_fn = self.zml2lido(src=self.src)
-            lvl2_fn = self.to_lvl2(src=lido_fn)
-            self._valsplit(lvl2_fn)
-        else:
-            raise SyntaxError("ERROR: Unknown job name!")
+        match job:
+            case "dd":  # debug. Only lvl1
+                lido_fn = self.zml2lido(src=self.src)
+            case "ddd":  # debug. Only lvl1 and validate
+                lido_fn = self.zml2lido(src=self.src)
+                self.validate(path=lido_fn)
+                self.splitLido(src=lido_fn)
+            case "ohneLit":
+                # use different xslt for lvl1 conversion plus lvl2
+                lido_fn = self.zml2lido(src=self.src, xslt="ohneLit")
+                lvl2_fn = self.to_lvl2(src=lido_fn)
+                self.validate(path=lvl2_fn)
+                self.splitLido(src=lvl2_fn)
+            case "mitLit":
+                # regular xslt, lvl2
+                lido_fn = self.zml2lido(src=self.src)
+                lvl2_fn = self.to_lvl2(src=lido_fn)
+                self.validate(path=lvl2_fn)
+                self.splitLido(src=lvl2_fn)
+            case _:
+                raise SyntaxError("ERROR: Unknown job name!")
 
     def lfilter(self, *, split: bool = False, Type: str) -> None:
         if Type not in xsl:
@@ -121,6 +124,7 @@ class LidoTool:
     def to_lvl2(self, *, src: str) -> Path:
         if self.chunks:
             for chunkFn in self.loopChunks(src=src):
+                print(f"{chunkFn=}")
                 new_fn = self.to_lvl2Single(src=chunkFn)
             return self.firstChunkName(src=new_fn)
         else:
@@ -131,11 +135,11 @@ class LidoTool:
         Using Python rewrite (fix) generic Zetcom xml, mostly working on links (urls)
         """
         out_fn = self._lvl2_path(src)
-        # print(f"lvl2: {out_fn}")
-        # try:  # only load the first time
-        #    self.lc: LinkChecker
-        # except:
-        self.lc = LinkChecker(src=src, chunks=self.chunks)  # reads cache
+        try:
+            self.lc
+        except AttributeError:
+            # only initalize and load lido files into relWorksCache once
+            self.lc = LinkChecker(src=src, chunks=self.chunks)
         if not out_fn.exists() or self.force:
             # self.lc.relWorks_cache_single(fn=src)
             self.lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
@@ -195,7 +199,7 @@ class LidoTool:
         # os.chdir(orig)
         return xslDir / out
 
-    def validate(self, *, path: Path | None = None):
+    def validate(self, *, path: Path) -> None:
         """
         It's optionally possible to specify a path for a file that needs validatation. If
         path is None, the file that was specified during __init__ will be validated.
@@ -204,21 +208,21 @@ class LidoTool:
 
         (Not tested recently for chunks...)
         """
+        if not self.validation:
+            return
 
-        if path is None:
-            to_val_fn = Path(self.src)
-        else:
-            to_val_fn = path
-
-        print(f"VALIDATING LIDO FILE '{to_val_fn}'")
+        print(f"VALIDATING LIDO FILE '{path}'")
         if self.chunks:
             print(" with chunks")
-            for chunkFn in self.loopChunks(src=to_val_fn):
+            for chunkFn in self.loopChunks(src=path):
                 self.validateSingle(src=chunkFn)
         else:
-            self.validateSingle(src=to_val_fn)
+            self.validateSingle(src=path)
 
-    def validateSingle(self, *, src: Path):
+    def validateSingle(self, *, src: Path) -> Path:
+        """
+        Why do we return a the path?
+        """
         if not hasattr(self, "schema"):
             print(f" loading schema {lidoXSD}")
             schemaDoc = etree.parse(lidoXSD)
@@ -380,11 +384,12 @@ class LidoTool:
             filename=log_fn,
             filemode="a",  # append now since we're starting a new folder
             encoding="utf-8",
-            level=logging.DEBUG,
+            level=logging.INFO,
             format="%(asctime)s: %(message)s",
         )
         log = logging.getLogger()
         log.addHandler(logging.StreamHandler(sys.stdout))
+
     def _lvl2_path(self, p: str | Path) -> Path:
         """
         Given a lvl1 lido path, determine the lvl2 path
@@ -451,8 +456,3 @@ class LidoTool:
             raise SyntaxError("ERROR: src does not exist!")
 
         return src
-
-    def _valsplit(self, fn):
-        if self.validation:
-            self.validate(path=fn)
-        self.splitLido(src=fn)

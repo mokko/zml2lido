@@ -32,23 +32,25 @@ NSMAP = {"l": "http://www.lido-schema.org"}
 
 
 class LinkChecker:
-    def __init__(self, *, src: str | Path, chunks: bool = False) -> None:
-        logging.debug(f"STATUS: LinkChecker is working on {src}")  # not exactly an error
+    def __init__(self, *, src: Path, chunks: bool = False) -> None:
+        logging.debug(
+            f"STATUS: LinkChecker is working on {src}"
+        )  # not exactly an error
         # self.chunk = chunk
         self.data = etree.parse(str(src))
+        self.chunks = chunks
         user, pw, baseURL = get_credentials()
         self.client = MpApi(baseURL=baseURL, user=user, pw=pw)
-        cache_dir = Path(src).parent
+        cache_dir = src.parent
         self.rwc = RelWorksCache(maxSize=20_000, cache_dir=cache_dir)
-        self.rwc.load_cache_file()  # load file if it exists
+        self.rwc.load_cache_file()  # load file if it exists once atb
 
-        if chunks:
+        # run only once to make cache
+        if self.chunks:
             print("prepare relWorks cache (chunks, many)")
             self.rwc.lookup_from_lido_chunks(path=Path(src))
         else:
-            self.rwc.lookup_from_lido_file(
-                path=Path(src)
-            )  # run only once to make cache
+            self.rwc.lookup_from_lido_file(path=Path(src))
 
     def fixRelatedWorks(self) -> None:
         """
@@ -74,33 +76,37 @@ class LinkChecker:
 
             # assuming that source always exists
             src = objectID_N.xpath("@l:source", namespaces=NSMAP)[0]
-            if src == "OBJ.ID":
-                mtype = "Object"
-            elif src == "LIT.ID":
-                mtype = "Literature"
-            elif src == "ISIL/ID":
-                raise ValueError(
-                    "ERROR: @lido:source='ISIL/ID' indicates that an already "
-                    + "processed LIDO file is being processed again"
-                )
-                mtype = "Object"
-            else:
-                raise ValueError(f"ERROR: Unknown type: {src}")
+            # print (f"fixRelatedWorks {idx}/{len(relatedWorksL)} {src} {objectID_N.text}")
+            match src:
+                case "OBJ.ID":
+                    mtype = "Object"
+                case "LIT.ID":
+                    mtype = "Literature"
+                case "ISIL/ID":
+                    # conceivable that lxml processes some nodes multiple times
+                    logging.warning(
+                        "ERROR: 'ISIL/ID' indicates that processing a LIDO file for a second time"
+                    )
+                    mtype = "rewritten"  # fake case
+                case _:
+                    raise ValueError(f"ERROR: Unknown type: '{src}'")
 
             if objectID_N.text is not None:
-                id_int = int(objectID_N.text)
-                if mtype == "Literature":
-                    pass
-                    # print("WARN: No check for mtype 'Literature'")
-                else:
-                    # print(f"fixing relatedWork {mtype} {id_int}")
+                try:
+                    id_int = int(objectID_N.text)
+                except ValueError:
+                    id_int = None
+                print(f"relatedWork {idx}/{len(relatedWorksL)} {mtype} {id_int}")
+                if mtype == "Object" and id_int is not None:
                     if not self.rwc.item_exists(mtype=mtype, ID=id_int):
                         self.rwc.lookup_relWork(mtype=mtype, ID=id_int)
-                    # at this point we can rely on item being in relWorks cache
                     self._rewrite_relWork(mtype=mtype, objectID_N=objectID_N)
+                else:
+                    print(
+                        f"{idx}/{len(relatedWorksL)}{objectID_N.text} already rewritten"
+                    )
             if idx % 100:
-                print("Saving relWorks cache")
-                self.rwc.save()
+                self.rwc.save_if_changed()
 
     def linkResource_online_http(self) -> None:
         """
@@ -189,7 +195,6 @@ class LinkChecker:
         relWorkSet = ID_N.getparent().getparent().getparent()
         relWorkSet.getparent().remove(relWorkSet)
 
-
     def _lookup_ISIL(self, *, institution) -> str:
         """
         Load vocmap.xml and lookup ISIL for name of institution.
@@ -224,9 +229,9 @@ class LinkChecker:
 
         # we can rely on item being in cache, says I
         try:
-            relWorkM = self.rwc.item_exists(mtype=mtype, ID=id_int)
+            relWorkM = self.rwc.get_item(mtype=mtype, ID=id_int)
         except:
-            print(f"WARNING: no relWork found for {mtype} {id_int}")
+            logging.WARNING(f"WARNING: no relWork found for {mtype} {id_int}")
 
         if self.rwc.item_is_online(mtype=mtype, ID=id_int):
             # rewrite ISIL, should look like this:
@@ -241,13 +246,17 @@ class LinkChecker:
                     ]/m:moduleReferenceItem/m:formattedValue"""
                 )[0]
             except:
-                logging.debug(f"WARNING: verwaltendeInstitution empty! {mtype} {id_int}")
+                logging.WARNING(
+                    f"WARNING: verwaltendeInstitution empty! {mtype} {id_int}"
+                )
             else:
                 ISIL = self._lookup_ISIL(institution=verwInst.text)
                 objectID_N.text = f"{ISIL}/{str(id_int)}"
-                print(f"   relWork {id_int}: {verwInst.text} -> {ISIL}")
+                logging.debug(f"   relWork {id_int}: {verwInst.text} -> {ISIL}")
+                # print(f"_rewrite_relWork {mtype} {id_int} rewrite ok")
         else:
             self._del_relWork(ID_N=objectID_N)  # rm from lido lvl2
+            # print(f"_rewrite_relWork {mtype} {id_int} not online")
 
 
 if __name__ == "__main__":

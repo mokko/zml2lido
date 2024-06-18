@@ -41,6 +41,7 @@ class RelWorksCache:
         self.cache = Module()
         self.maxSize = maxSize
         self.cache_path = cache_dir / "relWorks_cache.xml"
+        self.changed = False
         print(f"{self.cache_path=}")
 
         user, pw, baseURL = get_credentials()
@@ -53,7 +54,6 @@ class RelWorksCache:
         """
         for p in per_chunk(path=path):
             self.lookup_from_lido_file(path=p)
-            print(f"Cache size: {len(self.cache)}")
             if len(self.cache) >= self.maxSize:
                 break  # dont continue to loop, if cache is already at maxSize
 
@@ -65,16 +65,16 @@ class RelWorksCache:
         Should we check that we don't process a lido lvl2 file that has already
         been processed?
         """
-        print(f"relWorksCache: lookup_from_lido_file {path}")
+        print(f"relWorksCache: lookup_from_lido_file {path} {self.length()}")
         # all ids from a single lido file that are not yet in cache
         IDs = self._lido_to_ids_not_in_cache(path=path)
         for mtype, id_int in IDs:
             self.lookup_relWork(mtype=mtype, ID=id_int)
-            if len(self.cache) > self.maxSize:
+            if len(self.cache) >= self.maxSize:
                 print("relWorksCache has reached maxSize")
-                self.save()
+                self.save_if_changed()
                 break
-        self.save()
+        self.save_if_changed()
 
     def lookup_relWork(self, *, mtype: str, ID: int) -> None:
         """
@@ -88,11 +88,19 @@ class RelWorksCache:
             value=str(ID),
         )
         q = self._optimize_query(query=q)
-        print(f"{len(self.cache)} looking up relWork {mtype} {ID}")
+        print(f"{self.length()} looking up relWork {mtype} {ID}")
         relWorkM = self.client.search2(query=q)
         if relWorkM:  # realistic that query results are empty?
+            self.changed = True
             self.cache += relWorkM  # appending them to relWork cache
         # what to do if nothing is found?
+        if self.length() % 1000 == 0:
+            # small chance that nothing was changed.
+            self.save_if_changed()
+
+    def get_item(self, *, mtype: str, ID: int) -> Module:
+        """Shortcut to get module data from cache."""
+        return Module(tree=self.cache[(mtype, ID)])
 
     def item_exists(self, *, mtype: str, ID: int) -> bool:
         """
@@ -156,7 +164,13 @@ class RelWorksCache:
             print(
                 "Catching keyboard interrupt while saving relWorksCache; try again..."
             )
+        self.changed = False
         return path
+
+    def save_if_changed(self) -> Path:
+        if self.changed:
+            # setting self.changed to False in self.save()
+            return self.save()
 
     #
     # private
@@ -178,7 +192,7 @@ class RelWorksCache:
             l:relatedWorksWrap/l:relatedWorkSet/l:relatedWork/l:object/l:objectID""",
             namespaces=NSMAP,
         )
-        print("lido to ids...")
+        # print("lido to ids...")
 
         id_cache = set()
         for ID_N in relWorksL:
@@ -195,7 +209,7 @@ class RelWorksCache:
                 id_cache.add((mtype, id_int))
             # else:
             #    print(f"item {mtype} {id_int} already in relWorks cache")
-        print("done")
+        # print("done")
         return id_cache
 
     def _optimize_query(self, *, query: Search) -> Search:

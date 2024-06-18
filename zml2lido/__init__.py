@@ -2,9 +2,10 @@
 
 Version 0.0.7 introduces relWorksCache
 Version 0.0.8 switches to saxonche
+Version 0.0.9 general overhaul for ccc Export
 """
 
-__version__ = "0.0.8"
+__version__ = "0.0.9"
 
 
 import argparse
@@ -85,15 +86,17 @@ def lido():
     lt.execute(args.job)
 
 
-def linkChecker():
-    parser = argparse.ArgumentParser(description="LIDO URLmaker")
-    parser.add_argument("-i", "--input", help="Path of lido input file", required=True)
-    args = parser.parse_args()
-    lc = LinkChecker(input=args.input)
+# def linkChecker():
+# unused at the moment?
+# parser = argparse.ArgumentParser(description="LIDO URLmaker")
+# parser.add_argument("-i", "--input", help="Path of lido input file", required=True)
+# args = parser.parse_args()
+# lc = LinkChecker(input=args.input)
 
 
 def saxon():
-    parser = argparse.ArgumentParser(description="Little SAXON tool written in Python")
+    """A simple CLI frontend to saxonche."""
+    parser = argparse.ArgumentParser(description="Little SAXON XSLT tool.")
     parser.add_argument("-s", "--source", help="source filename", required=True)
     parser.add_argument("-o", "--output", help="output filename", required=True)
     parser.add_argument(
