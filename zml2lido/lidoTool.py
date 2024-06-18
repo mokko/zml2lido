@@ -146,11 +146,11 @@ class LidoTool:
             self.lc = LinkChecker(src=src, chunks=self.chunks)
         out_fn = self._lvl2_path(src)
         if not out_fn.exists() or self.force:
-            self.lc.new_src(src=src)
+            self.lc.load_lvl1(src=src)
             # self.lc.relWorks_cache_single(fn=src)
             self.lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             self.lc.fixRelatedWorks()
-            self.lc.save(out_fn)
+            self.lc.save(lvl2=out_fn)
         else:
             print(f"   lvl2 already exists: {out_fn}")
         return out_fn
@@ -161,7 +161,7 @@ class LidoTool:
         if self.chunks:
             self.force = True  # otherwise subsequent chunks are not written
             for chunkFn in self.loopChunks(src=src):
-                logging.debug(f"WARN: split_lido: XXXXX: {chunkFn}")
+                # logging.debug(f"WARN: split_lido: XXXXX: {chunkFn}")
                 self.split_lido_single(src=chunkFn)
         else:
             self.split_lido_single(src=src)

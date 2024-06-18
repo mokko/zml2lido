@@ -7,14 +7,14 @@ src and output are lido
 This step produces lvl2 lido.
 
 USAGE:
-lc = LinkChecker(src="path/to/file.lido.xml")
-
+lc = LinkChecker(src=path/to/file.lido.xml") # accepts path as string
+lc.load_lvl1(src=path)
 lc.fixRelatedWorks()          # removes dead links in relatedWorks, also adds ISIL
 lc.linkResource_online_http() # for all linkResources print online status
 lc.rmInternalLinks()          # remove linkResource with internal links, not used atm
 lc.rmUnpublishedRecords()     # removes objects without objectPublishedID
 
-lc.save(out_fn="path/to/lido.lvl2.xml")
+lc.save(lvl2="path/to/lido.lvl2.xml")
 
 """
 
@@ -138,6 +138,9 @@ class LinkChecker:
                 else:
                     print("\tsuccess")
 
+    def load_lvl1(self, *, src: Path) -> None:
+        self.data = etree.parse(str(src))
+
     def rmInternalLinks(self) -> None:
         """
         Remove resourceSet whose linkResource point to internal links;
@@ -155,9 +158,6 @@ class LinkChecker:
                 if not link.text.startswith("http"):
                     resourceSet = link.getparent().getparent()
                     resourceSet.getparent().remove(resourceSet)
-
-    def new_src(self, *, src: Path) -> None:
-        self.data = etree.parse(str(src))
 
     def rmUnpublishedRecords(self) -> None:
         """
@@ -177,16 +177,16 @@ class LinkChecker:
             recordN.getparent().remove(recordN)
         logging.debug("rmUnpublishedRecords: done!")
 
-    def save(self, out_fn: str | Path) -> str:
+    def save(self, *, lvl2: Path) -> Path:
         """
         During __init__ we loaded a LIDO file, with this function we write it back to the
         out file location as set during __init__.
         """
-        logging.debug(f"Writing back to {out_fn}")
+        logging.debug(f"Writing back to {lvl2}")
         self.data.write(
-            str(out_fn), pretty_print=True, encoding="UTF-8", xml_declaration=True
+            str(lvl2), pretty_print=True, encoding="UTF-8", xml_declaration=True
         )
-        return out_fn
+        return lvl2
 
     #
     # PRIVATE
@@ -197,7 +197,7 @@ class LinkChecker:
         delete a relWork from self.etree.
         ID is a lxml node
         """
-        logging.debug(f"   removing unpublic relWork {ID_N.text}")
+        # logging.debug(f"   removing unpublic relWork {ID_N.text}")
         relWorkSet = ID_N.getparent().getparent().getparent()
         relWorkWrap = relWorkSet.getparent()
         relWorkWrap.remove(relWorkSet)
