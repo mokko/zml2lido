@@ -7,6 +7,21 @@ from zml2lido.lidoTool import LidoTool, xsl
 from pathlib import Path
 
 
+def test_firstChunkName() -> None:
+    lt = LidoTool(src="group416397-chunk1.lido.xml")
+    p = Path("query767070-chunk1.lido.xml")
+    first_chunk = lt.firstChunkName(src=p)
+    assert str(first_chunk) == "query767070-chunk1.lido.xml"
+
+    p = Path("query767070-chunk10.lido.xml")
+    first_chunk = lt.firstChunkName(src=p)
+    assert str(first_chunk) == "query767070-chunk1.lido.xml"
+
+    p = Path("query767070-chunk10.lvl2.lido.xml")
+    first_chunk = lt.firstChunkName(src=p)
+    assert str(first_chunk) == "query767070-chunk1.lido.xml"
+
+
 def test_saxon() -> None:
     lt = LidoTool(src="group416397-chunk1.lido.xml")
 

@@ -15,13 +15,13 @@
     rw.item_is_online(mtype="Object", ID=1234) # true if item in cache indicates it's online
 
     rw.save() # save in-memory cache to disk
+    rw.save_if_changed
 
-Currently: we NOT respect max_size?
+Currently: If maxSize is reached, we cant add any more data. Let's just split the mpApi
+data in smaller chunks then.
 
-How do we delete items from cache if the maxSize is reached?
-
-
-
+TODO: How do we delete items from cache if the maxSize is reached? We could drop the first to
+add the next.
 """
 
 from lxml import etree
@@ -90,7 +90,8 @@ class RelWorksCache:
         q = self._optimize_query(query=q)
         print(f"{self.length()} looking up relWork {mtype} {ID}")
         relWorkM = self.client.search2(query=q)
-        if relWorkM:  # realistic that query results are empty?
+        # realistic that query results are empty?
+        if relWorkM and self.cache.length() < self.maxSize:
             self.changed = True
             self.cache += relWorkM  # appending them to relWork cache
         # what to do if nothing is found?
@@ -113,6 +114,7 @@ class RelWorksCache:
         Report if, according to info in cache, the item has SMB-Freigabe.
         """
         if not self.item_exists(mtype=mtype, ID=ID):
+            # it's possible if maxSize exceeded
             raise KeyError("ERROR: Item not in Cache")
 
         r = self.cache.xpath(
@@ -197,15 +199,20 @@ class RelWorksCache:
         id_cache = set()
         for ID_N in relWorksL:
             src = ID_N.xpath("@l:source", namespaces=NSMAP)[0]
-            if src == "OBJ.ID":
-                mtype = "Object"
-            elif src == "LIT.ID":
-                mtype = "Literature"
-            else:
-                raise ValueError(f"ERROR: Unknown type: {src}")
+            match src:
+                case "OBJ.ID":
+                    mtype = "Object"
+                case "LIT.ID":
+                    mtype = "Literature"
+                case _:
+                    raise ValueError(f"ERROR: Unknown type: {src}")
 
             id_int = int(ID_N.text)
-            if not self.cache.item_exists(mtype=mtype, ID=id_int):
+            if (
+                not self.cache.item_exists(mtype=mtype, ID=id_int)
+                and self.cache.length() < self.maxSize
+            ):
+                self.changed = True
                 id_cache.add((mtype, id_int))
             # else:
             #    print(f"item {mtype} {id_int} already in relWorks cache")

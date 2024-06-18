@@ -30,6 +30,8 @@ from zml2lido.relWorksCache import RelWorksCache
 # from zml2lido import NSMAP
 NSMAP = {"l": "http://www.lido-schema.org"}
 
+rescan_lvl1_files_at_init = False
+
 
 class LinkChecker:
     def __init__(self, *, src: Path, chunks: bool = False) -> None:
@@ -37,7 +39,6 @@ class LinkChecker:
             f"STATUS: LinkChecker is working on {src}"
         )  # not exactly an error
         # self.chunk = chunk
-        self.data = etree.parse(str(src))
         self.chunks = chunks
         user, pw, baseURL = get_credentials()
         self.client = MpApi(baseURL=baseURL, user=user, pw=pw)
@@ -45,12 +46,13 @@ class LinkChecker:
         self.rwc = RelWorksCache(maxSize=20_000, cache_dir=cache_dir)
         self.rwc.load_cache_file()  # load file if it exists once atb
 
-        # run only once to make cache
-        if self.chunks:
-            print("prepare relWorks cache (chunks, many)")
-            self.rwc.lookup_from_lido_chunks(path=Path(src))
-        else:
-            self.rwc.lookup_from_lido_file(path=Path(src))
+        if rescan_lvl1_files_at_init:
+            # run only once to update cache
+            if self.chunks:
+                print("prepare relWorks cache (chunks, many)")
+                self.rwc.lookup_from_lido_chunks(path=Path(src))
+            else:
+                self.rwc.lookup_from_lido_file(path=Path(src))
 
     def fixRelatedWorks(self) -> None:
         """
@@ -84,8 +86,9 @@ class LinkChecker:
                     mtype = "Literature"
                 case "ISIL/ID":
                     # conceivable that lxml processes some nodes multiple times
+                    # this seems to happen when we change lxml tree without making a deepcopy
                     logging.warning(
-                        "ERROR: 'ISIL/ID' indicates that processing a LIDO file for a second time"
+                        "WARN: 'ISIL/ID' indicates that processing a LIDO file for a second time"
                     )
                     mtype = "rewritten"  # fake case
                 case _:
@@ -153,6 +156,9 @@ class LinkChecker:
                     resourceSet = link.getparent().getparent()
                     resourceSet.getparent().remove(resourceSet)
 
+    def new_src(self, *, src: Path) -> None:
+        self.data = etree.parse(str(src))
+
     def rmUnpublishedRecords(self) -> None:
         """
         Remove lido records which are not published on SMB Digital.
@@ -193,7 +199,12 @@ class LinkChecker:
         """
         logging.debug(f"   removing unpublic relWork {ID_N.text}")
         relWorkSet = ID_N.getparent().getparent().getparent()
-        relWorkSet.getparent().remove(relWorkSet)
+        relWorkWrap = relWorkSet.getparent()
+        relWorkWrap.remove(relWorkSet)
+        resL = relWorkWrap.xpath("l:relatedWorkSet", namespaces=NSMAP)
+        if len(resL) == 0:
+            # logging.info("removing empty relWorkWrap")
+            relWorkWrap.getparent().remove(relWorkWrap)
 
     def _lookup_ISIL(self, *, institution) -> str:
         """
@@ -252,7 +263,7 @@ class LinkChecker:
             else:
                 ISIL = self._lookup_ISIL(institution=verwInst.text)
                 objectID_N.text = f"{ISIL}/{str(id_int)}"
-                logging.debug(f"   relWork {id_int}: {verwInst.text} -> {ISIL}")
+                # logging.debug(f"   relWork {id_int}: {verwInst.text} -> {ISIL}")
                 # print(f"_rewrite_relWork {mtype} {id_int} rewrite ok")
         else:
             self._del_relWork(ID_N=objectID_N)  # rm from lido lvl2

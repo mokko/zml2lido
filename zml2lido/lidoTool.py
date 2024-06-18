@@ -76,7 +76,7 @@ class LidoTool:
         self.chunks = chunks
         self.script_dir = Path(__file__).parents[1]
 
-        self.src = self._sanitize(src=src)
+        self.src = self._sanitize(src=src)  # returns Path
         self.outdir = self._prepareOutdir()
         print(f" outdir {self.outdir}")
         self._initLog()
@@ -92,19 +92,20 @@ class LidoTool:
             case "ddd":  # debug. Only lvl1 and validate
                 lido_fn = self.zml2lido(src=self.src)
                 self.validate(path=lido_fn)
-                self.splitLido(src=lido_fn)
+                self.split_lido(src=lido_fn)
             case "ohneLit":
                 # use different xslt for lvl1 conversion plus lvl2
                 lido_fn = self.zml2lido(src=self.src, xslt="ohneLit")
                 lvl2_fn = self.to_lvl2(src=lido_fn)
+                logging.info(f"{lvl2_fn} should be lvl2 file")
                 self.validate(path=lvl2_fn)
-                self.splitLido(src=lvl2_fn)
+                self.split_lido(src=lvl2_fn)
             case "mitLit":
                 # regular xslt, lvl2
                 lido_fn = self.zml2lido(src=self.src)
                 lvl2_fn = self.to_lvl2(src=lido_fn)
                 self.validate(path=lvl2_fn)
-                self.splitLido(src=lvl2_fn)
+                self.split_lido(src=lvl2_fn)
             case _:
                 raise SyntaxError("ERROR: Unknown job name!")
 
@@ -119,28 +120,33 @@ class LidoTool:
 
         if split:
             self.force = True
-            self.splitLido(src=out_fn)
+            self.split_lido(src=out_fn)
 
-    def to_lvl2(self, *, src: str) -> Path:
+    def to_lvl2(self, *, src: Path) -> Path:
+        """
+        In chunking mode returns the path of first chunk.
+        """
         if self.chunks:
             for chunkFn in self.loopChunks(src=src):
                 print(f"{chunkFn=}")
-                new_fn = self.to_lvl2Single(src=chunkFn)
+                new_fn = self.to_lvl2_single(src=chunkFn)
             return self.firstChunkName(src=new_fn)
         else:
-            return self.to_lvl2Single(src=src)
+            return self.to_lvl2_single(src=src)
 
-    def to_lvl2Single(self, *, src: str | Path) -> Path:
+    def to_lvl2_single(self, *, src: Path) -> Path:
         """
         Using Python rewrite (fix) generic Zetcom xml, mostly working on links (urls)
         """
-        out_fn = self._lvl2_path(src)
         try:
             self.lc
         except AttributeError:
             # only initalize and load lido files into relWorksCache once
+            # need src here for path atm
             self.lc = LinkChecker(src=src, chunks=self.chunks)
+        out_fn = self._lvl2_path(src)
         if not out_fn.exists() or self.force:
+            self.lc.new_src(src=src)
             # self.lc.relWorks_cache_single(fn=src)
             self.lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             self.lc.fixRelatedWorks()
@@ -149,17 +155,19 @@ class LidoTool:
             print(f"   lvl2 already exists: {out_fn}")
         return out_fn
 
-    def splitLido(self, *, src: str | Path) -> str | Path:
-        # print("SPLITLIDO enter")
+    def split_lido(self, *, src: Path) -> Path:
+        # logging.debug(f"WARN: split_lido: {src}")
+        # print("split_lido enter")
         if self.chunks:
             self.force = True  # otherwise subsequent chunks are not written
             for chunkFn in self.loopChunks(src=src):
-                self.splitLidoSingle(src=chunkFn)
+                logging.debug(f"WARN: split_lido: XXXXX: {chunkFn}")
+                self.split_lido_single(src=chunkFn)
         else:
-            self.splitLidoSingle(src=src)
+            self.split_lido_single(src=src)
         return src  # dont act on split files
 
-    def splitLidoSingle(self, *, src: str | Path) -> None:
+    def split_lido_single(self, *, src: Path) -> None:
         """
         Create individual files per lido record
         """
@@ -168,7 +176,7 @@ class LidoTool:
         print(f"split's parent: {self.outdir=}")
         # existance of splitDir is a bad criterion, but cant think of a better one
         if not splitDir.exists() or self.force:  # self.force is True was problematic
-            print("SPLITLIDO making")
+            print("split_lido making")
             os.chdir(self.outdir)
             self.saxon(src=src, xsl=xsl["splitLido"], output="o.xml")
             os.chdir(orig)
@@ -201,12 +209,9 @@ class LidoTool:
 
     def validate(self, *, path: Path) -> None:
         """
-        It's optionally possible to specify a path for a file that needs validatation. If
-        path is None, the file that was specified during __init__ will be validated.
+        Only validates if self.validation is True.
 
         If the method validate doesn't die, data validates.
-
-        (Not tested recently for chunks...)
         """
         if not self.validation:
             return
@@ -215,11 +220,11 @@ class LidoTool:
         if self.chunks:
             print(" with chunks")
             for chunkFn in self.loopChunks(src=path):
-                self.validateSingle(src=chunkFn)
+                self.validate_single(src=chunkFn)
         else:
-            self.validateSingle(src=path)
+            self.validate_single(src=path)
 
-    def validateSingle(self, *, src: Path) -> Path:
+    def validate_single(self, *, src: Path) -> Path:
         """
         Why do we return a the path?
         """
@@ -278,7 +283,7 @@ class LidoTool:
     # more helpers
     #
 
-    def loopChunks(self, *, src: str | Path) -> Iterable[str | Path]:
+    def loopChunks(self, *, src: Path) -> Iterable[Path]:
         """
         returns generator with path for existing files, counting up as long
         files exist. For this to work, filename has to include
@@ -289,13 +294,13 @@ class LidoTool:
         print(f"chunk src: {src}")
         root, no, tail = self._analyze_chunkFn(src=src)
         chunkFn = src
-        while Path(chunkFn).exists():
+        while chunkFn.exists():
             yield chunkFn
             # print(f"{chunkFn} exists")
             no += 1
-            chunkFn = f"{root}-chunk{no}{tail}"
+            chunkFn = Path(f"{root}-chunk{no}{tail}")
 
-    def firstChunkName(self, *, src: str | Path):
+    def firstChunkName(self, *, src: Path) -> Path:
         """
         returns the chunk with no. 1
 
@@ -303,19 +308,21 @@ class LidoTool:
 
         Can we get the first file instead of forcing people to
         start with chunk1?
-        List glob root* and take the first item?
         """
         root, no, tail = self._analyze_chunkFn(src=src)
-        src = Path(src)
-        parent = src.parent
+        parent_dir = src.parent
+        if not parent_dir.exists():
+            raise Exception("parent dir does not exist")
         folder = {}
-        for each in parent.iterdir():
-            if str(each).startswith(root):
-                root, no, tail = self._analyze_chunkFn(src=each)
-                folder[no] = each
+        for file in parent_dir.iterdir():
+            if str(file).startswith(root):
+                root, no, tail = self._analyze_chunkFn(src=file)
+                folder[no] = file
+        if len(folder) == 0:
+            raise FileNotFoundError(f"No file found in {parent_dir}")
         no = min(folder.keys())
         firstFn = folder[no]
-        # print(f"***firstChunkName {firstFn}")
+        # logging.info(f"firstChunkName: {src} -> {firstFn=}")
         return firstFn
 
     def saxon(
@@ -382,23 +389,23 @@ class LidoTool:
         logging.basicConfig(
             datefmt="%Y%m%d %I:%M:%S %p",
             filename=log_fn,
-            filemode="a",  # append now since we're starting a new folder
+            filemode="w",  # w=write, was: append now since we're starting a new folder
             encoding="utf-8",
-            level=logging.INFO,
+            level=logging.DEBUG,
             format="%(asctime)s: %(message)s",
         )
         log = logging.getLogger()
         log.addHandler(logging.StreamHandler(sys.stdout))
 
-    def _lvl2_path(self, p: str | Path) -> Path:
+    def _lvl2_path(self, p: Path) -> Path:
         """
         Given a lvl1 lido path, determine the lvl2 path
         """
-        p = Path(p)
         suffixes = "".join(p.suffixes)
         stem = str(p.name).split(".")[0]  # splits off multiple suffixes
-        new_dir = p.parent  # / "lvl2"
-        # new_dir.mkdir(exist_ok=True)
+        new_dir = p.parent / "lvl2"
+        if not new_dir.exists():
+            new_dir.mkdir()  # exist_ok=True
         new_p = new_dir.joinpath(stem + "-lvl2" + suffixes)
         return new_p
 
@@ -429,12 +436,12 @@ class LidoTool:
             outdir.mkdir(parents=True, exist_ok=False)
         return outdir
 
-    def _sanitize(self, *, src: str | Path) -> Path:
+    def _sanitize(self, *, src: str) -> Path:
         """
-        src could be Path or str.
+        src should be a str.
 
         Some checks for convenience; mainly for our users, so they get more intelligable
-        error messages.
+        error messages at an earlier time.
         """
         # script_dir = Path(__file__).parents[1]
         # print(f"SCRIPT_DIR: {script_dir}")
