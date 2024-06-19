@@ -67,6 +67,13 @@ def lido():
         required=False,
         action="store_true",
     )
+    parser.add_argument(
+        "-d",
+        "--disablerescan",
+        action="store_true",
+        default=False,
+        help="set to disable rescanning available lvl1 lido files to pre-populate relWorksCache",
+    )
     parser.add_argument("-i", "--input", help="zml input file", required=True)
     parser.add_argument("-j", "--job", help="pick job (e.g. smb or dd)", required=True)
     parser.add_argument(
@@ -80,8 +87,18 @@ def lido():
 
     print(f"JOB: {args.job}")
 
+    if args.disablerescan is True:
+        print(f"rescan is off (False)")
+        rescan = False
+    else:
+        rescan = True
+
     lt = LidoTool(
-        src=args.input, force=args.force, validation=args.validate, chunks=args.chunks
+        src=args.input,
+        force=args.force,
+        validation=args.validate,
+        chunks=args.chunks,
+        rescan=rescan,
     )
     lt.execute(args.job)
 

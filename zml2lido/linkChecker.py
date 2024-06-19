@@ -30,11 +30,11 @@ from zml2lido.relWorksCache import RelWorksCache
 # from zml2lido import NSMAP
 NSMAP = {"l": "http://www.lido-schema.org"}
 
-rescan_lvl1_files_at_init = False
-
 
 class LinkChecker:
-    def __init__(self, *, src: Path, chunks: bool = False) -> None:
+    def __init__(
+        self, *, src: Path, chunks: bool = False, rescan_lvl1_at_init: bool = True
+    ) -> None:
         logging.debug(
             f"STATUS: LinkChecker is working on {src}"
         )  # not exactly an error
@@ -46,7 +46,7 @@ class LinkChecker:
         self.rwc = RelWorksCache(maxSize=20_000, cache_dir=cache_dir)
         self.rwc.load_cache_file()  # load file if it exists once atb
 
-        if rescan_lvl1_files_at_init:
+        if rescan_lvl1_at_init:
             # run only once to update cache
             if self.chunks:
                 print("prepare relWorks cache (chunks, many)")
@@ -108,7 +108,7 @@ class LinkChecker:
                     print(
                         f"{idx}/{len(relatedWorksL)}{objectID_N.text} already rewritten"
                     )
-            if idx % 100:
+            if idx % 100 == 0:
                 self.rwc.save_if_changed()
 
     def linkResource_online_http(self) -> None:

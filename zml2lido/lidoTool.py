@@ -63,6 +63,7 @@ class LidoTool:
         force: bool = False,
         validation: bool = False,
         chunks: bool = False,
+        rescan: bool = True,
     ) -> None:
         """
         src: lido file or first chunk
@@ -75,7 +76,7 @@ class LidoTool:
         self.force = force
         self.chunks = chunks
         self.script_dir = Path(__file__).parents[1]
-
+        self.rescan = rescan
         self.src = self._sanitize(src=src)  # returns Path
         self.outdir = self._prepareOutdir()
         print(f" outdir {self.outdir}")
@@ -143,7 +144,9 @@ class LidoTool:
         except AttributeError:
             # only initalize and load lido files into relWorksCache once
             # need src here for path atm
-            self.lc = LinkChecker(src=src, chunks=self.chunks)
+            self.lc = LinkChecker(
+                src=src, chunks=self.chunks, rescan_lvl1_at_init=self.rescan
+            )
         out_fn = self._lvl2_path(src)
         if not out_fn.exists() or self.force:
             self.lc.load_lvl1(src=src)
