@@ -48,18 +48,42 @@
 						<xsl:if test="normalize-space(z:formattedValue) = ''">
 							<xsl:message terminate="yes">ERROR: NO objectWorkType</xsl:message>
 						</xsl:if>
+						<xsl:variable name="Sachbegriff" select="normalize-space(z:formattedValue)"/>
+						<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Sachbegriff', $Sachbegriff, 'aaturi')"/>
+						<xsl:variable name="wikiuri" select="func:vocmap-replace-laxer('Sachbegriff', $Sachbegriff, 'wikiuri')"/>
+						<!--xsl:message>
+							<xsl:text>test test test: </xsl:text>
+							<xsl:value-of select="$Sachbegriff"/>
+							<xsl:text>:</xsl:text>
+							<xsl:value-of select="$wikiuri"/>
+						</xsl:message-->
+						
 						<!--xsl:message>objectWorkType CASE1</xsl:message-->
-						<lido:objectWorkType lido:type="Sachbegriff/TechnicalTermVoc">
+						<lido:objectWorkType lido:type="local">
 							<lido:conceptID lido:source="RIA:Sachbegriff" lido:type="local">
 								<xsl:value-of select="@id"/>
 							</lido:conceptID>
+							<!-- 
+							what if multiple entries for aaturi? What if want multiple targets 
+							wikipedia, aat etc.?
+							-->
+							<xsl:if test="$aaturi ne ''">
+								<lido:conceptID lido:source="AAT" lido:type="URI">
+									<xsl:value-of select="$aaturi"/>
+								</lido:conceptID>
+							</xsl:if>
+							<xsl:if test="$wikiuri ne ''">
+								<lido:conceptID lido:source="Wikidata" lido:type="URI">
+									<xsl:value-of select="$wikiuri"/>
+								</lido:conceptID>
+							</xsl:if>
 							<lido:term>
 								<xsl:if test="z:formattedValue/@language ne ''">
 									<xsl:attribute name="xml:lang">
 										<xsl:value-of select="z:formattedValue/@language"/>
 									</xsl:attribute>
 								</xsl:if>
-								<xsl:value-of select="normalize-space(z:formattedValue)"/>
+								<xsl:value-of select="$Sachbegriff"/>
 							</lido:term>
 						</lido:objectWorkType>
 					</xsl:for-each>
@@ -72,8 +96,33 @@
 				<xsl:when test="z:dataField[@name = 'ObjTechnicalTermClb'] and 
 					$objekttyp = ('Allgemein', 'Allgemein - ÄMP', 'Behälter', 'Gebrauchsgegenstände', 'Gerät', 'Organisches Material')">
 					<!--xsl:message>objectWorkType CASE2</xsl:message-->
+					<xsl:variable name="Sachbegriff" select="z:dataField[@name = 'ObjTechnicalTermClb']"/>
+					<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Sachbegriff', $Sachbegriff, 'aaturi')"/>
+					<xsl:variable name="wikiuri" select="func:vocmap-replace-laxer('Sachbegriff', $Sachbegriff, 'wikiuri')"/>
+					
+					<!--xsl:message>
+						<xsl:text>test test test: </xsl:text>
+						<xsl:value-of select="$Sachbegriff"/>
+						<xsl:text>:</xsl:text>
+						<xsl:value-of select="$wikiuri"/>
+					</xsl:message-->
+
 					<lido:objectWorkType lido:type="ObjTechnicalTermClb">
 						<!-- hardcoded since dataField has no language qualifier in RIA! -->
+						<xsl:comment>Sachbegriff unter bestimmten Bedingungen</xsl:comment>
+							<lido:conceptID lido:source="RIA:Sachbegriff" lido:type="local">
+								<xsl:value-of select="@id"/>
+							</lido:conceptID>
+						<xsl:if test="$aaturi ne ''">
+							<lido:conceptID lido:source="AAT" lido:type="URI">
+								<xsl:value-of select="$aaturi"/>
+							</lido:conceptID>
+						</xsl:if>
+						<xsl:if test="$wikiuri ne ''">
+							<lido:conceptID lido:source="Wikidata" lido:type="URI">
+								<xsl:value-of select="$wikiuri"/>
+							</lido:conceptID>
+						</xsl:if>
 						<lido:term xml:lang="de">
 							<xsl:value-of select="normalize-space(z:dataField[@name = 'ObjTechnicalTermClb']/z:value)"/>
 						</lido:term>
@@ -93,10 +142,10 @@
 				<!-- 
 					bestimmte aussagekräftige Objekttypen, die sich gut nach AAT mappen lassen 
 				-->
-				<xsl:when test="func:vocmap-replace-laxer('Objekttyp', $objekttyp, 'aat-label') ne ''">
+				<xsl:when test="func:vocmap-replace-laxer('Objekttyp', $objekttyp, 'aaturi') ne ''">
 					<lido:objectWorkType lido:type="Objekttyp-Vocmap">
 						<lido:conceptID lido:source="AAT" lido:type="URI">
-							<xsl:value-of select="func:vocmap-replace-laxer('Objekttyp', $objekttyp, 'uri')"/>
+							<xsl:value-of select="func:vocmap-replace-laxer('Objekttyp', $objekttyp, 'aaturi')"/>
 						</lido:conceptID>
 						<lido:term xml:lang="en">
 							<xsl:value-of select="func:vocmap-replace-lang('Objekttyp', $objekttyp, 'aat-label', 'en')"/>

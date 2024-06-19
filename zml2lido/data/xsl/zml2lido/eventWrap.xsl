@@ -275,12 +275,7 @@
 					</xsl:when>
 				</xsl:choose>
 			</xsl:variable>
-			
-			<!--xsl:message>
-				<xsl:text>GEONAME: </xsl:text>
-				<xsl:value-of select="$geoname"/>
-			</xsl:message-->
-			
+						
 			<xsl:if test="$geoname ne ''">
 				<lido:eventPlace>
 					<xsl:if test="$sorder[1] ne ''">
@@ -288,6 +283,13 @@
 							<xsl:value-of select="$sorder[1]"/>
 						</xsl:attribute>
 					</xsl:if>
+					<xsl:variable name="wikiuri" select="func:vocmap-replace-laxer('Geoname', $geoname, 'wikiuri')"/>
+					<!--xsl:message>
+						<xsl:text>GEONAME: </xsl:text>
+						<xsl:value-of select="$geoname"/>
+						<xsl:text> </xsl:text>
+						<xsl:value-of select="$wikiuri"/>
+					</xsl:message-->
 
 					<xsl:comment>
 					<xsl:text>TypeVoc </xsl:text>
@@ -306,6 +308,11 @@
 						<lido:placeID lido:type="{$geopicker}">
 								<xsl:value-of select="z:vocabularyReference[@name=$geopicker]/z:vocabularyReferenceItem/@id"/>
 						</lido:placeID>
+						<xsl:if test="$wikiuri ne ''">
+							<lido:placeID lido:source="Wikidata" lido:type="URI">
+								<xsl:value-of select="$wikiuri"/>
+							</lido:placeID>
+						</xsl:if>
 						<lido:namePlaceSet>
 							<!-- hardcoded because value in RIA wrong 17.11.2022 -->
 							<lido:appellationValue xml:lang="de">
@@ -313,7 +320,6 @@
 							</lido:appellationValue>
 						</lido:namePlaceSet>
 						<xsl:call-template name="placeClassification"/>
-
 						<!-- xsl:if test="position() = 2">
 							<lido:partOfPlace>
 								<xsl:call-template name="PLACE"/>
@@ -329,6 +335,10 @@
 		<xsl:if test="z:vocabularyReference[
 						@instanceName='ObjGeopolVgr'
 					]/z:vocabularyReferenceItem ne ''">
+		<!--xsl:message>
+			<xsl:text>placeClassification</xsl:text>
+		</xsl:message-->
+					
 			<lido:placeClassification lido:type="internal">
 				<lido:term xml:lang="de">
 					<xsl:variable name="lang" select="

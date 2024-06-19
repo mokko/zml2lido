@@ -131,8 +131,9 @@ def validate():
     # can we have an option to validate consecutively numbered files?
     # query570068-chunk283.lido.xml
     # query570068-chunk284.lido.xml
-    m = LidoTool(src=args.input)
-    m.validate()  # raises if does not validate
+    lt = LidoTool(src=args.input, validation=True)
+    lt.validate(path=args.input)  # raises if does not validate
+    print("validates")
 
 
 def vocmap():

@@ -3,7 +3,8 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:z="http://www.zetcom.com/ria/ws/module"
-	exclude-result-prefixes="z"
+	xmlns:func="http://func"
+	exclude-result-prefixes="z func"
 	xsi:schemaLocation="http://www.lido-schema.org http://www.lido-schema.org/schema/v1.0/lido-v1.0.xsd">
 
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
@@ -261,25 +262,45 @@
 				@name = 'ObjGeograficGrp']/
 			z:repeatableGroupItem">
 		<!--xsl:message>xxxxxxxxxxxxxxxxxxxxxxxxxxx mode=culture for herstellendesKollektiv</xsl:message-->
+		<xsl:variable name="Kultur" select="z:vocabularyReference[
+					@name = 'PlaceVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue"/>
+		<xsl:variable name="dnburi" select="func:vocmap-replace-laxer('Kultur', $Kultur, 'dnburi')"/>
+		<xsl:variable name="wikiuri" select="func:vocmap-replace-laxer('Kultur', $Kultur, 'wikiuri')"/>
+		<!--xsl:message>
+			<xsl:text>test test test: </xsl:text>
+			<xsl:value-of select="$Kultur"/>
+			<xsl:text>:</xsl:text>
+			<xsl:value-of select="$wikiuri"/>
+		</xsl:message-->
+
 		<lido:culture>
 			<lido:conceptID lido:type="local" lido:source="ObjGeograficGrp">
 				<xsl:value-of select="z:vocabularyReference[
 					@name = 'PlaceVoc'
 				]/z:vocabularyReferenceItem/@id"/>
 			</lido:conceptID>
+			<xsl:if test="$dnburi ne ''">
+				<lido:conceptID lido:source="DNB" lido:type="URI">
+					<xsl:value-of select="$dnburi"/>
+				</lido:conceptID>
+			</xsl:if>
+			<xsl:if test="$wikiuri ne ''">
+				<lido:conceptID lido:source="Wikidata" lido:type="URI">
+					<xsl:value-of select="$wikiuri"/>
+				</lido:conceptID>
+			</xsl:if>
 			<lido:term>
 				<xsl:if test="z:vocabularyReference[
 						@name = 'PlaceVoc'
 					]/z:vocabularyReferenceItem/z:formattedValue/@language ne ''">
 					<xsl:attribute name="xml:lang">
-					<xsl:value-of select="z:vocabularyReference[
-						@name = 'PlaceVoc'
-					]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
+						<xsl:value-of select="z:vocabularyReference[
+							@name = 'PlaceVoc'
+						]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
 					</xsl:attribute>
 				</xsl:if>
-				<xsl:value-of select="z:vocabularyReference[
-					@name = 'PlaceVoc'
-				]/z:vocabularyReferenceItem/z:formattedValue"/>
+				<xsl:value-of select="$Kultur"/>
 			</lido:term>
 		</lido:culture>
 	</xsl:template>
