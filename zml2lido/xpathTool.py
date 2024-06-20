@@ -11,15 +11,14 @@ def xpathTool(
     print(f"{Input=}")
     print(f"{xpath=}")
     print(f"{file=} (stringify implicit with file option)")
-    out_fn = Path("xpath.xml")
-    if file:
-        if out_fn.exists():
-            out_fn.unlink()
-    for xml_fn in Path(".").glob(Input):
+    hit_count = 0
+    for file_count, xml_fn in enumerate(Path(".").glob(Input), start=1):
         print(f"parsing {xml_fn}")
         tree = etree.parse(xml_fn)
         resL = tree.xpath(xpath, namespaces=NSMAP)
-        _output(file=file, results=resL, out_fn=out_fn)
+        hit_count += len(resL)
+        _output(file=file, results=resL)
+    print(f"Total {hit_count} hits in {file_count} files.")
 
 
 #
@@ -27,12 +26,16 @@ def xpathTool(
 #
 
 
-def _output(*, file: bool, results: list, out_fn: Path) -> None:
-    # delete file first then append
-    for resultN in results:
-        if file:  # stringify automatically
+def _output(*, file: bool, results: list) -> None:
+    out_fn = Path("xpath.xml")
+    for idx, resultN in enumerate(results):
+        if file:  # if output to file then stringify
             xml = etree.tostring(resultN, pretty_print=True, encoding="unicode")
-            with open(out_fn, "a") as f:
-                f.write(xml)
+            if idx == 0:
+                with open(out_fn, "w") as f:
+                    f.write(xml)
+            else:
+                with open(out_fn, "a") as f:
+                    f.write(xml)
         else:
             print(resultN)  # not stringified
