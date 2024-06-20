@@ -12,6 +12,7 @@ import argparse
 from zml2lido.lidoTool import LidoTool
 from zml2lido.linkChecker import LinkChecker
 from zml2lido.vocmap import Vocmap
+from zml2lido.xpathTool import xpathTool
 
 NSMAP = {"l": "http://www.lido-schema.org"}
 
@@ -157,3 +158,34 @@ def vocmap():
 
     args = parser.parse_args()
     vm = Vocmap(Input=args.Input, output=args.output)
+
+
+def xpath():
+    """ "
+    Little utility that applies xpath expressions to one or multiple files
+    """
+    parser = argparse.ArgumentParser(description="apply xpath to file(s)")
+    parser.add_argument(
+        "-i",
+        "--Input",
+        help="input file or filemask (in case of globbing)",
+        required=True,
+    )
+
+    parser.add_argument(
+        "-f",
+        "--file",
+        help="output to file xpath.xml",
+        action="store_true",
+        default=False,
+    )
+
+    parser.add_argument(
+        "-x",
+        "--xpath",
+        help="the xpath expression",
+        required=True,
+    )
+
+    args = parser.parse_args()
+    xpathTool(Input=args.Input, xpath=args.xpath, file=args.file)

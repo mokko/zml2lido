@@ -24,7 +24,7 @@ lido = 'zml2lido:lido'
 lvalidate = 'zml2lido:validate' 
 saxon = 'zml2lido:saxon'
 vocmap = 'zml2lido:vocmap'
-
+xpath = 'zml2lido:xpath'
 
 [project.urls]
 Home = "https://github.com/mokko/zml2lido"
