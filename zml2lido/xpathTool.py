@@ -4,6 +4,12 @@ from pathlib import Path
 # NSMAP is already present in linkChecker TODO
 NSMAP = {"l": "http://www.lido-schema.org"}
 
+"""
+Simply commandline tool that applies xpath to one or multiple files (using lxml internally)
+
+Please be aware that the -f file output does NOT aim to produce valid XML!
+"""
+
 
 def xpathTool(
     *, Input: str, xpath: str, file: bool = False, globbing: bool = False
