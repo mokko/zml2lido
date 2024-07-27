@@ -91,7 +91,7 @@ class RelWorksCache:
         print(f"{self.length()} looking up relWork {mtype} {ID}")
         relWorkM = self.client.search2(query=q)
         # realistic that query results are empty?
-        if relWorkM and self.cache.length() < self.maxSize:
+        if relWorkM and len(self.cache) < self.maxSize:
             self.changed = True
             self.cache += relWorkM  # appending them to relWork cache
         # what to do if nothing is found?
