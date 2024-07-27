@@ -132,7 +132,8 @@
 		<xsl:if test="$objekttyp ne ''">
 			<xsl:variable name="objekttypControl" select="func:vocmap-control('Objekttyp',$objekttyp)"/>
 			<xsl:variable name="aaturi" select="func:vocmap-replace-laxer('Objekttyp',$objekttyp, 'aaturi')"/>
-			<xsl:variable name="aatlabel" select="func:vocmap-replace-lax-lang('Objekttyp',$objekttyp, 'aatlabel', 'en')"/>
+			<xsl:variable name="aatlabelen" select="func:vocmap-replace-lax-lang('Objekttyp',$objekttyp, 'aatlabel', 'en')"/>
+			<xsl:variable name="aatlabelde" select="func:vocmap-replace-lax-lang('Objekttyp',$objekttyp, 'aatlabel', 'de')"/>
 				
 			<xsl:if test="$objekttypControl ne ''">		
 				<!--xsl:message>
@@ -162,9 +163,14 @@
 						lido:type="uri">
 							<xsl:value-of select="$aaturi"/>
 					</lido:conceptID>
-					<xsl:if test="$aatlabel ne ''">		
+					<xsl:if test="$aatlabelen ne ''">		
 						<lido:term lido:addedSearchTerm="yes" xml:lang="en">
-							<xsl:value-of select="$aatlabel"/>
+							<xsl:value-of select="$aatlabelen"/>
+						</lido:term>
+					</xsl:if>
+					<xsl:if test="$aatlabelde ne ''">		
+						<lido:term lido:addedSearchTerm="yes" xml:lang="de">
+							<xsl:value-of select="$aatlabelde"/>
 						</lido:term>
 					</xsl:if>
 				</lido:classification>
