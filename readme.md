@@ -38,7 +38,7 @@ job 'smb' does the following steps
 4. validate LIDO
 5. split
 
-job 'dd' does the following
+job 'dd' does the following (meant for debugging)
 1. convert to LIDO (lvl1)
 2. validate LIDO
 

@@ -431,13 +431,15 @@
 
 
 	<voc name="Objekttyp">
+		<!-- Es muss immer einen type Vorzugsbezeichnung geben-->
 		<concept>
-			<source lang="de">Architektur</source>
+			<source lang="de" type="Vorzugsbezeichnung">Architektur</source>
 			<target lang="en" name="aatlabel">architecture (object genre)</target>
 			<target lang="de" name="aatlabel">Architektur (Objektgattung)</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300263552</target>
 		</concept>	
 		<concept>
+			<source lang="de" type="Vorzugsbezeichnung">Archivalie</source>
 			<source lang="de">Archivalie - Akte</source>
 			<source lang="de">Archivalie - Einzelblatt</source>
 			<source lang="de">Archivalie - Slg.-Verzeichnis(Dokumente)</source>
@@ -448,117 +450,122 @@
 			<target name="aaturi">http://vocab.getty.edu/aat/300026685</target>
 		</concept>	
 		<concept>
-			<source lang="de">Audio</source>
+			<source lang="de" type="Vorzugsbezeichnung">Audio</source>
 			<target lang="en" name="aatlabel">sound recordings</target>
 			<target lang="de" name="aatlabel">Tonträger</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300028633</target>
 		</concept>	
 		<concept>
 			<source lang="de">Bildhauerei</source>
-			<source lang="de">Skulptur</source>
+			<source lang="de" type="Vorzugsbezeichnung">Skulptur</source>
 			<target lang="en" name="aatlabel">sculptures (visual works)</target>
 			<target lang="de" name="aatlabel">Skulptur (visuelles Werk)</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300047090</target>
 		</concept>	
 		<concept>
-			<source lang="de">Buch</source>
+			<source lang="de" type="Vorzugsbezeichnung">Buch</source>
 			<target lang="en" name="aatlabel">sculptures (visual works)</target>
 			<target lang="de" name="aatlabel">Skulptur (visuelles Werk)</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300028051</target>
 		</concept>	
 		<concept>
-			<source lang="de">Collage</source>
+			<source lang="de" type="Vorzugsbezeichnung">Collage</source>
 			<target lang="en" name="aatlabel">collages (visual works)</target>
 			<target lang="de" name="aatlabel">Collage (zweidimensionales Werk)</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300033963</target>
 		</concept>	
 		<concept>
 			<source lang="de">Druckgraphik</source>
-			<source lang="de">Druckgrafik</source>
+			<source lang="de" type="Vorzugsbezeichnung">Druckgrafik</source>
 			<target lang="en" name="aatlabel">prints (visual works)</target>
 			<target lang="de" name="aatlabel">Druckgrafik (visuelles Werk)</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300041273</target>
 		</concept>	
 		<concept>
-			<source lang="de">Film/Video</source>
+			<source lang="de" type="Vorzugsbezeichnung">Film/Video</source>
 			<target lang="en" name="aatlabel">moving images</target>
 			<target lang="de" name="aatlabel">bewegtes Bild</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300263857</target>
 		</concept>	
 		<concept>
-			<source lang="de">Fotografie</source>
+			<source lang="de" type="Vorzugsbezeichnung">Fotografie</source>
 			<target lang="en" name="aatlabel">photography</target>
 			<target lang="de" name="aatlabel">Fotografie</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300046300</target>
 		</concept>	
 		<concept>
-			<source lang="de">Grafik</source>
+			<source lang="de" type="Vorzugsbezeichnung">Grafik</source>
 			<target lang="en" name="aatlabel">graphic arts</target>
 			<target lang="de" name="aatlabel">grafische Künste</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300264849</target>
 		</concept>	
 		<concept>
-			<source lang="de">Installation</source>
+			<source lang="de" type="Vorzugsbezeichnung">Installation</source>
 			<target lang="en" name="aatlabel">installations (visual works)</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300047896</target>
 		</concept>	
 		<concept>
-			<source lang="de">Malerei/Gemälde</source>
-			<source lang="de">Malerei</source>
+			<source lang="de" type="Vorzugsbezeichnung">Malerei</source>
 			<target lang="en" name="aatlabel">paintings (visual works)</target>
 			<target lang="de" name="aatlabel">Malerei</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300033618</target>
 		</concept>	
 		<concept>
-			<source lang="de">Musikinstrument</source>
+			<source lang="de" type="Vorzugsbezeichnung">Malerei/Gemälde</source>
+			<target lang="en" name="aatlabel">paintings (visual works)</target>
+			<target lang="de" name="aatlabel">Malerei</target>
+			<target name="aaturi">http://vocab.getty.edu/aat/300033618</target>
+		</concept>	
+		<concept>
+			<source lang="de" type="Vorzugsbezeichnung">Musikinstrument</source>
 			<target lang="en" name="aatlabel">musical instruments</target>
 			<target lang="de" name="aatlabel">Musikinstrument</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300041620</target>
 		</concept>	
 		<concept>
-			<source lang="de">Natürliches Objekt</source>
+			<source lang="de" type="Vorzugsbezeichnung">Natürliches Objekt</source>
 			<target lang="en" name="aatlabel">Natural Object</target>
 			<target lang="de" name="aatlabel">Natürliches Objekt</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300404125</target>
 		</concept>	
 		<concept>
-			<source lang="de">Numismatik</source>
+			<source lang="de" type="Vorzugsbezeichnung">Numismatik</source>
 			<target lang="en" name="aatlabel">numismatics</target>
 			<target lang="de" name="aatlabel">Numismatik</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300054419</target>
 		</concept>	
 		<concept>
-			<source lang="de">Plakette/Medaille</source>
+			<source lang="de" type="Vorzugsbezeichnung">Plakette/Medaille</source>
 			<target lang="en" name="aatlabel">plaquettes</target>
 			<target lang="de" name="aatlabel">Plakette (Relief)</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300190507</target>
 		</concept>	
 		<concept>
-			<source lang="de">Schmuck</source>
+			<source lang="de" type="Vorzugsbezeichnung">Schmuck</source>
 			<target lang="en" name="aatlabel">jewelry</target>
 			<target lang="de" name="aatlabel">Schmuck</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300209286</target>
 		</concept>	
 		<concept>
-			<source lang="de">Skulptur/Plastik/Objektkunst</source>
+			<source lang="de" type="Vorzugsbezeichnung">Skulptur/Plastik/Objektkunst</source>
 			<target lang="en" name="aatlabel">sculpture (visual works)</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300047090</target>
 		</concept>	
 		<concept>
-			<source lang="de">Textdokument</source>
+			<source lang="de" type="Vorzugsbezeichnung">Textdokument</source>
 			<target lang="en" name="aatlabel">texts (documents)</target>
 			<target lang="de" name="aatlabel">Text (Dokument)</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300263751</target>
 		</concept>	
 		<concept>
 			<source lang="de">Textilkunst</source>
-			<source lang="de">Textilie</source>
+			<source lang="de" type="Vorzugsbezeichnung">Textilie</source>
 			<target lang="en" name="aatlabel">textile art (visual works)</target>
 			<target lang="de" name="aatlabel">Textilarbeit</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300386843</target>
 		</concept>	
 		<concept>
-			<source lang="de">Zeichnung</source>
+			<source lang="de" type="Vorzugsbezeichnung">Zeichnung</source>
 			<target lang="en" name="aatlabel">drawings by material or technique</target>
 			<target lang="de" name="aatlabel">Zeichnung nach Material oder Technik</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300034698</target>

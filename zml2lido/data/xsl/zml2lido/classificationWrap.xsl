@@ -143,14 +143,20 @@
 				</xsl:message-->
 				<xsl:comment>Objekttyp für CCC-Portal</xsl:comment>
 				<lido:classification lido:type="Objekttyp">
+					<xsl:comment>Fall 1</xsl:comment>
 					<lido:conceptID lido:encodinganalog="RIA:Objekttyp" lido:source="ObjCategoryVoc" lido:type="local"/>
 					<lido:term xml:lang="de">
 						<xsl:value-of select="$objekttypControl"/>
 					</lido:term>
+					<!--xsl:message>
+						<xsl:text>XXXX</xsl:text>
+						<xsl:value-of select="$objekttypControl"/>
+					</xsl:message-->
 				</lido:classification>
 			</xsl:if>
 			<xsl:if test="$aaturi ne ''">		
 				<lido:classification>
+					<xsl:comment>Fall 2</xsl:comment>
 					<lido:conceptID lido:encodinganalog="RIA:Objekttyp" 
 						lido:source="Art &amp; Architecture Thesaurus" 
 						lido:type="uri">

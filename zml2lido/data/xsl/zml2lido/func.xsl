@@ -302,10 +302,10 @@
 			<xsl:when test="$source">
 				<xsl:choose>
 					<xsl:when test="$source/target[@name eq 'extern']">
-						<xsl:value-of select="$source/target[@name eq 'extern']"/>
+						<xsl:value-of select="$source/target[@name eq 'extern' and @type ='Vorzugsbezeichnung']"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="$source/source"/>
+						<xsl:value-of select="$source/source[@type ='Vorzugsbezeichnung']"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
