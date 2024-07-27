@@ -210,7 +210,7 @@ class RelWorksCache:
             id_int = int(ID_N.text)
             if (
                 not self.cache.item_exists(mtype=mtype, ID=id_int)
-                and self.cache.length() < self.maxSize
+                and len(self.cache) < self.maxSize
             ):
                 self.changed = True
                 id_cache.add((mtype, id_int))
