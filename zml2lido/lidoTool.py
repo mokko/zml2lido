@@ -466,3 +466,51 @@ class LidoTool:
             raise SyntaxError("ERROR: src does not exist!")
 
         return src
+
+
+if __name__ == "__main__":
+    # since fvh is blocked by Windows group policy
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Little LIDO toolchain")
+    parser.add_argument(
+        "-c",
+        "--chunks",
+        help="expect the input to be multiple precisely-named chunks",
+        required=False,
+        action="store_true",
+    )
+    parser.add_argument(
+        "-d",
+        "--disablerescan",
+        action="store_true",
+        default=False,
+        help="set to disable rescanning available lvl1 lido files to pre-populate relWorksCache",
+    )
+    parser.add_argument("-i", "--input", help="zml input file", required=True)
+    parser.add_argument("-j", "--job", help="pick job (e.g. smb or dd)", required=True)
+    parser.add_argument(
+        "-f", "--force", help="force overwrite existing lido", action="store_true"
+    )
+    parser.add_argument("-v", "--validate", help="validate lido", action="store_true")
+    args = parser.parse_args()
+
+    if args.force:
+        args.validate = True
+
+    print(f"JOB: {args.job}")
+
+    if args.disablerescan is True:
+        print(f"rescan is off (False)")
+        rescan = False
+    else:
+        rescan = True
+
+    lt = LidoTool(
+        src=args.input,
+        force=args.force,
+        validation=args.validate,
+        chunks=args.chunks,
+        rescan=rescan,
+    )
+    lt.execute(args.job)
