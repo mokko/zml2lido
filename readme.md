@@ -19,10 +19,16 @@ Includes the following scripts
 * saxon
 
 ## Usage
+* -j picks a job e.g. smb or ohneLit 
+* -i provide the xml source (required)
+* -c expect one or multiple zipped cache files as input
+* -f force; overwrite most files created during previous runs (except relWorks cache)
+> lido -j smb -i path/to/generic_xml 
 
-> lido -j smb -i path/to/generic_xml # writes output to script_dir/sdata/20221023/label 
->
-> #use -f to force overwrite existing files
+### New
+In previous versions, the script had to be executed in one particular directory for it to
+work correctly. Now it can be executed anywhere and the results are always saved in 
+sdata/{label}/{date}.
 
 ## Common Jobs
 job 'smb' does the following steps
