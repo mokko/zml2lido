@@ -11,61 +11,61 @@
 		we could make a positive list of Bereiche which maps to classification terms
 		-->
 		<concept>
-			<source lang="de">EM-Afrika</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Afrika</source>
 			<target lang="de" name="extern">Afrika</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300015647</target>
 			<target lang="en" name="aatlabel">African</target>
 		</concept>
 		<concept>
-			<source lang="de">EM-Amerika</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Amerika</source>
 			<target lang="de" name="extern">Amerika</target>
 		</concept>
 		<concept>
-			<source lang="de">EM-Am Archäologie</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Am Archäologie</source>
 			<target lang="de" name="extern">Amerikanische Archäologie</target>
 		</concept>
 		<concept>
-			<source lang="de">EM-Am Ethnologie</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Am Ethnologie</source>
 			<target lang="de" name="extern">Amerikanische Ethnologie</target>
 		</concept>
 		<concept>
-			<source lang="de">EM-Medienarchiv</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Medienarchiv</source>
 			<target lang="de" name="extern">Musikethnologie</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300429823</target>
 			<target lang="en" name="aatlabel">recordings</target>
 		</concept>
 		<concept>
-			<source lang="de">EM-Musikethnologie</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Musikethnologie</source>
 			<target lang="de" name="extern">Musikethnologie</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300054146</target>
 			<target lang="en" name="aatlabel">music (performing arts genre)</target>
 		</concept>
 		<concept>
-			<source lang="de">EM-Ost- und Nordasien</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Ost- und Nordasien</source>
 			<target lang="de" name="extern">Ost- und Nordasien</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300018279</target>
 			<target lang="en" name="aatlabel">Asian</target>
 		</concept>
 		<concept>
-			<source lang="de">EM-Ozeanien</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Ozeanien</source>
 			<target lang="de" name="extern">Ozeanien</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300021854</target>
 			<target lang="en" name="aatlabel">Oceanic</target>
 		</concept>		
 		<concept>
-			<source lang="de">EM-Phonogramm-Archiv</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Phonogramm-Archiv</source>
 			<target lang="de" name="extern">Berliner Phonogramm-Archiv</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300028633</target>
 			<target lang="en" name="aatlabel">sound recordings</target>
 		</concept>
 		<concept>
-			<source lang="de">EM-Phonogramm-Archiv</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Phonogramm-Archiv</source>
 			<target lang="de" name="extern">Berliner Phonogramm-Archiv</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300265798</target>
 			<target lang="en" name="aatlabel">cylinder phonographs (phonographs)</target>
 		</concept>
 		<concept>
-			<source lang="de">EM-Süd- und Südostasien</source>
+			<source type="Vorzugsbezeichnung" lang="de">EM-Süd- und Südostasien</source>
 			<target lang="de" name="extern">Süd- und Südostasien</target>
 			<target name="aaturi">http://vocab.getty.edu/aat/300018279</target>
 			<target lang="en" name="aatlabel">Asian</target>
