@@ -5,20 +5,20 @@
 * For LIDO see http://www.lido-schema.org
 * main xslt mapping is at zml2lido/data/xsl/zml2lido.xsl
 
-Requires
-* Saxon to run xslt newer than version 1: //http://saxon.sourceforge.net/
-  We used to use a java subprocess to run saxon, now we're using saxonche
-  from pypi.org.
+## Requires
+* lxml
+* Saxon. We're now using saxonche from pypi. Install with
+> pip install saxonche
 
 The mapping is partly specific to the RIA installation of the SPK, but might 
 inspire others.
 
 Includes the following scripts
-- lido
-- lvalidate
-- saxon
+* lido
+* lvalidate
+* saxon
 
-#lido
+## Usage
 
 > lido -j smb -i path/to/generic_xml # writes output to script_dir/sdata/20221023/label 
 
@@ -26,15 +26,15 @@ use -f to force overwrite existing files
 
 ## Common Jobs
 job 'smb' does the following steps
-(1) convert to LIDO
-(2) filter out lido records that are not published
-(3) filter out relatedWorks tht are not pubished (except Literature)
-(4) validate LIDO
-(5) split
+1. convert to LIDO (lvl1)
+2. filter out lido records that are not published
+3. filter out relatedWorks tht are not pubished (except Literature)
+4. validate LIDO
+5. split
 
 job 'dd' does the following
-(1) convert to LIDO
-(2) validate LIDO
+1. convert to LIDO (lvl1)
+2. validate LIDO
 
-##Common Errors
+## Common Errors
 todo
