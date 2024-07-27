@@ -148,10 +148,10 @@
 							<xsl:value-of select="func:vocmap-replace-laxer('Objekttyp', $objekttyp, 'aaturi')"/>
 						</lido:conceptID>
 						<lido:term xml:lang="en">
-							<xsl:value-of select="func:vocmap-replace-lang('Objekttyp', $objekttyp, 'aat-label', 'en')"/>
+							<xsl:value-of select="func:vocmap-replace-lang('Objekttyp', $objekttyp, 'aatlabel', 'en')"/>
 						</lido:term>
 						<lido:term xml:lang="de">
-							<xsl:value-of select="func:vocmap-replace-lang('Objekttyp', $objekttyp, 'aat-label', 'de')"/>
+							<xsl:value-of select="func:vocmap-replace-lang('Objekttyp', $objekttyp, 'aatlabel', 'de')"/>
 						</lido:term>
 					</lido:objectWorkType>
 				</xsl:when>
