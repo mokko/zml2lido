@@ -22,7 +22,7 @@ Includes the following scripts
 
 > lido -j smb -i path/to/generic_xml # writes output to script_dir/sdata/20221023/label 
 >
-> # use -f to force overwrite existing files
+> #use -f to force overwrite existing files
 
 ## Common Jobs
 job 'smb' does the following steps
