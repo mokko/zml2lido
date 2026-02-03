@@ -14,8 +14,22 @@
 		Zuordnung zu einem kuratierten Bestand
     -->
     <xsl:template name="Zuordnung">
+		<!-- Bereich im Klartext-->
 		<xsl:variable name="bereich" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
+		<!-- sammlung is a lookup term from vocmap-->
 		<xsl:variable name="sammlung" select="func:vocmap-control('Bereich',$bereich)"/>
+		<xsl:message>
+		DEBUGGING: Zuordnung.xsl
+			bereich: <xsl:value-of select="$bereich"/>
+			sammlung: <xsl:value-of select="$sammlung"/>
+		</xsl:message>
+		<xsl:if test="$sammlung eq ''">
+			<xsl:message terminate="yes">
+				ERROR: Leere Zuordnung zu einem kuratierten Bestand. Fülle die Lücke in vocmap.xml für voc Bereich und den
+				oben genannten Bereich.
+			</xsl:message>
+		</xsl:if>
+
 
 		<lido:eventSet lido:sortorder="30">
 			<lido:event>

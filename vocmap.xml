@@ -70,6 +70,10 @@
 			<target name="aaturi">http://vocab.getty.edu/aat/300018279</target>
 			<target lang="en" name="aatlabel">Asian</target>
 		</concept>
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Klassische Moderne</source>
+			<target lang="de" name="extern">Klassische Moderne</target>
+		</concept>
 	</voc>
 
 	<voc name="formatResource">
@@ -258,7 +262,12 @@
 
 
 	<voc name="MulTypeVgr">
-		<!-- Analoges Ausgangsmaterial kann alles sein, das muss upstream (in RIA) korrigiert werden -->
+		<!-- 
+		lido will korrekte Mimetypes angegeben, Europeana den ontologisch falschen Typen. 
+
+		Analoges Ausgangsmaterial kann alles sein, das muss upstream (in RIA) 
+		korrigiert werden. 
+		-->
 		<concept>
 			<source lang="de">3 D</source>
 			<target lang="en" name="lido">3D</target>
@@ -389,7 +398,8 @@
 		</concept>
 		<concept>
 			<source lang="de">Positiv</source>
-			<target lang="en" name="europeana:type">audio</target>
+			<target lang="en" name="lido">image</target>
+			<target lang="en" name="europeana:type">image</target>
 		</concept>
 		<concept>
 			<source lang="de">Print (SPK)</source>
@@ -680,6 +690,10 @@
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10018</target>
 		</concept>
 		<concept>
+			<source lang="de">Bühnenkostüm</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300212393</target>
+		</concept>		
+		<concept>
 			<source lang="de">Büstenhalter</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300210538</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10081</target>
@@ -718,6 +732,10 @@
 			<source lang="de">Damenstrumpf</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300046088</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10288</target>
+		</concept>
+		<concept>
+			<source lang="de">durchsichtig</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300143221</target>
 		</concept>
 		<concept>
 			<source lang="de">Ensemble</source>
@@ -889,12 +907,14 @@
 			<source lang="de">Modeobjekt</source>
 			<source lang="de">Modeobjekte</source>
 			<!-- not exact equivalent in aat?-->
+			<target name="aatUri">http://vocab.getty.edu/aat/300191262</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10000</target>
 		</concept>
 		<concept>
 			<source lang="de">Modeveranstaltung</source>
 			<source lang="de">Modeveranstaltungen</source>
 			<!-- not exact equivalent in aat?-->
+			<target name="aatUri">http://vocab.getty.edu/aat/300500007</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10336</target>
 		</concept>
 		<concept>
@@ -1017,6 +1037,10 @@
 			<target name="aatUri">http://vocab.getty.edu/aat/300209267</target>
 			<target name="fashionUri">http://thesaurus.europeanafashion.eu/thesaurus/10068</target>
 		</concept>
+		<concept>
+			<source lang="de">Taschen (Accessoires)</source>
+			<target name="aatUri">http://vocab.getty.edu/aat/300191248</target>
+		</concept>		
 		<concept>
 			<source lang="de">Weste</source>
 			<target name="aatUri">http://vocab.getty.edu/aat/300216053</target>

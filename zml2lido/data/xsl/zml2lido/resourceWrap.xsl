@@ -183,25 +183,53 @@
             </lido:resourceRepresentation>
 			<lido:resourceType>
 				<!-- 
-					lido spec 1.0 "Example values: digital image, photograph, slide, videotape, Xray
+					lido spec 1.0 
+					"The generic identification of the medium of the image or other
+					resource."
+					
+					Example values: "digital image, photograph, slide, videotape, Xray
 					photograph, negative."
 					no voc at http://terminology.lido-schema.org 20200301
-					TODO
-				-->
-				<xsl:comment>type="europeana:type"</xsl:comment>
-				<xsl:variable name="resType" select="z:vocabularyReference[@name='MulTypeVoc']/z:vocabularyReferenceItem/@name"/>
-				<xsl:variable name="euType" select="func:vocmap-replace('MulTypeVgr',$resType, 'europeana:type')"/>
 
-				<!-- 
-					default to image, so make sure we ALWAYS have a europeana:type
+					Until 27.09.2024 we used to use Europeana type for resourceType which is 
+					ontologically wrong. If this is necessary in the future, it needs to be applied
+					in a later stage by another transformation. Other customers like CCC need correct
+					type here.
+					
+					Europeana type continues to be included as classification/@type.
+					
+					Unfortunately, we dont have a proper type in Ria's Asset Module at the moment.
+					
 				-->
-				<lido:term xml:lang="EN">
+				<xsl:variable name="MulTypeVoc" select="z:vocabularyReference[
+					@name = 'MulTypeVoc'
+				]/z:vocabularyReferenceItem/z:formattedValue"/>
+				<xsl:variable name="resourceType" select="func:vocmap-replace('MulTypeVgr', $MulTypeVoc, 'lido')"/>
+
+				<xsl:message>
+					<xsl:text>RESOURCE TYPE: </xsl:text>
+					<xsl:value-of select="$MulTypeVoc"/>
+					<!-- xsl:text>::</xsl:text>					 
+					<xsl:value-of select="$resourceType"/-->
+				</xsl:message>
+
+				<lido:conceptID lido:type="intern">
+					<xsl:value-of select="z:vocabularyReference[
+					@name = 'MulTypeVoc'
+				]/z:vocabularyReferenceItem/@id"/>
+				</lido:conceptID> 
+				<lido:term>
+					<xsl:attribute name="xml:lang">
+						<xsl:value-of select="z:vocabularyReference[
+							@name = 'MulTypeVoc'
+						]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
+					</xsl:attribute>
 					<xsl:choose>
-						<xsl:when test="$euType ne ''">
-								<xsl:value-of select="$euType"/>
+						<xsl:when test="$MulTypeVoc ne ''">
+								<xsl:value-of select="$MulTypeVoc"/>
 						</xsl:when>
 						<xsl:otherwise>
-								<xsl:text>image</xsl:text>
+								<xsl:text>Bild</xsl:text>
 						</xsl:otherwise>
 					</xsl:choose>
 				</lido:term>

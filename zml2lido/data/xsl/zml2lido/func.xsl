@@ -287,29 +287,49 @@
 	<!--
 	if source term exists, return extern source or source
 	if source does not exist, return empty string
+	
+	We except this function to fail quietly, i.e. not terminate on missing info.
 	-->
 
 	<xsl:function name="func:vocmap-control">
 		<xsl:param name="src-voc"/>
 		<xsl:param name="src-term"/>
+		<xsl:message terminate="no">
+			<xsl:text>DEBUGGING vocmap-control: </xsl:text>
+			<xsl:text>VOC:</xsl:text>
+			<xsl:value-of select="$src-voc"/>
+			<xsl:text> TERM:</xsl:text>
+			<xsl:value-of select="$src-term"/>
+		</xsl:message>
+
+
 		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
 		<xsl:variable name="source" select="$dict/vocmap/voc[
-				@name = normalize-space($src-voc)
+				@name = $src-voc
 			]/concept[
-				source = normalize-space($src-term)
+				source = $src-term
 			]"/>
 		<xsl:choose>
 			<xsl:when test="$source">
 				<xsl:choose>
 					<xsl:when test="$source/target[@name eq 'extern']">
-						<xsl:value-of select="$source/target[@name eq 'extern' and @type ='Vorzugsbezeichnung']"/>
+						<xsl:message>MEH
+							<xsl:value-of select="$source/target[@name eq 'extern']"/>
+						</xsl:message>
+						<xsl:value-of select="$source/target[@name eq 'extern']"/>
 					</xsl:when>
 					<xsl:otherwise>
-						<xsl:value-of select="$source/source[@type ='Vorzugsbezeichnung']"/>
+						<xsl:message>MU
+							<xsl:value-of select="$source/source[@type eq 'Vorzugsbezeichnung']"/>
+						</xsl:message>
+						<xsl:value-of select="$source/source[@type eq 'Vorzugsbezeichnung']"/>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise>
+				<xsl:message terminate="no">
+					!!! SOURCE term doesn't exist
+				</xsl:message>
 				<!-- source term doesn't exist-->
 				<xsl:value-of select="''"/>
 			</xsl:otherwise>
