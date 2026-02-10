@@ -14,13 +14,41 @@
 	-->
 
 	<xsl:template name="objectMeasurementsWrap">
-		<lido:objectMeasurementsWrap>
-			<xsl:apply-templates select="z:repeatableGroup[@name='ObjDimAllGrp']/z:repeatableGroupItem"/>
-		</lido:objectMeasurementsWrap>
+		<xsl:variable name="sortSeq" select="z:repeatableGroup[
+			@name='ObjDimAllGrp'
+		]/z:repeatableGroupItem/z:dataField[
+			@name = 'SortLnu'
+		]/z:value"/>
+
+		<!--xsl:message>
+			<xsl:text>***********fvh: </xsl:text>
+			<xsl:value-of select="$sortSeq"/>
+		</xsl:message-->
+	
+		<xsl:choose>
+			<!-- wenn mindst. ein Eintrag sortLMU = 0, dann spiele alle records aus mit sortLMU=0-->
+			<xsl:when test="$sortSeq = 0">
+				<lido:objectMeasurementsWrap>
+					<xsl:apply-templates select="z:repeatableGroup[@name='ObjDimAllGrp']/z:repeatableGroupItem[
+						z:dataField[@name = 'SortLnu']/z:value = '0'
+					]"/>
+				</lido:objectMeasurementsWrap>
+			</xsl:when>
+			<xsl:otherwise>
+				<!--xsl:message>ObjDimAllGrp sortLnu kein Eintrag mit 0</xsl:message-->
+				<!-- kein Eintrag hat sortLMU=0. Dann spiele alle Einträge aus, wo sortLMU nicht empty string ist.-->
+				<lido:objectMeasurementsWrap>
+					<xsl:apply-templates select="z:repeatableGroup[@name='ObjDimAllGrp']/z:repeatableGroupItem[
+						z:dataField[@name='SortLnu']/z:value != ''
+					]"/>
+				</lido:objectMeasurementsWrap>
+			</xsl:otherwise>
+		</xsl:choose>
     </xsl:template>
 
 	<xsl:template match="z:repeatableGroup[@name='ObjDimAllGrp']/z:repeatableGroupItem">
 		<lido:objectMeasurementsSet>
+			<xsl:attribute name="lido:sortorder" select="z:dataField[@name = 'SortLnu']/z:value"/>
 			<xsl:if test="normalize-space(z:virtualField[@name='PreviewVrt']/z:value) != ''">
 				<lido:displayObjectMeasurements xml:lang="de">
 					<xsl:value-of select="normalize-space(z:moduleReference[

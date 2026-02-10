@@ -18,16 +18,19 @@
 		<xsl:variable name="bereich" select="z:vocabularyReference[@name = 'ObjOrgGroupVoc']/z:vocabularyReferenceItem/z:formattedValue"/>
 		<!-- sammlung is a lookup term from vocmap-->
 		<xsl:variable name="sammlung" select="func:vocmap-control('Bereich',$bereich)"/>
-		<xsl:message>
-		DEBUGGING: Zuordnung.xsl
-			bereich: <xsl:value-of select="$bereich"/>
-			sammlung: <xsl:value-of select="$sammlung"/>
-		</xsl:message>
+		<!--xsl:message>
+		DEBUG: Zuordnung.xsl
+			<xsl:text>objId: </xsl:text><xsl:value-of select="z:systemField[@name = '__id']/z:value"/>
+			<xsl:text>bereich: </xsl:text><xsl:value-of select="$bereich"/>
+			<xsl:text>sammlung: </xsl:text><xsl:value-of select="$sammlung"/>
+		</xsl:message-->
 		<xsl:if test="$sammlung eq ''">
-			<xsl:message terminate="yes">
-				ERROR: Leere Zuordnung zu einem kuratierten Bestand. Fülle die Lücke in vocmap.xml für voc Bereich und den
+			<xsl:message terminate="no">
+				<xsl:text>objId: </xsl:text>
+				<xsl:value-of select="z:systemField[@name = '__id']/z:value"/>
+				WARNING: Leere Zuordnung zu einem kuratierten Bestand. Fülle die Lücke in vocmap.xml für voc Bereich und den
 				oben genannten Bereich.
-			</xsl:message>
+				</xsl:message>
 		</xsl:if>
 
 
