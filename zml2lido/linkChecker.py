@@ -217,15 +217,13 @@ class LinkChecker:
             raise SyntaxError(f"ERROR: vocmap file not found {vm_fn}")
         vocMap = etree.parse(vm_fn)
         try:
-            ISIL = vocMap.xpath(
-                f"""/vocmap/voc[
+            ISIL = vocMap.xpath(f"""/vocmap/voc[
                 @name='verwaltendeInstitution'
             ]/concept[
                 source = '{institution}'
             ]/target[
                 @name = 'ISIL'
-            ]"""
-            )[0]
+            ]""")[0]
         except:
             raise SyntaxError(
                 f"vocMap: verwaltendeInstitution '{institution}' not found"
@@ -251,11 +249,9 @@ class LinkChecker:
             objectID_N.attrib["{http://www.lido-schema.org}source"] = "ISIL/ID"
             # we're assuming there is always a verwaltendeInstitution, but that is not enforced by RIA!
             try:
-                verwInst = relWorkM.xpath(
-                    """//m:moduleReference[
+                verwInst = relWorkM.xpath("""//m:moduleReference[
                         @name='ObjOwnerRef'
-                    ]/m:moduleReferenceItem/m:formattedValue"""
-                )[0]
+                    ]/m:moduleReferenceItem/m:formattedValue""")[0]
             except:
                 logging.WARNING(
                     f"WARNING: verwaltendeInstitution empty! {mtype} {id_int}"
