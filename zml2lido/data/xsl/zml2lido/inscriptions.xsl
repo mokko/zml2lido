@@ -40,7 +40,7 @@
 				<xsl:text>sorttest: </xsl:text>
 				<xsl:value-of select="z:repeatableGroupItem/z:dataField[@name='SortLnu']"/>
 			</xsl:message-->
-			<xsl:apply-templates select="z:repeatableGroupItem">
+			<xsl:apply-templates select="z:repeatableGroupItem[z:dataField[@name='SortLnu']/z:value ne '']">
 				<!-- sorting untested-->
 				<xsl:sort select="z:repeatableGroupItem/z:dataField[@name='SortLnu']"/>
 			</xsl:apply-templates>
@@ -55,16 +55,8 @@
 		-->
 
 		<lido:inscriptions>
-			<xsl:variable name="sortorder" select="z:dataField[@name='SortLnu']/z:value"/>
-
 			<xsl:attribute name="lido:sortorder"><!--as="xs:number"-->
-				<xsl:choose>
-					<xsl:when test="$sortorder ne ''">
-						<xsl:value-of select="$sortorder"/>
-					</xsl:when>
-					<!-- default value-->
-					<xsl:otherwise>10</xsl:otherwise>
-				</xsl:choose>
+				<xsl:value-of select="z:dataField[@name='SortLnu']/z:value"/>
 			</xsl:attribute>
 			<xsl:variable name="type" select="z:vocabularyReference/z:vocabularyReferenceItem/z:formattedValue"/>
 			<!--xsl:message>

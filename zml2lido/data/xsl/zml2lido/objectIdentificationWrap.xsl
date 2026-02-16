@@ -21,6 +21,8 @@
 			8.12.2021 Frank schreibt, dass Aufschriften wieder rein sollen, dass nur ein Export diese nicht haben möchte.
 				Jetzt wird er versuchen, die Kundin zu überzeugen, dass Inschriften wieder herein kommen sollen.
 			1.12.2021 Frank schreibt, dass Aufschriften etc. nicht in LIDO ausgegeben werden sollen 
+			
+			16.2.2026 Es werden nur Aufschriften ausgegeben, die eine sortLnu haben.
 			-->
             <xsl:call-template name="inscriptionsWrap"/>
             <xsl:call-template name="repositoryWrap"/>
