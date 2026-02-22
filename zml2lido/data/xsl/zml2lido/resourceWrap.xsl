@@ -205,14 +205,35 @@
 					@name = 'MulTypeVoc'
 				]/z:vocabularyReferenceItem/z:formattedValue"/>
 				<xsl:variable name="resourceType" select="func:vocmap-replace('MulTypeVgr', $MulTypeVoc, 'lido')"/>
+				<!-- default to 'de' if empty-->
+				<xsl:variable name="language" select="z:vocabularyReference[
+							@name = 'MulTypeVoc'
+						]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
+				<xsl:variable name="language2">
+					<xsl:choose>
+						<xsl:when test="$language ne ''">
+							<xsl:value-of select="$language"/>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:message>
+								<xsl:text></xsl:text>
+							</xsl:message>
+							<xsl:text>de</xsl:text>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:variable>
 
-				<xsl:message>
+				<!--xsl:message>
 					<xsl:text>RESOURCE TYPE: </xsl:text>
 					<xsl:value-of select="$MulTypeVoc"/>
-					<!-- xsl:text>::</xsl:text>					 
-					<xsl:value-of select="$resourceType"/-->
-				</xsl:message>
+					<xsl:text> | </xsl:text>
+					<xsl:value-of select="$language"/>
+				</xsl:message-->
 
+				<xsl:if test="$language eq ''">
+					<xsl:message terminate="no">CROAKING: language EMPTY string!!!</xsl:message>
+				</xsl:if>
+				
 				<lido:conceptID lido:type="intern">
 					<xsl:value-of select="z:vocabularyReference[
 					@name = 'MulTypeVoc'
@@ -220,9 +241,7 @@
 				</lido:conceptID> 
 				<lido:term>
 					<xsl:attribute name="xml:lang">
-						<xsl:value-of select="z:vocabularyReference[
-							@name = 'MulTypeVoc'
-						]/z:vocabularyReferenceItem/z:formattedValue/@language"/>
+						<xsl:value-of select="$language2"/>
 					</xsl:attribute>
 					<xsl:choose>
 						<xsl:when test="$MulTypeVoc ne ''">

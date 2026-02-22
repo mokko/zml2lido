@@ -24,8 +24,10 @@ from mpapi.constants import get_credentials
 from mpapi.client import MpApi
 from pathlib import Path
 from typing import Any
+
 import urllib.request
 from zml2lido.relWorksCache import RelWorksCache
+from zml2lido.unescape_html import unescape_html
 
 # from zml2lido import NSMAP
 NSMAP = {"l": "http://www.lido-schema.org"}
@@ -43,7 +45,7 @@ class LinkChecker:
         user, pw, baseURL = get_credentials()
         self.client = MpApi(baseURL=baseURL, user=user, pw=pw)
         cache_dir = src.parent
-        self.rwc = RelWorksCache(maxSize=20_000, cache_dir=cache_dir)
+        self.rwc = RelWorksCache(maxSize=25_000, cache_dir=cache_dir)
         self.rwc.load_cache_file()  # load file if it exists once atb
 
         if rescan_lvl1_at_init:
@@ -188,6 +190,20 @@ class LinkChecker:
         )
         return lvl2
 
+    def my_unescape_html(self) -> None:
+        """Unescape html and translate to sort of markup"""
+
+        descriptionSetL = self.data.xpath(
+            """
+            l:lido/l:descriptiveMetadata/l:objectIdentificationWrap/
+            l:objectDescriptionWrap/l:objectDescriptionSet/l:descriptiveNoteValue
+            """,
+            namespaces=NSMAP,
+        )
+        for txtN in descriptionSetL:
+            txtN.text = unescape_html(txtN.text)
+            # print (f"!!!!!{clean}")
+
     #
     # PRIVATE
     #
@@ -217,13 +233,15 @@ class LinkChecker:
             raise SyntaxError(f"ERROR: vocmap file not found {vm_fn}")
         vocMap = etree.parse(vm_fn)
         try:
-            ISIL = vocMap.xpath(f"""/vocmap/voc[
+            ISIL = vocMap.xpath(
+                f"""/vocmap/voc[
                 @name='verwaltendeInstitution'
             ]/concept[
                 source = '{institution}'
             ]/target[
                 @name = 'ISIL'
-            ]""")[0]
+            ]"""
+            )[0]
         except:
             raise SyntaxError(
                 f"vocMap: verwaltendeInstitution '{institution}' not found"
@@ -249,9 +267,11 @@ class LinkChecker:
             objectID_N.attrib["{http://www.lido-schema.org}source"] = "ISIL/ID"
             # we're assuming there is always a verwaltendeInstitution, but that is not enforced by RIA!
             try:
-                verwInst = relWorkM.xpath("""//m:moduleReference[
+                verwInst = relWorkM.xpath(
+                    """//m:moduleReference[
                         @name='ObjOwnerRef'
-                    ]/m:moduleReferenceItem/m:formattedValue""")[0]
+                    ]/m:moduleReferenceItem/m:formattedValue"""
+                )[0]
             except:
                 logging.WARNING(
                     f"WARNING: verwaltendeInstitution empty! {mtype} {id_int}"

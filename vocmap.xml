@@ -71,9 +71,65 @@
 			<target lang="en" name="aatlabel">Asian</target>
 		</concept>
 		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-19.Jh. Druckgraphik</source>
+			<target lang="de" name="extern">19.Jahrhundert Druckgraphik</target>
+		</concept>	
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Bolz Sammlung</source>
+			<target lang="de" name="extern">Bolz Sammlung</target>
+		</concept>
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Bücher/Mappen nach 1800</source>
+			<target lang="de" name="extern">Bücher/Mappen nach 1800</target>
+		</concept>
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Bücher/Mappen vor 1800</source>
+			<target lang="de" name="extern">Bücher/Mappen vor 1800</target>
+		</concept>		
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Buchmalerei</source>
+			<target lang="de" name="extern">Buchmalerei</target>
+		</concept>		
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-DDR Kunst</source>
+			<target lang="de" name="extern">DDR Kunst</target>
+		</concept>		
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Deutsche Druckgraphik</source>
+			<target lang="de" name="extern">Deutsche Druckgraphik</target>
+		</concept>
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Deutsche Zeichnung</source>
+			<target lang="de" name="extern">Deutsche Zeichnung</target>
+		</concept>
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Dokumente</source>
+			<target lang="de" name="extern">Dokumente</target>
+		</concept>		
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Italienische Druckgraphik</source>
+			<target lang="de" name="extern">Italienische Druckgraphik</target>
+		</concept>		
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Italienische Zeichnung</source>
+			<target lang="de" name="extern">Italienische Zeichnung</target>
+		</concept>	
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Fran/Span/Eng Druckgraphik</source>
+			<target lang="de" name="extern">Französische, Spanische, Englische Druckgraphik</target>
+		</concept>	
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Fran/Span/Eng Zeichnung</source>
+			<target lang="de" name="extern">Französische, Spanische, Englische Zeichnung</target>
+		</concept>	
+		<concept>
 			<source type="Vorzugsbezeichnung" lang="de">KK-Klassische Moderne</source>
 			<target lang="de" name="extern">Klassische Moderne</target>
 		</concept>
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Niederländische Druckgraphik</source>
+			<target lang="de" name="extern">Niederländische Druckgraphik</target>
+		</concept>		
 	</voc>
 
 	<voc name="formatResource">

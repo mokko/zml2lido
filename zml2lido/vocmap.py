@@ -57,7 +57,7 @@ class Vocmap:
             conceptL = voc.xpath("concept")
             for concept in conceptL:
                 lno += 1
-                print(f" c {lno-1}")
+                print(f" c {lno - 1}")
                 srcL = concept.xpath("source")
                 for src in srcL:
                     slang = src.get("lang")

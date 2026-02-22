@@ -153,6 +153,7 @@ class LidoTool:
             # self.lc.relWorks_cache_single(fn=src)
             self.lc.rmUnpublishedRecords()  # remove unpublished records (not on SMB-Digital)
             self.lc.fixRelatedWorks()
+            self.lc.my_unescape_html()
             self.lc.save(lvl2=out_fn)
         else:
             print(f"   lvl2 already exists: {out_fn}")

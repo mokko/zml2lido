@@ -117,13 +117,15 @@ class RelWorksCache:
             # it's possible if maxSize exceeded
             raise KeyError("ERROR: Item not in Cache")
 
-        r = self.cache.xpath(f"""/m:application/m:modules/m:module[
+        r = self.cache.xpath(
+            f"""/m:application/m:modules/m:module[
                 @name = '{mtype}']/m:moduleItem[
                 @id = {str(ID)}]/m:repeatableGroup[
                 @name = 'ObjPublicationGrp']/m:repeatableGroupItem[
                     m:vocabularyReference[@name='PublicationVoc']/m:vocabularyReferenceItem[@name='Ja'] 
                     and m:vocabularyReference[@name='TypeVoc']/m:vocabularyReferenceItem[@id = 2600647]
-                ]""")
+                ]"""
+        )
         if len(r) > 0:
             return True
         else:
