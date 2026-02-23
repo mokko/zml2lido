@@ -201,7 +201,7 @@ class LinkChecker:
             namespaces=NSMAP,
         )
         for txtN in descriptionSetL:
-            txtN.text = unescape_html(txtN.text)
+            txtN.text = unescape_html(txtN.text)  # may return None if input is None
             # print (f"!!!!!{clean}")
 
     #

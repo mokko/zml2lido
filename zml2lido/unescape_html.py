@@ -3,16 +3,34 @@ from bs4 import BeautifulSoup
 import re
 
 
-def unescape_html(raw_text: str):
-    escaped_html = html.unescape(raw_text)
-    soup = BeautifulSoup(escaped_html, "html.parser")
-    for br in soup.find_all("br", recursive=True):
-        br.replace_with("\n\n")
+def unescape_html(raw_text: str | None) -> str | None:
+    """
+    For MuseumPlus's so-called HTML fields. unescape and convert so-called html to
+    correct text may include line feeds.
 
-    text = soup.get_text(separator=" ", strip=False)  # strip at beginning and end.
-    clean_text = re.sub(r"\n\n\s+", "\n\n", text)  # trim spaces after \n\n
-    # clean_text = re.sub(r'[^\S\n]+', ' ', text)  # Inline spaces
-    return clean_text
+    How to deal with stupid input? it may return None
+    """
+    if raw_text is None:
+        return None
+    else:
+        if not isinstance(raw_text, str):
+            raise TypeError("raw_text has bad type")
+
+    raw_text2 = raw_text.strip()
+    if raw_text2 == "":
+        return ""
+    elif "&lt;" in raw_text2:
+        escaped_html = html.unescape(raw_text2)
+        soup = BeautifulSoup(escaped_html, "html.parser")
+        for br in soup.find_all("br", recursive=True):
+            br.replace_with("\n\n")
+
+        text = soup.get_text(separator=" ", strip=False)  # strip at beginning and end.
+        clean_text = re.sub(r"\n\n\s+", "\n\n", text)  # trim spaces after \n\n
+        # clean_text = re.sub(r'[^\S\n]+', ' ', text)  # Inline spaces
+        return clean_text
+    else:
+        return raw_text2
 
 
 if __name__ == "__main__":
