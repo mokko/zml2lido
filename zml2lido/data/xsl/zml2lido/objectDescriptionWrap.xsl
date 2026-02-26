@@ -53,9 +53,9 @@
 					<xsl:value-of select="z:vocabularyReference/z:vocabularyReferenceItem/@name"/>
 				</xsl:attribute> 
 				<xsl:value-of select="normalize-space($txt)"/>
-				<xsl:message>
+				<!--xsl:message>
 					<xsl:value-of select="$txt"/>
-				</xsl:message>
+				</xsl:message-->
 			</lido:descriptiveNoteValue>
 		</lido:objectDescriptionSet>
 	</xsl:template>

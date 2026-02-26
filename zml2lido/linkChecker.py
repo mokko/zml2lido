@@ -192,6 +192,7 @@ class LinkChecker:
 
     def my_unescape_html(self) -> None:
         """Unescape html and translate to sort of markup"""
+        print("***Enter my_unescape_html")
 
         descriptionSetL = self.data.xpath(
             """

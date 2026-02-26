@@ -8,8 +8,9 @@ def unescape_html(raw_text: str | None) -> str | None:
     For MuseumPlus's so-called HTML fields. unescape and convert so-called html to
     correct text may include line feeds.
 
-    How to deal with stupid input? it may return None
+    How to deal with stupid input? it may return None if handed None.
     """
+
     if raw_text is None:
         return None
     else:
@@ -17,20 +18,28 @@ def unescape_html(raw_text: str | None) -> str | None:
             raise TypeError("raw_text has bad type")
 
     raw_text2 = raw_text.strip()
+    # print (f"...UNESCAPING: {raw_text2}")
+
+    unescaped_html = ""
     if raw_text2 == "":
         return ""
     elif "&lt;" in raw_text2:
-        escaped_html = html.unescape(raw_text2)
-        soup = BeautifulSoup(escaped_html, "html.parser")
-        for br in soup.find_all("br", recursive=True):
-            br.replace_with("\n\n")
-
-        text = soup.get_text(separator=" ", strip=False)  # strip at beginning and end.
-        clean_text = re.sub(r"\n\n\s+", "\n\n", text)  # trim spaces after \n\n
-        # clean_text = re.sub(r'[^\S\n]+', ' ', text)  # Inline spaces
-        return clean_text
+        print("UNESCAPING")
+        unescaped_html = html.unescape(raw_text2)
+    elif "<div" in raw_text2:
+        unescaped_html = raw_text2
     else:
         return raw_text2
+
+    soup = BeautifulSoup(unescaped_html, "html.parser")
+    for br in soup.find_all("br", recursive=True):
+        br.replace_with("\n\n")
+
+    text = soup.get_text(separator=" ", strip=False)  # strip at beginning and end.
+    clean_text = re.sub(r"\n\n\s+", "\n\n", text)  # trim spaces after \n\n
+    # clean_text = re.sub(r'[^\S\n]+', ' ', text)  # Inline spaces
+    # print (clean_text)
+    return clean_text
 
 
 if __name__ == "__main__":
