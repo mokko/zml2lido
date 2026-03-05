@@ -10,12 +10,17 @@
 	<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="yes" />
 	<xsl:strip-space elements="*" />
 
+	<!-- 
+	5.3.2026 
+	Ergänzt für Herstellende Rolle: Ausführung, Dargestellt
+	-->
+
 	<xsl:template name="Herstellung">
 		<xsl:variable name="herstellendeRollen" select="
 			'Absender', 'Absenderin', 'Absender*in',
 			'Architekt', 'Architektin', 'Architekt*in',
-			'Autor', 'Autorin','Autor*in',
-			'Bildhauer', 'Bildhauerin', 'Bildhauer*in',
+			'Ausführung', 'Autor', 'Autorin','Autor*in',
+			'Bildhauer', 'Bildhauerin', 'Bildhauer*in', 'Dargestellt',
 			'Designer', 'Designerin', 'Designer*in',
 			'Drucker', 'Drucker*in',
 			'Empfänger', 'Empfängerin','Empfänger*in',
@@ -153,7 +158,7 @@
 					<!-- eventDate 
 					5.3.2026. EventDate used to use the internal name @name. Now it uses 
 					formattedValue (@language = 'de').
-					---
+			
 					SPEC allows repeated displayDates only for language variants; 
 					according to spec event dates cannot be repeated. 
 					
