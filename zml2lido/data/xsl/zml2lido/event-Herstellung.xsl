@@ -114,7 +114,7 @@
 				@name = 'ObjDateGrp']/
 			z:repeatableGroupItem[
 				z:vocabularyReference[@name = 'TypeVoc']/
-				z:vocabularyReferenceItem/@name = $herstellendeDatenTypen
+				z:vocabularyReferenceItem/z:formattedValue[@language = 'de'] = $herstellendeDatenTypen
 				or not (z:vocabularyReference[@name = 'TypeVoc'])
 		]"/>
 
@@ -151,6 +151,9 @@
 					</xsl:message-->
 		
 					<!-- eventDate 
+					5.3.2026. EventDate used to use the internal name @name. Now it uses 
+					formattedValue (@language = 'de').
+					---
 					SPEC allows repeated displayDates only for language variants; 
 					according to spec event dates cannot be repeated. 
 					
@@ -161,6 +164,10 @@
 
 					TODO: Datierung engl.
 					-->
+					<!--xsl:message>
+						<xsl:text>DEBUGDEBUGDEBUG!</xsl:text>
+						<xsl:value-of select="$herstellendeDatenTypenN"/>
+					</xsl:message-->
 					<xsl:for-each select="$herstellendeDatenTypenN[1]">
 						<xsl:sort select="z:dataField/@name='SortLnu'" data-type="number" order="ascending"/>
 						<xsl:variable name="dateType" select="z:vocabularyReference[@name = 'TypeVoc']/z:vocabularyReferenceItem/@name"/>
