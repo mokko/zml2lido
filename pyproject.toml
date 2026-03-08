@@ -29,3 +29,6 @@ xpath = 'zml2lido:xpath'
 [project.urls]
 Home = "https://github.com/mokko/zml2lido"
 
+[tool.ruff]
+line-length = 88  # Custom (PEP8)
+

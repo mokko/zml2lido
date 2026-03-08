@@ -1,0 +1,10 @@
+lint:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v4  # Update v2 → v4
+    - uses: astral-sh/ruff-action@v3  # Offizielles Ruff Action
+      with:
+        args: "format --check --diff"  # Format check (wie Black)
+    - uses: astral-sh/ruff-action@v3
+      with:
+        args: "check --output-format=github"  # Linting
