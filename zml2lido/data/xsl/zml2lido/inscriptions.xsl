@@ -78,7 +78,7 @@
 			<!-- 
 			According to spec, lido:inscriptionTranscription should only be repeated for
 			language variants (i.e. translations). Makes little sense if 
-			inscription/transcription and translation are already two versions. So we
+			inscription/transcription and translation are already two versions. So we need
 			multiple.
 			Apprently, lido:transcription refers to any version of the original text 
 			implying that the original remains at the original and cannot be included 

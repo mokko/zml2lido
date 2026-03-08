@@ -294,13 +294,13 @@
 	<xsl:function name="func:vocmap-control">
 		<xsl:param name="src-voc"/>
 		<xsl:param name="src-term"/>
-		<xsl:message terminate="no">
-			<xsl:text>DEBUGGING vocmap-control: </xsl:text>
+		<!--xsl:message terminate="no">
+			<xsl:text>DEBUGGING vocmap-control (func.xsl): </xsl:text>
 			<xsl:text>VOC:</xsl:text>
 			<xsl:value-of select="$src-voc"/>
 			<xsl:text> TERM:</xsl:text>
 			<xsl:value-of select="$src-term"/>
-		</xsl:message>
+		</xsl:message-->
 
 
 		<xsl:variable name="dict" select="document('file:vocmap.xml')"/>
@@ -313,9 +313,9 @@
 			<xsl:when test="$source">
 				<xsl:choose>
 					<xsl:when test="$source/target[@name eq 'extern']">
-						<xsl:message>MEH
+						<!--xsl:message>MEH func.xsl
 							<xsl:value-of select="$source/target[@name eq 'extern']"/>
-						</xsl:message>
+						</xsl:message-->
 						<xsl:value-of select="$source/target[@name eq 'extern']"/>
 					</xsl:when>
 					<xsl:otherwise>
@@ -327,10 +327,12 @@
 				</xsl:choose>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:message terminate="no">
-					!!! SOURCE term doesn't exist
-				</xsl:message>
-				<!-- source term doesn't exist-->
+				<!-- source doesn't exist -->
+				<!--xsl:message terminate="no">
+					<xsl:text>!!! SOURCE node doesn't exist (func.xsl)</xsl:text>
+					<xsl:value-of select="$src-voc"/>
+					<xsl:value-of select="$src-term"/>
+				</xsl:message-->
 				<xsl:value-of select="''"/>
 			</xsl:otherwise>
 		</xsl:choose>
