@@ -34,6 +34,23 @@
 					<xsl:choose>
 						<!-- this is meant as a temporary workaround, but zetcom fixes the bug-->
 						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKKlassischeModerne'">KK-Klassische Moderne</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KK19JhDruckgraphik'">KK-19.Jh. Druckgraphik</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKVerlusteNiederlande'">KK-Verluste Niederlande</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKKunstseit1960'">KK-Kunst seit 1960</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKItalienischeDruckgraphik'">KK-Italienische Druckgraphik</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKItalZeichnung'">KK-Italienische Zeichnung</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KK19JhZeichnung'">KK-19.Jh. Zeichnung</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKDeutscheDruckgraphik16Jh'">KK-Deutsche Druckgraphik 16.Jh.</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKNiederlandischeDruckgraphik'">KK-Niederländische Druckgraphik</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKGrunewald'">KK-Grunewald</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKFranSpanEngDruckgraphik'">KK-Fran/Span/Eng Zeichnung</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKZusatzmagazin'">KK-Zusatzmagazin</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKPlattenarchiv'">KK-Plattenarchiv</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKBucherMappennach1800'">KK-Bücher Mappen nach 1800</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKBucherMappenvor1800'">KK-Bücher Mappen vor 1800</xsl:when>
+						<xsl:when test="z:systemField[@name eq '__orgUnit']/z:value eq 'KKDokumente'">KK-Dokumente</xsl:when>
+
+
 						<xsl:otherwise>
 							<xsl:message terminate="yes">ERROR: no OBjOrgGroupVoc BUG in RIA. Please add 
 								<xsl:value-of select="z:systemField[@name eq '__orgUnit']/z:value"/> to workaround

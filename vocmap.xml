@@ -71,8 +71,8 @@
 			<target lang="en" name="aatlabel">Asian</target>
 		</concept>
 		<concept>
-			<source type="Vorzugsbezeichnung" lang="de">KK-19.Jh. Zeichnungen</source>
-			<target lang="de" name="extern">19.Jahrhundert Zeichnungen</target>
+			<source type="Vorzugsbezeichnung" lang="de">KK-19.Jh. Zeichnung</source>
+			<target lang="de" name="extern">19.Jahrhundert Zeichnung</target>
 		</concept>	
 		<concept>
 			<source type="Vorzugsbezeichnung" lang="de">KK-19.Jh. Druckgraphik</source>
@@ -103,6 +103,10 @@
 			<target lang="de" name="extern">Deutsche Druckgraphik</target>
 		</concept>
 		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Deutsche Druckgraphik 16.Jh.</source>
+			<target lang="de" name="extern">Deutsche Druckgraphik 16.Jh.</target>
+		</concept>
+		<concept>
 			<source type="Vorzugsbezeichnung" lang="de">KK-Deutsche Zeichnung</source>
 			<target lang="de" name="extern">Deutsche Zeichnung</target>
 		</concept>
@@ -117,7 +121,11 @@
 		<concept>
 			<source type="Vorzugsbezeichnung" lang="de">KK-Fran/Span/Eng Zeichnung</source>
 			<target lang="de" name="extern">Französische, Spanische, Englische Zeichnung</target>
-		</concept>	
+		</concept>
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Grunewald</source>
+			<target lang="de" name="extern">Grunewald</target>
+		</concept>				
 		<concept>
 			<source type="Vorzugsbezeichnung" lang="de">KK-Italienische Druckgraphik</source>
 			<target lang="de" name="extern">Italienische Druckgraphik</target>
@@ -149,7 +157,23 @@
 		<concept>
 			<source type="Vorzugsbezeichnung" lang="de">KK-Plattenarchiv</source>
 			<target lang="de" name="extern">Plattenarchiv</target>
+		</concept>
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Verluste Niederlande</source>
+			<target lang="de" name="extern">Verluste Niederlande</target>
+		</concept>
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Zusatzmagazin</source>
+			<target lang="de" name="extern">Zusatzmagazin</target>
 		</concept>		
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Bücher Mappen nach 1800</source>
+			<target lang="de" name="extern">Bücher Mappen nach 1800</target>
+		</concept>		
+		<concept>
+			<source type="Vorzugsbezeichnung" lang="de">KK-Bücher Mappen vor 1800</source>
+			<target lang="de" name="extern">Bücher Mappen vor 1800</target>
+		</concept>				
 	</voc>
 
 	<voc name="formatResource">
